@@ -1,5 +1,6 @@
 import java.io.File;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.telegram.telegrambots.api.objects.Message;
 
@@ -7,9 +8,17 @@ import util.Util;
 
 public class MyAssistantBot extends MyBasicBot {
 	java.io.ByteArrayOutputStream myByteStream = new java.io.ByteArrayOutputStream();
+	util.Parser parser;
 	MyAssistantBot()
 	{
 		jshell.Command.setCustomOut(myByteStream);
+		parser = new util.Parser(new JSONArray()
+				.put(new JSONObject().put("name", "login")
+					.put("args", new JSONArray()
+							.put(new JSONObject()
+									.put("name","passwd")
+									.put("type", "string"))))
+				.put("cmd"));
 	}
 	@Override
 	JSONObject parse(Message msg, UserData ud) throws Exception {
@@ -23,7 +32,7 @@ public class MyAssistantBot extends MyBasicBot {
 			res.put("filename", msg.getDocument().getFileName());
 			return res;
 		}
-		return res.put("cmd",msg.getText());
+		return this.parser.parse(msg.getText());//res.put("cmd",msg.getText());
 	}
 
 	@Override
