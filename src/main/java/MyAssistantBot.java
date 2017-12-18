@@ -41,8 +41,9 @@ public class MyAssistantBot extends MyBasicBot {
 	}
 
 	@Override
-	String getResultAndFormat(JSONObject res) throws Exception {
-		//return res.getString("msg");
+	String getResultAndFormat(JSONObject res,UserData ud) throws Exception {
+		if(((MyAssistantUserData)ud).isLocked())
+			return "log in first";
 		if(res.has("filename"))
 		{
 			File file = Util.downloadPhotoByFilePath(res.getString("filepath"),this);
@@ -61,7 +62,6 @@ public class MyAssistantBot extends MyBasicBot {
 
 	@Override
 	public String getBotUsername() {
-		// TODO Auto-generated method stub
 		return "AssistantBot";
 	}
 

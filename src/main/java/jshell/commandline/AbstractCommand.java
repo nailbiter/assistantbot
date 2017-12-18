@@ -44,4 +44,5 @@ public abstract class AbstractCommand extends PooledThread
     }
 
     abstract String expandCommandReference();
+    public static String[] getCommandAliases() {return ClassFinder.getCommandAliases();}
 }

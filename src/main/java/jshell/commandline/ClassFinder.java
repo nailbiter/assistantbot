@@ -109,6 +109,20 @@ class ClassFinder
         "set",                        "jshell.command.set",
         "sh",                        "jshell.command.sh",
     };
+    public static String[] getCommandAliases()
+    {
+    		List<String> res = new ArrayList<String>();
+    		System.out.println("len: "+_stable_class_names.length);
+    		
+    		for(int i = 0; i < _stable_class_names.length; i+=2)
+    		{
+    			if(!_stable_class_names[i].startsWith("jshell."))
+    				res.add(_stable_class_names[i]);
+    		}
+    		
+    		String[] model= {};
+    		return res.toArray(model);
+    }
 
     private Hashtable _stable_classes;
 }

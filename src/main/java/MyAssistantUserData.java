@@ -4,7 +4,8 @@ import util.KeyRing;
 
 public class MyAssistantUserData implements UserData {
 	JShell shell = null;
-	boolean locked = true;
+	private boolean locked = true;
+	boolean isLocked() { return locked;}
 	MyAssistantUserData(){
 		try {
 			shell = JShell.create(); //FIXME: Security manager makes problems
@@ -20,7 +21,10 @@ public class MyAssistantUserData implements UserData {
 			System.out.println("got comd: /"+res.getString("name"));
 			if(res.getString("name").compareTo("login")==0)
 			{
+				System.out.println("got passwd: "+res.getString("passwd")+"-"+res.getString("passwd").length());
+				System.out.println("should be "+KeyRing.getPasswd()+"-"+KeyRing.getPasswd().length());
 				locked = !(KeyRing.getPasswd().compareTo(res.getString("passwd"))==0);
+				System.out.println("locked="+locked);
 			}
 			return;
 		}

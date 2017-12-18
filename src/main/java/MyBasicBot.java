@@ -34,7 +34,7 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 					userData.put(msg.getChatId(), this.createUserData(msg.getChatId())); 
 				JSONObject res = parse(msg,userData.get(msg.getChatId()));
 				userData.get(msg.getChatId()).Update(res);
-				return this.getResultAndFormat(res);
+				return this.getResultAndFormat(res,userData.get(msg.getChatId()));
 			}
 			else
 			{
@@ -47,12 +47,11 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 	            //responseToUser = LocalisationService.getInstance().getString("errorFetchingWeather", language);
 	    }
 	}
-	abstract String getResultAndFormat(JSONObject res) throws Exception;
+	abstract String getResultAndFormat(JSONObject res,UserData ud) throws Exception;
 	
 	protected String getHelpMessage()
 	{
-		return "help"
-				;
+		return "help";
 	}
 
 	public String getLogString() {return getBotUsername();}

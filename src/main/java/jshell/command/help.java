@@ -40,6 +40,10 @@ public class help extends Command
         out().println("help command");
         out().println("    Provides usage information for builtin JShell\n"+
                       "    commands.");
+        out().println("list of the known commands:");
+        String[] cmds = jshell.commandline.AbstractCommand.getCommandAliases();
+        for(int i = 0; i < cmds.length; i++)
+        		out().println("\t"+cmds[i]);
     }
 
     private void process_args(String[] args)
