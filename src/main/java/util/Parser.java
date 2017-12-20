@@ -9,6 +9,11 @@ public class Parser {
 	{
 		cmds_ = cmds;
 	}
+	public String getHelpMessage()
+	{
+		//TODO
+		return "TODO";
+	}
 	//FIXME: error handling
 	public JSONObject parse(String line)
 	{

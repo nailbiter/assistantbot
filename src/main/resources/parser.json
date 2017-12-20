@@ -1,0 +1,3 @@
+[{"name":"login","args":[{"name":"passwd","type":"string"}]}
+,{"name":"help","args":[]}
+,"cmd"]

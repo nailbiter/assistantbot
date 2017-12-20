@@ -1,7 +1,16 @@
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
+import java.net.URL;
+import java.util.Scanner;
 
+import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.telegram.telegrambots.api.objects.Message;
 
 import util.Util;
@@ -12,13 +21,14 @@ public class MyAssistantBot extends MyBasicBot {
 	MyAssistantBot()
 	{
 		jshell.Command.setCustomOut(myByteStream);
-		parser = new util.Parser(new JSONArray()
-				.put(new JSONObject().put("name", "login")
-					.put("args", new JSONArray()
-							.put(new JSONObject()
-									.put("name","passwd")
-									.put("type", "string"))))
-				.put("cmd"));
+		try
+		{		
+			parser = new util.Parser(util.LocalUtil.getJSONArrayFromRes(this, "parser"));
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace(System.out);
+		}
 	}
 	@Override
 	JSONObject parse(Message msg, UserData ud) throws Exception {
@@ -42,8 +52,6 @@ public class MyAssistantBot extends MyBasicBot {
 
 	@Override
 	String getResultAndFormat(JSONObject res,UserData ud) throws Exception {
-		if(((MyAssistantUserData)ud).isLocked())
-			return "log in first";
 		if(res.has("filename"))
 		{
 			File file = Util.downloadPhotoByFilePath(res.getString("filepath"),this);
@@ -52,12 +60,23 @@ public class MyAssistantBot extends MyBasicBot {
 			Util.copyFileUsingStream(file, file2);
 			return "saved "+res.getString("filename");
 		}
-		String out = this.myByteStream.toString();
-		this.myByteStream.reset();
-		if(out==null||out.length()==0)
-			out = "null";
-		System.out.println("out="+out+", len="+out.length());
-		return out;
+		if(res.has("cmd"))
+		{
+			if(((MyAssistantUserData)ud).isLocked())
+				return "log in first";
+			String out = this.myByteStream.toString();
+			this.myByteStream.reset();
+			if(out==null||out.length()==0)
+				out = "null";
+			System.out.println("out="+out+", len="+out.length());
+			return out;
+		}
+		if(res.has("name"))
+		{
+			if(res.getString("name").compareTo("help")==0)
+				return parser.getHelpMessage();
+		}
+		return "unrecognized command";
 	}
 
 	@Override
@@ -67,7 +86,6 @@ public class MyAssistantBot extends MyBasicBot {
 
 	@Override
 	public String getBotToken() {
-		// TODO Auto-generated method stub
 		return util.KeyRing.getToken();
 	}
 
