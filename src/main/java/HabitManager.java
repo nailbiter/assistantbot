@@ -11,9 +11,11 @@ import org.telegram.telegrambots.api.methods.send.SendMessage;
 
 import it.sauronsoftware.cron4j.Predictor;
 import it.sauronsoftware.cron4j.Scheduler;
+import util.StorageManager;
 
 class HabitManager {
 	JSONArray habits = null;
+	JSONObject streaks = null;
 	Long chatID_;
 	Scheduler scheduler = new Scheduler();
 	MyAssistantBot bot_;
@@ -65,10 +67,11 @@ class HabitManager {
 					habits.getJSONObject(index).getInt("delaymin")*60*1000);
 		}
 		if(code==HabitRunnableEnum.SETFAILURE){
-			//FIXME: add logging
 			if(habits.getJSONObject(index).getBoolean("isWaiting"))
 			{
 				habits.getJSONObject(index).put("isWaiting", false);
+				//add logging
+				streaks.put(habits.getJSONObject(index).getString("name"),0);
 				sendMessage(getFailureMessage(index));
 			}
 		}
@@ -81,14 +84,21 @@ class HabitManager {
 			chatID_ = chatID;
 			habits = util.LocalUtil.getJSONArrayFromRes(this, "habits");
 			failTimes = new Hashtable<String,Date>(habits.length());
+			streaks = StorageManager.get("habitstreaks");
 			for(int i = 0; i < habits.length(); i++)
 			{
 				JSONObject habit = habits.getJSONObject(i);
 				if(!habit.has("count"))
 					habit.put("count", 1);
 				habit.put("doneCount",0);
-				scheduler.schedule(habit.getString("cronline"),new HabitRunnable(i,
-						HabitRunnableEnum.SENDREMINDER));
+				habit.put("isWaiting",false);
+				if(habit.optBoolean("enabled",true))
+				{
+					scheduler.schedule(habit.getString("cronline"),
+							new HabitRunnable(i,HabitRunnableEnum.SENDREMINDER));
+					if(streaks.has(habit.getString("name")))
+						streaks.put(habit.getString("name"), 0);
+				}
 			}
 			scheduler.start();
 		}
@@ -104,15 +114,12 @@ class HabitManager {
 		for(int i = 0; i < habits.length(); i++) {
 			JSONObject habit = habits.getJSONObject(i);
 			Predictor p = new Predictor(habit.getString("cronline"));
-			res.append(formatter.format("%-20s%-40s%-20s%-20s", 
+			res.append(formatter.format("%-20s%-40s%-20s%-20s",
 					habit.getString("name"),p.nextMatchingDate().toString(),
-					habit.optBoolean("isWaiting") ? ("PEND("+
-					(habit.getInt("count")-habit.getInt("doneCount"))
-					+")"):"",
+					habit.optBoolean("isWaiting") ? 
+							("PEND("+ (habit.getInt("count")-habit.getInt("doneCount"))+")"):"",
 					habit.optBoolean("isWaiting") ?
-							milisToTimeFormat(failTimes.get(habit.get("name")).getTime()
-									- (new Date().getTime())) : ""
-							));
+							milisToTimeFormat(failTimes.get(habit.get("name")).getTime()- (new Date().getTime())) : ""));
 		}
 		return res.toString();
 	}
@@ -120,18 +127,21 @@ class HabitManager {
 	{
 		return Integer.toString((int)(millis/1000.0/60.0/60.0)) + "h:"+
 				Integer.toString((int)((millis/1000.0/60.0)%60)) + "m:"+
-				Integer.toString((int)((millis/1000.0)%60)) + "s:";
+				Integer.toString((int)((millis/1000.0)%60)) + "s.";
 	}
 	public String taskDone(String name)
 	{
-		for(int i = 0; i < habits.length(); i++) {
+		for(int i = 0; i < habits.length(); i++)
+		{
 			JSONObject habit = habits.getJSONObject(i);
-			if(habit.getString("name").startsWith(name))
+			if(habit.getString("name").startsWith(name) && habit.optBoolean("isWaiting"))
 			{
 				habit.put("doneCount",habit.getInt("doneCount")+1);
 				if(habit.getInt("doneCount")>=habit.getInt("count"))
 				{
 					habit.put("isWaiting", false);
+					streaks.put(habit.getString("name"),
+							1+streaks.optInt(habit.getString("name"), 0));
 					return "done task "+habit.getString("name");
 				}
 				else

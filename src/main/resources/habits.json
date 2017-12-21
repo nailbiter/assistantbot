@@ -1,2 +1,3 @@
-[{"name":"5 tinycards","count":4,"cronline":"15 13 * * *","delaymin":1080}
+[{"name":"one cup coffee","count":1,"cronline":"0 15 * * 1,2,3,4","delaymin":60,"enabled":true}
+,{"name":"test","count":1,"cronline":"43 20 * * *","delaymin":10,"enabled":true}
 ]

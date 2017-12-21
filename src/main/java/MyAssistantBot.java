@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.Scanner;
 
 import org.apache.commons.io.IOUtils;
@@ -20,9 +21,10 @@ public class MyAssistantBot extends MyBasicBot {
 	util.Parser parser;
 	MyAssistantBot()
 	{
-		jshell.Command.setCustomOut(myByteStream);
 		try
-		{		
+		{
+			util.StorageManager.init();
+			jshell.Command.setCustomOut(myByteStream);
 			parser = new util.Parser(util.LocalUtil.getJSONArrayFromRes(this, "parser"));
 		}
 		catch(Exception e)
