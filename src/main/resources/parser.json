@@ -1,3 +1,5 @@
-[{"name":"login","args":[{"name":"passwd","type":"string"}]}
-,{"name":"help","args":[]}
+[{"name":"login","args":[{"name":"passwd","type":"string"}],"help":"login into shell"}
+,{"name":"help","args":[],"help":"display this message"}
+,{"name":"habits","args":[],"help":"list all habits and info"}
+,{"name":"done","args":[{"name":"habit","type":"remainder"}],"help":"done habit"}
 ,"cmd"]

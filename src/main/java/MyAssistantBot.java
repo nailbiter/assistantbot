@@ -47,7 +47,7 @@ public class MyAssistantBot extends MyBasicBot {
 
 	@Override
 	UserData createUserData(Long chatId) {
-		return new MyAssistantUserData();
+		return new MyAssistantUserData(chatId,this);
 	}
 
 	@Override
@@ -75,6 +75,10 @@ public class MyAssistantBot extends MyBasicBot {
 		{
 			if(res.getString("name").compareTo("help")==0)
 				return parser.getHelpMessage();
+			if(res.getString("name").compareTo("habits")==0)
+				return ((MyAssistantUserData)ud).getHabitManager().getHabitsInfo();
+			if(res.getString("name").compareTo("done")==0) 
+				return ((MyAssistantUserData)ud).getHabitManager().taskDone(res.getString("habit"));
 		}
 		return "unrecognized command";
 	}

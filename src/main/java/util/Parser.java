@@ -11,11 +11,19 @@ public class Parser {
 	}
 	public String getHelpMessage()
 	{
-		//TODO
-		return "TODO";
+		StringBuilder res = new StringBuilder();
+		res.append("the following commands are known:\n");
+		for(int i = 0; i < cmds_.length(); i++)
+		{
+			JSONObject cmd = cmds_.optJSONObject(i); 
+			if(cmd==null)
+				continue;
+			res.append("\t/"+cmd.getString("name") + " : "+cmd.optString("help","")+"\n");
+		}
+		return res.toString();
 	}
 	//FIXME: error handling
-	public JSONObject parse(String line)
+	public JSONObject parse(String line) throws Exception
 	{
 		String[] tokens = line.split(" ");
 		for(int i = 0; i < ( cmds_.length() - 1 ); i++)
@@ -30,7 +38,21 @@ public class Parser {
 					if(arg.getString("type").compareTo("string")==0)
 					{
 						res.put(arg.getString("name"),tokens[j+1]);
+						continue;
 					}
+					if(arg.getString("type").compareTo("remainder")==0)
+					{
+						StringBuilder sb = new StringBuilder(tokens[j+1]);
+						/*FIXME: the next snippet may cause troubles if
+						 *  tokens are separated by several whitespaces
+						 *  and this needed to be preserved
+						 */ 
+						for(int k = j+2; k < tokens.length; k++)
+							sb.append(" "+tokens[k]);
+						res.put(arg.getString("name"),sb.toString());
+						break;
+					}
+					throw new Exception("unknown type: "+arg.optString("type"));
 				}
 				return res;
 			}

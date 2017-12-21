@@ -5,8 +5,11 @@ import util.KeyRing;
 public class MyAssistantUserData implements UserData {
 	JShell shell = null;
 	private boolean locked = true;
+	private HabitManager habitManager = null;
 	boolean isLocked() { return locked;}
-	MyAssistantUserData(){
+	HabitManager getHabitManager() {return habitManager;}
+	MyAssistantUserData(Long chatID,MyAssistantBot bot){
+		habitManager = new HabitManager(chatID,bot);
 		try {
 			shell = JShell.create(); //FIXME: Security manager makes problems
 		}
