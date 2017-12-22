@@ -110,16 +110,19 @@ class HabitManager {
 	public String getHabitsInfo()
 	{
 		StringBuilder res = new StringBuilder();
-		Formatter formatter = new Formatter();
+		System.out.println("getHabitsInfo");
+		System.out.println("len="+habits.length());
 		for(int i = 0; i < habits.length(); i++) {
 			JSONObject habit = habits.getJSONObject(i);
 			Predictor p = new Predictor(habit.getString("cronline"));
-			res.append(formatter.format("%-20s%-40s%-20s%-20s",
-					habit.getString("name"),p.nextMatchingDate().toString(),
+			res.append(String.format("%-40s%-40s%-20s%-40s.%n",
+					habit.getString("name"),
+					p.nextMatchingDate().toString(),
 					habit.optBoolean("isWaiting") ? 
 							("PEND("+ (habit.getInt("count")-habit.getInt("doneCount"))+")"):"",
 					habit.optBoolean("isWaiting") ?
-							milisToTimeFormat(failTimes.get(habit.get("name")).getTime()- (new Date().getTime())) : ""));
+							milisToTimeFormat(failTimes.get(habit.get("name")).getTime()- (new Date().getTime())) :
+							milisToTimeFormat(habit.getInt("delaymin")*60*1000)));
 		}
 		return res.toString();
 	}
