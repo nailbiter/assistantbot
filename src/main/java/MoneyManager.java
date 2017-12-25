@@ -26,7 +26,6 @@ public class MoneyManager {
 	}
 	public void putMoney(int amount,String categoryAlias)
 	{
-		//TODO
 		money.put(new JSONObject()
 				.put("amount", amount)
 				.put("category", categories.get(categoryAlias))
@@ -34,7 +33,6 @@ public class MoneyManager {
 	}
 	public String getLastCosts(int howMuch)
 	{
-		//TODO
 		util.TableBuilder tb = new util.TableBuilder();
 		tb.newRow();
 		tb.addToken("amount");
