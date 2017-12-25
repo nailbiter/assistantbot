@@ -6,9 +6,12 @@ public class MyAssistantUserData implements UserData {
 	JShell shell = null;
 	private boolean locked = true;
 	private HabitManager habitManager = null;
+	private MoneyManager moneyManager = null;
 	boolean isLocked() { return locked;}
-	HabitManager getHabitManager() {return habitManager;}
+	HabitManager getHabitManager() { return habitManager; }
+	MoneyManager getMoneyManager() { return moneyManager; }
 	MyAssistantUserData(Long chatID,MyAssistantBot bot){
+		moneyManager = new MoneyManager(bot);
 		habitManager = new HabitManager(chatID,bot);
 		try {
 			shell = JShell.create(); //FIXME: Security manager makes problems

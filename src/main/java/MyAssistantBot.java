@@ -81,6 +81,17 @@ public class MyAssistantBot extends MyBasicBot {
 				return ((MyAssistantUserData)ud).getHabitManager().getHabitsInfo();
 			if(res.getString("name").compareTo("done")==0) 
 				return ((MyAssistantUserData)ud).getHabitManager().taskDone(res.getString("habit"));
+			if(res.getString("name").compareTo("moneycats")==0) 
+				return ((MyAssistantUserData)ud).getMoneyManager().getMoneyCats();
+			if(res.getString("name").compareTo("money")==0) {
+				((MyAssistantUserData)ud).getMoneyManager().putMoney(
+						res.getInt("amount"), res.getString("category"));
+				return String.format("put %d in category %s",
+						res.getInt("amount"),res.getString("category"));
+			}
+			if(res.getString("name").equals("costs"))
+				return ((MyAssistantUserData)ud).getMoneyManager().getLastCosts(
+						res.getInt("num"));
 		}
 		return "unrecognized command";
 	}

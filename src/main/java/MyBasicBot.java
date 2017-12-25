@@ -15,7 +15,8 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 			try {
 				SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
 						.setChatId(update.getMessage().getChatId())
-								.setText(reply(update.getMessage()));
+								.setText("<code>"+reply(update.getMessage())+"</code>");
+				message.setParseMode("HTML");
 				sendMessage(message); // Call method to send the message
 			} catch (TelegramApiException e) {
 				e.printStackTrace();

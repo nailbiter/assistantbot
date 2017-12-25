@@ -82,9 +82,9 @@ class HabitManager {
 		{
 			bot_ = bot;
 			chatID_ = chatID;
-			habits = util.LocalUtil.getJSONArrayFromRes(this, "habits");
+			habits = util.StorageManager.get("habits",false).getJSONArray("obj");
 			failTimes = new Hashtable<String,Date>(habits.length());
-			streaks = StorageManager.get("habitstreaks");
+			streaks = StorageManager.get("habitstreaks",true);
 			for(int i = 0; i < habits.length(); i++)
 			{
 				JSONObject habit = habits.getJSONObject(i);
@@ -112,25 +112,39 @@ class HabitManager {
 		StringBuilder res = new StringBuilder();
 		System.out.println("getHabitsInfo");
 		System.out.println("len="+habits.length());
+		util.TableBuilder tb = new util.TableBuilder();
+		{
+			tb.newRow();
+			tb.addToken("name");
+			tb.addToken("next date");
+			tb.addToken("isPending?");
+			tb.addToken("timeToDo");
+			tb.addToken("streak");
+			tb.addToken("");
+		}
 		for(int i = 0; i < habits.length(); i++) {
 			JSONObject habit = habits.getJSONObject(i);
 			Predictor p = new Predictor(habit.getString("cronline"));
-			res.append(String.format("%-40s%-40s%-20s%-40s.%n",
-					habit.getString("name"),
-					p.nextMatchingDate().toString(),
-					habit.optBoolean("isWaiting") ? 
-							("PEND("+ (habit.getInt("count")-habit.getInt("doneCount"))+")"):"",
-					habit.optBoolean("isWaiting") ?
-							milisToTimeFormat(failTimes.get(habit.get("name")).getTime()- (new Date().getTime())) :
-							milisToTimeFormat(habit.getInt("delaymin")*60*1000)));
+			if(!habit.optBoolean("enabled",true))
+				continue;
+			tb.newRow();
+			tb.addToken(habit.getString("name"));
+			tb.addToken(p.nextMatchingDate().toString());
+			tb.addToken(habit.optBoolean("isWaiting") ? 
+				("PEND("+ (habit.getInt("count")-habit.getInt("doneCount"))+")"):"");
+			tb.addToken(habit.optBoolean("isWaiting") ?
+				milisToTimeFormat(failTimes.get(habit.get("name")).getTime()- (new Date().getTime())):
+				milisToTimeFormat(habit.getInt("delaymin")*60*1000));
+			tb.addToken(Integer.toString(this.streaks.optInt(habit.getString("name"),0)));
+			tb.addToken(".");
 		}
-		return res.toString();
+		return tb.toString();
 	}
 	protected static String milisToTimeFormat(long millis)
 	{
 		return Integer.toString((int)(millis/1000.0/60.0/60.0)) + "h:"+
 				Integer.toString((int)((millis/1000.0/60.0)%60)) + "m:"+
-				Integer.toString((int)((millis/1000.0)%60)) + "s.";
+				Integer.toString((int)((millis/1000.0)%60)) + "s";
 	}
 	public String taskDone(String name)
 	{

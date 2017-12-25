@@ -21,9 +21,10 @@ public class LocalUtil {
 			isInit = true;
 			if(onMac)
 			{
+				//FIXME
 				String path = StorageManager.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 				String decodedPath = URLDecoder.decode(path, "UTF-8");
-				jarFolder = decodedPath;
+				jarFolder = decodedPath+"../../src/main/resources/";
 			}
 			else
 			{

@@ -22,13 +22,15 @@ public class StorageManager {
 	            onShutdown();
 	        }});
 	}
-	public static JSONObject get(String name)
+	public static JSONObject get(String name,boolean register)
 	{
 		FileReader fr = null;
 		JSONObject res = null;
 		try {
 			System.out.println("StorageManager got "+name);
-			fr = new FileReader(LocalUtil.getJarFolder()+name+".json");
+			String fname = LocalUtil.getJarFolder()+name+".json";
+			System.out.println("storageManager gonna open: "+fname);
+			fr = new FileReader(fname);
 			StringBuilder sb = new StringBuilder();
             int character;
             while ((character = fr.read()) != -1) {
@@ -43,7 +45,8 @@ public class StorageManager {
 			System.out.println("found nothing");
 			res = new JSONObject();
 		}
-		register(name,res);
+		if(register)
+			register(name,res);
 		return res;
 	}
 	protected static void register(String name, JSONObject ref)

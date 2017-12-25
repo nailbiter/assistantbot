@@ -1,3 +1,2 @@
 *.class
 /target/
-src/main/java/util/KeyRing.java

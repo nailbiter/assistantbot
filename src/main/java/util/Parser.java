@@ -40,6 +40,11 @@ public class Parser {
 						res.put(arg.getString("name"),tokens[j+1]);
 						continue;
 					}
+					if(arg.getString("type").compareTo("int")==0)
+					{
+						res.put(arg.getString("name"),Integer.parseInt(tokens[j+1]));
+						continue;
+					}
 					if(arg.getString("type").compareTo("remainder")==0)
 					{
 						StringBuilder sb = new StringBuilder(tokens[j+1]);
