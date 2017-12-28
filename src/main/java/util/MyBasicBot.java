@@ -1,3 +1,4 @@
+package util;
 import java.util.Hashtable;
 
 import org.json.JSONObject;
@@ -23,9 +24,8 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 			}
 		}
 	}
-	
-	abstract JSONObject parse(Message msg,UserData ud) throws Exception;
-	abstract UserData createUserData(Long chatId); 
+	abstract protected JSONObject parse(Message msg,UserData ud) throws Exception;
+	abstract protected UserData createUserData(Long chatId); 
 	java.util.Hashtable<Long, UserData> userData = new Hashtable<Long,UserData>();
 	protected String reply(Message msg){
 		try{
@@ -44,17 +44,16 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 		}
 		catch (Exception e) {
 	            BotLogger.error(this.getLogString(), e);
+	            e.printStackTrace(System.out);
 	            return "exception: "+e.getMessage();
 	            //responseToUser = LocalisationService.getInstance().getString("errorFetchingWeather", language);
 	    }
 	}
-	abstract String getResultAndFormat(JSONObject res,UserData ud) throws Exception;
-	
+	abstract protected String getResultAndFormat(JSONObject res,UserData ud) throws Exception;	
 	protected String getHelpMessage()
 	{
 		return "help";
 	}
-
 	public String getLogString() {return getBotUsername();}
 	public abstract String getBotUsername();
 	public abstract String getBotToken();

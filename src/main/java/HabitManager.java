@@ -11,13 +11,15 @@ import org.telegram.telegrambots.api.methods.send.SendMessage;
 
 import it.sauronsoftware.cron4j.Predictor;
 import it.sauronsoftware.cron4j.Scheduler;
+import util.LocalUtil;
 import util.StorageManager;
 
-class HabitManager {
+class HabitManager implements util.MyManager 
+{
 	JSONArray habits = null;
 	JSONObject streaks = null;
 	Long chatID_;
-	Scheduler scheduler = new Scheduler();
+	Scheduler scheduler = null;
 	MyAssistantBot bot_;
 	Timer timer = new Timer();
 	Hashtable<String,Date> failTimes = null; 
@@ -32,17 +34,7 @@ class HabitManager {
 		@Override
 		public void run() { HabitRunnableDispatch(index_,code_); }
 	}
-	protected void sendMessage(String msg)
-	{
-		try 
-		{
-			SendMessage message = new SendMessage()
-					.setChatId(chatID_)
-							.setText(msg);
-			bot_.sendMessage(message);
-		}
-		catch(Exception e){ e.printStackTrace(System.out); }
-	}
+
 	protected String getReminderMessage(int index)
 	{
 		return "don't forget to execute "
@@ -58,7 +50,7 @@ class HabitManager {
 	protected void HabitRunnableDispatch(int index,HabitRunnableEnum code)
 	{
 		if(code == HabitRunnableEnum.SENDREMINDER) {
-			sendMessage(getReminderMessage(index));
+			LocalUtil.sendMessage(getReminderMessage(index), chatID_, bot_);
 			habits.getJSONObject(index).put("isWaiting", true);
 			failTimes.put(habits.getJSONObject(index).getString("name"), 
 					new Date(System.currentTimeMillis()+
@@ -72,21 +64,22 @@ class HabitManager {
 				habits.getJSONObject(index).put("isWaiting", false);
 				//add logging
 				streaks.put(habits.getJSONObject(index).getString("name"),0);
-				sendMessage(getFailureMessage(index));
+				LocalUtil.sendMessage(getFailureMessage(index), chatID_, bot_);
 			}
 		}
 	}
-	public HabitManager(Long chatID,MyAssistantBot bot)
+	public HabitManager(Long chatID,MyAssistantBot bot,Scheduler scheduler_in)
 	{
 		try
 		{
 			bot_ = bot;
+			scheduler = scheduler_in;
 			chatID_ = chatID;
 			habits = util.StorageManager.get("habits",false).getJSONArray("obj");
 			failTimes = new Hashtable<String,Date>(habits.length());
 			streaks = StorageManager.get("habitstreaks",true);
 			for(int i = 0; i < habits.length(); i++)
-			{
+			{	
 				JSONObject habit = habits.getJSONObject(i);
 				if(!habit.has("count"))
 					habit.put("count", 1);
@@ -166,5 +159,17 @@ class HabitManager {
 			}
 		}
 		return "unknown task";
+	}
+	@Override
+	public String getResultAndFormat(JSONObject res) throws Exception {
+		if(res.has("name"))
+		{
+			System.out.println("got comd: /"+res.getString("name"));
+			if(res.getString("name").compareTo("habits")==0)
+				return getHabitsInfo();
+			if(res.getString("name").compareTo("done")==0) 
+				return taskDone(res.getString("habit"));
+		}
+		return null;
 	}
 }

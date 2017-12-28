@@ -7,6 +7,7 @@ import java.net.URLDecoder;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONTokener;
+import org.telegram.telegrambots.api.methods.send.SendMessage;
 
 public class LocalUtil {
 	protected static boolean isInit = false;
@@ -48,5 +49,16 @@ public class LocalUtil {
         String theString = writer.toString();
         System.out.println("theString="+theString);
         return (JSONArray)(new JSONTokener(theString)).nextValue();
+	}
+	public static void sendMessage(String msg,Long chatID_,MyBasicBot bot_)
+	{
+		try 
+		{
+			SendMessage message = new SendMessage()
+					.setChatId(chatID_)
+							.setText(msg);
+			bot_.sendMessage(message);
+		}
+		catch(Exception e){ e.printStackTrace(System.out); }
 	}
 }

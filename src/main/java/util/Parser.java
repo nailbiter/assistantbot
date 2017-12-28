@@ -9,7 +9,10 @@ public class Parser {
 	{
 		cmds_ = cmds;
 	}
-	public String getHelpMessage()
+	public String getHelpMessage() {
+		return this.getTelegramHelpMessage();
+	}
+	public String getStandardHelpMessage()
 	{
 		StringBuilder res = new StringBuilder();
 		res.append("the following commands are known:\n");
@@ -19,6 +22,19 @@ public class Parser {
 			if(cmd==null)
 				continue;
 			res.append("\t/"+cmd.getString("name") + " : "+cmd.optString("help","")+"\n");
+		}
+		return res.toString();
+	}
+	public String getTelegramHelpMessage()
+	{
+		StringBuilder res = new StringBuilder();
+		res.append("\tthe following commands are known:\n");
+		for(int i = 0; i < cmds_.length(); i++)
+		{
+			JSONObject cmd = cmds_.optJSONObject(i); 
+			if(cmd==null)
+				continue;
+			res.append(""+cmd.getString("name") + " - "+cmd.optString("help","(none)")+"\n");
 		}
 		return res.toString();
 	}
@@ -37,12 +53,14 @@ public class Parser {
 					JSONObject arg = args.getJSONObject(j);
 					if(arg.getString("type").compareTo("string")==0)
 					{
-						res.put(arg.getString("name"),tokens[j+1]);
+						if(!isArgOpt(arg) || (tokens.length>=(j+2)))
+							res.put(arg.getString("name"),tokens[j+1]);
 						continue;
 					}
 					if(arg.getString("type").compareTo("int")==0)
 					{
-						res.put(arg.getString("name"),Integer.parseInt(tokens[j+1]));
+						if(!isArgOpt(arg) || (tokens.length>=(j+2)))
+							res.put(arg.getString("name"),Integer.parseInt(tokens[j+1]));
 						continue;
 					}
 					if(arg.getString("type").compareTo("remainder")==0)
@@ -65,4 +83,5 @@ public class Parser {
 		
 		return new JSONObject().put(cmds_.getString(cmds_.length()-1), line);
 	}
+	protected static boolean isArgOpt(JSONObject arg) {return arg.optBoolean("isOpt",false);}
 }

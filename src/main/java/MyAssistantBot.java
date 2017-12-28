@@ -14,17 +14,18 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.telegram.telegrambots.api.objects.Message;
 
+import util.KeyRing;
+import util.MyBasicBot;
+import util.UserData;
 import util.Util;
 
 public class MyAssistantBot extends MyBasicBot {
-	java.io.ByteArrayOutputStream myByteStream = new java.io.ByteArrayOutputStream();
 	util.Parser parser;
 	MyAssistantBot()
 	{
 		try
 		{
 			util.StorageManager.init();
-			jshell.Command.setCustomOut(myByteStream);
 			parser = new util.Parser(util.LocalUtil.getJSONArrayFromRes(this, "parser"));
 		}
 		catch(Exception e)
@@ -33,7 +34,7 @@ public class MyAssistantBot extends MyBasicBot {
 		}
 	}
 	@Override
-	JSONObject parse(Message msg, UserData ud) throws Exception {
+	protected JSONObject parse(Message msg, UserData ud) throws Exception {
 		JSONObject res = new JSONObject();
 		if(msg.hasDocument())
 		{
@@ -48,52 +49,29 @@ public class MyAssistantBot extends MyBasicBot {
 	}
 
 	@Override
-	UserData createUserData(Long chatId) {
+	protected UserData createUserData(Long chatId) {
 		return new MyAssistantUserData(chatId,this);
 	}
 
 	@Override
-	String getResultAndFormat(JSONObject res,UserData ud) throws Exception {
-		if(res.has("filename"))
-		{
-			File file = Util.downloadPhotoByFilePath(res.getString("filepath"),this);
-			String fn = "./"+res.getString("filename");
-			File file2 = new File(fn);
-			Util.copyFileUsingStream(file, file2);
-			return "saved "+res.getString("filename");
-		}
-		if(res.has("cmd"))
-		{
-			if(((MyAssistantUserData)ud).isLocked())
-				return "log in first";
-			String out = this.myByteStream.toString();
-			this.myByteStream.reset();
-			if(out==null||out.length()==0)
-				out = "null";
-			System.out.println("out="+out+", len="+out.length());
-			return out;
-		}
+	protected String getResultAndFormat(JSONObject res,UserData ud) throws Exception {
+		MyAssistantUserData md = (MyAssistantUserData)ud;
+		String str= null;
+		if((str = md.getHabitManager().getResultAndFormat(res))!=null)
+			return str;
+		if((str = md.getMoneyManager().getResultAndFormat(res))!=null)
+			return str;
+		if((str = md.getJShellManager().getResultAndFormat(res))!=null)
+			return str;
+		if((str = md.getTimeManager().getResultAndFormat(res))!=null)
+			return str;
 		if(res.has("name"))
 		{
+			System.out.println("got comd: /"+res.getString("name"));
 			if(res.getString("name").compareTo("help")==0)
 				return parser.getHelpMessage();
-			if(res.getString("name").compareTo("habits")==0)
-				return ((MyAssistantUserData)ud).getHabitManager().getHabitsInfo();
-			if(res.getString("name").compareTo("done")==0) 
-				return ((MyAssistantUserData)ud).getHabitManager().taskDone(res.getString("habit"));
-			if(res.getString("name").compareTo("moneycats")==0) 
-				return ((MyAssistantUserData)ud).getMoneyManager().getMoneyCats();
-			if(res.getString("name").compareTo("money")==0) {
-				((MyAssistantUserData)ud).getMoneyManager().putMoney(
-						res.getInt("amount"), res.getString("category"));
-				return String.format("put %d in category %s",
-						res.getInt("amount"),res.getString("category"));
-			}
-			if(res.getString("name").equals("costs"))
-				return ((MyAssistantUserData)ud).getMoneyManager().getLastCosts(
-						res.getInt("num"));
 		}
-		return "unrecognized command";
+		throw new Exception("unrecognized command");
 	}
 
 	@Override

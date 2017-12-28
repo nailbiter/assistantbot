@@ -3,6 +3,6 @@
 ,{"name":"habits","args":[],"help":"list all habits and info"}
 ,{"name":"done","args":[{"name":"habit","type":"remainder"}],"help":"done habit"}
 ,{"name":"moneycats","args":[],"help":"list all money categories and info"}
-,{"name":"money","args":[{"name":"amount","type":"int"},{"name":"category","type":"string"}],"help":"spent money"}
-,{"name":"costs","args":[{"name":"num","type":"int"}]}
+,{"name":"money","args":[{"name":"amount","type":"int"},{"name":"category","type":"string","isOpt":true}],"help":"spent money"}
+,{"name":"costs","args":[{"name":"num","type":"int","isOpt":true}]}
 ,"cmd"]

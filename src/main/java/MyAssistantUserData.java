@@ -1,49 +1,52 @@
 import org.json.JSONObject;
+
+import it.sauronsoftware.cron4j.Scheduler;
 import jshell.JShell;
 import util.KeyRing;
+import util.UserData;
 
 public class MyAssistantUserData implements UserData {
-	JShell shell = null;
-	private boolean locked = true;
 	private HabitManager habitManager = null;
 	private MoneyManager moneyManager = null;
-	boolean isLocked() { return locked;}
+	protected Scheduler scheduler = new Scheduler();
+	JShellManager jshellmanager = null;
+	TimeManager timeManager = null;
 	HabitManager getHabitManager() { return habitManager; }
 	MoneyManager getMoneyManager() { return moneyManager; }
+	JShellManager getJShellManager() { return this.jshellmanager; }
+	TimeManager getTimeManager() {return this.timeManager; }
 	MyAssistantUserData(Long chatID,MyAssistantBot bot){
-		moneyManager = new MoneyManager(bot);
-		habitManager = new HabitManager(chatID,bot);
-		try {
-			shell = JShell.create(); //FIXME: Security manager makes problems
+		this.moneyManager = new MoneyManager(bot);
+		this.habitManager = new HabitManager(chatID,bot,scheduler);
+		this.timeManager = new TimeManager(chatID,bot,scheduler);
+		try 
+		{
+			this.jshellmanager = new JShellManager(bot);
 		}
 		catch(Exception e)
 		{
 			e.printStackTrace(System.out);
 		}
 	}
+	String lastCategory = null;
 	public void Update(JSONObject res)  {
 		if(res.has("name"))
 		{
-			System.out.println("got comd: /"+res.getString("name"));
-			if(res.getString("name").compareTo("login")==0)
+			if(res.getString("name").equals("money"))
 			{
-				System.out.println("got passwd: "+res.getString("passwd")+"-"+res.getString("passwd").length());
-				System.out.println("should be "+KeyRing.getPasswd()+"-"+KeyRing.getPasswd().length());
-				locked = !(KeyRing.getPasswd().compareTo(res.getString("passwd"))==0);
-				System.out.println("locked="+locked);
+				if(!res.has("category"))
+				{
+					res.put("category", lastCategory);
+				}
+				lastCategory = res.getString("category");
 			}
-			return;
-		}
-		if(!res.has("cmd") || locked)
-			return;
-		System.out.println("got cmd: "+res.getString("cmd"));
-		try {
-			shell.runCommand(res.getString("cmd"));
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace(System.out);
+			if(res.getString("name").equals("costs"))
+			{
+				if(!res.has("num"))
+				{
+					res.put("num", 10);
+				}
+			}
 		}
 	}
-
 }
