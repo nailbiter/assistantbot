@@ -1,17 +1,19 @@
+package managers;
 import java.io.File;
 
 import org.json.JSONObject;
 
 import jshell.JShell;
 import util.KeyRing;
+import util.MyBasicBot;
 import util.Util;
 
 public class JShellManager implements util.MyManager{
 	protected JShell shell = null;
 	protected boolean isLocked = true;
-	MyAssistantBot bot_;
+	MyBasicBot bot_;
 	java.io.ByteArrayOutputStream myByteStream = new java.io.ByteArrayOutputStream();
-	public JShellManager (MyAssistantBot bot) throws Exception
+	public JShellManager (MyBasicBot bot) throws Exception
 	{
 		shell = JShell.create();
 		jshell.Command.setCustomOut(myByteStream);

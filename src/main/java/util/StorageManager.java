@@ -11,8 +11,47 @@ import org.json.JSONTokener;
 
 public class StorageManager {
 	protected static Hashtable<String,JSONObject> registeredObjects = new Hashtable<String,JSONObject>();
+	protected static MyManager myManager = null;
+	public static MyManager getMyManager() {return myManager;}
 	public static void init() throws Exception
 	{
+		myManager = new MyManager()
+		{
+
+			@Override
+			public String getResultAndFormat(JSONObject res) throws Exception {
+				if(res.has("name"))
+				{
+					System.out.println("got comd: /"+res.getString("name"));
+					if(res.getString("name").compareTo("dump")==0)
+					{
+						onShutdown();
+						StringBuilder sb = new StringBuilder();
+						sb.append("dumped:\n");
+						Iterator<String> itr = registeredObjects.keySet().iterator();
+				    		String str;
+				    		while (itr.hasNext()) {
+			    			 try {
+			    				   str = itr.next();
+			    				   sb.append("\t"+str+"\n");
+			    			 }
+			    			 catch(Exception e)
+			    			 {
+			    				 e.printStackTrace(System.out);
+			    			 }
+			    		    }
+				    		return sb.toString();
+					}
+				}
+				return null;
+			}
+
+			@Override
+			public String gotUpdate(String data) throws Exception {
+				return null;
+			}
+	
+		};
 		Runtime.getRuntime().addShutdownHook(new Thread()
 	    {
 	        @Override

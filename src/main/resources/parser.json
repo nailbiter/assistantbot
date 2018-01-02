@@ -5,4 +5,5 @@
 ,{"name":"moneycats","args":[],"help":"list all money categories and info"}
 ,{"name":"money","args":[{"name":"amount","type":"int"},{"name":"category","type":"string","isOpt":true}],"help":"spent money"}
 ,{"name":"costs","args":[{"name":"num","type":"int","isOpt":true}]}
+,{"name":"dump","args":[],"help":"dump all text files"}
 ,"cmd"]

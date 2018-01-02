@@ -53,4 +53,10 @@ public class LocalUtil {
         System.out.println("theString="+theString);
         return (JSONArray)(new JSONTokener(theString)).nextValue();
 	}
+	public static String milisToTimeFormat(long millis)
+	{
+		return Integer.toString((int)(millis/1000.0/60.0/60.0)) + "h:"+
+				Integer.toString((int)((millis/1000.0/60.0)%60)) + "m:"+
+				Integer.toString((int)((millis/1000.0)%60)) + "s";
+	}
 }

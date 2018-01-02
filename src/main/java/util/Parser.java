@@ -3,7 +3,7 @@ package util;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class Parser {
+public class Parser implements MyManager{
 	JSONArray cmds_;
 	public Parser(JSONArray cmds)
 	{
@@ -84,4 +84,18 @@ public class Parser {
 		return new JSONObject().put(cmds_.getString(cmds_.length()-1), line);
 	}
 	protected static boolean isArgOpt(JSONObject arg) {return arg.optBoolean("isOpt",false);}
+	@Override
+	public String getResultAndFormat(JSONObject res) throws Exception {
+		if(res.has("name"))
+		{
+			System.out.println("got comd: /"+res.getString("name"));
+			if(res.getString("name").compareTo("help")==0)
+				return getHelpMessage();
+		}
+		return null;
+	}
+	@Override
+	public String gotUpdate(String data) throws Exception {
+		return null;
+	}
 }

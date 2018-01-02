@@ -1,3 +1,4 @@
+package managers;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -8,6 +9,7 @@ import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboar
 
 import it.sauronsoftware.cron4j.Scheduler;
 import util.LocalUtil;
+import util.MyBasicBot;
 import util.MyManager;
 import util.StorageManager;
 
@@ -22,7 +24,7 @@ import util.StorageManager;
 public class TimeManager implements MyManager,Runnable {
 	Scheduler scheduler_;
 	Long chatID_;
-	MyAssistantBot bot_;
+	MyBasicBot bot_;
 	ArrayList<List<InlineKeyboardButton>> buttons = null;
 	JSONArray categories = null;
 	protected static int ROWNUM = 2;
@@ -36,7 +38,7 @@ public class TimeManager implements MyManager,Runnable {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	public TimeManager(Long chatID,MyAssistantBot bot,Scheduler scheduler_in) {
+	public TimeManager(Long chatID,MyBasicBot bot,Scheduler scheduler_in) {
 		this.scheduler_ = scheduler_in;
 		this.chatID_ = chatID;
 		this.bot_ = bot;
@@ -89,6 +91,13 @@ public class TimeManager implements MyManager,Runnable {
 	public String gotUpdate(String data) throws Exception {
 		time.put((new Date().toString())+":"+data);
 		this.isWaitingForAnswer = false;
-		return "got: "+data;
+		return "got: "+data+"\n"+this.getLifetime();
+	}
+	protected String getLifetime()
+	{
+		//TODO
+		Date currentData = new Date();
+		Date myDeathData = new Date(1991 + 80, 12, 24);
+		return "remaining time to live: " + LocalUtil.milisToTimeFormat(myDeathData.getTime() - currentData.getTime());
 	}
 }

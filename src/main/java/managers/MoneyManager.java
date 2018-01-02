@@ -1,3 +1,4 @@
+package managers;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -6,10 +7,12 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import util.MyBasicBot;
+
 public class MoneyManager implements util.MyManager{
 	JSONArray money = null;
 	JSONObject categories = null;
-	public MoneyManager(MyAssistantBot bot)
+	public MoneyManager(MyBasicBot bot)
 	{
 		JSONObject obj= util.StorageManager.get("money", true);
 		if(!obj.has("array"))

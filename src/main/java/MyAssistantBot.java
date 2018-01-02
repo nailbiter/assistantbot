@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.List;
 import java.util.Scanner;
 
 import org.apache.commons.io.IOUtils;
@@ -16,6 +17,7 @@ import org.telegram.telegrambots.api.objects.Message;
 
 import util.KeyRing;
 import util.MyBasicBot;
+import util.MyManager;
 import util.UserData;
 import util.Util;
 
@@ -57,20 +59,16 @@ public class MyAssistantBot extends MyBasicBot {
 	protected String getResultAndFormat(JSONObject res,UserData ud) throws Exception {
 		MyAssistantUserData md = (MyAssistantUserData)ud;
 		String str= null;
-		if((str = md.getHabitManager().getResultAndFormat(res))!=null)
-			return str;
-		if((str = md.getMoneyManager().getResultAndFormat(res))!=null)
-			return str;
-		if((str = md.getJShellManager().getResultAndFormat(res))!=null)
-			return str;
-		if((str = md.getTimeManager().getResultAndFormat(res))!=null)
-			return str;
-		if(res.has("name"))
+		List<MyManager> managers = md.getManagers();
+		for(int i = 0; i < managers.size(); i++)
 		{
-			System.out.println("got comd: /"+res.getString("name"));
-			if(res.getString("name").compareTo("help")==0)
-				return parser.getHelpMessage();
+			if((str = managers.get(i).getResultAndFormat(res))!=null)
+				return str;
 		}
+		if((str = util.StorageManager.getMyManager().getResultAndFormat(res))!=null)
+			return str;
+		if((str = parser.getResultAndFormat(res))!=null)
+			return str;
 		throw new Exception("unrecognized command");
 	}
 

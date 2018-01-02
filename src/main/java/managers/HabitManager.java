@@ -1,3 +1,4 @@
+package managers;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Formatter;
@@ -12,15 +13,16 @@ import org.telegram.telegrambots.api.methods.send.SendMessage;
 import it.sauronsoftware.cron4j.Predictor;
 import it.sauronsoftware.cron4j.Scheduler;
 import util.LocalUtil;
+import util.MyBasicBot;
 import util.StorageManager;
 
-class HabitManager implements util.MyManager
+public class HabitManager implements util.MyManager
 {
 	JSONArray habits = null;
 	JSONObject streaks = null;
 	Long chatID_;
 	Scheduler scheduler = null;
-	MyAssistantBot bot_;
+	MyBasicBot bot_;
 	Timer timer = new Timer();
 	Hashtable<String,Date> failTimes = null; 
 	enum HabitRunnableEnum{
@@ -68,7 +70,7 @@ class HabitManager implements util.MyManager
 			}
 		}
 	}
-	public HabitManager(Long chatID,MyAssistantBot bot,Scheduler scheduler_in)
+	public HabitManager(Long chatID,MyBasicBot bot,Scheduler scheduler_in)
 	{
 		try
 		{
@@ -124,18 +126,12 @@ class HabitManager implements util.MyManager
 			tb.addToken(habit.optBoolean("isWaiting") ? 
 				("PEND("+ (habit.getInt("count")-habit.getInt("doneCount"))+")"):"");
 			tb.addToken(habit.optBoolean("isWaiting") ?
-				milisToTimeFormat(failTimes.get(habit.get("name")).getTime()- (new Date().getTime())):
-				milisToTimeFormat(habit.getInt("delaymin")*60*1000));
+				LocalUtil.milisToTimeFormat(failTimes.get(habit.get("name")).getTime()- (new Date().getTime())):
+				LocalUtil.milisToTimeFormat(habit.getInt("delaymin")*60*1000));
 			tb.addToken(Integer.toString(this.streaks.optInt(habit.getString("name"),0)));
 			tb.addToken(".");
 		}
 		return tb.toString();
-	}
-	protected static String milisToTimeFormat(long millis)
-	{
-		return Integer.toString((int)(millis/1000.0/60.0/60.0)) + "h:"+
-				Integer.toString((int)((millis/1000.0/60.0)%60)) + "m:"+
-				Integer.toString((int)((millis/1000.0)%60)) + "s";
 	}
 	public String taskDone(String name)
 	{

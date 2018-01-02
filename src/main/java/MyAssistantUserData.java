@@ -1,28 +1,27 @@
+import java.util.ArrayList;
+import java.util.List;
+
 import org.json.JSONObject;
 
 import it.sauronsoftware.cron4j.Scheduler;
 import jshell.JShell;
 import util.KeyRing;
+import util.MyManager;
 import util.UserData;
 
 public class MyAssistantUserData implements UserData {
-	private HabitManager habitManager = null;
-	private MoneyManager moneyManager = null;
 	protected Scheduler scheduler = null; //FIXME: should it be a singleton?
-	JShellManager jshellmanager = null;
-	TimeManager timeManager = null;
-	HabitManager getHabitManager() { return habitManager; }
-	MoneyManager getMoneyManager() { return moneyManager; }
-	JShellManager getJShellManager() { return this.jshellmanager; }
-	TimeManager getTimeManager() {return this.timeManager; }
+	protected List<MyManager> managers = null;
+	List<MyManager> getManagers(){return managers;}
 	MyAssistantUserData(Long chatID,MyAssistantBot bot){
+		managers = new ArrayList<MyManager>();
 		this.scheduler = new Scheduler();
-		this.moneyManager = new MoneyManager(bot);
-		this.habitManager = new HabitManager(chatID,bot,scheduler);
-		this.timeManager = new TimeManager(chatID,bot,scheduler);
+		managers.add(new managers.MoneyManager(bot));
+		managers.add(new managers.HabitManager(chatID,bot,scheduler));
+		managers.add(new managers.TimeManager(chatID,bot,scheduler));
 		try 
 		{
-			this.jshellmanager = new JShellManager(bot);
+			managers.add(new managers.JShellManager(bot));
 		}
 		catch(Exception e)
 		{
