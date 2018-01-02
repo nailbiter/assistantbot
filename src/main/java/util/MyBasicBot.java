@@ -1,10 +1,13 @@
 package util;
 import java.util.Hashtable;
+import java.util.List;
 
 import org.json.JSONObject;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
+import org.telegram.telegrambots.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 import org.telegram.telegrambots.logging.BotLogger;
@@ -21,6 +24,22 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 				sendMessage(message); // Call method to send the message
 			} catch (TelegramApiException e) {
 				e.printStackTrace();
+			}
+		}
+		else if(update.hasCallbackQuery())
+		{
+			String call_data = update.getCallbackQuery().getData();
+			System.out.println("got call_data="+call_data);
+			//long message_id = update.getCallbackQuery().getMessage().getMessageId();
+            long chat_id = update.getCallbackQuery().getMessage().getChatId();
+			try {
+				SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
+						.setChatId(chat_id)
+								.setText("<code>"+lastWhoSentMessageWithKeyBoard.gotUpdate(call_data)+"</code>");
+				message.setParseMode("HTML");
+				sendMessage(message); // Call method to send the message
+			} catch (Exception e) {
+				e.printStackTrace(System.out);
 			}
 		}
 	}
@@ -57,4 +76,33 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 	public String getLogString() {return getBotUsername();}
 	public abstract String getBotUsername();
 	public abstract String getBotToken();
+	public void sendMessage(String msg,Long chatID_)
+	{
+		try 
+		{
+			SendMessage message = new SendMessage()
+					.setChatId(chatID_)
+							.setText(msg);
+			sendMessage(message);
+		}
+		catch(Exception e){ e.printStackTrace(System.out); }
+	}
+	protected MyManager lastWhoSentMessageWithKeyBoard = null;
+	public void sendMessageWithKeyBoard(String msg,Long chatID_,MyManager whom,
+			List<List<InlineKeyboardButton>> buttons)
+	{
+		try 
+		{
+			SendMessage message = new SendMessage()
+					.setChatId(chatID_)
+							.setText(msg);
+			
+			InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
+			markupInline.setKeyboard(buttons);
+			message.setReplyMarkup(markupInline);
+			this.lastWhoSentMessageWithKeyBoard = whom;
+			sendMessage(message);
+		}
+		catch(Exception e){ e.printStackTrace(System.out); }
+	}
 }

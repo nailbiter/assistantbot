@@ -59,4 +59,9 @@ public class JShellManager implements util.MyManager{
 		}
 		return null;
 	}
+	@Override
+	public String gotUpdate(String data) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -14,7 +14,7 @@ import it.sauronsoftware.cron4j.Scheduler;
 import util.LocalUtil;
 import util.StorageManager;
 
-class HabitManager implements util.MyManager 
+class HabitManager implements util.MyManager
 {
 	JSONArray habits = null;
 	JSONObject streaks = null;
@@ -50,7 +50,7 @@ class HabitManager implements util.MyManager
 	protected void HabitRunnableDispatch(int index,HabitRunnableEnum code)
 	{
 		if(code == HabitRunnableEnum.SENDREMINDER) {
-			LocalUtil.sendMessage(getReminderMessage(index), chatID_, bot_);
+			bot_.sendMessage(getReminderMessage(index), chatID_);
 			habits.getJSONObject(index).put("isWaiting", true);
 			failTimes.put(habits.getJSONObject(index).getString("name"), 
 					new Date(System.currentTimeMillis()+
@@ -64,7 +64,7 @@ class HabitManager implements util.MyManager
 				habits.getJSONObject(index).put("isWaiting", false);
 				//add logging
 				streaks.put(habits.getJSONObject(index).getString("name"),0);
-				LocalUtil.sendMessage(getFailureMessage(index), chatID_, bot_);
+				bot_.sendMessage(getFailureMessage(index), chatID_);
 			}
 		}
 	}
@@ -93,7 +93,6 @@ class HabitManager implements util.MyManager
 						streaks.put(habit.getString("name"), 0);
 				}
 			}
-			scheduler.start();
 		}
 		catch(Exception e)
 		{
@@ -102,7 +101,6 @@ class HabitManager implements util.MyManager
 	}
 	public String getHabitsInfo()
 	{
-		StringBuilder res = new StringBuilder();
 		System.out.println("getHabitsInfo");
 		System.out.println("len="+habits.length());
 		util.TableBuilder tb = new util.TableBuilder();
@@ -170,6 +168,11 @@ class HabitManager implements util.MyManager
 			if(res.getString("name").compareTo("done")==0) 
 				return taskDone(res.getString("habit"));
 		}
+		return null;
+	}
+	@Override
+	public String gotUpdate(String data) throws Exception {
+		// TODO Auto-generated method stub
 		return null;
 	}
 }
