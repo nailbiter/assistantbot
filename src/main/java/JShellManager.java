@@ -43,21 +43,35 @@ public class JShellManager implements util.MyManager{
 			if(isLocked)
 				return "log in first";
 			System.out.println("got cmd: "+res.getString("cmd"));
-			shell.runCommand(res.getString("cmd"));
-			String out = this.myByteStream.toString();
-			this.myByteStream.reset();
-			if(out==null||out.length()==0)
-				out = "null";
-			System.out.println("out="+out+", len="+out.length());
-			return out;
+			execute(res.getString("cmd"));
 		}
 		if(res.has("name"))
 		{
 			System.out.println("got comd: /"+res.getString("name"));
 			if(res.getString("name").compareTo("login")==0)
 				return (this.unLock(res.getString("passwd")) ? "still locked" : "unlocked");
+			if(isLocked)
+				return "log in first";
+			if(res.getString("name").compareTo("bm")==0)
+			{
+				//TODO
+				String botmanagerShPath = "/home/nailbiter/bin/botmanager.sh";
+				String gonnaExecute = "sh "+botmanagerShPath + " " + res.getString("arguments");
+				System.out.println("gonna execute: "+gonnaExecute);
+				return this.execute(gonnaExecute);
+			}
 		}
 		return null;
+	}
+	protected String execute(String what) throws Exception
+	{
+		shell.runCommand(what);
+		String out = this.myByteStream.toString();
+		this.myByteStream.reset();
+		if(out==null||out.length()==0)
+			out = "null";
+		System.out.println("out="+out+", len="+out.length());
+		return out;
 	}
 	@Override
 	public String gotUpdate(String data) throws Exception {
