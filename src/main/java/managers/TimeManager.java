@@ -62,12 +62,13 @@ public class TimeManager implements MyManager,Runnable {
 				.put("отдых")
 				.put("общение")
 				.put("без дела")
+				.put("german")
 				.put("math project");
 		buttons = new ArrayList<List<InlineKeyboardButton>>();
 		for(int i = 0; i < categories.length();)
 		{
 			buttons.add(new ArrayList<InlineKeyboardButton>());
-			for(int j = 0; j < ROWNUM; j++)
+			for(int j = 0; j < ROWNUM && i < categories.length(); j++)
 			{
 				buttons.get(buttons.size()-1).add(new InlineKeyboardButton()
 						.setText(categories.getString(i))

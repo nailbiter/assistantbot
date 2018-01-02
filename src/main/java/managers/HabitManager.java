@@ -65,7 +65,7 @@ public class HabitManager implements util.MyManager
 			{
 				habits.getJSONObject(index).put("isWaiting", false);
 				//add logging
-				streaks.put(habits.getJSONObject(index).getString("name"),0);
+				this.updateStreaks(index, -1);
 				bot_.sendMessage(getFailureMessage(index), chatID_);
 			}
 		}
@@ -91,8 +91,7 @@ public class HabitManager implements util.MyManager
 				{
 					scheduler.schedule(habit.getString("cronline"),
 							new HabitRunnable(i,HabitRunnableEnum.SENDREMINDER));
-					if(streaks.has(habit.getString("name")))
-						streaks.put(habit.getString("name"), 0);
+					this.updateStreaks(i, 0);
 				}
 			}
 		}
@@ -128,7 +127,7 @@ public class HabitManager implements util.MyManager
 			tb.addToken(habit.optBoolean("isWaiting") ?
 				LocalUtil.milisToTimeFormat(failTimes.get(habit.get("name")).getTime()- (new Date().getTime())):
 				LocalUtil.milisToTimeFormat(habit.getInt("delaymin")*60*1000));
-			tb.addToken(Integer.toString(this.streaks.optInt(habit.getString("name"),0)));
+			tb.addToken(this.printStreak(i));
 			tb.addToken(".");
 		}
 		return tb.toString();
@@ -144,8 +143,7 @@ public class HabitManager implements util.MyManager
 				if(habit.getInt("doneCount")>=habit.getInt("count"))
 				{
 					habit.put("isWaiting", false);
-					streaks.put(habit.getString("name"),
-							1+streaks.optInt(habit.getString("name"), 0));
+					this.updateStreaks(i, 1);
 					return "done task "+habit.getString("name");
 				}
 				else
@@ -170,5 +168,52 @@ public class HabitManager implements util.MyManager
 	public String gotUpdate(String data) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	/**
+	 * @param code -1 means failure, 0 means init, 1 means success 
+	 */
+	protected void updateStreaks(int index,int code)
+	{
+		String name = habits.getJSONObject(index).getString("name");
+		if(code==0)
+		{
+			if(streaks.optJSONObject(name)==null)
+			{
+				JSONObject item = new JSONObject()
+						.put("streak", 0)
+						.put("accum", 0);
+				streaks.put(name, item);
+			}
+			/*if(streaks.has(habitname))
+				streaks.put(habitname, 0);*/
+			return;
+		}
+		if(code < 0)
+		{
+			/*
+			 streaks.put(habits.getJSONObject(index).getString("name"),0);
+			 */
+			JSONObject item = streaks.getJSONObject(name);
+			item.put("streak",0);
+			item.put("accum", item.getInt("accum")-1);
+			return;
+		}
+		if(code > 0)
+		{
+			/*
+			 streaks.put(habit.getString("name"),
+							1+streaks.optInt(habit.getString("name"), 0));
+			 */
+			JSONObject item = streaks.getJSONObject(name);
+			item.put("streak",item.getInt("streak")+1);
+			item.put("accum", item.getInt("accum")+1);
+			return;
+		}
+	}
+	protected String printStreak(int index)
+	{
+		JSONObject streak = streaks.getJSONObject(habits.getJSONObject(index).getString("name"));
+		/*Integer.toString(this.streaks.optInt(habit.getString("name"),0));*/
+		return streak.getInt("accum")+"("+streak.getInt("streak")+")";
 	}
 }
