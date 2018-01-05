@@ -55,7 +55,7 @@ public class JShellManager implements util.MyManager{
 		}
 		if(res.has("name"))
 		{
-			System.out.println("got comd: /"+res.getString("name"));
+			System.out.println(this.getClass().getName()+" got comd: /"+res.getString("name"));
 			if(res.getString("name").compareTo("login")==0)
 				return (this.unLock(res.getString("passwd")) ? "still locked" : "unlocked");
 		}
@@ -63,7 +63,6 @@ public class JShellManager implements util.MyManager{
 	}
 	@Override
 	public String gotUpdate(String data) throws Exception {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

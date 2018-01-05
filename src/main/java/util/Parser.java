@@ -88,7 +88,7 @@ public class Parser implements MyManager{
 	public String getResultAndFormat(JSONObject res) throws Exception {
 		if(res.has("name"))
 		{
-			System.out.println("got comd: /"+res.getString("name"));
+			System.out.println(this.getClass().getName()+" got comd: /"+res.getString("name"));
 			if(res.getString("name").compareTo("help")==0)
 				return getHelpMessage();
 		}

@@ -156,7 +156,7 @@ public class HabitManager implements util.MyManager
 	public String getResultAndFormat(JSONObject res) throws Exception {
 		if(res.has("name"))
 		{
-			System.out.println("got comd: /"+res.getString("name"));
+			System.out.println(this.getClass().getName()+" got comd: /"+res.getString("name"));
 			if(res.getString("name").compareTo("habits")==0)
 				return getHabitsInfo();
 			if(res.getString("name").compareTo("done")==0) 
@@ -166,7 +166,6 @@ public class HabitManager implements util.MyManager
 	}
 	@Override
 	public String gotUpdate(String data) throws Exception {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	/**

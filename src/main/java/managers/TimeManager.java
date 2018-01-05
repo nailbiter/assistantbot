@@ -45,13 +45,15 @@ public class TimeManager implements MyManager,Runnable {
 	public String getResultAndFormat(JSONObject res) throws Exception {
 		if(res.has("name"))
 		{
+			System.out.println(this.getClass().getName()+" got comd: /"+res.getString("name"));
 			if(res.getString("name").compareTo("timestat")==0)
 			{
 				int num = res.optInt("num",24);
+				System.out.println("got num="+num);
 				Hashtable<String,Integer> ht = new Hashtable<String,Integer>();
 				{
 					int idx = this.time.length() - 1; 
-					while(num>0 && idx > 0)
+					while(num>0 && idx >= 0)
 					{
 						String cat = time.getString(idx);
 						cat = cat.substring(cat.lastIndexOf(":")+1);
@@ -109,6 +111,7 @@ public class TimeManager implements MyManager,Runnable {
 				.put("общение")
 				.put("без дела")
 				.put("german")
+				.put("coding")
 				.put("math project");
 		buttons = new ArrayList<List<InlineKeyboardButton>>();
 		for(int i = 0; i < categories.length();)

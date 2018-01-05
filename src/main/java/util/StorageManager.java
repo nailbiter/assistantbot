@@ -22,7 +22,7 @@ public class StorageManager {
 			public String getResultAndFormat(JSONObject res) throws Exception {
 				if(res.has("name"))
 				{
-					System.out.println("got comd: /"+res.getString("name"));
+					System.out.println(this.getClass().getName()+" got comd: /"+res.getString("name"));
 					if(res.getString("name").compareTo("dump")==0)
 					{
 						onShutdown();

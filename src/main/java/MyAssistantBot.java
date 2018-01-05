@@ -59,10 +59,8 @@ public class MyAssistantBot extends MyBasicBot {
 		String str= null;
 		List<MyManager> managers = md.getManagers();
 		for(int i = 0; i < managers.size(); i++)
-		{
 			if((str = managers.get(i).getResultAndFormat(res))!=null)
 				return str;
-		}
 		if((str = util.StorageManager.getMyManager().getResultAndFormat(res))!=null)
 			return str;
 		throw new Exception("unrecognized command");

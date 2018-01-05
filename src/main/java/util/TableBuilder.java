@@ -10,6 +10,19 @@ public class TableBuilder {
 	{
 		tokens.add(new ArrayList<String>());
 	}
+	public void addNewlineAndTokens(String t1,String t2,String t3) 
+	{
+		newRow();
+		addToken(t1);
+		addToken(t2);
+		addToken(t3);
+	}
+	public void addNewlineAndTokens(String t1,String t2) 
+	{
+		newRow();
+		addToken(t1);
+		addToken(t2);
+	}
 	public void addToken(String token)
 	{
 		tokens.get(tokens.size()-1).add(token);

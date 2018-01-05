@@ -95,6 +95,7 @@ public class MoneyManager implements util.MyManager{
 	public String getResultAndFormat(JSONObject res) throws Exception {
 		if(res.has("name"))
 		{
+			System.out.println(this.getClass().getName()+" got comd: /"+res.getString("name"));
 			if(res.getString("name").compareTo("moneycats")==0) 
 				return getMoneyCats();
 			if(res.getString("name").compareTo("money")==0) {
@@ -109,7 +110,6 @@ public class MoneyManager implements util.MyManager{
 	}
 	@Override
 	public String gotUpdate(String data) throws Exception {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

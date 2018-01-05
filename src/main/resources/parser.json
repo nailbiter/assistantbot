@@ -7,4 +7,8 @@
 ,{"name":"costs","args":[{"name":"num","type":"int","isOpt":true}]}
 ,{"name":"dump","args":[],"help":"dump all text files"}
 ,{"name":"timestat","args":[{"name":"num","type":"int","isOpt":true}],"help":"statistics about time used"}
+,{"name":"tasknew","args":[{"name":"estimate","type":"int"}],"help":"create new task"}
+,{"name":"taskdone","args":[{"name":"taskid","type":"int"}],"help":"mark task as done"}
+,{"name":"tasks","args":[{"name":"tasknum","type":"int","isOpt":true}],"help":"show list of tasks"}
+,{"name":"taskpostpone","args":[{"name":"taskid","type":"int"},{"name":"estimate","type":"int"}],"help":"postpone a task"}
 ,"cmd"]

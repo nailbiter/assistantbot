@@ -4,8 +4,6 @@ import java.util.List;
 import org.json.JSONObject;
 
 import it.sauronsoftware.cron4j.Scheduler;
-import jshell.JShell;
-import util.KeyRing;
 import util.MyManager;
 import util.UserData;
 
@@ -26,6 +24,7 @@ public class MyAssistantUserData implements UserData {
 			managers.add(new managers.HabitManager(chatID,bot,scheduler));
 			managers.add(new managers.TimeManager(chatID,bot,scheduler));
 			managers.add(new managers.JShellManager(bot));
+			managers.add(new managers.TaskManager(chatID, bot));
 		}
 		catch(Exception e)
 		{
