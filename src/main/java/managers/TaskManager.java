@@ -202,6 +202,7 @@ public class TaskManager implements MyManager {
 				tb.newRow();
 				tb.addToken(index);
 				tb.addToken(tasks.get(index).getCompletionDate());
+				tasknum--;
 			}
 			index--;
 		}
