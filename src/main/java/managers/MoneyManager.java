@@ -45,7 +45,7 @@ public class MoneyManager implements util.MyManager{
 		tb.addToken("category");
 		tb.addToken("date");
 		Hashtable<String,Integer> totals = new Hashtable<String,Integer>();
-		for(int idx = money.length()-1;idx>=0&&howMuch>=0;)
+		for(int idx = money.length()-1;idx>=0&&howMuch>0;)
 		{
 			String category = money.getJSONObject(idx).getString("category");
 			int amount = money.getJSONObject(idx).getInt("amount");

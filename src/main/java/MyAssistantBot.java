@@ -22,13 +22,11 @@ import util.UserData;
 import util.Util;
 
 public class MyAssistantBot extends MyBasicBot {
-	util.Parser parser;
 	MyAssistantBot()
 	{
 		try
 		{
 			util.StorageManager.init();
-			parser = new util.Parser(util.LocalUtil.getJSONArrayFromRes(this, "parser"));
 		}
 		catch(Exception e)
 		{
@@ -47,7 +45,7 @@ public class MyAssistantBot extends MyBasicBot {
 			res.put("filename", msg.getDocument().getFileName());
 			return res;
 		}
-		return this.parser.parse(msg.getText());//res.put("cmd",msg.getText());
+		return ((MyAssistantUserData)ud).getParser().parse(msg.getText());
 	}
 
 	@Override
@@ -66,8 +64,6 @@ public class MyAssistantBot extends MyBasicBot {
 				return str;
 		}
 		if((str = util.StorageManager.getMyManager().getResultAndFormat(res))!=null)
-			return str;
-		if((str = parser.getResultAndFormat(res))!=null)
 			return str;
 		throw new Exception("unrecognized command");
 	}

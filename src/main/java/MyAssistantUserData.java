@@ -13,14 +13,18 @@ public class MyAssistantUserData implements UserData {
 	protected Scheduler scheduler = null; //FIXME: should it be a singleton?
 	protected List<MyManager> managers = null;
 	List<MyManager> getManagers(){return managers;}
+	protected util.Parser parser = null;
+	String lastCategory = null;
 	MyAssistantUserData(Long chatID,MyAssistantBot bot){
-		managers = new ArrayList<MyManager>();
-		this.scheduler = new Scheduler();
-		managers.add(new managers.MoneyManager(bot));
-		managers.add(new managers.HabitManager(chatID,bot,scheduler));
-		managers.add(new managers.TimeManager(chatID,bot,scheduler));
 		try 
 		{
+			parser = new util.Parser(util.LocalUtil.getJSONArrayFromRes(this, "parser"));
+			managers = new ArrayList<MyManager>();
+			this.scheduler = new Scheduler();
+			managers.add(parser);
+			managers.add(new managers.MoneyManager(bot));
+			managers.add(new managers.HabitManager(chatID,bot,scheduler));
+			managers.add(new managers.TimeManager(chatID,bot,scheduler));
 			managers.add(new managers.JShellManager(bot));
 		}
 		catch(Exception e)
@@ -29,7 +33,7 @@ public class MyAssistantUserData implements UserData {
 		}
 		scheduler.start();
 	}
-	String lastCategory = null;
+	public util.Parser getParser() {return parser;}
 	public void Update(JSONObject res)  {
 		if(res.has("name"))
 		{

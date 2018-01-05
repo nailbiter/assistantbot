@@ -38,7 +38,7 @@ public class LocalUtil {
 			System.out.println("jarFolder="+jarFolder);
 		}
 	}
-	public static String getJarFolder() {return jarFolder;}
+	public static String getJarFolder() throws Exception { init(); return jarFolder;}
 	public static JSONArray getJSONArrayFromRes(Object me,String name) throws Exception
 	{
 		init();

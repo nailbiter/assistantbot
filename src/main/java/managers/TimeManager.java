@@ -1,8 +1,16 @@
 package managers;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.PriorityQueue;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboardButton;
@@ -35,7 +43,45 @@ public class TimeManager implements MyManager,Runnable {
 	 */
 	@Override
 	public String getResultAndFormat(JSONObject res) throws Exception {
-		// TODO Auto-generated method stub
+		if(res.has("name"))
+		{
+			if(res.getString("name").compareTo("timestat")==0)
+			{
+				int num = res.optInt("num",24);
+				Hashtable<String,Integer> ht = new Hashtable<String,Integer>();
+				{
+					int idx = this.time.length() - 1; 
+					while(num>0 && idx > 0)
+					{
+						String cat = time.getString(idx);
+						cat = cat.substring(cat.lastIndexOf(":")+1);
+						if(!ht.containsKey(cat))
+							ht.put(cat, 0);
+						int res1 = ht.get(cat);
+						ht.put(cat, res1+1);
+						num--; idx--;
+					}
+				}
+				List<Map.Entry<String, Integer>> list = 
+						new LinkedList<Map.Entry<String,Integer>>(ht.entrySet());
+				Collections.sort(list,new Comparator<Map.Entry<String,Integer>>()
+					{
+						@Override
+						public int compare(Entry<String, Integer> o1, Entry<String, Integer> o2) {
+							return Integer.compare(o2.getValue(),o1.getValue());
+						}
+					});
+				util.TableBuilder tb = new util.TableBuilder();
+				for(int i = 0; i < list.size(); i++)
+				{
+					tb.newRow();
+					tb.addToken(list.get(i).getKey()+":");
+					tb.addToken(StringUtils.repeat("*",list.get(i).getValue()));
+				}
+				
+				return tb.toString();
+			}
+		}
 		return null;
 	}
 	public TimeManager(Long chatID,MyBasicBot bot,Scheduler scheduler_in) {
@@ -96,7 +142,6 @@ public class TimeManager implements MyManager,Runnable {
 	}
 	protected String getLifetime()
 	{
-		//TODO
 		Date currentData = new Date();
 		Date myDeathData = new Date(1991 + 80, 12, 24);
 		return "remaining time to live: " + LocalUtil.milisToTimeFormat(myDeathData.getTime() - currentData.getTime());

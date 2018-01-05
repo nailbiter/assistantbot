@@ -6,4 +6,5 @@
 ,{"name":"money","args":[{"name":"amount","type":"int"},{"name":"category","type":"string","isOpt":true}],"help":"spent money"}
 ,{"name":"costs","args":[{"name":"num","type":"int","isOpt":true}]}
 ,{"name":"dump","args":[],"help":"dump all text files"}
+,{"name":"timestat","args":[{"name":"num","type":"int","isOpt":true}],"help":"statistics about time used"}
 ,"cmd"]
