@@ -21,7 +21,7 @@ public class MyAssistantUserData implements UserData {
 			
 			managers.add(new managers.JShellManager(bot));
 			
-			if(false)
+			if(true)
 			{
 				parser = new util.parsers.Parser(util.LocalUtil.getJSONArrayFromRes(this, "parser"));
 				this.scheduler = new Scheduler();

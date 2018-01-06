@@ -6,7 +6,7 @@
 ,{"name":"money","args":[{"name":"amount","type":"int"},{"name":"category","type":"string","isOpt":true}],"help":"spent money"}
 ,{"name":"costs","args":[{"name":"num","type":"int","isOpt":true}]}
 ,{"name":"dump","args":[],"help":"dump all text files"}
-,{"name":"mail","args":[],"help":"check mailbox"}
+,{"name":"mailfreq","args":[{"name":"freq","type":"int"}],"help":"set mailbox check freq to MIN"}
 ,{"name":"timestat","args":[{"name":"num","type":"int","isOpt":true}],"help":"statistics about time used"}
 ,{"name":"tasknew","args":[{"name":"estimate","type":"int"}],"help":"create new task"}
 ,{"name":"taskdone","args":[{"name":"taskid","type":"int"}],"help":"mark task as done"}
