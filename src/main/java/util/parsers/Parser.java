@@ -1,18 +1,21 @@
-package util;
+package util.parsers;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class Parser implements MyManager{
+import util.MyManager;
+
+public class Parser implements AbstractParser{
 	JSONArray cmds_;
 	public Parser(JSONArray cmds)
 	{
 		cmds_ = cmds;
 	}
+	@Override
 	public String getHelpMessage() {
 		return this.getTelegramHelpMessage();
 	}
-	public String getStandardHelpMessage()
+	protected String getStandardHelpMessage()
 	{
 		StringBuilder res = new StringBuilder();
 		res.append("the following commands are known:\n");
@@ -25,7 +28,7 @@ public class Parser implements MyManager{
 		}
 		return res.toString();
 	}
-	public String getTelegramHelpMessage()
+	protected String getTelegramHelpMessage()
 	{
 		StringBuilder res = new StringBuilder();
 		res.append("\tthe following commands are known:\n");
@@ -39,6 +42,7 @@ public class Parser implements MyManager{
 		return res.toString();
 	}
 	//FIXME: error handling
+	@Override
 	public JSONObject parse(String line) throws Exception
 	{
 		String[] tokens = line.split(" ");

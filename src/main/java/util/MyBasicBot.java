@@ -13,13 +13,23 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
 import org.telegram.telegrambots.logging.BotLogger;
 
 public abstract class MyBasicBot extends TelegramLongPollingBot {
+	protected static String toHTML(String arg)
+	{
+		return 
+				"<code>"
+				+arg
+					.replaceAll("&", "&amp")
+					.replaceAll("<", "&lt;")
+					.replaceAll(">", "&gt;")
+				+"</code>";
+	}
 	public void onUpdateReceived(Update update) {
 		// We check if the update has a message and the message has text
 		if (update.hasMessage()) {
 			try {
 				SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
 						.setChatId(update.getMessage().getChatId())
-								.setText("<code>"+reply(update.getMessage())+"</code>");
+								.setText(toHTML(reply(update.getMessage())));
 				message.setParseMode("HTML");
 				sendMessage(message); // Call method to send the message
 			} catch (TelegramApiException e) {
