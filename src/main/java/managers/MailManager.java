@@ -4,6 +4,7 @@
 package managers;
 
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import it.sauronsoftware.cron4j.Scheduler;
@@ -62,7 +63,6 @@ public class MailManager implements MyManager {
 				new Runnable() {public void run() {try {
 			fol_.getMessageCount();
 		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}}});
 	}
@@ -140,5 +140,9 @@ public class MailManager implements MyManager {
 		} catch (MessagingException e) {
 			e.printStackTrace();
 		}
+	}
+	@Override
+	public JSONArray getCommands() {
+		return new JSONArray("[{\"name\":\"mailfreq\",\"args\":[{\"name\":\"freq\",\"type\":\"int\"}],\"help\":\"set mailbox check freq to MIN\"}]");
 	}
 }

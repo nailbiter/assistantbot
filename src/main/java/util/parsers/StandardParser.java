@@ -1,15 +1,32 @@
 package util.parsers;
 
+import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import util.MyManager;
 
-public class Parser implements AbstractParser{
+public class StandardParser extends AbstractParser{
 	JSONArray cmds_;
-	public Parser(JSONArray cmds)
+	public StandardParser(JSONArray cmds)
 	{
 		cmds_ = cmds;
+	}
+	protected static JSONArray getCommands(List<MyManager> managers) throws Exception
+	{
+		JSONArray cmds = StandardParser.getCommandsStatic();
+		for(int i = 0; i < managers.size(); i++)
+		{
+			JSONArray cmds_ = managers.get(i).getCommands();
+			for(int j = 0; j < cmds_.length(); j++)
+				cmds.put(cmds_.get(j));
+		}
+		System.out.println("parser got: "+cmds.toString());
+		return cmds;
+	}
+	public StandardParser(List<MyManager> managers) throws Exception {
+		this(StandardParser.getCommands(managers));
 	}
 	@Override
 	public String getHelpMessage() {

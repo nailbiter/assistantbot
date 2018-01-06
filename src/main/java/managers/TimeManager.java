@@ -149,4 +149,8 @@ public class TimeManager implements MyManager,Runnable {
 		Date myDeathData = new Date(1991 + 80, 12, 24);
 		return "remaining time to live: " + LocalUtil.milisToTimeFormat(myDeathData.getTime() - currentData.getTime());
 	}
+	@Override
+	public JSONArray getCommands() {
+		return new JSONArray("[{\"name\":\"timestat\",\"args\":[{\"name\":\"num\",\"type\":\"int\",\"isOpt\":true}],\"help\":\"statistics about time used\"}]");
+	}
 }

@@ -6,6 +6,7 @@ import java.net.URLDecoder;
 import java.util.Hashtable;
 import java.util.Iterator;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -49,6 +50,11 @@ public class StorageManager {
 			@Override
 			public String gotUpdate(String data) throws Exception {
 				return null;
+			}
+
+			@Override
+			public JSONArray getCommands() {
+				return new JSONArray("[{\"name\":\"dump\",\"args\":[],\"help\":\"dump all text files\"}]");
 			}
 	
 		};

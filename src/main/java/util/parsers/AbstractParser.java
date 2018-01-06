@@ -1,13 +1,20 @@
 package util.parsers;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import util.MyManager;
 
-public interface AbstractParser extends MyManager {
+public abstract class AbstractParser implements MyManager {
 
-	JSONObject parse(String line) throws Exception;
+	public abstract JSONObject parse(String line) throws Exception;
 
-	String getHelpMessage();
-
+	abstract String getHelpMessage();
+	public JSONArray getCommands() {
+		return AbstractParser.getCommandsStatic();
+	}
+	protected static JSONArray getCommandsStatic()
+	{
+		return new JSONArray("[{\"name\":\"help\",\"args\":[],\"help\":\"display this message\"}]");
+	}
 }

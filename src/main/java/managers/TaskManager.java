@@ -233,4 +233,12 @@ public class TaskManager implements MyManager {
 		return null;
 	}
 
+	@Override
+	public JSONArray getCommands() {
+		return new JSONArray("[{\"name\":\"tasknew\",\"args\":[{\"name\":\"estimate\",\"type\":\"int\"}],\"help\":\"create new task\"}\n" + 
+				",{\"name\":\"taskdone\",\"args\":[{\"name\":\"taskid\",\"type\":\"int\"}],\"help\":\"mark task as done\"}\n" + 
+				",{\"name\":\"tasks\",\"args\":[{\"name\":\"tasknum\",\"type\":\"int\",\"isOpt\":true}],\"help\":\"show list of tasks\"}\n" + 
+				",{\"name\":\"taskpostpone\",\"args\":[{\"name\":\"taskid\",\"type\":\"int\"},{\"name\":\"estimate\",\"type\":\"int\"}],\"help\":\"postpone a task\"}]");
+	}
+
 }

@@ -10,6 +10,7 @@ import util.parsers.AbstractParser;
 
 public class MyAssistantUserData implements UserData {
 	protected Scheduler scheduler = null; //FIXME: should it be a singleton?
+	protected static boolean ISBOTMANAGER = false;
 	protected List<MyManager> managers = null;
 	List<MyManager> getManagers(){return managers;}
 	protected AbstractParser parser = null;
@@ -19,20 +20,22 @@ public class MyAssistantUserData implements UserData {
 		{
 			managers = new ArrayList<MyManager>();
 			
-			managers.add(new managers.JShellManager(bot));
-			
-			if(true)
+			if(!MyAssistantUserData.ISBOTMANAGER)
 			{
-				parser = new util.parsers.Parser(util.LocalUtil.getJSONArrayFromRes(this, "parser"));
-				this.scheduler = new Scheduler();
+				scheduler = new Scheduler();
 				managers.add(new managers.MoneyManager(bot));
 				managers.add(new managers.HabitManager(chatID,bot,scheduler));
 				managers.add(new managers.TimeManager(chatID,bot,scheduler));
 				managers.add(new managers.MailManager(chatID,bot,scheduler));
 				managers.add(new managers.TaskManager(chatID, bot));
 			}
-			else
+			managers.add(util.StorageManager.getMyManager());
+			managers.add(new managers.JShellManager(bot));	
+			
+			if(MyAssistantUserData.ISBOTMANAGER)
 				parser = new util.parsers.BotManagerParser();
+			else
+				parser = new util.parsers.StandardParser(managers);
 			
 			managers.add(parser);
 		}

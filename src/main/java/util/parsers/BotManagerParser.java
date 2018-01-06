@@ -13,7 +13,7 @@ import util.Util;
  * @author nailbiter
  *
  */
-public class BotManagerParser implements AbstractParser {
+public class BotManagerParser extends AbstractParser {
 	JSONArray help = null;
 	public BotManagerParser()
 	{

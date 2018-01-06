@@ -215,4 +215,9 @@ public class HabitManager implements util.MyManager
 		/*Integer.toString(this.streaks.optInt(habit.getString("name"),0));*/
 		return streak.getInt("accum")+"("+streak.getInt("streak")+")";
 	}
+	@Override
+	public JSONArray getCommands() {
+		return new JSONArray("[{\"name\":\"habits\",\"args\":[],\"help\":\"list all habits and info\"}\n" + 
+				",{\"name\":\"done\",\"args\":[{\"name\":\"habit\",\"type\":\"remainder\"}],\"help\":\"done habit\"}]");
+	}
 }

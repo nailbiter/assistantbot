@@ -1,6 +1,7 @@
 package managers;
 import java.io.File;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import jshell.JShell;
@@ -64,5 +65,9 @@ public class JShellManager implements util.MyManager{
 	@Override
 	public String gotUpdate(String data) throws Exception {
 		return null;
+	}
+	@Override
+	public JSONArray getCommands() {
+		return new JSONArray("[{\"name\":\"login\",\"args\":[{\"name\":\"passwd\",\"type\":\"string\"}],\"help\":\"login into shell\"},\"cmd\"]");
 	}
 }
