@@ -10,6 +10,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import it.sauronsoftware.cron4j.Scheduler;
+import managers.tests.ParadigmTest;
+import managers.tests.PluralTest;
 import managers.tests.Test;
 import util.MyBasicBot;
 import util.StorageManager;
@@ -28,12 +30,15 @@ public class TestManager extends AbstractManager {
 		bot_ = bot;
 		scheduler_ = scheduler;
 		String name = "tests";
-		JSONObject obj = StorageManager.get(name, false); //FIXME: save some info
-		if(!obj.has(name))
+		JSONObject obj = StorageManager.get(name, true);
+		/*if(!obj.has(name))
 			obj.put(name, new JSONArray());
-		jsonarray = obj.getJSONArray(name);
-		for(int i = 0; i < jsonarray.length(); i++)
-			tests.add(new Test(jsonarray.getJSONObject(i),i));
+		jsonarray = obj.getJSONArray(name);*/
+		/*for(int i = 0; i < jsonarray.length(); i++)
+			tests.add(new Test(jsonarray.getJSONObject(i),i));*/
+		tests = new ArrayList<Test>();
+		tests.add(new ParadigmTest(obj.getJSONObject("paradigm")));
+		//tests.add(new PluralTest(obj.getJSONObject("plural")));
 	}
 
 	/* (non-Javadoc)

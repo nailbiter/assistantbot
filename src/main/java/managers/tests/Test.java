@@ -1,19 +1,23 @@
 package managers.tests;
 
+import java.util.Timer;
+
 import org.json.JSONObject;
 
 abstract public class Test
 {
-	JSONObject obj_ = null;
-	int index_;
-	public Test(JSONObject obj,int index)
+	protected JSONObject obj_ = null;
+	Timer timer_ = null;
+	public Test(JSONObject obj)
 	{
 		obj_ = obj;
-		index_ = index;
 		schedule();
 	}
-	public void schedule()
+	protected void schedule()
 	{
 		//TODO
+		timer_ = new Timer();
 	}
+	abstract protected String isCalled(int count);
+	abstract protected String processReply(String reply);
 }
