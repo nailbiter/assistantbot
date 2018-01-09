@@ -23,15 +23,15 @@ public class MyAssistantUserData implements UserData {
 			if(!MyAssistantUserData.ISBOTMANAGER)
 			{
 				scheduler = new Scheduler();
-				/*managers.add(new managers.MoneyManager(bot));
+				managers.add(new managers.MoneyManager(bot));
 				managers.add(new managers.HabitManager(chatID,bot,scheduler));
 				managers.add(new managers.TimeManager(chatID,bot,scheduler));
 				managers.add(new managers.MailManager(chatID,bot,scheduler));
-				managers.add(new managers.TaskManager(chatID, bot));*/
+				managers.add(new managers.TaskManager(chatID, bot));
 				managers.add(new managers.TestManager(chatID,bot,scheduler));
 			}
 			managers.add(util.StorageManager.getMyManager());
-			//managers.add(new managers.JShellManager(bot));	
+			managers.add(new managers.JShellManager(bot));	
 			
 			if(MyAssistantUserData.ISBOTMANAGER)
 				parser = new util.parsers.BotManagerParser();

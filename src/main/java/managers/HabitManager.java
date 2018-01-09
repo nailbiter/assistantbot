@@ -220,4 +220,8 @@ public class HabitManager implements util.MyManager
 		return new JSONArray("[{\"name\":\"habits\",\"args\":[],\"help\":\"list all habits and info\"}\n" + 
 				",{\"name\":\"done\",\"args\":[{\"name\":\"habit\",\"type\":\"remainder\"}],\"help\":\"done habit\"}]");
 	}
+	@Override
+	public String processReply(int messageID,String msg) {
+		return null;
+	}
 }

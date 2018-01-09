@@ -241,4 +241,9 @@ public class TaskManager implements MyManager {
 				",{\"name\":\"taskpostpone\",\"args\":[{\"name\":\"taskid\",\"type\":\"int\"},{\"name\":\"estimate\",\"type\":\"int\"}],\"help\":\"postpone a task\"}]");
 	}
 
+	@Override
+	public String processReply(int messageID,String msg) {
+		return null;
+	}
+
 }

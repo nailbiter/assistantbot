@@ -153,4 +153,8 @@ public class TimeManager implements MyManager,Runnable {
 	public JSONArray getCommands() {
 		return new JSONArray("[{\"name\":\"timestat\",\"args\":[{\"name\":\"num\",\"type\":\"int\",\"isOpt\":true}],\"help\":\"statistics about time used\"}]");
 	}
+	@Override
+	public String processReply(int messageID,String msg) {
+		return null;
+	}
 }

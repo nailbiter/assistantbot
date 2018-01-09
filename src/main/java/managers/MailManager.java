@@ -145,4 +145,8 @@ public class MailManager implements MyManager {
 	public JSONArray getCommands() {
 		return new JSONArray("[{\"name\":\"mailfreq\",\"args\":[{\"name\":\"freq\",\"type\":\"int\"}],\"help\":\"set mailbox check freq to MIN\"}]");
 	}
+	@Override
+	public String processReply(int messageID,String msg) {
+		return null;
+	}
 }

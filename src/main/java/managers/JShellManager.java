@@ -70,4 +70,8 @@ public class JShellManager implements util.MyManager{
 	public JSONArray getCommands() {
 		return new JSONArray("[{\"name\":\"login\",\"args\":[{\"name\":\"passwd\",\"type\":\"string\"}],\"help\":\"login into shell\"},\"cmd\"]");
 	}
+	@Override
+	public String processReply(int messageID,String msg) {
+		return null;
+	}
 }

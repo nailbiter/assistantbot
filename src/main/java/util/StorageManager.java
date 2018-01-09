@@ -56,6 +56,11 @@ public class StorageManager {
 			public JSONArray getCommands() {
 				return new JSONArray("[{\"name\":\"dump\",\"args\":[],\"help\":\"dump all text files\"}]");
 			}
+
+			@Override
+			public String processReply(int messageID,String msg) {
+				return null;
+			}
 	
 		};
 		Runtime.getRuntime().addShutdownHook(new Thread()

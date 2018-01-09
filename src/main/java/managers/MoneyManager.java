@@ -118,4 +118,8 @@ public class MoneyManager implements util.MyManager{
 				",{\"name\":\"money\",\"args\":[{\"name\":\"amount\",\"type\":\"int\"},{\"name\":\"category\",\"type\":\"string\",\"isOpt\":true}],\"help\":\"spent money\"}\n" + 
 				",{\"name\":\"costs\",\"args\":[{\"name\":\"num\",\"type\":\"int\",\"isOpt\":true}]}]");
 	}
+	@Override
+	public String processReply(int messageID,String msg) {
+		return null;
+	}
 }

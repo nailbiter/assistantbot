@@ -4,6 +4,7 @@
 package managers;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -31,14 +32,17 @@ public class TestManager extends AbstractManager {
 		scheduler_ = scheduler;
 		String name = "tests";
 		JSONObject obj = StorageManager.get(name, true);
-		/*if(!obj.has(name))
-			obj.put(name, new JSONArray());
-		jsonarray = obj.getJSONArray(name);*/
-		/*for(int i = 0; i < jsonarray.length(); i++)
-			tests.add(new Test(jsonarray.getJSONObject(i),i));*/
 		tests = new ArrayList<Test>();
-		tests.add(new ParadigmTest(obj.getJSONObject("paradigm")));
+		tests.add(new ParadigmTest(obj.getJSONObject("paradigm"),this));
 		//tests.add(new PluralTest(obj.getJSONObject("plural")));
+		schedule();
+	}
+
+	private void schedule() {
+		for(int i = 0; i < tests.size(); i++)
+		{
+			scheduler_.schedule(tests.get(i).getCronPattern(), tests.get(i));
+		}
 	}
 
 	/* (non-Javadoc)
@@ -46,10 +50,46 @@ public class TestManager extends AbstractManager {
 	 */
 	@Override
 	public JSONArray getCommands() {
-		// TODO Auto-generated method stub
 		JSONArray res = new JSONArray();
-		
+		res.put(AbstractManager.makeCommand("tests","show tests",new ArrayList<JSONObject>()));
 		return res;
 	}
 
+	@Override
+	public String processReply(int messageID,String msg) {
+		System.out.println(String.format("messageID=%d", messageID));
+		TestAndIndex tai = waitingForReply.get(messageID);
+		return tai.test.processReply(msg, tai.index);
+	}
+	Hashtable<Integer,TestAndIndex> waitingForReply = new Hashtable<Integer,TestAndIndex>();
+	private static class TestAndIndex
+	{
+		Test test;
+		int index;
+		TestAndIndex(Test t, int i){ test = t; index = i; }
+	}
+	public void makeCall(Test whom, String text, int index)
+	{
+		try {
+			int msgID = bot_.sendMessage(text, chatID_, this);
+			System.out.println(String.format("msgID=%d, index=%d", msgID,index));
+			waitingForReply.put(msgID, new TestAndIndex(whom,index));
+		} catch (Exception e) {
+			System.out.println("cannot makeCall");
+			e.printStackTrace();
+		}
+	}
+	public String tests(JSONObject obj)
+	{
+		util.TableBuilder tb = new util.TableBuilder().addNewlineAndTokens("name", "description");
+		
+		for(int i = 0; i < tests.size(); i++)
+		{
+			tb
+				.newRow()
+				.addToken(tests.get(i).getName())
+				.addToken(tests.get(i).toString());
+		}
+		return tb.toString();
+	}
 }
