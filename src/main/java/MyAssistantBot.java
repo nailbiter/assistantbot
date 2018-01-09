@@ -45,7 +45,14 @@ public class MyAssistantBot extends MyBasicBot {
 			res.put("filename", msg.getDocument().getFileName());
 			return res;
 		}
-		return ((MyAssistantUserData)ud).getParser().parse(msg.getText());
+		else
+		{
+			res = ((MyAssistantUserData)ud).getParser().parse(msg.getText());
+			/*if(msg.isReply())
+				res.put("replyID", msg.getReplyToMessage().getMessageId());*/
+			return res;
+		}
+			
 	}
 
 	@Override

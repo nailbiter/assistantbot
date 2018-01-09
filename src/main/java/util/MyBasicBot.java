@@ -27,12 +27,23 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 		// We check if the update has a message and the message has text
 		if (update.hasMessage()) {
 			try {
-				SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
-						.setChatId(update.getMessage().getChatId())
-								.setText(toHTML(reply(update.getMessage())));
+				SendMessage message = new SendMessage();;
+				String reply = null;
+				if(update.getMessage().isReply())
+				{
+					reply = this.processReply(update);
+				}
+				else
+				{
+					reply = reply(update.getMessage());
+				}
+				
+				message.setText(toHTML(reply));
+				message.setChatId(update.getMessage().getChatId());								
 				message.setParseMode("HTML");
+				
 				sendMessage(message); // Call method to send the message
-			} catch (TelegramApiException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -52,6 +63,16 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 				e.printStackTrace(System.out);
 			}
 		}
+	}
+	private String processReply(Update update) throws Exception {
+		int replyID = update.getMessage().getReplyToMessage().getMessageId();
+		System.out.println("reply id: "+replyID);
+		String reply = this.waitingForReply
+			.get(update.getMessage().getChatId())
+			.get(replyID)
+			.processReply(replyID,update.getMessage().getText());
+		this.waitingForReply.get(update.getMessage().getChatId()).remove(replyID);
+		return reply;
 	}
 	abstract protected JSONObject parse(Message msg,UserData ud) throws Exception;
 	abstract protected UserData createUserData(Long chatId); 
@@ -86,6 +107,22 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 	public String getLogString() {return getBotUsername();}
 	public abstract String getBotUsername();
 	public abstract String getBotToken();
+	Hashtable<Long,Hashtable<Integer,MyManager>> waitingForReply = new Hashtable<Long,Hashtable<Integer,MyManager>>();
+	/*
+	 * expect reply
+	 */
+	public int sendMessage(String msg,Long chatID_,MyManager whom) throws Exception
+	{
+		SendMessage message = new SendMessage()
+				.setChatId(chatID_)
+						.setText(toHTML(msg));
+		message.setParseMode("HTML");
+		Message res = sendMessage(message);
+		if(!this.waitingForReply.containsKey(chatID_))
+			this.waitingForReply.put(chatID_, new Hashtable<Integer,MyManager>());
+		this.waitingForReply.get(chatID_).put(res.getMessageId(), whom);
+		return res.getMessageId();
+	}
 	public void sendMessage(String msg,Long chatID_)
 	{
 		try 

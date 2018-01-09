@@ -6,24 +6,34 @@ import org.apache.commons.lang3.StringUtils;
 public class TableBuilder {
 	ArrayList<ArrayList<String>> tokens = new ArrayList<ArrayList<String>>();
 	ArrayList<Integer> lengths = new ArrayList<Integer>();
-	public void newRow()
+	public TableBuilder newRow()
 	{
 		tokens.add(new ArrayList<String>());
+		return this;
 	}
-	public void addNewlineAndTokens(String t1,String t2,String t3) 
+	public TableBuilder addNewlineAndTokens(String t1,String t2,String t3) 
 	{
 		newRow();
 		addToken(t1);
 		addToken(t2);
 		addToken(t3);
+		return this;
 	}
-	public void addNewlineAndTokens(String t1,String t2) 
+	public TableBuilder addNewlineAndTokens(String t1,String t2) 
 	{
 		newRow();
 		addToken(t1);
 		addToken(t2);
+		return this;
 	}
-	public void addToken(String token)
+	public TableBuilder addNewlineAndTokens(String[] tokens)
+	{
+		newRow();
+		for(int i = 0; i < tokens.length; i++)
+			addToken(tokens[i]);
+		return this;
+	}
+	public TableBuilder addToken(String token)
 	{
 		tokens.get(tokens.size()-1).add(token);
 		int idx = tokens.get(tokens.size()-1).size() - 1;
@@ -31,10 +41,11 @@ public class TableBuilder {
 			lengths.add(0);
 		if(lengths.get(idx).compareTo(token.length())<0)
 			lengths.set(idx, token.length());
+		return this;
 	}
-	public void addToken(int value)
+	public TableBuilder addToken(int value)
 	{
-		addToken(Integer.toString(value));
+		return addToken(Integer.toString(value));
 	}
 	@Override
 	public String toString()

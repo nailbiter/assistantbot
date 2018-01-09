@@ -8,7 +8,8 @@ import util.MyManager;
 public abstract class AbstractParser implements MyManager {
 
 	public abstract JSONObject parse(String line) throws Exception;
-
+	@Override
+	public String processReply(int messageID,String msg) { return null; }
 	abstract String getHelpMessage();
 	public JSONArray getCommands() {
 		return AbstractParser.getCommandsStatic();

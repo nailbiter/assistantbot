@@ -24,9 +24,21 @@ public abstract class AbstractManager implements MyManager {
 	 */
 	@Override
 	public String getResultAndFormat(JSONObject res) throws Exception {
-		JSONArray cmds = this.getCommands();
-		// TODO auto-dispatch
+		System.out.println(String.format("got: %s", res.toString()));
+		if(res.has("name") && hasCommand(res))
+		{
+			System.out.println("dispatcher got: "+res.toString());
+			return (String)this.getClass().getMethod(res.getString("name"),JSONObject.class)
+					.invoke(this,res);
+		}
 		return null;
+	}
+	protected boolean hasCommand(JSONObject res) {
+		JSONArray cmds = this.getCommands();
+		for(int i = 0; i < cmds.length(); i++)
+			if(cmds.getJSONObject(i).getString("name").equals(res.getString("name")))
+				return true;
+		return false;
 	}
 	protected JSONArray jsonarray = null;
 	/* (non-Javadoc)
@@ -35,5 +47,16 @@ public abstract class AbstractManager implements MyManager {
 	@Override
 	public String gotUpdate(String data) throws Exception {
 		return null;
+	}
+	protected static JSONObject makeCommand(String name,String help,List<JSONObject> args)
+	{
+		JSONObject cmd = new JSONObject();
+		cmd.put("name", name);
+		cmd.put("help", (help==null)?"(null)":help);
+		JSONArray array = new JSONArray();
+		for(int i = 0; i < args.size(); i++)
+			array.put(args.get(i));
+		cmd.put("args", array);
+		return cmd;
 	}
 }
