@@ -28,6 +28,7 @@ public class MyAssistantUserData implements UserData {
 				managers.add(new managers.TimeManager(chatID,bot,scheduler));
 				managers.add(new managers.MailManager(chatID,bot,scheduler));
 				managers.add(new managers.TaskManager(chatID, bot));
+				managers.add(new managers.TestManager(chatID, bot,scheduler));
 			}
 			managers.add(util.StorageManager.getMyManager());
 			managers.add(new managers.JShellManager(bot));	

@@ -33,7 +33,7 @@ public class TestManager extends AbstractManager {
 		String name = "tests";
 		JSONObject obj = StorageManager.get(name, true);
 		tests = new ArrayList<Test>();
-		tests.add(new ParadigmTest(obj.getJSONObject("paradigm"),this));
+		tests.add(new ParadigmTest(obj.getJSONObject("paradigm"),this,"paradigm"));
 		//tests.add(new PluralTest(obj.getJSONObject("plural")));
 		schedule();
 	}

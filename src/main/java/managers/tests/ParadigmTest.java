@@ -6,8 +6,8 @@ import managers.TestManager;
 import util.MyManager;
 
 public class ParadigmTest extends Test {
-	public ParadigmTest(JSONObject obj,TestManager master) {
-		super(obj,master);
+	public ParadigmTest(JSONObject obj,TestManager master,String name) {
+		super(obj,master,name);
 	}
 
 	@Override
@@ -116,11 +116,6 @@ public class ParadigmTest extends Test {
 			}
 		}
 		return tb.toString();
-	}
-
-	@Override
-	public String getName() {
-		return "paradigm";
 	}
 
 }

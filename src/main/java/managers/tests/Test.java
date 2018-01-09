@@ -16,13 +16,15 @@ abstract public class Test implements Runnable
 	protected JSONObject obj_ = null;
 	protected Timer timer_ = null;
 	protected TestManager master_ = null;
-	public Test(JSONObject obj,TestManager master)
+	protected String name_;
+	public Test(JSONObject obj,TestManager master,String name)
 	{
 		obj_ = obj;
+		name_ = name;
 		master_ = master;
 		if(DEBUG) schedule();
 	}
-	abstract public String getName(); 
+	public String getName() { return name_; }
 	private static Date parseDate(String what)
 	{
 		Date date = new Date();

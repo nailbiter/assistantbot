@@ -7,8 +7,8 @@ import util.MyManager;
 
 public class PluralTest extends Test {
 
-	public PluralTest(JSONObject obj,TestManager master) {
-		super(obj,master);
+	public PluralTest(JSONObject obj,TestManager master,String name) {
+		super(obj,master,name);
 	}
 
 	@Override
@@ -21,10 +21,5 @@ public class PluralTest extends Test {
 	public String processReply(String reply,int count) {
 		// TODO Auto-generated method stub
 		return String.format("processReply with reply=%s, count=%d", reply,count);
-	}
-
-	@Override
-	public String getName() {
-		return "plurals";
 	}
 }
