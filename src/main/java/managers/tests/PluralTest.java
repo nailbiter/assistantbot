@@ -1,14 +1,18 @@
 package managers.tests;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import managers.TestManager;
+import util.LocalUtil;
 import util.MyManager;
 
 public class PluralTest extends Test {
-
-	public PluralTest(JSONObject obj,TestManager master,String name) {
+	JSONArray germanplurals = null;
+	public PluralTest(JSONObject obj,TestManager master,String name) throws Exception {
 		super(obj,master,name);
+		germanplurals = LocalUtil.getJSONArrayFromRes(this, "germanplurals");
+		System.out.println(String.format("germanplurals has %d elements", germanplurals.length()));
 	}
 
 	@Override

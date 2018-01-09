@@ -78,6 +78,10 @@ abstract public class Test implements Runnable
 		}
 		return dates;
 	}
+	/*
+	 * FIXME: tesime: allow it to return choice
+	 * by returning Object instead of String
+	 */
 	abstract protected String isCalled(int count);
 	abstract public String processReply(String reply,int count);
 	@Override

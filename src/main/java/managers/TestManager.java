@@ -26,7 +26,7 @@ public class TestManager extends AbstractManager {
 	Scheduler scheduler_ = null;
 	MyBasicBot bot_ = null;
 	List<Test> tests = null;
-	public TestManager(Long chatID, MyBasicBot bot, Scheduler scheduler) {
+	public TestManager(Long chatID, MyBasicBot bot, Scheduler scheduler) throws Exception{
 		chatID_ = chatID;
 		bot_ = bot;
 		scheduler_ = scheduler;
@@ -34,7 +34,7 @@ public class TestManager extends AbstractManager {
 		JSONObject obj = StorageManager.get(name, true);
 		tests = new ArrayList<Test>();
 		tests.add(new ParadigmTest(obj.getJSONObject("paradigm"),this,"paradigm"));
-		//tests.add(new PluralTest(obj.getJSONObject("plural")));
+		if(false) tests.add(new PluralTest(obj.getJSONObject("plural"),this,"plural"));
 		schedule();
 	}
 
