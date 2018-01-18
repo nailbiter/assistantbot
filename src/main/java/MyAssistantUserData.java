@@ -4,6 +4,7 @@ import java.util.List;
 import org.json.JSONObject;
 
 import it.sauronsoftware.cron4j.Scheduler;
+import util.LocalUtil;
 import util.MyManager;
 import util.UserData;
 import util.parsers.AbstractParser;
@@ -23,6 +24,7 @@ public class MyAssistantUserData implements UserData {
 			if(!MyAssistantUserData.ISBOTMANAGER)
 			{
 				scheduler = new Scheduler();
+				scheduler.setTimeZone(LocalUtil.getTimezone());
 				managers.add(new managers.MoneyManager(bot));
 				managers.add(new managers.HabitManager(chatID,bot,scheduler));
 				managers.add(new managers.TimeManager(chatID,bot,scheduler));

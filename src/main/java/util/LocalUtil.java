@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URLDecoder;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -58,5 +59,11 @@ public class LocalUtil {
 		return Integer.toString((int)(millis/1000.0/60.0/60.0)) + "h:"+
 				Integer.toString((int)((millis/1000.0/60.0)%60)) + "m:"+
 				Integer.toString((int)((millis/1000.0)%60)) + "s";
+	}
+	public static TimeZone getTimezone() throws Exception
+	{
+		TimeZone tz = TimeZone.getTimeZone("JST");
+		System.out.println("zone: "+tz.getID());
+		return tz;
 	}
 }

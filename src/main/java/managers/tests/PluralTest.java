@@ -1,5 +1,9 @@
 package managers.tests;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -9,6 +13,8 @@ import util.MyManager;
 
 public class PluralTest extends Test {
 	JSONArray germanplurals = null;
+	Random rand = new Random();
+	List<Integer> indexes_ = new ArrayList<Integer>();
 	public PluralTest(JSONObject obj,TestManager master,String name) throws Exception {
 		super(obj,master,name);
 		germanplurals = LocalUtil.getJSONArrayFromRes(this, "germanplurals");
@@ -17,13 +23,17 @@ public class PluralTest extends Test {
 
 	@Override
 	protected String isCalled(int count) {
-		// TODO Auto-generated method stub
-		return String.format("isCalled with %d", count);
+		while((indexes_.size()-1) < count)
+			indexes_.add(rand.nextInt(germanplurals.length()));
+		int index = indexes_.get(count);
+		
+		return String.format("what is english, gender and plural for %s", germanplurals
+				.getJSONObject(index)
+				.getString("word"));
 	}
 
 	@Override
 	public String processReply(String reply,int count) {
-		// TODO Auto-generated method stub
-		return String.format("processReply with reply=%s, count=%d", reply,count);
+		return germanplurals.getJSONObject(indexes_.get(count)).toString();
 	}
 }

@@ -79,8 +79,8 @@ abstract public class Test implements Runnable
 		return dates;
 	}
 	/*
-	 * FIXME: tesime: allow it to return choice
-	 * by returning Object instead of String
+	 * TODO: allow it to return choice
+	 * by returning Object instead of String (choice will correspond to String[] or something)
 	 */
 	abstract protected String isCalled(int count);
 	abstract public String processReply(String reply,int count);
@@ -97,6 +97,7 @@ abstract public class Test implements Runnable
 	{
 		Date startDate = Test.parseDate(obj_.getString("start"));
 		String res = null;
+		System.out.println("startDate: "+startDate.toString());
 		if(true || DEBUG)
 			res = String.format("0 %d * * *", startDate.getHours() - 1);
 		else

@@ -51,6 +51,7 @@ public class HabitManager implements util.MyManager
 	}
 	protected void HabitRunnableDispatch(int index,HabitRunnableEnum code)
 	{
+		System.out.println(String.format("HabitRunnableDispatch(%d,%s)", index,code.toString()));
 		if(code == HabitRunnableEnum.SENDREMINDER) {
 			bot_.sendMessage(getReminderMessage(index), chatID_);
 			habits.getJSONObject(index).put("isWaiting", true);
@@ -70,34 +71,27 @@ public class HabitManager implements util.MyManager
 			}
 		}
 	}
-	public HabitManager(Long chatID,MyBasicBot bot,Scheduler scheduler_in)
+	public HabitManager(Long chatID,MyBasicBot bot,Scheduler scheduler_in) throws Exception
 	{
-		try
-		{
-			bot_ = bot;
-			scheduler = scheduler_in;
-			chatID_ = chatID;
-			habits = util.StorageManager.get("habits",false).getJSONArray("obj");
-			failTimes = new Hashtable<String,Date>(habits.length());
-			streaks = StorageManager.get("habitstreaks",true);
-			for(int i = 0; i < habits.length(); i++)
-			{	
-				JSONObject habit = habits.getJSONObject(i);
-				if(!habit.has("count"))
-					habit.put("count", 1);
-				habit.put("doneCount",0);
-				habit.put("isWaiting",false);
-				if(habit.optBoolean("enabled",true))
-				{
-					scheduler.schedule(habit.getString("cronline"),
-							new HabitRunnable(i,HabitRunnableEnum.SENDREMINDER));
-					this.updateStreaks(i, 0);
-				}
+		bot_ = bot;
+		scheduler = scheduler_in;
+		chatID_ = chatID;
+		habits = util.StorageManager.get("habits",false).getJSONArray("obj");
+		failTimes = new Hashtable<String,Date>(habits.length());
+		streaks = StorageManager.get("habitstreaks",true);
+		for(int i = 0; i < habits.length(); i++)
+		{	
+			JSONObject habit = habits.getJSONObject(i);
+			if(!habit.has("count"))
+				habit.put("count", 1);
+			habit.put("doneCount",0);
+			habit.put("isWaiting",false);
+			if(habit.optBoolean("enabled",true))
+			{
+				scheduler.schedule(habit.getString("cronline"),
+						new HabitRunnable(i,HabitRunnableEnum.SENDREMINDER));
+				this.updateStreaks(i, 0);
 			}
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace(System.out);
 		}
 	}
 	public String getHabitsInfo()

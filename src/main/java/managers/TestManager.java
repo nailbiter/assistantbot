@@ -19,7 +19,6 @@ import util.StorageManager;
 
 /**
  * @author nailbiter
- *
  */
 public class TestManager extends AbstractManager {
 	Long chatID_ = null;
@@ -34,7 +33,7 @@ public class TestManager extends AbstractManager {
 		JSONObject obj = StorageManager.get(name, true);
 		tests = new ArrayList<Test>();
 		tests.add(new ParadigmTest(obj.getJSONObject("paradigm"),this,"paradigm"));
-		if(false) tests.add(new PluralTest(obj.getJSONObject("plural"),this,"plural"));
+		tests.add(new PluralTest(obj.getJSONObject("plural"),this,"plural"));
 		schedule();
 	}
 

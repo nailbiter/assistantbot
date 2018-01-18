@@ -1,5 +1,6 @@
 [{"word":"Freiheit","article":"die","plural":"Freiheiten","english":"freedom"}
 ,{"word":"Erfolg","article":"der","plural":"Erfolge","english":"success"}
+,{"word":"Geld","article":"das","plural":"","english":"money"}
 ,{"word":"Himmel","article":"der","plural":"Himmel","english":"sky"}
 ,{"word":"Wasser","article":"das","plural":"Wasser","english":"water"}
 ,{"word":"Gespräch","article":"das","plural":"Gespräche","english":"conversation"}
@@ -10,6 +11,7 @@
 ,{"word":"Devisenreserven","article":"die","plural":"Devisenreserve","english":"foreign exchange reserves"}
 ,{"word":"Währung","article":"die","plural":"Währungen","english":"currency"}
 ,{"word":"Tisch","article":"der","plural":"Tische","english":"table"}
+,{"word":"Bargeld","article":"das","plural":"","english":"cash"}
 ,{"word":"Abhebung","article":"die","plural":"Abhebungen","english":"withdrawal"}
 ,{"word":"Angabe","article":"die","plural":"Angaben","english":"information"}
 ,{"word":"Einlagen","article":"die","plural":"Einlage","english":"deposits"}
@@ -18,6 +20,7 @@
 ,{"word":"Vergabe","article":"die","plural":"Vergaben","english":"award"}
 ,{"word":"Kreditvergabe","article":"die","plural":"Kreditvergaben","english":"lending"}
 ,{"word":"Unfähigkeit","article":"die","plural":"Unfähigkeiten","english":"inability"}
+,{"word":"Bedarf","article":"der","plural":"","english":"need"}
 ,{"word":"Darstellung","article":"die","plural":"Darstellungen","english":"representation"}
 ,{"word":"Forderung","article":"die","plural":"Forderungen","english":"claim"}
 ,{"word":"Hemmschuh","article":"der","plural":"Hemmschuhe","english":"hindrance"}
@@ -26,17 +29,23 @@
 ,{"word":"Abteilung","article":"die","plural":"Abteilungen","english":"department"}
 ,{"word":"Volksvertretung","article":"die","plural":"Volksvertretungen","english":"parliament"}
 ,{"word":"Abkommen","article":"das","plural":"Abkommen","english":"agreement"}
+,{"word":"Zurückhaltung","article":"die","plural":"","english":"restraint"}
 ,{"word":"Beamte/ein","article":"der","plural":"Beamten","english":"official"}
 ,{"word":"Ruhestand","article":"der","plural":"Ruhestände","english":"retirement"}
+,{"word":"Vorruhestand","article":"der","plural":"","english":"early retirement"}
 ,{"word":"Abschied","article":"der","plural":"Abschiede","english":"farewell"}
 ,{"word":"Feier","article":"die","plural":"Feiern","english":"celebration"}
 ,{"word":"Ausstand","article":"der","plural":"Ausstände","english":"strike"}
 ,{"word":"Abgang","article":"der","plural":"Abgänge","english":"departure"}
 ,{"word":"Minderheit","article":"die","plural":"Minderheiten","english":"minority"}
+,{"word":"Anständigkeit","article":"die","plural":"","english":"honesty"}
+,{"word":"Verantwortung","article":"die","plural":"","english":"responsibility"}
+,{"word":"Blutvergießen","article":"das","plural":"","english":"bloodshed"}
 ,{"word":"Gebiet","article":"das","plural":"Gebiete","english":"area"}
 ,{"word":"Boden","article":"der","plural":"Böden","english":"ground"}
 ,{"word":"Auslieferung","article":"die","plural":"Auslieferungen","english":"extradition"}
 ,{"word":"Botschaft","article":"die","plural":"Botschaften","english":"message"}
+,{"word":"Ersuchen","article":"das","plural":"","english":"request"}
 ,{"word":"Vereinbarung","article":"die","plural":"Vereinbarungen","english":"agreement"}
 ,{"word":"Spannung","article":"die","plural":"Spannungen","english":"tension"}
 ,{"word":"Gefolgschaft","article":"die","plural":"Gefolgschaften","english":"allegiance"}
@@ -53,6 +62,7 @@
 ,{"word":"Spaltung","article":"die","plural":"Spaltungen","english":"division"}
 ,{"word":"Gewalt","article":"die","plural":"Gewalten","english":"violence"}
 ,{"word":"Lust","article":"die","plural":"Lüste","english":"pleasure"}
+,{"word":"Umkehr","article":"die","plural":"","english":"change"}
 ,{"word":"Bedrohung","article":"die","plural":"Bedrohungen","english":"threat"}
 ,{"word":"Verlust","article":"der","plural":"Verluste","english":"loss"}
 ,{"word":"Richtung","article":"die","plural":"Richtungen","english":"direction"}
@@ -77,41 +87,56 @@
 ,{"word":"Beziehung","article":"die","plural":"Beziehungen","english":"relationship"}
 ,{"word":"Draht","article":"der","plural":"Drähte","english":"wire"}
 ,{"word":"Verstoß","article":"der","plural":"Verstöße","english":"violation"}
+,{"word":"Völkerrecht","article":"das","plural":"","english":"international law"}
+,{"word":"Lob","article":"das","plural":"","english":"praise"}
 ,{"word":"Übergang","article":"der","plural":"Übergänge","english":"transition"}
 ,{"word":"Einhaltung","article":"die","plural":"Einhaltungen","english":"observance"}
+,{"word":"Nachdruck","article":"der","plural":"","english":"emphasis"}
 ,{"word":"Nachdruck","article":"der","plural":"Nachdrucke","english":"reprint"}
+,{"word":"Unrecht","article":"das","plural":"","english":"wrong"}
 ,{"word":"Pflicht","article":"die","plural":"Pflichten","english":"duty"}
 ,{"word":"Ausbruch","article":"der","plural":"Ausbrüche","english":"outbreak"}
+,{"word":"Schweigen","article":"das","plural":"","english":"silence"}
+,{"word":"Geschlossenheit","article":"die","plural":"","english":"unity"}
 ,{"word":"Lager","article":"das","plural":"Lager","english":"camp"}
 ,{"word":"Strafmaßnahme","article":"die","plural":"Strafmaßnahmen","english":"sanction"}
 ,{"word":"Bezug","article":"der","plural":"Bezüge","english":"reference"}
 ,{"word":"Wahrnehmung","article":"die","plural":"Wahrnehmungen","english":"perception"}
 ,{"word":"Lesart","article":"die","plural":"Lesarten","english":"version"}
+,{"word":"Vernunft","article":"die","plural":"","english":"reason"}
 ,{"word":"Anzeige","article":"die","plural":"Anzeigen","english":"advertisement"}
+,{"word":"Ratlosigkeit","article":"die","plural":"","english":"helplessness"}
+,{"word":"Einigkeit","article":"die","plural":"","english":"unity"}
 ,{"word":"Sorge","article":"die","plural":"Sorgen","english":"concern"}
 ,{"word":"Unbehagen","article":"das","plural":"Unbehagen","english":"discontent"}
 ,{"word":"Einsetzung","article":"die","plural":"Einsetzungen","english":"establishment"}
+,{"word":"Streit","article":"der","plural":"","english":"dispute"}
 ,{"word":"Vertreter","article":"der","plural":"Vertreter","english":"representative"}
 ,{"word":"Sperrung","article":"die","plural":"Sperrungen","english":"blocking"}
 ,{"word":"Abschaffung","article":"die","plural":"Abschaffungen","english":"abolition"}
 ,{"word":"Beschränkung","article":"die","plural":"Beschränkungen","english":"restriction"}
 ,{"word":"Geschäftsführer","article":"der","plural":"Geschäftsführer","english":"managing director"}
 ,{"word":"Erzeugnis","article":"das","plural":"Erzeugnisse","english":"product"}
+,{"word":"Wohl","article":"das","plural":"","english":"welfare"}
 ,{"word":"Korb","article":"der","plural":"Körbe","english":"basket"}
 ,{"word":"Ausfuhr","article":"die","plural":"Ausfuhren","english":"export"}
 ,{"word":"Volkswirtschaft","article":"die","plural":"Volkswirtschaften","english":"economics"}
 ,{"word":"Überblick","article":"der","plural":"Überblicke","english":"overview"}
+,{"word":"Erdgas","article":"das","plural":"","english":"natural gas"}
 ,{"word":"Jahrzehnt","article":"das","plural":"Jahrzehnte","english":"decade"}
 ,{"word":"Umgehung","article":"die","plural":"Umgehungen","english":"avoidance"}
 ,{"word":"Entspannung","article":"die","plural":"Entspannungen","english":"relaxation"}
+,{"word":"Atem","article":"der","plural":"","english":"breath"}
 ,{"word":"Empörung","article":"die","plural":"Empörungen","english":"outrage"}
 ,{"word":"Überschuss","article":"der","plural":"Überschüsse","english":"surplus"}
 ,{"word":"Ungleichgewicht","article":"das","plural":"Ungleichgewichte","english":"imbalance"}
 ,{"word":"Nachfrage","article":"die","plural":"Nachfragen","english":"demand"}
 ,{"word":"Notwendigkeit","article":"die","plural":"Notwendigkeiten","english":"need"}
 ,{"word":"Größe","article":"die","plural":"Größen","english":"size"}
+,{"word":"Handeln","article":"das","plural":"","english":"action"}
 ,{"word":"Gleichgewicht","article":"das","plural":"Gleichgewichte","english":"balance"}
 ,{"word":"Schuld","article":"die","plural":"Schulden","english":"debt"}
+,{"word":"Bußgeld","article":"das","plural":"","english":"fine"}
 ,{"word":"Aufregung","article":"die","plural":"Aufregungen","english":"excitement"}
 ,{"word":"Eingeständnis","article":"das","plural":"Eingeständnisse","english":"admission"}
 ,{"word":"Voraussetzung","article":"die","plural":"Voraussetzungen","english":"requirement"}
@@ -119,6 +144,8 @@
 ,{"word":"Wahlkampf","article":"der","plural":"Wahlkämpfe","english":"election campaign"}
 ,{"word":"Blick","article":"der","plural":"Blicke","english":"view"}
 ,{"word":"Wahl","article":"die","plural":"Wahlen","english":"election"}
+,{"word":"Rat","article":"der","plural":"","english":"council"}
+,{"word":"Rat","article":"der","plural":"","english":"advice"}
 ,{"word":"Guthaben","article":"das","plural":"Guthaben","english":"credit"}
 ,{"word":"Absage","article":"die","plural":"Absagen","english":"cancellation"}
 ,{"word":"Zugehörigkeit","article":"die","plural":"Zugehörigkeiten","english":"membership"}
@@ -128,9 +155,11 @@
 ,{"word":"Anlehnung","article":"die","plural":"Anlehnungen","english":"following"}
 ,{"word":"Ausspruch","article":"der","plural":"Aussprüche","english":"remark"}
 ,{"word":"Einschüchterung","article":"die","plural":"Einschüchterungen","english":"intimidation"}
+,{"word":"Versorgung","article":"die","plural":"","english":"supply"}
 ,{"word":"Leitung","article":"die","plural":"Leitungen","english":"cable"}
 ,{"word":"Beratung","article":"die","plural":"Beratungen","english":"advice"}
 ,{"word":"Vorkommen","article":"das","plural":"Vorkommen","english":"deposit"}
+,{"word":"Vorkommen","article":"die","plural":"","english":"resources"}
 ,{"word":"Sicht","article":"die","plural":"Sichten","english":"view"}
 ,{"word":"Rohstoff","article":"der","plural":"Rohstoffe","english":"raw material"}
 ,{"word":"Volksabstimmung","article":"die","plural":"Volksabstimmungen","english":"plebiscite"}
@@ -161,6 +190,7 @@
 ,{"word":"Zulässigkeit","article":"die","plural":"Zulässigkeiten","english":"legality"}
 ,{"word":"Zuschuss","article":"der","plural":"Zuschüsse","english":"grant"}
 ,{"word":"Fernstraße","article":"die","plural":"Fernstraßen","english":"highway"}
+,{"word":"Armut","article":"die","plural":"","english":"poverty"}
 ,{"word":"Verzögerung","article":"die","plural":"Verzögerungen","english":"delay"}
 ,{"word":"Sanierung","article":"die","plural":"Sanierungen","english":"renovation"}
 ,{"word":"Instandhaltung","article":"die","plural":"Instandhaltungen","english":"maintenance"}
@@ -177,6 +207,7 @@
 ,{"word":"Graben","article":"der","plural":"Gräben","english":"rift"}
 ,{"word":"Aufwand","article":"der","plural":"Aufwände","english":"expenditure"}
 ,{"word":"Schild","article":"das","plural":"Schilder","english":"sign"}
+,{"word":"Verhalten","article":"das","plural":"","english":"behavior"}
 ,{"word":"Ministerpräsident","article":"der","plural":"Ministerpräsidenten","english":"Prime Minister"}
 ,{"word":"Behauptung","article":"die","plural":"Behauptungen","english":"statement"}
 ,{"word":"Auftrag","article":"der","plural":"Aufträge","english":"order"}
@@ -186,13 +217,18 @@
 ,{"word":"Stellungnahme","article":"die","plural":"Stellungnahmen","english":"opinion"}
 ,{"word":"Frist","article":"die","plural":"Fristen","english":"period"}
 ,{"word":"Behandlung","article":"die","plural":"Behandlungen","english":"treatment"}
+,{"word":"Eigenständigkeit","article":"die","plural":"","english":"independence"}
+,{"word":"Drang","article":"der","plural":"","english":"urge"}
+,{"word":"Beisein","article":"das","plural":"","english":"presence"}
 ,{"word":"Übereinstimmung","article":"die","plural":"Übereinstimmungen","english":"accordance"}
 ,{"word":"Einrichtung","article":"die","plural":"Einrichtungen","english":"installation"}
+,{"word":"Trümmer","article":"die","plural":"","english":"debris"}
 ,{"word":"Notenbank","article":"die","plural":"Notenbanken","english":"central bank"}
 ,{"word":"Offenbarung","article":"die","plural":"Offenbarungen","english":"revelation"}
 ,{"word":"Auftakt","article":"der","plural":"Auftakte","english":"prelude"}
 ,{"word":"Sünder","article":"der","plural":"Sünder","english":"sinner"}
 ,{"word":"Verfolgung","article":"die","plural":"Verfolgungen","english":"persecution"}
+,{"word":"Ehrlichkeit","article":"die","plural":"","english":"honesty"}
 ,{"word":"Gewinn","article":"der","plural":"Gewinne","english":"profit"}
 ,{"word":"Zocker","article":"der","plural":"Zocker","english":"gambler"}
 ,{"word":"Devisen","article":"die","plural":"Devise","english":"foreign exchange"}
@@ -209,11 +245,14 @@
 ,{"word":"Erleichterung","article":"die","plural":"Erleichterungen","english":"relief"}
 ,{"word":"Einmischung","article":"die","plural":"Einmischungen","english":"interference"}
 ,{"word":"Erhebung","article":"die","plural":"Erhebungen","english":"survey"}
+,{"word":"Geltung","article":"die","plural":"","english":"worth"}
+,{"word":"Zusammenhalt","article":"der","plural":"","english":"cohesion"}
 ,{"word":"Versuch","article":"der","plural":"Versuche","english":"attempt"}
 ,{"word":"Festnahme","article":"die","plural":"Festnahmen","english":"arrest"}
 ,{"word":"Herd","article":"der","plural":"Herde","english":"epicenter"}
 ,{"word":"Schlüssel","article":"der","plural":"Schlüssel","english":"key"}
 ,{"word":"Angestellte/ein","article":"der","plural":"Angestellten","english":"employee"}
+,{"word":"Angestellte","article":"die","plural":"","english":"staff"}
 ,{"word":"Gabel","article":"die","plural":"Gabeln","english":"fork"}
 ,{"word":"Lohn","article":"der","plural":"Löhne","english":"salary"}
 ,{"word":"Nachteil","article":"der","plural":"Nachteile","english":"drawback"}
@@ -229,10 +268,12 @@
 ,{"word":"Faden","article":"der","plural":"Fäden","english":"string"}
 ,{"word":"Bürgschaft","article":"die","plural":"Bürgschaften","english":"guarantee"}
 ,{"word":"Ausgangspunkt","article":"der","plural":"Ausgangspunkte","english":"starting point"}
+,{"word":"Aufsehen","article":"das","plural":"","english":"sensation"}
 ,{"word":"Krimi","article":"der","plural":"Krimis","english":"thriller"}
 ,{"word":"Aussicht","article":"die","plural":"Aussichten","english":"chance"}
 ,{"word":"Glücksritter","article":"der","plural":"Glücksritter","english":"adventurer"}
 ,{"word":"Schätzung","article":"die","plural":"Schätzungen","english":"estimate"}
+,{"word":"Seltenheit","article":"die","plural":"","english":"rarity"}
 ,{"word":"Schwankung","article":"die","plural":"Schwankungen","english":"fluctuation"}
 ,{"word":"Seligkeit","article":"die","plural":"Seligkeiten","english":"happiness"}
 ,{"word":"Ausgang","article":"der","plural":"Ausgänge","english":"outcome"}
@@ -246,13 +287,18 @@
 ,{"word":"Aufsicht","article":"die","plural":"Aufsichten","english":"supervision"}
 ,{"word":"Schwarzgeld","article":"das","plural":"Schwarzgelder","english":"illegal earnings"}
 ,{"word":"Täter","article":"der","plural":"Täter","english":"offender"}
+,{"word":"Bewusstsein","article":"das","plural":"","english":"awareness"}
 ,{"word":"Vorort","article":"der","plural":"Vororte","english":"suburb"}
 ,{"word":"Steuerhinterzieher","article":"der","plural":"Steuerhinterzieher","english":"tax evader"}
+,{"word":"Wandel","article":"der","plural":"","english":"change"}
 ,{"word":"Ankauf","article":"der","plural":"Ankäufe","english":"purchase"}
 ,{"word":"Koffer","article":"der","plural":"Koffer","english":"suitcase"}
+,{"word":"Reue","article":"die","plural":"","english":"repentance"}
+,{"word":"Glaubwürdigkeit","article":"die","plural":"","english":"credibility"}
 ,{"word":"Strafmaß","article":"das","plural":"Strafmaße","english":"sentence"}
 ,{"word":"Niederlage","article":"die","plural":"Niederlagen","english":"defeat"}
 ,{"word":"Kippe","article":"die","plural":"Kippen","english":"tip"}
+,{"word":"Vorgehen","article":"das","plural":"","english":"action"}
 ,{"word":"Haltung","article":"die","plural":"Haltungen","english":"attitude"}
 ,{"word":"Art","article":"die","plural":"Arten","english":"sort"}
 ,{"word":"Zusage","article":"die","plural":"Zusagen","english":"commitment"}
@@ -261,6 +307,7 @@
 ,{"word":"Mannschaft","article":"die","plural":"Mannschaften","english":"team"}
 ,{"word":"Stimmung","article":"die","plural":"Stimmungen","english":"mood"}
 ,{"word":"Gemüt","article":"das","plural":"Gemüter","english":"mind"}
+,{"word":"Osten","article":"der","plural":"","english":"east"}
 ,{"word":"Gerücht","article":"das","plural":"Gerüchte","english":"rumor"}
 ,{"word":"Entführung","article":"die","plural":"Entführungen","english":"abduction"}
 ,{"word":"Absicht","article":"die","plural":"Absichten","english":"intention"}
@@ -277,6 +324,8 @@
 ,{"word":"Dichter","article":"der","plural":"Dichter","english":"poet"}
 ,{"word":"Zusammenstoß","article":"der","plural":"Zusammenstöße","english":"clash"}
 ,{"word":"Todesopfer","article":"das","plural":"Todesopfer","english":"casualty"}
+,{"word":"Müll","article":"der","plural":"","english":"garbage"}
+,{"word":"Ausschreitung","article":"die","plural":"","english":"riot"}
 ,{"word":"Kämpfer","article":"der","plural":"Kämpfer","english":"fighter"}
 ,{"word":"Erkenntnis","article":"die","plural":"Erkenntnisse","english":"knowldege"}
 ,{"word":"Erkenntnis","article":"das","plural":"Erkenntnisse","english":"finding"}
@@ -288,15 +337,23 @@
 ,{"word":"Weise","article":"die","plural":"Weisen","english":"way"}
 ,{"word":"Weise/ein","article":"der","plural":"Weisen","english":"wise man"}
 ,{"word":"Überzeugung","article":"die","plural":"Überzeugungen","english":"conviction"}
+,{"word":"Fremdenverkehr","article":"der","plural":"","english":"tourism"}
 ,{"word":"Ortschaft","article":"die","plural":"Ortschaften","english":"village"}
 ,{"word":"Zweig","article":"der","plural":"Zweige","english":"branch"}
 ,{"word":"Besitzer","article":"der","plural":"Besitzer","english":"owner"}
+,{"word":"Besitz","article":"der","plural":"","english":"ownership"}
 ,{"word":"Verband","article":"der","plural":"Verbände","english":"association"}
+,{"word":"Festland","article":"das","plural":"","english":"mainland"}
+,{"word":"Misstrauen","article":"das","plural":"","english":"distrust"}
+,{"word":"Herrschaft","article":"die","plural":"","english":"rule"}
 ,{"word":"Pacht","article":"die","plural":"Pachten","english":"lease"}
 ,{"word":"Unterkunft","article":"die","plural":"Unterkünfte","english":"accomodation"}
 ,{"word":"Landwirtschaft","article":"die","plural":"Landwirtschaften","english":"agriculture"}
 ,{"word":"Weizen","article":"der","plural":"Weizen","english":"wheat"}
+,{"word":"Mais","article":"der","plural":"","english":"corn"}
 ,{"word":"Kraftwerk","article":"das","plural":"Kraftwerke","english":"power station"}
+,{"word":"Güter","article":"die","plural":"","english":"goods"}
+,{"word":"Knappheit","article":"die","plural":"","english":"scarcity"}
 ,{"word":"Muskel","article":"der","plural":"Muskeln","english":"muscle"}
 ,{"word":"Appell","article":"der","plural":"Appelle","english":"appeal"}
 ,{"word":"Schatten","article":"der","plural":"Schatten","english":"shadow"}
@@ -306,15 +363,19 @@
 ,{"word":"Eindruck","article":"der","plural":"Eindrücke","english":"impression"}
 ,{"word":"Auswahl","article":"die","plural":"Auswahlen","english":"selection"}
 ,{"word":"Gesellschaft","article":"die","plural":"Gesellschaften","english":"society"}
+,{"word":"Staub","article":"der","plural":"","english":"dust"}
 ,{"word":"Witz","article":"der","plural":"Witze","english":"joke"}
 ,{"word":"Ausnahme","article":"die","plural":"Ausnahmen","english":"exception"}
 ,{"word":"Rückzug","article":"der","plural":"Rückzüge","english":"withdrawal"}
+,{"word":"Glauben","article":"der","plural":"","english":"belief"}
+,{"word":"Glaube","article":"der","plural":"","english":"belief"}
 ,{"word":"Wählerbefragung","article":"die","plural":"Wählerbefragungen","english":"exit poll"}
 ,{"word":"Sieg","article":"der","plural":"Siege","english":"victory"}
 ,{"word":"Verwaltung","article":"die","plural":"Verwaltungen","english":"administration"}
 ,{"word":"Aufbruch","article":"der","plural":"Aufbrüche","english":"awakening"}
 ,{"word":"Redner","article":"der","plural":"Redner","english":"speaker"}
 ,{"word":"Benachrichtigung","article":"die","plural":"Benachrichtigungen","english":"notification"}
+,{"word":"Begeisterung","article":"die","plural":"","english":"enthusiasm"}
 ,{"word":"Hafen","article":"der","plural":"Häfen","english":"port"}
 ,{"word":"Rohöl","article":"das","plural":"Rohöle","english":"crude oil"}
 ,{"word":"Verbund","article":"der","plural":"Verbunde/die","english":"alliance"}
@@ -332,23 +393,29 @@
 ,{"word":"Messung","article":"die","plural":"Messungen","english":"measurement"}
 ,{"word":"Nachweis","article":"der","plural":"Nachweise","english":"proof"}
 ,{"word":"Hinweis","article":"der","plural":"Hinweise","english":"clue"}
+,{"word":"Weltall","article":"das","plural":"","english":"universe"}
 ,{"word":"Handschuh","article":"der","plural":"Handschuhe","english":"glove"}
 ,{"word":"Samt","article":"der","plural":"Samte","english":"velvet"}
 ,{"word":"Spielraum","article":"der","plural":"Spielräume","english":"scope"}
 ,{"word":"Atempause","article":"die","plural":"Atempausen","english":"respite"}
 ,{"word":"Kern","article":"der","plural":"Kerne","english":"core"}
 ,{"word":"Gebühr","article":"die","plural":"Gebühren","english":"fee"}
+,{"word":"Angehörige","article":"die","plural":"","english":"relatives"}
+,{"word":"Entgegenkommen","article":"das","plural":"","english":"willingness to cooperate"}
 ,{"word":"Einsicht","article":"die","plural":"Einsichten","english":"insight"}
 ,{"word":"Bindung","article":"die","plural":"Bindungen","english":"tie"}
 ,{"word":"Beschluss","article":"der","plural":"Beschlüsse","english":"decision"}
+,{"word":"Vorausschau","article":"die","plural":"","english":"projection"}
 ,{"word":"Nadel","article":"die","plural":"Nadeln","english":"needle"}
 ,{"word":"Anweisung","article":"die","plural":"Anweisungen","english":"instruction"}
+,{"word":"Zögern","article":"das","plural":"","english":"hesitation"}
 ,{"word":"Verschleierung","article":"die","plural":"Verschleierungen","english":"cover-up"}
 ,{"word":"Qual","article":"die","plural":"Qualen","english":"torment"}
 ,{"word":"Beschwerde","article":"die","plural":"Beschwerden","english":"complaint"}
 ,{"word":"Schirm","article":"der","plural":"Schirme","english":"umbrella"}
 ,{"word":"Umfang","article":"der","plural":"Umfänge","english":"scope"}
 ,{"word":"Rettungsschirm","article":"der","plural":"Rettungsschirme","english":"rescue fund"}
+,{"word":"Recht","article":"das","plural":"","english":"law"}
 ,{"word":"Mitschnitt","article":"der","plural":"Mitschnitte","english":"recording"}
 ,{"word":"Telefonat","article":"das","plural":"Telefonate","english":"phone call"}
 ,{"word":"Verweis","article":"der","plural":"Verweise","english":"reference"}
@@ -358,12 +425,18 @@
 ,{"word":"Härte","article":"die","plural":"Härten","english":"hardness"}
 ,{"word":"Versicherer","article":"der","plural":"Versicherer","english":"insurer"}
 ,{"word":"Bündnis","article":"das","plural":"Bündnisse","english":"alliance"}
+,{"word":"Erlaubnis","article":"die","plural":"","english":"permission"}
+,{"word":"Untreue","article":"die","plural":"","english":"infidelity"}
+,{"word":"Schadenersatz","article":"der","plural":"","english":"compensation for damages"}
 ,{"word":"Gewissheit","article":"die","plural":"Gewissheiten","english":"certainty"}
 ,{"word":"Licht","article":"das","plural":"Lichter","english":"light"}
 ,{"word":"Bogen","article":"der","plural":"Bögen","english":"arc"}
 ,{"word":"Erklärung","article":"die","plural":"Erklärungen","english":"declaration"}
 ,{"word":"Grundsatz","article":"der","plural":"Grundsätze","english":"principle"}
 ,{"word":"Abrechnung","article":"die","plural":"Abrechnungen","english":"revenge"}
+,{"word":"Aufruhr","article":"der","plural":"","english":"uproar"}
+,{"word":"Erfahrung","article":"die","plural":"","english":"experience"}
+,{"word":"Wut","article":"die","plural":"","english":"rage"}
 ,{"word":"Entlassung","article":"die","plural":"Entlassungen","english":"dismissal"}
 ,{"word":"Tropfen","article":"der","plural":"Tropfen","english":"drop"}
 ,{"word":"Stein","article":"der","plural":"Steine","english":"stone"}
@@ -389,6 +462,7 @@
 ,{"word":"Netzwerk","article":"das","plural":"Netzwerke","english":"network"}
 ,{"word":"Vorwarnung","article":"die","plural":"Vorwarnungen","english":"advance warning"}
 ,{"word":"Anstrengung","article":"die","plural":"Anstrengungen","english":"effort"}
+,{"word":"Ärger","article":"der","plural":"","english":"trouble"}
 ,{"word":"Vermögen","article":"das","plural":"Vermögen","english":"fortune"}
 ,{"word":"Wahrheit","article":"die","plural":"Wahrheiten","english":"truth"}
 ,{"word":"Schrebergarten","article":"der","plural":"Schrebergärten","english":"allotment"}
@@ -402,12 +476,15 @@
 ,{"word":"Aussichten","article":"die","plural":"Aussicht","english":"prospects"}
 ,{"word":"Verpflichtungen","article":"die","plural":"Verpflichtung","english":"liabilities"}
 ,{"word":"Einschätzung","article":"die","plural":"Einschätzungen","english":"assessment"}
+,{"word":"Kreditwürdigkeit","article":"die","plural":"","english":"creditworthiness"}
+,{"word":"Zorn","article":"der","plural":"","english":"anger"}
 ,{"word":"Satzung","article":"die","plural":"Satzungen","english":"statute"}
 ,{"word":"Beitrag","article":"der","plural":"Beiträge","english":"contribution"}
 ,{"word":"Versammlung","article":"die","plural":"Versammlungen","english":"assembly"}
 ,{"word":"Leiter","article":"der","plural":"Leiter","english":"leader"}
 ,{"word":"Feststellung","article":"die","plural":"Feststellungen","english":"establishment"}
 ,{"word":"Vorstand","article":"der","plural":"Vorstände","english":"board"}
+,{"word":"Zugriff","article":"der","plural":"","english":"access"}
 ,{"word":"Enthüllung","article":"die","plural":"Enthüllungen","english":"revelation"}
 ,{"word":"Zeitalter","article":"das","plural":"Zeitalter","english":"age"}
 ,{"word":"Ausmaß","article":"das","plural":"Ausmaße","english":"extent"}
@@ -426,7 +503,10 @@
 ,{"word":"Entzug","article":"der","plural":"Entzüge","english":"withdrawal"}
 ,{"word":"Befindlichkeiten","article":"die","plural":"Befindlichkeit","english":"sensitivities"}
 ,{"word":"Austragungsort","article":"der","plural":"Austragungsorte","english":"venue"}
+,{"word":"Vorsicht","article":"die","plural":"","english":"caution"}
+,{"word":"Gedenken","article":"das","plural":"","english":"commemoration"}
 ,{"word":"Rathaus","article":"das","plural":"Rathäuser","english":"town hall"}
+,{"word":"Umbau","article":"der","plural":"","english":"modification"}
 ,{"word":"Umbildung","article":"die","plural":"Umbildungen","english":"reshuffle"}
 ,{"word":"Amtsinhaber","article":"der","plural":"Amtsinhaber","english":"incumbent"}
 ,{"word":"Ausrichtung","article":"die","plural":"Ausrichtungen","english":"orientation"}
@@ -435,11 +515,13 @@
 ,{"word":"Gefecht","article":"das","plural":"Gefechte","english":"battle"}
 ,{"word":"Rechtsruck","article":"der","plural":"Rechtsrucke","english":"shift to the right"}
 ,{"word":"Trostpflaster","article":"das","plural":"Trostpflaster","english":"consolation"}
+,{"word":"Gunst","article":"die","plural":"","english":"favor"}
 ,{"word":"Arbeitnehmer","article":"der","plural":"Arbeitnehmer","english":"employee"}
 ,{"word":"Beurteilung","article":"die","plural":"Beurteilungen","english":"assessment"}
 ,{"word":"Errungenschaft","article":"die","plural":"Errungenschaften","english":"achievement"}
 ,{"word":"Austritt","article":"der","plural":"Austritte","english":"exit"}
 ,{"word":"Veranstaltung","article":"die","plural":"Veranstaltungen","english":"event"}
+,{"word":"Aufmerksamkeit","article":"die","plural":"","english":"attention"}
 ,{"word":"Schwelle","article":"die","plural":"Schwellen","english":"threshold"}
 ,{"word":"Wirbel","article":"der","plural":"Wirbel","english":"vortex"}
 ,{"word":"Routinier","article":"der","plural":"Routiniers","english":"veteran"}
@@ -449,11 +531,15 @@
 ,{"word":"Mund","article":"der","plural":"Münder","english":"mouth"}
 ,{"word":"Bedeutung","article":"die","plural":"Bedeutungen","english":"importance"}
 ,{"word":"Förderung","article":"die","plural":"Förderungen","english":"production"}
+,{"word":"Ausbildung","article":"die","plural":"","english":"training"}
 ,{"word":"Beschaffung","article":"die","plural":"Beschaffungen","english":"procurement"}
+,{"word":"Sichtbarkeit","article":"die","plural":"","english":"visibility"}
 ,{"word":"Vordergrund","article":"der","plural":"Vordergründe","english":"foreground"}
+,{"word":"Entschlossenheit","article":"die","plural":"","english":"determination"}
 ,{"word":"Verstärkung","article":"die","plural":"Verstärkungen","english":"reinforcement"}
 ,{"word":"Stärke","article":"die","plural":"Stärken","english":"force"}
 ,{"word":"Geschütz","article":"das","plural":"Geschütze","english":"gun"}
+,{"word":"Verlagerung","article":"die","plural":"","english":"transfer"}
 ,{"word":"Abzug","article":"der","plural":"Abzüge","english":"withdrawal"}
 ,{"word":"Bericht","article":"der","plural":"Berichte","english":"report"}
 ,{"word":"Reihe","article":"die","plural":"Reihen","english":"series  [am Ende der Reihe--at the end of the row"}
@@ -462,6 +548,7 @@
 ,{"word":"Entwaffnung","article":"die","plural":"Entwaffnungen","english":"disarmament"}
 ,{"word":"Entschluss","article":"der","plural":"Entschlüsse","english":"decision"}
 ,{"word":"veraltend","article":"das/[österr.","plural":"Gehälter","english":"salary"}
+,{"word":"Bezüge","article":"die","plural":"","english":"earnings"}
 ,{"word":"Laufzeit","article":"die","plural":"Laufzeiten","english":"term"}
 ,{"word":"Abschluss","article":"der","plural":"Abschlüsse","english":"completion"}
 ,{"word":"Aufschwung","article":"der","plural":"Aufschwünge","english":"upturn"}
@@ -470,11 +557,13 @@
 ,{"word":"Fremdenfeindlichkeit","article":"die","plural":"Fremdenfeindlichkeiten","english":"xenophobia"}
 ,{"word":"Stamm","article":"der","plural":"Stämme","english":"root"}
 ,{"word":"Gastgeber","article":"der","plural":"Gastgeber","english":"host"}
+,{"word":"Friedfertigkeit","article":"die","plural":"","english":"peacefulness"}
 ,{"word":"Zuflucht","article":"die","plural":"Zufluchten","english":"refuge"}
 ,{"word":"Fremde/ein","article":"der","plural":"Fremden","english":"foreigner"}
 ,{"word":"Steuer","article":"die","plural":"Steuern","english":"tax"}
 ,{"word":"Zuwanderung","article":"die","plural":"Zuwanderungen","english":"immigration"}
 ,{"word":"Zeitraum","article":"der","plural":"Zeiträume","english":"period of time"}
+,{"word":"Freizügigkeit","article":"die","plural":"","english":"freedom of movement"}
 ,{"word":"Anschlag","article":"der","plural":"Anschläge","english":"attack"}
 ,{"word":"Baum","article":"der","plural":"Bäume","english":"tree"}
 ,{"word":"Umfeld","article":"das","plural":"Umfelder","english":"sphere"}
@@ -496,10 +585,14 @@
 ,{"word":"Einstimmigkeit","article":"die","plural":"Einstimmigkeiten","english":"unanimity"}
 ,{"word":"Gedanke","article":"der","plural":"Gedanken","english":"thought"}
 ,{"word":"Zins","article":"der","plural":"Zinsen","english":"interest"}
+,{"word":"Verbraucherpreise","article":"die","plural":"","english":"consumer prices"}
 ,{"word":"Puffer","article":"der","plural":"Puffer","english":"buffer"}
 ,{"word":"Angebot","article":"das","plural":"Angebote","english":"supply"}
+,{"word":"Wachstum","article":"das","plural":"","english":"growth"}
 ,{"word":"Teuerung","article":"die","plural":"Teuerungen","english":"inflation"}
+,{"word":"Verfall","article":"der","plural":"","english":"decline"}
 ,{"word":"Ausblick","article":"der","plural":"Ausblicke","english":"outlook"}
+,{"word":"Leihen","article":"das","plural":"","english":"borrowing"}
 ,{"word":"Flaute","article":"die","plural":"Flauten","english":"recession"}
 ,{"word":"Konjunktur","article":"die","plural":"Konjunkturen","english":"business activity"}
 ,{"word":"Blase","article":"die","plural":"Blasen","english":"bubble"}
@@ -518,20 +611,25 @@
 ,{"word":"Abschnitt","article":"der","plural":"Abschnitte","english":"section"}
 ,{"word":"Frauenquote","article":"die","plural":"Frauenquoten","english":"proportion of women"}
 ,{"word":"Kommunalwahl","article":"die","plural":"Kommunalwahlen","english":"local elections"}
+,{"word":"Gleichberechtigung","article":"die","plural":"","english":"equal rights"}
 ,{"word":"Rente","article":"die","plural":"Renten","english":"pension"}
 ,{"word":"Vorbild","article":"das","plural":"Vorbilder","english":"example"}
 ,{"word":"Zunge","article":"die","plural":"Zungen","english":"tongue"}
 ,{"word":"Entwurf","article":"der","plural":"Entwürfe","english":"bill"}
 ,{"word":"Zündstoff","article":"der","plural":"Zündstoffe","english":"explosive"}
 ,{"word":"Zeile","article":"die","plural":"Zeilen","english":"line"}
+,{"word":"Betracht","article":"der","plural":"","english":"consideration"}
 ,{"word":"Mittelstand","article":"der","plural":"Mittelstände","english":"middle class"}
 ,{"word":"Widerspruch","article":"der","plural":"Widersprüche","english":"contradiction"}
+,{"word":"Nachbesserung","article":"die","plural":"","english":"amendment"}
 ,{"word":"Verrentung","article":"die","plural":"Verrentungen","english":"retirement"}
 ,{"word":"Welle","article":"die","plural":"Wellen","english":"wave"}
 ,{"word":"Anrechnung","article":"die","plural":"Anrechnungen","english":"allowance"}
 ,{"word":"Arbeitslosigkeit","article":"die","plural":"Arbeitslosigkeiten","english":"unemployment"}
 ,{"word":"Flügel","article":"der","plural":"Flügel","english":"wing"}
 ,{"word":"Beschäftigung","article":"die","plural":"Beschäftigungen","english":"employment"}
+,{"word":"Unmut","article":"der","plural":"","english":"resentment"}
+,{"word":"Unzufriedenheit","article":"die","plural":"","english":"dissatisfaction"}
 ,{"word":"Anspruch","article":"der","plural":"Ansprüche","english":"claim"}
 ,{"word":"Aufstand","article":"der","plural":"Aufstände","english":"rebellion"}
 ,{"word":"Jünger","article":"der","plural":"Jünger","english":"follower"}
@@ -543,6 +641,7 @@
 ,{"word":"Rechtsstreit","article":"der","plural":"Rechtsstreite","english":"lawsuit"}
 ,{"word":"Vergleich","article":"der","plural":"Vergleiche","english":"comparison"}
 ,{"word":"Staatsanwaltschaft","article":"die","plural":"Staatsanwaltschaften","english":"public prosecutor's office"}
+,{"word":"Betrug","article":"der","plural":"","english":"fraud"}
 ,{"word":"Anklage","article":"die","plural":"Anklagen","english":"accusation"}
 ,{"word":"Rücktritt","article":"der","plural":"Rücktritte","english":"resignation"}
 ,{"word":"Einzelheit","article":"die","plural":"Einzelheiten","english":"detail"}
@@ -561,11 +660,13 @@
 ,{"word":"Ansicht","article":"die","plural":"Ansichten","english":"opinion"}
 ,{"word":"Untertitel","article":"der","plural":"Untertitel","english":"subtitle"}
 ,{"word":"Sendung","article":"die","plural":"Sendungen","english":"program"}
+,{"word":"Öffentlichkeit","article":"die","plural":"","english":"public"}
 ,{"word":"Folter","article":"die","plural":"Foltern","english":"torture"}
 ,{"word":"Befehl","article":"der","plural":"Befehle","english":"order"}
 ,{"word":"Steuerung","article":"die","plural":"Steuerungen","english":"control"}
 ,{"word":"Angriff","article":"der","plural":"Angriffe","english":"attack"}
 ,{"word":"Begriff","article":"der","plural":"Begriffe","english":"definition"}
+,{"word":"Jugendliche","article":"die","plural":"","english":"teenagers"}
 ,{"word":"Einsparung","article":"die","plural":"Einsparungen","english":"saving"}
 ,{"word":"Moderator","article":"der","plural":"Moderatoren","english":"host"}
 ,{"word":"Sender","article":"der","plural":"Sender","english":"broadcaster"}
@@ -575,7 +676,10 @@
 ,{"word":"Schwerpunkt","article":"der","plural":"Schwerpunkte","english":"emphasis"}
 ,{"word":"das)","article":"der/([selten]","plural":"Bereiche","english":"realm"}
 ,{"word":"Datei","article":"die","plural":"Dateien","english":"file"}
+,{"word":"Vertrauen","article":"das","plural":"","english":"trust"}
+,{"word":"Konkurrenz","article":"die","plural":"","english":"competition"}
 ,{"word":"Hochrechnung","article":"die","plural":"Hochrechnungen","english":"projection"}
+,{"word":"Gelingen","article":"das","plural":"","english":"success"}
 ,{"word":"Völkermord","article":"der","plural":"Völkermorde","english":"genocide"}
 ,{"word":"Flamme","article":"die","plural":"Flammen","english":"flame"}
 ,{"word":"Verstimmung","article":"die","plural":"Verstimmungen","english":"resentment"}
@@ -592,10 +696,12 @@
 ,{"word":"Bleistift","article":"der","plural":"Bleistifte","english":"pencil"}
 ,{"word":"Anzug","article":"der","plural":"Anzüge","english":"suit"}
 ,{"word":"Lied","article":"das","plural":"Lieder","english":"song"}
+,{"word":"Unruhe","article":"die","plural":"","english":"unrest"}
 ,{"word":"Stück","article":"das","plural":"Stücke/[mit","english":"piece"}
 ,{"word":"Steinkohle","article":"die","plural":"Steinkohlen","english":"coal"}
 ,{"word":"Siedlung","article":"die","plural":"Siedlungen","english":"settlement"}
 ,{"word":"Bergarbeiter","article":"der","plural":"Bergarbeiter","english":"miner"}
+,{"word":"Bergbau","article":"der","plural":"","english":"mining"}
 ,{"word":"Revier","article":"das","plural":"Reviere","english":"district"}
 ,{"word":"U-Bahn","article":"die","plural":"U-Bahnen","english":"metro"}
 ,{"word":"Vermittler","article":"der","plural":"Vermittler","english":"intermediary"}
@@ -610,6 +716,7 @@
 ,{"word":"Zustand","article":"der","plural":"Zustände","english":"condition"}
 ,{"word":"Messer","article":"das","plural":"Messer","english":"knife"}
 ,{"word":"Unterleib","article":"der","plural":"Unterleiber","english":"abdomen"}
+,{"word":"Schwere","article":"die","plural":"","english":"severity"}
 ,{"word":"Verletzung","article":"die","plural":"Verletzungen","english":"injury"}
 ,{"word":"Muster","article":"das","plural":"Muster","english":"pattern"}
 ,{"word":"Schnittwunde","article":"die","plural":"Schnittwunden","english":"cut"}
@@ -628,7 +735,9 @@
 ,{"word":"Antwort","article":"die","plural":"Antworten","english":"reply"}
 ,{"word":"Verkäufer","article":"der","plural":"Verkäufer","english":"seller"}
 ,{"word":"Kaffee","article":"der","plural":"Kaffees","english":"coffee"}
+,{"word":"Vorhandensein","article":"das","plural":"","english":"presence"}
 ,{"word":"Neige","article":"die","plural":"Neigen","english":"decline"}
+,{"word":"Verschwinden","article":"das","plural":"","english":"disappearance"}
 ,{"word":"Geschwindigkeit","article":"die","plural":"Geschwindigkeiten","english":"speed"}
 ,{"word":"Höhe","article":"die","plural":"Höhen","english":"height"}
 ,{"word":"Kiste","article":"die","plural":"Kisten","english":"box"}
@@ -643,6 +752,7 @@
 ,{"word":"Ultimatum","article":"das","plural":"Ultimaten","english":"ultimatum"}
 ,{"word":"Engpass","article":"der","plural":"Engpässe","english":"bottleneck"}
 ,{"word":"Brief","article":"der","plural":"Briefe","english":"letter"}
+,{"word":"Schreiben","article":"das","plural":"","english":"letter"}
 ,{"word":"Vorkasse","article":"die","plural":"Vorkassen","english":"prepayment"}
 ,{"word":"Szenario","article":"das","plural":"Szenarien","english":"scenario"}
 ,{"word":"Vertrag","article":"der","plural":"Verträge","english":"contract"}
@@ -666,10 +776,14 @@
 ,{"word":"Geschichte","article":"die","plural":"Geschichten","english":"history"}
 ,{"word":"Maschinengewehr","article":"das","plural":"Maschinengewehre","english":"machine-gun"}
 ,{"word":"Aufwiegelung","article":"die","plural":"Aufwiegelungen","english":"sedition"}
+,{"word":"Wirren","article":"die","plural":"","english":"confusion"}
 ,{"word":"Chance","article":"die","plural":"Chancen","english":"opportunity"}
+,{"word":"Straffung","article":"die","plural":"","english":"tightening"}
 ,{"word":"Tor","article":"das","plural":"Tore","english":"gate"}
 ,{"word":"Zügel","article":"der","plural":"Zügel","english":"rein"}
 ,{"word":"Treffen","article":"das","plural":"Treffen","english":"meeting"}
+,{"word":"Medien","article":"die","plural":"","english":"media"}
+,{"word":"Geldpolitik","article":"die","plural":"","english":"monetary policy"}
 ,{"word":"Ungleichheit","article":"die","plural":"Ungleichheiten","english":"inequality"}
 ,{"word":"Falle","article":"die","plural":"Fallen","english":"trap"}
 ,{"word":"Raststätte","article":"die","plural":"Raststätten","english":"motorway restaurant"}
@@ -700,7 +814,9 @@
 ,{"word":"Unannehmlichkeit","article":"die","plural":"Unannehmlichkeiten","english":"inconvenience"}
 ,{"word":"Schlagstock","article":"der","plural":"Schlagstöcke","english":"bat"}
 ,{"word":"Leck","article":"das","plural":"Lecks","english":"leak"}
+,{"word":"Feuerwehr","article":"die","plural":"","english":"fire brigade"}
 ,{"word":"Weggefährte","article":"der","plural":"Weggefährten","english":"companion"}
+,{"word":"Gewahrsam","article":"der","plural":"","english":"custody"}
 ,{"word":"Verhaftung","article":"die","plural":"Verhaftungen","english":"arrest"}
 ,{"word":"Aufenthaltsort","article":"der","plural":"Aufenthaltsorte","english":"whereabouts"}
 ,{"word":"Aufenthalt","article":"der","plural":"Aufenthalte","english":"residence"}
@@ -725,7 +841,9 @@
 ,{"word":"Verwalter","article":"der","plural":"Verwalter","english":"administrator"}
 ,{"word":"Vorsichtsmaßnahme","article":"die","plural":"Vorsichtsmaßnahmen","english":"precaution"}
 ,{"word":"Anleger","article":"der","plural":"Anleger","english":"investor"}
+,{"word":"Widerwille","article":"der","plural":"","english":"reluctance"}
 ,{"word":"Anwendung","article":"die","plural":"Anwendungen","english":"use"}
+,{"word":"Nähere","article":"das","plural":"","english":"particulars"}
 ,{"word":"Schlag","article":"der","plural":"Schläge","english":"blow"}
 ,{"word":"Hersteller","article":"der","plural":"Hersteller","english":"manufacturer"}
 ,{"word":"Ausgabe","article":"die","plural":"Ausgaben","english":"expense"}
@@ -736,15 +854,20 @@
 ,{"word":"Hügel","article":"der","plural":"Hügel","english":"hill"}
 ,{"word":"Ermittler","article":"der","plural":"Ermittler","english":"investigator"}
 ,{"word":"Erwerb","article":"der","plural":"Erwerbe","english":"purchase"}
+,{"word":"Luftverkehr","article":"der","plural":"","english":"air traffic"}
 ,{"word":"Großteil","article":"der","plural":"Großteile","english":"majority"}
 ,{"word":"Fähre","article":"die","plural":"Fähren","english":"ferry"}
+,{"word":"Seenot","article":"die","plural":"","english":"distress at sea"}
 ,{"word":"Felsen","article":"der","plural":"Felsen","english":"rock"}
 ,{"word":"Knall","article":"der","plural":"Knalle","english":"bang"}
+,{"word":"Lärm","article":"der","plural":"","english":"noise"}
 ,{"word":"Scharfschütze","article":"der","plural":"Scharfschützen","english":"sniper"}
 ,{"word":"Besatzung","article":"die","plural":"Besatzungen","english":"crew"}
 ,{"word":"Ausflug","article":"der","plural":"Ausflüge","english":"trip"}
+,{"word":"Scheitern","article":"das","plural":"","english":"failure"}
 ,{"word":"Ausstieg","article":"der","plural":"Ausstiege","english":"exit"}
 ,{"word":"Häufigkeit","article":"die","plural":"Häufigkeiten","english":"frequency"}
+,{"word":"Beileid","article":"das","plural":"","english":"condolence"}
 ,{"word":"Anlauf","article":"der","plural":"Anläufe","english":"attempt"}
 ,{"word":"Stichtag","article":"der","plural":"Stichtage","english":"deadline"}
 ,{"word":"Siedler","article":"der","plural":"Siedler","english":"settler"}
@@ -771,27 +894,34 @@
 ,{"word":"Begründung","article":"die","plural":"Begründungen","english":"explanation"}
 ,{"word":"Sachverhalt","article":"der","plural":"Sachverhalte","english":"issue"}
 ,{"word":"Zeugnis","article":"das","plural":"Zeugnisse","english":"certificate"}
+,{"word":"Gültigkeit","article":"die","plural":"","english":"validity"}
 ,{"word":"Auskunft","article":"die","plural":"Auskünfte","english":"information"}
 ,{"word":"Bezirk","article":"der","plural":"Bezirke","english":"district"}
 ,{"word":"Staatsangehörigkeit","article":"die","plural":"Staatsangehörigkeiten","english":"citizenship"}
+,{"word":"Mindestalter","article":"das","plural":"","english":"minimum age"}
 ,{"word":"Teilnahme","article":"die","plural":"Teilnahmen","english":"participation"}
 ,{"word":"Besuch","article":"der","plural":"Besuche","english":"visit"}
 ,{"word":"Fertigkeit","article":"die","plural":"Fertigkeiten","english":"skill"}
 ,{"word":"Ergänzung","article":"die","plural":"Ergänzungen","english":"addendum"}
 ,{"word":"Durchführung","article":"die","plural":"Durchführungen","english":"implementation"}
+,{"word":"Aufbau","article":"der","plural":"","english":"construction"}
 ,{"word":"Befugnisse","article":"die","plural":"Befugnis","english":"powers"}
 ,{"word":"Befugnis","article":"die","plural":"Befugnisse","english":"authority"}
 ,{"word":"Nachrichtendienst","article":"der","plural":"Nachrichtendienste","english":"intelligence service"}
+,{"word":"Abhören","article":"das","plural":"","english":"eavesdropping"}
 ,{"word":"Schriftsteller","article":"der","plural":"Schriftsteller","english":"writer"}
 ,{"word":"Einsamkeit","article":"die","plural":"Einsamkeiten","english":"solitude"}
 ,{"word":"Erzählung","article":"die","plural":"Erzählungen","english":"novella"}
 ,{"word":"Lungenentzündung","article":"die","plural":"Lungenentzündungen","english":"pneumonia"}
 ,{"word":"Kette","article":"die","plural":"Ketten","english":"chain"}
+,{"word":"Geiselhaft","article":"die","plural":"","english":"captivity"}
 ,{"word":"Umstand","article":"der","plural":"Umstände","english":"circumstance"}
 ,{"word":"Entführer","article":"der","plural":"Entführer","english":"kidnapper"}
 ,{"word":"Besteigung","article":"die","plural":"Besteigungen","english":"ascent"}
 ,{"word":"Verunglückte/ein","article":"der","plural":"Verunglückten","english":"casualty"}
+,{"word":"Einheimische","article":"die","plural":"","english":"locals"}
 ,{"word":"Unfall","article":"der","plural":"Unfälle","english":"accident"}
+,{"word":"Kummer","article":"der","plural":"","english":"misery"}
 ,{"word":"Trennung","article":"die","plural":"Trennungen","english":"separation"}
 ,{"word":"Verpflegung","article":"die","plural":"Verpflegungen","english":"provisions"}
 ,{"word":"Aufstieg","article":"der","plural":"Aufstiege","english":"ascent"}
@@ -803,6 +933,7 @@
 ,{"word":"Kirche","article":"die","plural":"Kirchen","english":"church"}
 ,{"word":"Gläubige/ein","article":"der","plural":"Gläubigen","english":"believer"}
 ,{"word":"Gläubiger","article":"der","plural":"Gläubiger","english":"creditor"}
+,{"word":"Ausland","article":"das","plural":"","english":"foreign countries"}
 ,{"word":"Gebet","article":"das","plural":"Gebete","english":"prayer"}
 ,{"word":"Aussöhnung","article":"die","plural":"Aussöhnungen","english":"reconciliation"}
 ,{"word":"Vorkehrung","article":"die","plural":"Vorkehrungen","english":"precaution"}
@@ -817,6 +948,7 @@
 ,{"word":"Speise","article":"die","plural":"Speisen","english":"food"}
 ,{"word":"Kuchen","article":"der","plural":"Kuchen","english":"cake"}
 ,{"word":"Ei","article":"das","plural":"Eier","english":"egg"}
+,{"word":"Wohlergehen","article":"das","plural":"","english":"prosperity"}
 ,{"word":"Herr","article":"der","plural":"Herren/[auch]","english":"Lord"}
 ,{"word":"Feierlichkeit","article":"die","plural":"Feierlichkeiten","english":"festivity"}
 ,{"word":"Feiertag","article":"der","plural":"Feiertage","english":"holiday"}
@@ -835,10 +967,14 @@
 ,{"word":"Puppe","article":"die","plural":"Puppen","english":"doll"}
 ,{"word":"Ära","article":"die","plural":"Ären","english":"era"}
 ,{"word":"Schmerz","article":"der","plural":"Schmerzen","english":"pain"}
+,{"word":"Schande","article":"die","plural":"","english":"shame"}
+,{"word":"Rückkehr","article":"die","plural":"","english":"return"}
 ,{"word":"Leiden","article":"das","plural":"Leiden","english":"suffering"}
 ,{"word":"Gefangenschaft","article":"die","plural":"Gefangenschaften","english":"captivity"}
+,{"word":"Auftrieb","article":"der","plural":"","english":"lift"}
 ,{"word":"Inhalt","article":"der","plural":"Inhalte","english":"content"}
 ,{"word":"Freilassung","article":"die","plural":"Freilassungen","english":"release"}
+,{"word":"Zuversicht","article":"die","plural":"","english":"confidence"}
 ,{"word":"Zulassung","article":"die","plural":"Zulassungen","english":"admission"}
 ,{"word":"Zuwachs","article":"der","plural":"Zuwächse","english":"increase"}
 ,{"word":"Aufstellung","article":"die","plural":"Aufstellungen","english":"deployment"}
@@ -851,16 +987,24 @@
 ,{"word":"Halle","article":"die","plural":"Hallen","english":"hall"}
 ,{"word":"Front","article":"die","plural":"Fronten","english":"front"}
 ,{"word":"Zugeständnis","article":"das","plural":"Zugeständnisse","english":"concession"}
+,{"word":"Zuhörer","article":"die","plural":"","english":"audience"}
 ,{"word":"Aufseher","article":"der","plural":"Aufseher","english":"warden"}
 ,{"word":"Schrank","article":"der","plural":"Schränke","english":"cabinet"}
+,{"word":"Süßigkeit","article":"die","plural":"","english":"candy"}
+,{"word":"Reste","article":"die","plural":"","english":"remains"}
 ,{"word":"Startbahn","article":"die","plural":"Startbahnen","english":"runway"}
 ,{"word":"Schleife","article":"die","plural":"Schleifen","english":"loop"}
+,{"word":"Hektik","article":"die","plural":"","english":"rush"}
+,{"word":"Verwandte","article":"die","plural":"","english":"relatives"}
+,{"word":"Gepäck","article":"das","plural":"","english":"luggage"}
 ,{"word":"Aufgabe","article":"die","plural":"Aufgaben","english":"task"}
 ,{"word":"Einsatz","article":"der","plural":"Einsätze","english":"use"}
 ,{"word":"Hitzkopf","article":"der","plural":"Hitzköpfe","english":"hothead"}
+,{"word":"Aufständische","article":"die","plural":"","english":"rebels"}
 ,{"word":"Moschee","article":"die","plural":"Moscheen","english":"mosque"}
 ,{"word":"Umweltverschmutzung","article":"die","plural":"Umweltverschmutzungen","english":"pollution"}
 ,{"word":"Heilmittel","article":"das","plural":"Heilmittel","english":"cure"}
+,{"word":"Verbrauch","article":"der","plural":"","english":"consumption"}
 ,{"word":"Benachteiligung","article":"die","plural":"Benachteiligungen","english":"disadvantage"}
 ,{"word":"Pilger","article":"der","plural":"Pilger","english":"pilgrim"}
 ,{"word":"Duldung","article":"die","plural":"Duldungen","english":"acquiescence"}
@@ -874,11 +1018,13 @@
 ,{"word":"Mitstreiter","article":"der","plural":"Mitstreiter","english":"ally"}
 ,{"word":"Fortsetzung","article":"die","plural":"Fortsetzungen","english":"continuation"}
 ,{"word":"Verbündete/ein","article":"der","plural":"Verbündeten","english":"ally"}
+,{"word":"Irrsinn","article":"der","plural":"","english":"insanity"}
 ,{"word":"Weigerung","article":"die","plural":"Weigerungen","english":"refusal"}
 ,{"word":"Schauplatz","article":"der","plural":"Schauplätze","english":"location"}
 ,{"word":"Viertel","article":"das","plural":"Viertel","english":"neighbourhood"}
 ,{"word":"Auslöser","article":"der","plural":"Auslöser","english":"trigger"}
 ,{"word":"Tänzer","article":"der","plural":"Tänzer","english":"dancer"}
+,{"word":"Einlenken","article":"das","plural":"","english":"relenting"}
 ,{"word":"Machthaber","article":"der","plural":"Machthaber","english":"ruler"}
 ,{"word":"Übereinkunft","article":"die","plural":"Übereinkünfte","english":"accordance"}
 ,{"word":"Frieden","article":"der","plural":"Frieden","english":"peace"}
@@ -886,7 +1032,9 @@
 ,{"word":"Einsturz","article":"der","plural":"Einstürze","english":"collapse"}
 ,{"word":"Ortsteil","article":"der","plural":"Ortsteile","english":"district"}
 ,{"word":"Jahrestag","article":"der","plural":"Jahrestage","english":"anniversary"}
+,{"word":"Klamotten","article":"die","plural":"","english":"clothes"}
 ,{"word":"Belagerung","article":"die","plural":"Belagerungen","english":"siege"}
+,{"word":"Willkür","article":"die","plural":"","english":"arbitrariness"}
 ,{"word":"Versöhnung","article":"die","plural":"Versöhnungen","english":"reconciliation"}
 ,{"word":"Auszählung","article":"die","plural":"Auszählungen","english":"count"}
 ,{"word":"Film","article":"der","plural":"Filme","english":"movie"}
@@ -899,6 +1047,9 @@
 ,{"word":"Pfad","article":"der","plural":"Pfade","english":"path"}
 ,{"word":"Versprechen","article":"das","plural":"Versprechen","english":"promise"}
 ,{"word":"Abschreckung","article":"die","plural":"Abschreckungen","english":"deterrence"}
+,{"word":"Pflege","article":"die","plural":"","english":"care"}
+,{"word":"Tun","article":"das","plural":"","english":"action"}
+,{"word":"Untätigkeit","article":"die","plural":"","english":"inaction"}
 ,{"word":"Tritt","article":"der","plural":"Tritte","english":"step"}
 ,{"word":"Tiefe","article":"die","plural":"Tiefen","english":"depth"}
 ,{"word":"Drogenhändler","article":"der","plural":"Drogenhändler","english":"drug dealer"}
@@ -908,21 +1059,29 @@
 ,{"word":"Faust","article":"die","plural":"Fäuste","english":"fist"}
 ,{"word":"Druck","article":"der","plural":"Drücke/[seltener]","english":"pressure"}
 ,{"word":"Boot","article":"das","plural":"Boote","english":"boat"}
+,{"word":"Aufkommen","article":"das","plural":"","english":"occurrence"}
 ,{"word":"Bauer","article":"der","plural":"Bauern","english":"peasant"}
 ,{"word":"Geschwister","article":"das","plural":"Geschwister","english":"sibling"}
 ,{"word":"Begabung","article":"die","plural":"Begabungen","english":"aptitude"}
 ,{"word":"Knabe","article":"der","plural":"Knaben","english":"boy"}
+,{"word":"Mittelalter","article":"das","plural":"","english":"Middle Ages"}
+,{"word":"Trost","article":"der","plural":"","english":"consolation"}
 ,{"word":"Gefängnis","article":"das","plural":"Gefängnisse","english":"prison"}
 ,{"word":"Werk","article":"das","plural":"Werke","english":"factory"}
 ,{"word":"Eingriff","article":"der","plural":"Eingriffe","english":"intervention"}
+,{"word":"Subsidiarität","article":"die","plural":"","english":"subsidiarity"}
 ,{"word":"Prinzip","article":"das","plural":"Prinzipien","english":"principle"}
 ,{"word":"Heiliger","article":"der","plural":"Heiligen","english":"saint"}
 ,{"word":"Hoheit","article":"die","plural":"Hoheiten","english":"sovereignty"}
 ,{"word":"Dienst","article":"der","plural":"Dienste","english":"service"}
+,{"word":"Ruin","article":"der","plural":"","english":"ruin"}
+,{"word":"Weinen","article":"das","plural":"","english":"crying"}
 ,{"word":"Nachfolger","article":"der","plural":"Nachfolger","english":"successor"}
+,{"word":"Austausch","article":"der","plural":"","english":"exchange"}
 ,{"word":"Gesinnungsgenosse","article":"der","plural":"Gesinnungsgenossen","english":"like-minded person"}
 ,{"word":"Gesinnung","article":"die","plural":"Gesinnungen","english":"views"}
 ,{"word":"Massenansturm","article":"der","plural":"Massenanstürme","english":"stampede"}
+,{"word":"Andrang","article":"der","plural":"","english":"congestion"}
 ,{"word":"Missbrauch","article":"der","plural":"Missbräuche","english":"abuse"}
 ,{"word":"Siegel","article":"das","plural":"Siegel","english":"seal"}
 ,{"word":"Eroberung","article":"die","plural":"Eroberungen","english":"conquest"}
@@ -930,12 +1089,14 @@
 ,{"word":"Einweihung","article":"die","plural":"Einweihungen","english":"inauguration"}
 ,{"word":"Übel","article":"das","plural":"Übel","english":"evil"}
 ,{"word":"Gestalt","article":"die","plural":"Gestalten","english":"shape"}
+,{"word":"Eingreifen","article":"das","plural":"","english":"intervention"}
 ,{"word":"Ziel","article":"das","plural":"Ziele","english":"goal"}
 ,{"word":"Atmosphäre","article":"die","plural":"Atmosphären","english":"atmosphere"}
 ,{"word":"Wechsel","article":"der","plural":"Wechsel","english":"change"}
 ,{"word":"Schmiergeld","article":"das","plural":"Schmiergelder","english":"bribe"}
 ,{"word":"Verteilung","article":"die","plural":"Verteilungen","english":"distribution"}
 ,{"word":"Bildung","article":"die","plural":"Bildungen","english":"formation"}
+,{"word":"Judenhass","article":"der","plural":"","english":"anti-Semitism"}
 ,{"word":"Vormarsch","article":"der","plural":"Vormärsche","english":"advance"}
 ,{"word":"Zwist","article":"der","plural":"Zwiste","english":"conflict"}
 ,{"word":"Adler","article":"der","plural":"Adler","english":"eagle"}
@@ -943,6 +1104,7 @@
 ,{"word":"Ergebnis","article":"das","plural":"Ergebnisse","english":"result"}
 ,{"word":"Rechtfertigung","article":"die","plural":"Rechtfertigungen","english":"justification"}
 ,{"word":"Ableger","article":"der","plural":"Ableger","english":"branch"}
+,{"word":"Wertpapiere","article":"die","plural":"","english":"securities"}
 ,{"word":"Aufkauf","article":"der","plural":"Aufkäufe","english":"buying up"}
 ,{"word":"Schule","article":"die","plural":"Schulen","english":"school"}
 ,{"word":"Rate","article":"die","plural":"Raten","english":"rate"}
@@ -952,6 +1114,7 @@
 ,{"word":"Sicherheit","article":"die","plural":"Sicherheiten","english":"security"}
 ,{"word":"Schrott","article":"der","plural":"Schrotte","english":"junk"}
 ,{"word":"Belebung","article":"die","plural":"Belebungen","english":"revival"}
+,{"word":"Ersatz","article":"der","plural":"","english":"replacement"}
 ,{"word":"Regel","article":"die","plural":"Regeln","english":"rule"}
 ,{"word":"Kreis","article":"der","plural":"Kreise","english":"district"}
 ,{"word":"Dienststelle","article":"die","plural":"Dienststellen","english":"office"}
@@ -963,14 +1126,18 @@
 ,{"word":"Straßenbahn","article":"die","plural":"Straßenbahnen","english":"tram"}
 ,{"word":"Standort","article":"der","plural":"Standorte","english":"site"}
 ,{"word":"Beteiligung","article":"die","plural":"Beteiligungen","english":"cooperation"}
+,{"word":"Weltraum","article":"der","plural":"","english":"space"}
 ,{"word":"Aus","article":"das","plural":"Aus","english":"end"}
+,{"word":"Beförderung","article":"die","plural":"","english":"promotion"}
 ,{"word":"Mühle","article":"die","plural":"Mühlen","english":"mill"}
 ,{"word":"Nachricht","article":"die","plural":"Nachrichten","english":"news"}
+,{"word":"Pfusch","article":"der","plural":"","english":"botch"}
 ,{"word":"Häftling","article":"der","plural":"Häftlinge","english":"prisoner"}
 ,{"word":"Panne","article":"die","plural":"Pannen","english":"glitch"}
 ,{"word":"Vene","article":"die","plural":"Venen","english":"vein"}
 ,{"word":"Hinrichtung","article":"die","plural":"Hinrichtungen","english":"execution"}
 ,{"word":"Schulter","article":"die","plural":"Schultern","english":"shoulder"}
+,{"word":"Herausgabe","article":"die","plural":"","english":"surrender"}
 ,{"word":"Krankheitserreger","article":"der","plural":"Krankheitserreger","english":"germ"}
 ,{"word":"Erscheinung","article":"die","plural":"Erscheinungen","english":"phenomenon"}
 ,{"word":"Wirkstoff","article":"der","plural":"Wirkstoffe","english":"agent"}
@@ -983,6 +1150,7 @@
 ,{"word":"Tier","article":"das","plural":"Tiere","english":"animal"}
 ,{"word":"Aufnahme","article":"die","plural":"Aufnahmen","english":"picture"}
 ,{"word":"Ausbreitung","article":"die","plural":"Ausbreitungen","english":"spread"}
+,{"word":"Laufen","article":"das","plural":"","english":"running"}
 ,{"word":"Entfremdung","article":"die","plural":"Entfremdungen","english":"alienation"}
 ,{"word":"Zusammenbruch","article":"der","plural":"Zusammenbrüche","english":"collapse"}
 ,{"word":"Angst","article":"die","plural":"Ängste","english":"fear"}
@@ -1009,6 +1177,7 @@
 ,{"word":"Vorführung","article":"die","plural":"Vorführungen","english":"demonstration"}
 ,{"word":"Hauptstadt","article":"die","plural":"Hauptstädte","english":"capital"}
 ,{"word":"Unglück","article":"das","plural":"Unglücke","english":"disaster"}
+,{"word":"Mitschuld","article":"die","plural":"","english":"complicity"}
 ,{"word":"Ladung","article":"die","plural":"Ladungen","english":"load"}
 ,{"word":"Eichhörnchen","article":"das","plural":"Eichhörnchen","english":"squirrel"}
 ,{"word":"Anreiz","article":"der","plural":"Anreize","english":"incentive"}
@@ -1023,12 +1192,15 @@
 ,{"word":"Widrigkeit","article":"die","plural":"Widrigkeiten","english":"adversity"}
 ,{"word":"Strapaze","article":"die","plural":"Strapazen","english":"strain"}
 ,{"word":"Mühe","article":"die","plural":"Mühen","english":"effort"}
+,{"word":"Erdwärme","article":"die","plural":"","english":"geothermal energy"}
+,{"word":"Verhältnisse","article":"die","plural":"","english":"conditions"}
 ,{"word":"Begleiter","article":"der","plural":"Begleiter","english":"companion"}
 ,{"word":"Rentner","article":"der","plural":"Rentner","english":"retiree"}
 ,{"word":"Bühne","article":"die","plural":"Bühnen","english":"stage"}
 ,{"word":"Gedicht","article":"das","plural":"Gedichte","english":"poem"}
 ,{"word":"Knüppel","article":"der","plural":"Knüppel","english":"stick"}
 ,{"word":"Einheit","article":"die","plural":"Einheiten","english":"unit"}
+,{"word":"Obst","article":"das","plural":"","english":"fruit"}
 ,{"word":"Fläche","article":"die","plural":"Flächen","english":"area"}
 ,{"word":"Rede","article":"die","plural":"Reden","english":"speech"}
 ,{"word":"Donnerstag","article":"der","plural":"Donnerstage","english":"Thursday"}
@@ -1047,8 +1219,11 @@
 ,{"word":"Angelegenheit","article":"die","plural":"Angelegenheiten","english":"matter"}
 ,{"word":"Verfügung","article":"die","plural":"Verfügungen","english":"decree"}
 ,{"word":"Säugling","article":"der","plural":"Säuglinge","english":"infant"}
+,{"word":"Sterblichkeit","article":"die","plural":"","english":"mortality"}
 ,{"word":"Abbruch","article":"der","plural":"Abbrüche","english":"breaking off"}
+,{"word":"Vorhaben","article":"das","plural":"","english":"plan"}
 ,{"word":"Umsetzung","article":"die","plural":"Umsetzungen","english":"implementation"}
+,{"word":"Walfang","article":"der","plural":"","english":"whaling"}
 ,{"word":"Wal","article":"der","plural":"Wale","english":"whale"}
 ,{"word":"Fang","article":"der","plural":"Fänge","english":"capture"}
 ,{"word":"Befürworter","article":"der","plural":"Befürworter","english":"proponent"}
@@ -1069,26 +1244,33 @@
 ,{"word":"Nothilfe","article":"die","plural":"Nothilfen","english":"emergency aid"}
 ,{"word":"Sturz","article":"der","plural":"Stürze","english":"fall"}
 ,{"word":"Auftritt","article":"der","plural":"Auftritte","english":"appearance"}
+,{"word":"Kenntnis","article":"die","plural":"","english":"knowledge"}
 ,{"word":"Hoffnung","article":"die","plural":"Hoffnungen","english":"hope"}
 ,{"word":"Träger","article":"der","plural":"Träger","english":"carrier"}
+,{"word":"Vergangenheit","article":"die","plural":"","english":"past"}
 ,{"word":"Riege","article":"die","plural":"Riegen","english":"team"}
 ,{"word":"Ordnung","article":"die","plural":"Ordnungen","english":"order"}
+,{"word":"Umgang","article":"der","plural":"","english":"handling"}
 ,{"word":"Leine","article":"die","plural":"Leinen","english":"leash"}
 ,{"word":"Gefühl","article":"das","plural":"Gefühle","english":"feeling"}
 ,{"word":"Flugzeug","article":"das","plural":"Flugzeuge","english":"aircraft"}
 ,{"word":"Rüstung","article":"die","plural":"Rüstungen","english":"armor"}
+,{"word":"Bemühung","article":"die","plural":"","english":"effort"}
 ,{"word":"Heer","article":"das","plural":"Heere","english":"army"}
 ,{"word":"Maßnahme","article":"die","plural":"Maßnahmen","english":"measure"}
 ,{"word":"Last","article":"die","plural":"Lasten","english":"load"}
 ,{"word":"Brücke","article":"die","plural":"Brücken","english":"bridge"}
 ,{"word":"Gegensatz","article":"der","plural":"Gegensätze","english":"opposition"}
 ,{"word":"Ansatz","article":"der","plural":"Ansätze","english":"approach"}
+,{"word":"Vorfahren","article":"die","plural":"","english":"ancestors"}
 ,{"word":"Freispruch","article":"der","plural":"Freisprüche","english":"acquittal"}
 ,{"word":"Verfahren","article":"das","plural":"Verfahren","english":"procedure"}
 ,{"word":"Verkündung","article":"die","plural":"Verkündungen","english":"announcement"}
+,{"word":"Fernsehen","article":"das","plural":"","english":"TV"}
 ,{"word":"Schluss","article":"der","plural":"Schlüsse","english":"closing"}
 ,{"word":"Strich","article":"der","plural":"Striche","english":"line"}
 ,{"word":"Eigenheim","article":"das","plural":"Eigenheime","english":"home"}
+,{"word":"Bestechlichkeit","article":"die","plural":"","english":"bribery"}
 ,{"word":"Vorteil","article":"der","plural":"Vorteile","english":"benefit"}
 ,{"word":"Kleid","article":"das","plural":"Kleider","english":"dress"}
 ,{"word":"Kunststoff","article":"der","plural":"Kunststoffe","english":"plastic"}
@@ -1100,6 +1282,7 @@
 ,{"word":"Verdacht","article":"der","plural":"Verdachte","english":"suspicion"}
 ,{"word":"Vorgang","article":"der","plural":"Vorgänge","english":"action"}
 ,{"word":"Gang","article":"der","plural":"Gänge","english":"aisle"}
+,{"word":"Gang","article":"der","plural":"","english":"walk"}
 ,{"word":"Jäger","article":"der","plural":"Jäger","english":"hunter"}
 ,{"word":"Überwachung","article":"die","plural":"Überwachungen","english":"surveillance"}
 ,{"word":"Nutzer","article":"der","plural":"Nutzer","english":"user"}

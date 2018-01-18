@@ -62,12 +62,16 @@ public class ParadigmTest extends Test {
 			{
 			case 0:
 				tb.addToken("N");
+				break;
 			case 1:
 				tb.addToken("A");
+				break;
 			case 2:
 				tb.addToken("G");
+				break;
 			case 3:
 				tb.addToken("D");
+				break;
 			}
 			
 			for(int j = 0; j < 3; j++)
