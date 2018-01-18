@@ -32,25 +32,8 @@ public class ParadigmTest extends Test {
 	}
 	@Override
 	public String processReply(String reply, int count) {
+		System.out.println(String.format("processReply(count=%d,obj_=%s)",count,obj_.toString()));
 		return this.verify(reply,obj_.getJSONArray("data").getJSONArray(count));
-		/*if(count == 1)
-			return this.verifySixteen(reply, new String[] {
-					"welcher","welchen","welches","welchem",
-					"welche","welche","welcher","welcher",
-					"welches","welches","welches","welchem",
-					"welche","welche","welcher","welchen"});
-		if(count == 2)
-			return this.verifyTwelve(reply, new String[] {
-					"ein","einen","eines","einem",
-					"eine","eine","einer","einer",
-					"ein","ein","eines","einem"});
-		if(count == 3)
-			return this.verifySixteen(reply, new String[] {
-					"mein","meinen","meines","meinem",
-					"meine","meine","meiner","meiner",
-					"mein","mein","meines","meinem",
-					"meine","meine","meiner","meinen"});
-		return null;*/
 	}
 	private String verify(String reply,JSONArray answer)
 	{

@@ -75,8 +75,4 @@ public class LocalUtil {
 		df.setTimeZone(LocalUtil.getTimezone());
 		return df.format(d);
 	}
-	public Date getNewDate()
-	{
-		return new Date();
-	}
 }
