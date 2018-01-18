@@ -9,9 +9,18 @@ import util.MyManager;
 
 public class StandardParser extends AbstractParser{
 	JSONArray cmds_;
+	String defaultName_ = null;
 	public StandardParser(JSONArray cmds)
 	{
 		cmds_ = cmds;
+		for(int i = 0; i < cmds_.length(); i++)
+			if(cmds_.get(i) instanceof String)
+			{
+				defaultName_ = (String)cmds_.get(i);
+				System.out.println(String.format("defName=%s, idx=%d/%d", this.defaultName_,i,
+						cmds_.length()));
+				break;
+			}
 	}
 	protected static JSONArray getCommands(List<MyManager> managers) throws Exception
 	{
@@ -38,7 +47,7 @@ public class StandardParser extends AbstractParser{
 		res.append("the following commands are known:\n");
 		for(int i = 0; i < cmds_.length(); i++)
 		{
-			JSONObject cmd = cmds_.optJSONObject(i); 
+			JSONObject cmd = cmds_.optJSONObject(i);
 			if(cmd==null)
 				continue;
 			res.append("\t/"+cmd.getString("name") + " : "+cmd.optString("help","")+"\n");

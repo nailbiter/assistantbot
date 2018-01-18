@@ -35,12 +35,14 @@ public class MailManager implements MyManager {
 	Folder fol_ = null;
 	Store st_ = null;
 	String ID = null;
+	SleepManager sleepManager_ = null;
 	//protected static String TOSHIMAIL = "toshi@ms.u-tokyo.ac.jp";
 	protected static String TOSHIMAIL = "toshi@ms.u-tokyo.ac.jp";
-	public MailManager(Long chatID, MyBasicBot bot, Scheduler scheduler) throws Exception{
+	public MailManager(Long chatID, MyBasicBot bot, Scheduler scheduler, SleepManager sm) throws Exception{
 		this.chatID_ = chatID;
 		this.bot_ = bot;
 		this.scheduler_ = scheduler;
+		this.sleepManager_ = sm;
 		
 		String host = "mail.ms.u-tokyo.ac.jp";
 		int port = 993;

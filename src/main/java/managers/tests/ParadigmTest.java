@@ -1,5 +1,6 @@
 package managers.tests;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import managers.TestManager;
@@ -9,7 +10,14 @@ public class ParadigmTest extends Test {
 	public ParadigmTest(JSONObject obj,JSONObject data,TestManager master,String name) {
 		super(obj,data,master,name);
 	}
-
+	@Override
+	public String toString()
+	{
+		return String.format("start=%s, end=%s, count=%d", 
+				obj_.getString("start"),
+				obj_.getString("end"),
+				obj_.getInt("count"));
+	}
 	@Override
 	protected String isCalled(int count) {
 		if(count == 0)
@@ -24,13 +32,8 @@ public class ParadigmTest extends Test {
 	}
 	@Override
 	public String processReply(String reply, int count) {
-		if(count == 0)
-			return this.verifySixteen(reply, new String[] {
-					"der","den","des","dem",
-					"die","die","der","der",
-					"das","das","des","dem",
-					"die","die","der","den"});
-		if(count == 1)
+		return this.verify(reply,obj_.getJSONArray("data").getJSONArray(count));
+		/*if(count == 1)
 			return this.verifySixteen(reply, new String[] {
 					"welcher","welchen","welches","welchem",
 					"welche","welche","welcher","welcher",
@@ -47,18 +50,20 @@ public class ParadigmTest extends Test {
 					"meine","meine","meiner","meiner",
 					"mein","mein","meines","meinem",
 					"meine","meine","meiner","meinen"});
-		return null;
+		return null;*/
 	}
-	private String verifyTwelve(String reply,String[] answer)
+	private String verify(String reply,JSONArray answer)
 	{
+		int colNum = answer.length() / 4;
 		boolean isCorrect = true;
-		util.TableBuilder tb = new util.TableBuilder()
-				.addNewlineAndTokens(new String[] {"--","M","F","N"});
+		String[] genders = (colNum == 3) ? new String[] {"--","M","F","N"} : new String[] {"--","M","F","N","Pl"},
+				cases = new String[] {"N", "A","G","D"};
+		util.TableBuilder tb = new util.TableBuilder().addNewlineAndTokens(genders);
 		String[] tokens = reply.split(" ");
 		for(int i = 0; i < 4 ; i++)
 		{
-			tb.newRow();
-			switch(i)
+			tb.newRow().addToken(cases[i]);
+			/*switch(i)
 			{
 			case 0:
 				tb.addToken("N");
@@ -72,20 +77,20 @@ public class ParadigmTest extends Test {
 			case 3:
 				tb.addToken("D");
 				break;
-			}
+			}*/
 			
-			for(int j = 0; j < 3; j++)
+			for(int j = 0; j < colNum; j++)
 			{
-				String answerS = answer[4*j+i],
+				String answerS = answer.getString(4*j+i),
 						correct = tokens[4*j+i];
-				boolean isThisCorrect = answerS.equals(correct);
+				boolean isThisCorrect = answerS.equalsIgnoreCase(correct);
 				isCorrect = isCorrect && isThisCorrect;
 				tb.addToken(isThisCorrect ? answerS : String.format("<%s>", answerS));
 			}
 		}
 		return tb.toString();
 	}
-	private String verifySixteen(String reply,String[] answer)
+	/*private String verifySixteen(String reply,String[] answer)
 	{
 		boolean isCorrect = true;
 		util.TableBuilder tb = new util.TableBuilder()
@@ -120,6 +125,5 @@ public class ParadigmTest extends Test {
 			}
 		}
 		return tb.toString();
-	}
-
+	}*/
 }

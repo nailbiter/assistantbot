@@ -38,6 +38,7 @@ public class TimeManager implements MyManager,Runnable {
 	protected static int ROWNUM = 2;
 	JSONArray time = null;
 	boolean isWaitingForAnswer;
+	SleepManager sleepManager_ = null;
 	/* (non-Javadoc)
 	 * @see util.MyManager#getResultAndFormat(org.json.JSONObject)
 	 */
@@ -86,11 +87,12 @@ public class TimeManager implements MyManager,Runnable {
 		}
 		return null;
 	}
-	public TimeManager(Long chatID,MyBasicBot bot,Scheduler scheduler_in) {
+	public TimeManager(Long chatID,MyBasicBot bot,Scheduler scheduler_in, SleepManager sm) {
 		this.scheduler_ = scheduler_in;
 		this.chatID_ = chatID;
 		this.bot_ = bot;
 		this.isWaitingForAnswer = false;
+		this.sleepManager_ = sm;
 		makeButtons();
 		scheduler_.schedule("*/30 * * * *",this);
 		JSONObject timeObj = StorageManager.get("time", true);

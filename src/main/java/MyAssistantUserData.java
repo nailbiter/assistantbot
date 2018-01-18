@@ -4,6 +4,7 @@ import java.util.List;
 import org.json.JSONObject;
 
 import it.sauronsoftware.cron4j.Scheduler;
+import managers.SleepManager;
 import util.LocalUtil;
 import util.MyManager;
 import util.UserData;
@@ -27,13 +28,15 @@ public class MyAssistantUserData implements UserData {
 				scheduler.setTimeZone(LocalUtil.getTimezone());
 				managers.add(new managers.MoneyManager(bot));
 				managers.add(new managers.HabitManager(chatID,bot,scheduler));
-				managers.add(new managers.TimeManager(chatID,bot,scheduler));
-				managers.add(new managers.MailManager(chatID,bot,scheduler));
 				managers.add(new managers.TaskManager(chatID, bot));
 				managers.add(new managers.TestManager(chatID, bot,scheduler));
+				SleepManager sm = null;
+				managers.add(sm = new managers.SleepManager(bot));
+				managers.add(new managers.TimeManager(chatID,bot,scheduler,sm));
+				managers.add(new managers.MailManager(chatID,bot,scheduler,sm));
 			}
 			managers.add(util.StorageManager.getMyManager());
-			managers.add(new managers.JShellManager(bot));	
+			managers.add(new managers.JShellManager(bot));
 			
 			if(MyAssistantUserData.ISBOTMANAGER)
 				parser = new util.parsers.BotManagerParser();

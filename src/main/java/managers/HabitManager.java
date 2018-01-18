@@ -39,15 +39,12 @@ public class HabitManager implements util.MyManager
 
 	protected String getReminderMessage(int index)
 	{
-		return "don't forget to execute "
-				+habits.getJSONObject(index).getString("name")
-				+" !";
+		return String.format("don't forget to execute %s !",
+				habits.getJSONObject(index).getString("name"));
 	}
 	protected String getFailureMessage(int index)
 	{
-		return "you failed the task "
-				+habits.getJSONObject(index).getString("name")
-				+" !";
+		return String.format("you failed the task %s !", habits.getJSONObject(index).getString("name"));
 	}
 	protected void HabitRunnableDispatch(int index,HabitRunnableEnum code)
 	{
