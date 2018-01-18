@@ -37,7 +37,6 @@ public class MailManager implements MyManager {
 	Store st_ = null;
 	String ID = null;
 	SleepManager sleepManager_ = null;
-	//protected static String TOSHIMAIL = "toshi@ms.u-tokyo.ac.jp";
 	protected String TOSHIMAIL;
 	public MailManager(Long chatID, MyBasicBot bot, Scheduler scheduler, SleepManager sm) throws Exception{
 		this.chatID_ = chatID;
