@@ -3,6 +3,8 @@ package util;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URLDecoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -67,8 +69,14 @@ public class LocalUtil {
 		System.out.println("zone: "+tz.getID());
 		return tz;
 	}
-	public static String DateToString(Date d)
+	public static String DateToString(Date d) throws Exception
 	{
-		return d.toString();
+		DateFormat df = new SimpleDateFormat();
+		df.setTimeZone(LocalUtil.getTimezone());
+		return df.format(d);
+	}
+	public Date getNewDate()
+	{
+		return new Date();
 	}
 }

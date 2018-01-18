@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import it.sauronsoftware.cron4j.Scheduler;
+import util.KeyRing;
 import util.MyBasicBot;
 import util.MyManager;
 
@@ -37,17 +38,18 @@ public class MailManager implements MyManager {
 	String ID = null;
 	SleepManager sleepManager_ = null;
 	//protected static String TOSHIMAIL = "toshi@ms.u-tokyo.ac.jp";
-	protected static String TOSHIMAIL = "toshi@ms.u-tokyo.ac.jp";
+	protected String TOSHIMAIL;
 	public MailManager(Long chatID, MyBasicBot bot, Scheduler scheduler, SleepManager sm) throws Exception{
 		this.chatID_ = chatID;
 		this.bot_ = bot;
 		this.scheduler_ = scheduler;
 		this.sleepManager_ = sm;
+		this.TOSHIMAIL = KeyRing.getMail(0);
 		
 		String host = "mail.ms.u-tokyo.ac.jp";
 		int port = 993;
-		String user = "leontiev";
-		String password = "pa$$w0rD";
+		String user = KeyRing.getMail(1);
+		String password = KeyRing.getMailPassword();
 		String target_folder = "INBOX";
 
 		Properties props = System.getProperties();

@@ -31,20 +31,21 @@ public class TestManager extends AbstractManager {
 		scheduler_ = scheduler;
 		tests = new ArrayList<Test>();
 		
-		JSONObject obj = StorageManager.get("tests", true),
+		JSONObject obj = StorageManager.get("tests", false),
 				objData = StorageManager.get("testsData", true);
 		addTest("paradigm",obj,objData);
 		addTest("plural",obj,objData);
 		schedule();
 	}
-	private void addTest(String name,JSONObject obj, JSONObject objData)
+	private void addTest(String name,JSONObject obj, JSONObject objData) throws Exception
 	{
 		if(!objData.has(name))
 			objData.put(name, new JSONObject());
 		tests.add(new ParadigmTest(obj.getJSONObject(name),objData.getJSONObject(name),this,name));
 	}
 
-	private void schedule() {
+	private void schedule() throws Exception
+	{
 		for(int i = 0; i < tests.size(); i++)
 		{
 			scheduler_.schedule(tests.get(i).getCronPattern(), tests.get(i));

@@ -141,7 +141,7 @@ public class TimeManager implements MyManager,Runnable {
 	}
 	@Override
 	public String gotUpdate(String data) throws Exception {
-		time.put((new Date().toString())+":"+data);
+		time.put(String.format("%s:%s", LocalUtil.DateToString(new Date()),data));
 		this.isWaitingForAnswer = false;
 		return "got: "+data+"\n"+this.getLifetime();
 	}

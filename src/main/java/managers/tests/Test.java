@@ -1,6 +1,8 @@
 package managers.tests;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -20,7 +22,7 @@ abstract public class Test implements Runnable
 	protected TestManager master_ = null;
 	protected String name_;
 	protected static final String ARRAYKEY = "a";
-	public Test(JSONObject obj,JSONObject data,TestManager master,String name)
+	public Test(JSONObject obj,JSONObject data,TestManager master,String name) throws Exception
 	{
 		obj_ = obj;
 		data_ = data;
@@ -31,17 +33,24 @@ abstract public class Test implements Runnable
 		schedule();
 	}
 	public String getName() { return name_; }
-	protected static Date parseDate(String what)
+	protected static Date parseDate(String what) throws Exception
 	{
 		Date date = new Date();
+		Calendar c = new GregorianCalendar();
+		c.setTimeZone(LocalUtil.getTimezone());
+		c.setTime(new Date());
 		int hours = Integer.parseInt(what.substring(0, what.indexOf(':'))),
 				minutes = Integer.parseInt(what.substring(what.indexOf(':')+1));
+		c.set(Calendar.HOUR_OF_DAY, hours);
+		c.set(Calendar.MINUTE, minutes);
+		
 		date.setHours(hours);
 		date.setMinutes(minutes);
-		return date;
+		
+		return c.getTime();
 	}
 	protected static String writeDate(Date d){ return String.format("%d:%d", d.getHours(),d.getMinutes()); }
-	protected void makeDates()
+	protected void makeDates() throws Exception
 	{
 		data_.put(ARRAYKEY, new JSONArray());
 		System.out.println(String.format("run schedule: %s", name_));
@@ -57,7 +66,7 @@ abstract public class Test implements Runnable
 			data_.getJSONArray(ARRAYKEY).put(writeDate(d));
 		}
 	}
-	protected void schedule()
+	protected void schedule() throws Exception
 	{
 		if( data_.length() == 0 ) return;
 		
@@ -109,16 +118,22 @@ abstract public class Test implements Runnable
 	}
 	@Override
 	public void run() {
-		makeDates();
-		schedule();
+		try {
+			makeDates();
+			schedule();
+		} catch (Exception e) {
+			e.printStackTrace(System.out);
+		}
 	}
-	public String getCronPattern()
+	public String getCronPattern() throws Exception
 	{
-		Date startDate = Test.parseDate(obj_.getString("start"));
+		Calendar c = new GregorianCalendar();
+		c.setTime(Test.parseDate(obj_.getString("start")));
+		c.setTimeZone(LocalUtil.getTimezone());
 		String res = null;
-		System.out.println("startDate: "+startDate.toString());
+		System.out.println("startDate: "+c.toString());
 		if(true || DEBUG)
-			res = String.format("0 %d * * *", startDate.getHours() - 1);
+			res = String.format("0 %d * * *", c.get(Calendar.HOUR_OF_DAY) - 1);
 		else
 			res = "28 13 * * *";
 		

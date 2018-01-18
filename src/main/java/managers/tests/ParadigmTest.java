@@ -7,7 +7,7 @@ import managers.TestManager;
 import util.MyManager;
 
 public class ParadigmTest extends Test {
-	public ParadigmTest(JSONObject obj,JSONObject data,TestManager master,String name) {
+	public ParadigmTest(JSONObject obj,JSONObject data,TestManager master,String name) throws Exception {
 		super(obj,data,master,name);
 	}
 	@Override
