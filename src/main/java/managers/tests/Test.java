@@ -19,6 +19,7 @@ abstract public class Test implements Runnable
 	protected Timer timer_ = null;
 	protected TestManager master_ = null;
 	protected String name_;
+	protected static final String ARRAYKEY = "a";
 	public Test(JSONObject obj,JSONObject data,TestManager master,String name)
 	{
 		obj_ = obj;
@@ -40,10 +41,8 @@ abstract public class Test implements Runnable
 		return date;
 	}
 	protected static String writeDate(Date d){ return String.format("%d:%d", d.getHours(),d.getMinutes()); }
-	protected static final String ARRAYKEY = "a";
 	protected void makeDates()
 	{
-		//TODO
 		data_.put(ARRAYKEY, new JSONArray());
 		System.out.println(String.format("run schedule: %s", name_));
 		int howManyTimes = obj_.getInt("count");
@@ -60,6 +59,8 @@ abstract public class Test implements Runnable
 	}
 	protected void schedule()
 	{
+		if( data_.length() == 0 ) return;
+		
 		Date curDate = new Date();
 		JSONArray array = data_.getJSONArray(ARRAYKEY);
 		
