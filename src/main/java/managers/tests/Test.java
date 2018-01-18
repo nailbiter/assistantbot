@@ -5,27 +5,32 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import managers.TestManager;
+import util.LocalUtil;
 import util.MyManager;
 
 abstract public class Test implements Runnable
 {
 	private static boolean DEBUG = false;
-	protected JSONObject obj_ = null;
+	protected JSONObject obj_ = null, data_ = null;
 	protected Timer timer_ = null;
 	protected TestManager master_ = null;
 	protected String name_;
-	public Test(JSONObject obj,TestManager master,String name)
+	public Test(JSONObject obj,JSONObject data,TestManager master,String name)
 	{
 		obj_ = obj;
+		data_ = data;
 		name_ = name;
 		master_ = master;
-		if(DEBUG) schedule();
+		timer_ = new Timer();
+		if(DEBUG) makeDates();
+		schedule();
 	}
 	public String getName() { return name_; }
-	private static Date parseDate(String what)
+	protected static Date parseDate(String what)
 	{
 		Date date = new Date();
 		int hours = Integer.parseInt(what.substring(0, what.indexOf(':'))),
@@ -34,28 +39,40 @@ abstract public class Test implements Runnable
 		date.setMinutes(minutes);
 		return date;
 	}
-	protected void schedule()
+	protected static String writeDate(Date d){ return String.format("%d:%d", d.getHours(),d.getMinutes()); }
+	protected static final String ARRAYKEY = "a";
+	protected void makeDates()
 	{
-		System.out.println("run schedule");
-		timer_ = new Timer();
+		//TODO
+		data_.put(ARRAYKEY, new JSONArray());
+		System.out.println(String.format("run schedule: %s", name_));
 		int howManyTimes = obj_.getInt("count");
 		Date startDate = Test.parseDate(obj_.getString("start")),
-				endDate = Test.parseDate(obj_.getString("end")),
-				curDate = new Date();
-		System.out.println(String.format("got startDate=%s, endDate=%s, curDate=%s",
-				startDate.toString(),endDate.toString(),curDate.toString()));
+				endDate = Test.parseDate(obj_.getString("end"));
+		System.out.println(String.format("got startDate=%s, endDate=%s",
+				startDate.toString(),endDate.toString()));
 		Long[] dates = Test.getUniform(startDate.getTime(), endDate.getTime(), howManyTimes);
-		System.out.println("got dates:");
 		for(int i = 0; i < dates.length; i++)
 		{
-			Date date = new Date(dates[i]);
-			System.out.println("\t"+date.toString());
-			Long delay = date.getTime() - curDate.getTime();
-			if(delay>=0)
+			Date d = new Date(dates[i]);
+			data_.getJSONArray(ARRAYKEY).put(writeDate(d));
+		}
+	}
+	protected void schedule()
+	{
+		Date curDate = new Date();
+		JSONArray array = data_.getJSONArray(ARRAYKEY);
+		
+		System.out.println(String.format("curDate=%s",LocalUtil.DateToString(curDate)));
+		for(int i = 0; i < array.length(); i++)
+		{
+			Date d = parseDate(array.getString(i));
+			Long delay = d.getTime() - curDate.getTime();
+			if( delay >= 0 )
 			{
-				System.out.println(String.format("schedule %d at %s", i,date.toString()));
+				System.out.println(String.format("schedule %d at %s", i,d.toString()));
 				timer_.schedule(new TestReminder(i), delay);
-			}	
+			}
 		}
 	}
 	protected class TestReminder extends TimerTask{
@@ -91,6 +108,7 @@ abstract public class Test implements Runnable
 	}
 	@Override
 	public void run() {
+		makeDates();
 		schedule();
 	}
 	public String getCronPattern()

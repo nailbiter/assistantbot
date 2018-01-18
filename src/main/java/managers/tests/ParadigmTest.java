@@ -6,8 +6,8 @@ import managers.TestManager;
 import util.MyManager;
 
 public class ParadigmTest extends Test {
-	public ParadigmTest(JSONObject obj,TestManager master,String name) {
-		super(obj,master,name);
+	public ParadigmTest(JSONObject obj,JSONObject data,TestManager master,String name) {
+		super(obj,data,master,name);
 	}
 
 	@Override

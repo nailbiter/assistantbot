@@ -15,8 +15,8 @@ public class PluralTest extends Test {
 	JSONArray germanplurals = null;
 	Random rand = new Random();
 	List<Integer> indexes_ = new ArrayList<Integer>();
-	public PluralTest(JSONObject obj,TestManager master,String name) throws Exception {
-		super(obj,master,name);
+	public PluralTest(JSONObject obj,JSONObject data,TestManager master,String name) throws Exception {
+		super(obj,data,master,name);
 		germanplurals = LocalUtil.getJSONArrayFromRes(this, "germanplurals");
 		System.out.println(String.format("germanplurals has %d elements", germanplurals.length()));
 	}

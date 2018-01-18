@@ -29,12 +29,19 @@ public class TestManager extends AbstractManager {
 		chatID_ = chatID;
 		bot_ = bot;
 		scheduler_ = scheduler;
-		String name = "tests";
-		JSONObject obj = StorageManager.get(name, true);
 		tests = new ArrayList<Test>();
-		tests.add(new ParadigmTest(obj.getJSONObject("paradigm"),this,"paradigm"));
-		tests.add(new PluralTest(obj.getJSONObject("plural"),this,"plural"));
+		
+		JSONObject obj = StorageManager.get("tests", true),
+				objData = StorageManager.get("testsData", true);
+		addTest("paradigm",obj,objData);
+		addTest("plural",obj,objData);
 		schedule();
+	}
+	private void addTest(String name,JSONObject obj, JSONObject objData)
+	{
+		if(!objData.has(name))
+			objData.put(name, new JSONObject());
+		tests.add(new ParadigmTest(obj.getJSONObject(name),objData.getJSONObject(name),this,name));
 	}
 
 	private void schedule() {

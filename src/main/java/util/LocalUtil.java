@@ -3,6 +3,7 @@ package util;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URLDecoder;
+import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -65,5 +66,9 @@ public class LocalUtil {
 		TimeZone tz = TimeZone.getTimeZone("JST");
 		System.out.println("zone: "+tz.getID());
 		return tz;
+	}
+	public static String DateToString(Date d)
+	{
+		return d.toString();
 	}
 }
