@@ -19,6 +19,10 @@ public class SleepManager extends AbstractManager {
 		bot_ = bot;
 		isSleeping = false;
 		obj_ = util.StorageManager.get("sleep", true);
+		if(!obj_.has("sleepingtimes"))
+			obj_.put("sleepingtimes", new JSONArray());
+		if(!obj_.has("wakingtimes"))
+			obj_.put("wakingtimes", new JSONArray());
 		this.sleepingtimes_ = obj_.getJSONArray("sleepingtimes");
 		this.wakingtimes_ = obj_.getJSONArray("wakingtimes");
 	}

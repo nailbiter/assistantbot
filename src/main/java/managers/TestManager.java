@@ -43,6 +43,7 @@ public class TestManager extends AbstractManager {
 		if(!objData.has(name))
 			objData.put(name, new JSONObject());
 		
+		System.out.println(String.format("objData=%s, obj=%s", objData.toString(),obj.toString()));
 		if(name.equals("paradigm"))
 			tests.add(new ParadigmTest(obj.getJSONObject(name),objData.getJSONObject(name),this,name));
 		if(name.equals("plural"))

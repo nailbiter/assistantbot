@@ -92,7 +92,8 @@ public class StorageManager {
 			res = (JSONObject) (new JSONTokener(sb.toString())).nextValue();
 		}
 		catch(Exception e) {
-			System.out.println("found nothing");
+			System.out.println(String.format("found nothing: name=%s", name));
+			e.printStackTrace(System.out);
 			res = new JSONObject();
 		}
 		if(register)

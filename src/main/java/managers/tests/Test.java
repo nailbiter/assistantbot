@@ -80,7 +80,7 @@ abstract public class Test implements Runnable
 			Long delay = d.getTime() - curDate.getTime();
 			if( delay >= 0 )
 			{
-				System.out.println(String.format("schedule %d at %s", i,d.toString()));
+				System.out.println(String.format("schedule %d at %s", i,LocalUtil.DateToString(d)));
 				timer_.schedule(new TestReminder(i), delay);
 			}
 		}
