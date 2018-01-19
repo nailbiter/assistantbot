@@ -35,13 +35,18 @@ public class TestManager extends AbstractManager {
 				objData = StorageManager.get("testsData", true);
 		addTest("paradigm",obj,objData);
 		addTest("plural",obj,objData);
+		System.out.println(String.format("#tests=%d", tests.size()));
 		schedule();
 	}
 	private void addTest(String name,JSONObject obj, JSONObject objData) throws Exception
 	{
 		if(!objData.has(name))
 			objData.put(name, new JSONObject());
-		tests.add(new ParadigmTest(obj.getJSONObject(name),objData.getJSONObject(name),this,name));
+		
+		if(name.equals("paradigm"))
+			tests.add(new ParadigmTest(obj.getJSONObject(name),objData.getJSONObject(name),this,name));
+		if(name.equals("plural"))
+			tests.add(new PluralTest(obj.getJSONObject(name),objData.getJSONObject(name),this,name));
 	}
 
 	private void schedule() throws Exception

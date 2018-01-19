@@ -32,7 +32,7 @@ public class ParadigmTest extends Test {
 	}
 	@Override
 	public String processReply(String reply, int count) {
-		System.out.println(String.format("processReply(count=%d,obj_=%s)",count,obj_.toString()));
+		System.out.println(String.format("paradigm: processReply(count=%d,obj_=%s)",count,obj_.toString()));
 		return this.verify(reply,obj_.getJSONArray("data").getJSONArray(count));
 	}
 	private String verify(String reply,JSONArray answer)
