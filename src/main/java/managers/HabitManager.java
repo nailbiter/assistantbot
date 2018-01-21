@@ -91,7 +91,7 @@ public class HabitManager implements util.MyManager
 			}
 		}
 	}
-	public String getHabitsInfo()
+	public String getHabitsInfo() throws Exception
 	{
 		System.out.println("getHabitsInfo");
 		System.out.println("len="+habits.length());
@@ -112,7 +112,11 @@ public class HabitManager implements util.MyManager
 				continue;
 			tb.newRow();
 			tb.addToken(habit.getString("name"));
-			tb.addToken(p.nextMatchingDate().toString());
+			/* NOTE: in the next line we use Date.toString() in place of
+			 * LocalUtil.DateToString() which we normally use. This is so,
+			 * since Scheduler is already set up for the correct timezone. 
+			 */
+			tb.addToken((p.nextMatchingDate()).toString());
 			tb.addToken(habit.optBoolean("isWaiting") ? 
 				("PEND("+ (habit.getInt("count")-habit.getInt("doneCount"))+")"):"");
 			tb.addToken(habit.optBoolean("isWaiting") ?
@@ -190,10 +194,6 @@ public class HabitManager implements util.MyManager
 		}
 		if(code > 0)
 		{
-			/*
-			 streaks.put(habit.getString("name"),
-							1+streaks.optInt(habit.getString("name"), 0));
-			 */
 			JSONObject item = streaks.getJSONObject(name);
 			item.put("streak",item.getInt("streak")+1);
 			item.put("accum", item.getInt("accum")+1);

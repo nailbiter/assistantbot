@@ -5,22 +5,29 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import util.LocalUtil;
 import util.MyManager;
 
 public class StandardParser extends AbstractParser{
 	JSONArray cmds_;
 	String defaultName_ = null;
-	public StandardParser(JSONArray cmds)
+	public StandardParser(JSONArray cmds) throws Exception
 	{
 		cmds_ = cmds;
+		
+		LocalUtil.SortJSONArray(cmds_,"name");
+		this.defaultName_ = this.getNameOfDefault();
+	}
+	protected String getNameOfDefault() throws Exception
+	{
 		for(int i = 0; i < cmds_.length(); i++)
 			if(cmds_.get(i) instanceof String)
 			{
-				defaultName_ = (String)cmds_.get(i);
 				System.out.println(String.format("defName=%s, idx=%d/%d", this.defaultName_,i,
 						cmds_.length()));
-				break;
+				return (String)cmds_.get(i);
 			}
+		throw new Exception("getNameOfDefault");
 	}
 	protected static JSONArray getCommands(List<MyManager> managers) throws Exception
 	{
@@ -63,7 +70,7 @@ public class StandardParser extends AbstractParser{
 			JSONObject cmd = cmds_.optJSONObject(i); 
 			if(cmd==null)
 				continue;
-			res.append(""+cmd.getString("name") + " - "+cmd.optString("help","(none)")+"\n");
+			res.append(String.format("%s - %s\n", cmd.getString("name"),cmd.optString("help","(none)")));
 		}
 		return res.toString();
 	}
@@ -72,8 +79,10 @@ public class StandardParser extends AbstractParser{
 	public JSONObject parse(String line) throws Exception
 	{
 		String[] tokens = line.split(" ");
-		for(int i = 0; i < ( cmds_.length() - 1 ); i++)
+		for(int i = 0; i < cmds_.length(); i++)
 		{
+			if(cmds_.optJSONObject(i)==null)
+				continue;
 			if(tokens[0].compareTo("/"+cmds_.getJSONObject(i).getString("name"))==0)
 			{
 				JSONArray args = cmds_.getJSONObject(i).getJSONArray("args");
@@ -97,7 +106,7 @@ public class StandardParser extends AbstractParser{
 					{
 						StringBuilder sb = new StringBuilder(tokens[j+1]);
 						/*FIXME: the next snippet may cause troubles if
-						 *  tokens are separated by several whitespaces
+						 *  tokens are separated by several whitespace chars
 						 *  and this needed to be preserved
 						 */ 
 						for(int k = j+2; k < tokens.length; k++)

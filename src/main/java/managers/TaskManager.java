@@ -13,6 +13,7 @@ import java.util.TimerTask;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import util.LocalUtil;
 import util.MyBasicBot;
 import util.MyManager;
 import util.StorageManager;
@@ -59,7 +60,8 @@ public class TaskManager implements MyManager {
 			Long date = history.getLong(history.length() - 2);
 			Date lastDate = new Date(date);
 			int timeInMin = history.getInt(history.length() - 1);
-			return (new Date(lastDate.getTime() + timeInMin*60*1000)).toString();
+			//return (new Date(lastDate.getTime() + timeInMin*60*1000)).toString();
+			return LocalUtil.DateToString((new Date(lastDate.getTime() + timeInMin*60*1000)));
 		}
 		void postpone(int byhowmuch)
 		{

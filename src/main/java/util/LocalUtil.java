@@ -5,12 +5,16 @@ import java.io.StringWriter;
 import java.net.URLDecoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -74,5 +78,30 @@ public class LocalUtil {
 		DateFormat df = new SimpleDateFormat();
 		df.setTimeZone(LocalUtil.getTimezone());
 		return df.format(d);
+	}
+	public static void SortJSONArray(JSONArray arr,String key)
+	{
+		List<JSONObject> list = new ArrayList<JSONObject>();
+		final String keyFinal = key;
+		for(int idx = 0; idx < arr.length(); )
+		{
+			JSONObject obj = arr.optJSONObject(idx);
+			if(obj==null)
+				idx++;
+			else
+			{
+				arr.remove(idx);
+				list.add(obj);
+			}
+		}
+		Collections.sort(list,new Comparator<JSONObject>()
+				{
+					@Override
+					public int compare(JSONObject o1, JSONObject o2) {
+						return o1.getString(keyFinal).compareTo(o2.getString(keyFinal));
+					}
+				});
+		for(int i = 0; i < list.size(); i++)
+			arr.put(list.get(i));
 	}
 }
