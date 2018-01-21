@@ -5,6 +5,7 @@ import java.util.List;
 import org.json.JSONObject;
 
 import it.sauronsoftware.cron4j.Scheduler;
+import managers.MiscUtilManager;
 import managers.SleepManager;
 import util.LocalUtil;
 import util.MyManager;
@@ -14,15 +15,14 @@ import util.parsers.AbstractParser;
 public class MyAssistantUserData implements UserData {
 	protected Scheduler scheduler = null; //FIXME: should it be a singleton?
 	protected static boolean ISBOTMANAGER = false;
-	protected List<MyManager> managers = null;
+	protected List<MyManager> managers = new ArrayList<MyManager>();
 	List<MyManager> getManagers(){return managers;}
 	protected AbstractParser parser = null;
 	String lastCategory = null;
+	SleepManager sm_ = null;
 	MyAssistantUserData(Long chatID,MyAssistantBot bot){
 		try 
 		{
-			managers = new ArrayList<MyManager>();
-			
 			if(!MyAssistantUserData.ISBOTMANAGER)
 			{
 				scheduler = new Scheduler();
@@ -31,9 +31,10 @@ public class MyAssistantUserData implements UserData {
 				managers.add(new managers.HabitManager(chatID,bot,scheduler));
 				managers.add(new managers.TaskManager(chatID, bot));
 				managers.add(new managers.TestManager(chatID, bot,scheduler));
-				managers.add(new managers.SleepManager(bot));
+				managers.add(sm_ = new managers.SleepManager(bot));
 				managers.add(new managers.TimeManager(chatID,bot,scheduler,this));
 				managers.add(new managers.MailManager(chatID,bot,scheduler,this));
+				managers.add(new MiscUtilManager());
 			}
 			managers.add(util.StorageManager.getMyManager());
 			managers.add(new managers.JShellManager(bot));
@@ -51,6 +52,7 @@ public class MyAssistantUserData implements UserData {
 		}
 		if(scheduler!=null) scheduler.start();
 	}
+	public boolean isSleeping() {return (sm_ != null) && sm_.isSleeping();}
 	public AbstractParser getParser() {return parser;}
 	public void Update(JSONObject res)  {
 		if(res.has("name"))

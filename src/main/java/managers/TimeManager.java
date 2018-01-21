@@ -129,6 +129,7 @@ public class TimeManager implements MyManager,Runnable {
 			}
 		}
 	}
+	protected static final String WHEREAREYOUNOW = "北鼻，你在幹什麼？";
 	@Override
 	public void run(){
 		if(this.isWaitingForAnswer)
@@ -137,7 +138,7 @@ public class TimeManager implements MyManager,Runnable {
 			catch(Exception e) { e.printStackTrace(System.out); }
 		}
 		System.out.println("run this");
-		bot_.sendMessageWithKeyBoard("where are you now?", chatID_, this, buttons);
+		bot_.sendMessageWithKeyBoard(WHEREAREYOUNOW, chatID_, this, buttons);
 		this.isWaitingForAnswer = true;
 	}
 	@Override

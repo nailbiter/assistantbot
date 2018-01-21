@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import managers.TaskManager.Task;
 import util.MyManager;
 import util.StorageManager;
+import util.parsers.StandardParser;
 
 /**
  * @author nailbiter
@@ -58,5 +59,15 @@ public abstract class AbstractManager implements MyManager {
 			array.put(args.get(i));
 		cmd.put("args", array);
 		return cmd;
+	}
+	protected static JSONObject makeCommandArg(String name,StandardParser.ArgTypes type,boolean isOpt)
+	{
+		JSONObject arg = new JSONObject();
+		
+		arg.put("name", name);
+		if(isOpt) arg.put("isOpt", isOpt);
+		arg.put("type", type.toString());
+		
+		return arg;
 	}
 }

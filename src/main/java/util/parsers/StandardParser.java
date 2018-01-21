@@ -11,6 +11,7 @@ import util.MyManager;
 public class StandardParser extends AbstractParser{
 	JSONArray cmds_;
 	String defaultName_ = null;
+	public enum ArgTypes{rem, string, integer};
 	public StandardParser(JSONArray cmds) throws Exception
 	{
 		cmds_ = cmds;
@@ -115,6 +116,9 @@ public class StandardParser extends AbstractParser{
 				JSONObject res = new JSONObject().put("name", cmds_.getJSONObject(i).getString("name"));
 				for(int j = 0; j < args.length();j++)
 				{
+					/**
+					 *FIXME: use StandardParser.ArgTypes here in place of string literals
+					 */
 					JSONObject arg = args.getJSONObject(j);
 					if(arg.getString("type").compareTo("string")==0)
 					{
