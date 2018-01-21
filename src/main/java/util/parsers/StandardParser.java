@@ -70,9 +70,35 @@ public class StandardParser extends AbstractParser{
 			JSONObject cmd = cmds_.optJSONObject(i); 
 			if(cmd==null)
 				continue;
-			res.append(String.format("%s - %s\n", cmd.getString("name"),cmd.optString("help","(none)")));
+			res.append(String.format("%s - %s%s\n", cmd.getString("name"),printArgs(cmd),cmd.optString("help","(none)")));
 		}
 		return res.toString();
+	}
+	protected static String printArgs(JSONObject cmd)
+	{
+		StringBuilder sb = new StringBuilder();
+		int index = 0;
+		JSONArray args = cmd.getJSONArray("args");
+		
+		if(args.length()==0)
+			return sb.toString();
+		
+		sb.append(printArg(args.getJSONObject(index)));
+		for(index++;index<args.length(); index++)
+			sb.append(" "+printArg(args.getJSONObject(index)));
+		
+		sb.append(": ");
+		return sb.toString();
+	}
+	protected static String printArg(JSONObject arg)
+	{
+		//return arg.getString("name").toUpperCase();
+		if(StandardParser.isArgOpt(arg))
+			return String.format("[%s%s]", arg.getString("name").toUpperCase(),
+					arg.getString("type").substring(0, 1));
+		else
+			return String.format("%s%s", arg.getString("name").toUpperCase(),
+					arg.getString("type").substring(0, 1));
 	}
 	//FIXME: error handling
 	@Override
@@ -120,7 +146,7 @@ public class StandardParser extends AbstractParser{
 			}
 		}
 		
-		return new JSONObject().put(cmds_.getString(cmds_.length()-1), line);
+		return new JSONObject().put(this.defaultName_, line);
 	}
 	protected static boolean isArgOpt(JSONObject arg) {return arg.optBoolean("isOpt",false);}
 	@Override

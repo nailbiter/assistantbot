@@ -15,6 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
+import assistantbot.MyAssistantUserData;
 import it.sauronsoftware.cron4j.Scheduler;
 import util.LocalUtil;
 import util.MyBasicBot;
@@ -38,7 +39,7 @@ public class TimeManager implements MyManager,Runnable {
 	protected static int ROWNUM = 2;
 	JSONArray time = null;
 	boolean isWaitingForAnswer;
-	SleepManager sleepManager_ = null;
+	MyAssistantUserData userData_ = null;
 	/* (non-Javadoc)
 	 * @see util.MyManager#getResultAndFormat(org.json.JSONObject)
 	 */
@@ -87,12 +88,12 @@ public class TimeManager implements MyManager,Runnable {
 		}
 		return null;
 	}
-	public TimeManager(Long chatID,MyBasicBot bot,Scheduler scheduler_in, SleepManager sm) {
+	public TimeManager(Long chatID,MyBasicBot bot,Scheduler scheduler_in, MyAssistantUserData myAssistantUserData) {
 		this.scheduler_ = scheduler_in;
 		this.chatID_ = chatID;
 		this.bot_ = bot;
 		this.isWaitingForAnswer = false;
-		this.sleepManager_ = sm;
+		this.userData_ = myAssistantUserData;
 		makeButtons();
 		scheduler_.schedule("*/30 * * * *",this);
 		JSONObject timeObj = StorageManager.get("time", true);

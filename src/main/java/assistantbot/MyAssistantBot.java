@@ -1,3 +1,4 @@
+package assistantbot;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +23,7 @@ import util.UserData;
 import util.Util;
 
 public class MyAssistantBot extends MyBasicBot {
-	MyAssistantBot()
+	public MyAssistantBot()
 	{
 		try
 		{

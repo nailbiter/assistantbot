@@ -7,6 +7,7 @@ package managers;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import assistantbot.MyAssistantUserData;
 import it.sauronsoftware.cron4j.Scheduler;
 import util.KeyRing;
 import util.MyBasicBot;
@@ -36,13 +37,13 @@ public class MailManager implements MyManager {
 	Folder fol_ = null;
 	Store st_ = null;
 	String ID = null;
-	SleepManager sleepManager_ = null;
+	MyAssistantUserData userData_ = null;
 	protected String TOSHIMAIL;
-	public MailManager(Long chatID, MyBasicBot bot, Scheduler scheduler, SleepManager sm) throws Exception{
+	public MailManager(Long chatID, MyBasicBot bot, Scheduler scheduler, MyAssistantUserData myAssistantUserData) throws Exception{
 		this.chatID_ = chatID;
 		this.bot_ = bot;
 		this.scheduler_ = scheduler;
-		this.sleepManager_ = sm;
+		this.userData_ = myAssistantUserData;
 		this.TOSHIMAIL = KeyRing.getMail(0);
 		
 		String host = "mail.ms.u-tokyo.ac.jp";

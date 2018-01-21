@@ -1,3 +1,4 @@
+package assistantbot;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,10 +31,9 @@ public class MyAssistantUserData implements UserData {
 				managers.add(new managers.HabitManager(chatID,bot,scheduler));
 				managers.add(new managers.TaskManager(chatID, bot));
 				managers.add(new managers.TestManager(chatID, bot,scheduler));
-				SleepManager sm = null;
-				managers.add(sm = new managers.SleepManager(bot));
-				managers.add(new managers.TimeManager(chatID,bot,scheduler,sm));
-				managers.add(new managers.MailManager(chatID,bot,scheduler,sm));
+				managers.add(new managers.SleepManager(bot));
+				managers.add(new managers.TimeManager(chatID,bot,scheduler,this));
+				managers.add(new managers.MailManager(chatID,bot,scheduler,this));
 			}
 			managers.add(util.StorageManager.getMyManager());
 			managers.add(new managers.JShellManager(bot));
