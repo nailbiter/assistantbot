@@ -40,6 +40,7 @@ public class TimeManager implements MyManager,Runnable {
 	JSONArray time = null;
 	boolean isWaitingForAnswer;
 	MyAssistantUserData userData_ = null;
+	protected static final int SLEEPINDEX = 0, NOWORKINDEX = 8;
 	/* (non-Javadoc)
 	 * @see util.MyManager#getResultAndFormat(org.json.JSONObject)
 	 */
@@ -104,17 +105,17 @@ public class TimeManager implements MyManager,Runnable {
 	protected void makeButtons()
 	{
 		categories = new JSONArray()
-				.put("сон")
-				.put("japanese")
-				.put("логистика")
-				.put("gym")
-				.put("reading")
-				.put("работа")
-				.put("отдых")
-				.put("общение")
-				.put("без дела")
-				.put("german")
-				.put("coding")
+				.put("сон")			//0
+				.put("japanese")		//1
+				.put("логистика")	//2
+				.put("gym")			//3
+				.put("reading")		//4
+				.put("работа")		//5
+				.put("отдых")		//6
+				.put("общение")		//7
+				.put("без дела")		//8
+				.put("german")		//9
+				.put("coding")		//10
 				.put("math project");
 		buttons = new ArrayList<List<InlineKeyboardButton>>();
 		for(int i = 0; i < categories.length();)
@@ -134,7 +135,12 @@ public class TimeManager implements MyManager,Runnable {
 	public void run(){
 		if(this.isWaitingForAnswer)
 		{
-			try{gotUpdate(categories.getString(0));}
+			try{
+				if(userData_.isSleeping())
+					gotUpdate(categories.getString(TimeManager.SLEEPINDEX));
+				else
+					gotUpdate(categories.getString(TimeManager.NOWORKINDEX));
+			}
 			catch(Exception e) { e.printStackTrace(System.out); }
 		}
 		System.out.println("run this");

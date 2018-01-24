@@ -5,6 +5,7 @@ import java.util.List;
 import org.json.JSONObject;
 
 import it.sauronsoftware.cron4j.Scheduler;
+import managers.BadHabitManager;
 import managers.MiscUtilManager;
 import managers.SleepManager;
 import util.LocalUtil;
@@ -35,6 +36,7 @@ public class MyAssistantUserData implements UserData {
 				managers.add(new managers.TimeManager(chatID,bot,scheduler,this));
 				managers.add(new managers.MailManager(chatID,bot,scheduler,this));
 				managers.add(new MiscUtilManager());
+				//managers.add(new BadHabitManager());
 			}
 			managers.add(util.StorageManager.getMyManager());
 			managers.add(new managers.JShellManager(bot));

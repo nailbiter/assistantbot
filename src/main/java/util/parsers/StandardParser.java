@@ -11,7 +11,7 @@ import util.MyManager;
 public class StandardParser extends AbstractParser{
 	JSONArray cmds_;
 	String defaultName_ = null;
-	public enum ArgTypes{rem, string, integer};
+	public enum ArgTypes{remainder, string, integer};
 	public StandardParser(JSONArray cmds) throws Exception
 	{
 		cmds_ = cmds;
@@ -126,7 +126,8 @@ public class StandardParser extends AbstractParser{
 							res.put(arg.getString("name"),tokens[j+1]);
 						continue;
 					}
-					if(arg.getString("type").compareTo("int")==0)
+					//FIXME: next line is bad
+					if(arg.getString("type").compareTo("int")==0 || arg.getString("type").compareTo("integer")==0)
 					{
 						if(!isArgOpt(arg) || (tokens.length>=(j+2)))
 							res.put(arg.getString("name"),Integer.parseInt(tokens[j+1]));

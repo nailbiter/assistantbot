@@ -49,7 +49,7 @@ public abstract class AbstractManager implements MyManager {
 	public String gotUpdate(String data) throws Exception {
 		return null;
 	}
-	protected static JSONObject makeCommand(String name,String help,List<JSONObject> args)
+	static JSONObject makeCommand(String name,String help,List<JSONObject> args)
 	{
 		JSONObject cmd = new JSONObject();
 		cmd.put("name", name);
@@ -60,7 +60,7 @@ public abstract class AbstractManager implements MyManager {
 		cmd.put("args", array);
 		return cmd;
 	}
-	protected static JSONObject makeCommandArg(String name,StandardParser.ArgTypes type,boolean isOpt)
+	static JSONObject makeCommandArg(String name,StandardParser.ArgTypes type,boolean isOpt)
 	{
 		JSONObject arg = new JSONObject();
 		

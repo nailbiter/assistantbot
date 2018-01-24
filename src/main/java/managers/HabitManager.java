@@ -1,5 +1,7 @@
 package managers;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Formatter;
 import java.util.Hashtable;
@@ -15,6 +17,7 @@ import it.sauronsoftware.cron4j.Scheduler;
 import util.LocalUtil;
 import util.MyBasicBot;
 import util.StorageManager;
+import util.parsers.StandardParser;
 
 public class HabitManager implements util.MyManager
 {
@@ -24,7 +27,8 @@ public class HabitManager implements util.MyManager
 	Scheduler scheduler = null;
 	MyBasicBot bot_;
 	Timer timer = new Timer();
-	Hashtable<String,Date> failTimes = null; 
+	Hashtable<String,Date> failTimes = null;
+	private Hashtable<String,Object> hash_ = new Hashtable<String,Object>();
 	enum HabitRunnableEnum{
 		SENDREMINDER, SETFAILURE;
 	}
@@ -153,11 +157,52 @@ public class HabitManager implements util.MyManager
 		{
 			System.out.println(this.getClass().getName()+" got comd: /"+res.getString("name"));
 			if(res.getString("name").compareTo("habits")==0)
-				return getHabitsInfo();
+			{
+				if(res.optString("key").contains("s"))
+					return getHabitsInfoShort();
+				else
+					return getHabitsInfo();
+			}
+				
 			if(res.getString("name").compareTo("done")==0) 
 				return taskDone(res.getString("habit"));
 		}
 		return null;
+	}
+	private String getHabitsInfoShort() {
+		System.out.println("getHabitsInfoShort");
+		System.out.println("len="+habits.length());
+		util.TableBuilder tb = new util.TableBuilder();
+		{
+			tb.newRow();
+			tb.addToken("name");
+			//tb.addToken("next date");
+			tb.addToken("isP?");
+			//tb.addToken("timeToDo");
+			//tb.addToken("streak");
+			//tb.addToken("");
+		}
+		for(int i = 0; i < habits.length(); i++) {
+			JSONObject habit = habits.getJSONObject(i);
+			Predictor p = new Predictor(habit.getString("cronline"));
+			if(!habit.optBoolean("enabled",true) || !habit.optBoolean("isWaiting"))
+				continue;
+			tb.newRow();
+			tb.addToken(habit.getString("name"));
+			/* NOTE: in the next line we use Date.toString() in place of
+			 * LocalUtil.DateToString() which we normally use. This is so,
+			 * since Scheduler is already set up for the correct timezone. 
+			 */
+			//tb.addToken((p.nextMatchingDate()).toString());
+			tb.addToken(habit.optBoolean("isWaiting") ? 
+				("("+ (habit.getInt("count")-habit.getInt("doneCount"))+")"):"");
+			/*tb.addToken(habit.optBoolean("isWaiting") ?
+				LocalUtil.milisToTimeFormat(failTimes.get(habit.get("name")).getTime()- (new Date().getTime())):
+				LocalUtil.milisToTimeFormat(habit.getInt("delaymin")*60*1000));*/
+			//tb.addToken(this.printStreak(i));
+			//tb.addToken(".");
+		}
+		return tb.toString();
 	}
 	@Override
 	public String gotUpdate(String data) throws Exception {
@@ -208,8 +253,16 @@ public class HabitManager implements util.MyManager
 	}
 	@Override
 	public JSONArray getCommands() {
-		return new JSONArray("[{\"name\":\"habits\",\"args\":[],\"help\":\"list all habits and info\"}\n" + 
-				",{\"name\":\"done\",\"args\":[{\"name\":\"habit\",\"type\":\"remainder\"}],\"help\":\"done habit\"}]");
+		JSONArray res = new JSONArray();
+		
+		res.put(AbstractManager.makeCommand("habits", "list all habits and info",
+				Arrays.asList(AbstractManager.makeCommandArg("key", StandardParser.ArgTypes.string, true))));
+		res.put(AbstractManager.makeCommand("done", "done habit",
+				Arrays.asList(AbstractManager.makeCommandArg("habit", StandardParser.ArgTypes.remainder, false))));
+
+		/*return new JSONArray("[{\"name\":\"habits\",\"args\":[],\"help\":\"list all habits and info\"}\n" + 
+				",{\"name\":\"done\",\"args\":[{\"name\":\"habit\",\"type\":\"remainder\"}],\"help\":\"done habit\"}]");*/
+		return res;
 	}
 	@Override
 	public String processReply(int messageID,String msg) {
