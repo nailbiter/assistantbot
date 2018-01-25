@@ -9,7 +9,10 @@ import org.json.JSONObject;
 import util.parsers.StandardParser;
 
 public class BadHabitManager extends AbstractManager {
-	
+	BadHabitManager()
+	{
+		
+	}
 	@Override
 	public JSONArray getCommands() {
 		String pref = "bh";

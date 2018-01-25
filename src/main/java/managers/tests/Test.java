@@ -33,7 +33,7 @@ abstract public class Test implements Runnable
 		schedule();
 	}
 	public String getName() { return name_; }
-	protected static Date parseDate(String what) throws Exception
+	public static Date parseDate(String what) throws Exception
 	{
 		Date date = new Date();
 		Calendar c = new GregorianCalendar();
@@ -49,7 +49,7 @@ abstract public class Test implements Runnable
 		
 		return c.getTime();
 	}
-	protected static String writeDate(Date d){ return String.format("%d:%d", d.getHours(),d.getMinutes()); }
+	public static String writeDate(Date d){ return String.format("%d:%d", d.getHours(),d.getMinutes()); }
 	protected void makeDates() throws Exception
 	{
 		data_.put(ARRAYKEY, new JSONArray());
@@ -91,7 +91,7 @@ abstract public class Test implements Runnable
 		@Override
 		public void run() { master_.makeCall(Test.this, isCalled(index_), index_); }
 	}
-	private static Long[] getUniform(Long l1, Long l2, int howManyTimes)
+	public static Long[] getUniform(Long l1, Long l2, int howManyTimes)
 	{
 		Long[] dates = new Long[howManyTimes];
 		Random rand = new Random();

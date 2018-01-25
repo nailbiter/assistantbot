@@ -14,6 +14,7 @@ import org.telegram.telegrambots.api.methods.send.SendMessage;
 
 import it.sauronsoftware.cron4j.Predictor;
 import it.sauronsoftware.cron4j.Scheduler;
+import managers.tests.Test;
 import util.LocalUtil;
 import util.MyBasicBot;
 import util.StorageManager;
@@ -22,6 +23,7 @@ import util.parsers.StandardParser;
 public class HabitManager implements util.MyManager
 {
 	JSONArray habits = null;
+	JSONObject habitReminders = null;
 	JSONObject streaks = null;
 	Long chatID_;
 	Scheduler scheduler = null;
@@ -78,6 +80,7 @@ public class HabitManager implements util.MyManager
 		scheduler = scheduler_in;
 		chatID_ = chatID;
 		habits = util.StorageManager.get("habits",false).getJSONArray("obj");
+		this.habitReminders = util.StorageManager.get("habitReminders",true); 
 		failTimes = new Hashtable<String,Date>(habits.length());
 		streaks = StorageManager.get("habitstreaks",true);
 		for(int i = 0; i < habits.length(); i++)
@@ -91,8 +94,54 @@ public class HabitManager implements util.MyManager
 			{
 				scheduler.schedule(habit.getString("cronline"),
 						new HabitRunnable(i,HabitRunnableEnum.SENDREMINDER));
+				makeDates(habit.optJSONObject("randomReminder"),this.habitReminders,habit.getString("name"),
+						timer,bot_,chatID_);
 				this.updateStreaks(i, 0);
 			}
+		}
+	}
+	protected static void makeDates(JSONObject obj_, JSONObject objC_, String name_, Timer timer, MyBasicBot bot, Long chatID_2) throws Exception
+	{
+		if(obj_==null) return;
+		final MyBasicBot bot_ = bot;
+		final String name = name_;
+		final Long chatID_ = chatID_2;
+		JSONArray data_ = objC_.optJSONArray(name_);
+		int howManyTimes = obj_.getInt("count");
+		Long[] dates = new Long[howManyTimes];
+		
+		if(data_ == null)
+		{
+			objC_.put(name_, data_ = new JSONArray());
+		
+			System.out.println(String.format("run schedule: %s", name_));
+			Date startDate = Test.parseDate(obj_.getString("start")),
+					endDate = Test.parseDate(obj_.getString("end"));
+			System.out.println(String.format("got startDate=%s, endDate=%s",
+					startDate.toString(),endDate.toString()));
+			dates = Test.getUniform(startDate.getTime(), endDate.getTime(), howManyTimes);
+			for(int i = 0; i < dates.length; i++)
+			{
+				Date d = new Date(dates[i]);
+				data_.put(Test.writeDate(d));
+			}
+		}
+		else
+		{
+			for(int i = 0; i < dates.length; i++)
+				dates[i] = Test.parseDate(data_.getString(i)).getTime();
+		}
+		
+		Date curDate = new Date();
+		for(int i = 0; i < dates.length; i++)
+		{
+			System.out.println(String.format("schedule: %s at %s", name,Test.writeDate(new Date(dates[i]))));
+			if(dates[i]>curDate.getTime())
+				timer.schedule(new TimerTask(){
+							@Override
+							public void run() {
+								bot_.sendMessage(String.format("execute: %s!", name), chatID_);
+							}},dates[i] - curDate.getTime());
 		}
 	}
 	public String getHabitsInfo() throws Exception
@@ -112,15 +161,12 @@ public class HabitManager implements util.MyManager
 		for(int i = 0; i < habits.length(); i++) {
 			JSONObject habit = habits.getJSONObject(i);
 			Predictor p = new Predictor(habit.getString("cronline"));
+			p.setTimeZone(LocalUtil.getTimezone());
 			if(!habit.optBoolean("enabled",true))
 				continue;
 			tb.newRow();
 			tb.addToken(habit.getString("name"));
-			/* NOTE: in the next line we use Date.toString() in place of
-			 * LocalUtil.DateToString() which we normally use. This is so,
-			 * since Scheduler is already set up for the correct timezone. 
-			 */
-			tb.addToken((p.nextMatchingDate()).toString());
+			tb.addToken(LocalUtil.DateToString(p.nextMatchingDate()));
 			tb.addToken(habit.optBoolean("isWaiting") ? 
 				("PEND("+ (habit.getInt("count")-habit.getInt("doneCount"))+")"):"");
 			tb.addToken(habit.optBoolean("isWaiting") ?
