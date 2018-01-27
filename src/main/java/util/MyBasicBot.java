@@ -26,7 +26,8 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 	public void onUpdateReceived(Update update) {
 		// We check if the update has a message and the message has text
 		if (update.hasMessage()) {
-			try {
+			try 
+			{
 				SendMessage message = new SendMessage();;
 				String reply = null;
 				if(update.getMessage().isReply())
