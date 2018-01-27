@@ -1,5 +1,6 @@
 package managers;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -21,6 +22,7 @@ import util.LocalUtil;
 import util.MyBasicBot;
 import util.MyManager;
 import util.StorageManager;
+import util.parsers.StandardParser;
 
 /**
  * 
@@ -77,17 +79,23 @@ public class TimeManager implements MyManager,Runnable {
 						}
 					});
 				util.TableBuilder tb = new util.TableBuilder();
-				for(int i = 0; i < list.size(); i++)
-				{
+				for(int i = 0; i < list.size(); i++){
 					tb.newRow();
 					tb.addToken(list.get(i).getKey()+":");
-					tb.addToken(StringUtils.repeat("*",list.get(i).getValue()));
+					tb.addToken(printTime(list.get(i).getValue(),res.optString("key")));
 				}
 				
 				return tb.toString();
 			}
 		}
 		return null;
+	}
+	protected String printTime(int num, String key)
+	{
+		if(key.contains("n"))
+			return String.format("%.1fh", num/2.0);
+		else
+			return StringUtils.repeat("*",num);
 	}
 	public TimeManager(Long chatID,MyBasicBot bot,Scheduler scheduler_in, MyAssistantUserData myAssistantUserData) {
 		this.scheduler_ = scheduler_in;
@@ -133,19 +141,22 @@ public class TimeManager implements MyManager,Runnable {
 	protected static final String WHEREAREYOUNOW = "北鼻，你在幹什麼？";
 	@Override
 	public void run(){
-		if(this.isWaitingForAnswer)
-		{
-			try{
+		try {
+			if(this.isWaitingForAnswer)
+			{
 				if(userData_.isSleeping())
 					gotUpdate(categories.getString(TimeManager.SLEEPINDEX));
 				else
 					gotUpdate(categories.getString(TimeManager.NOWORKINDEX));
 			}
-			catch(Exception e) { e.printStackTrace(System.out); }
+			System.out.println("run this");
+			if(userData_.isSleeping())
+				gotUpdate(categories.getString(TimeManager.SLEEPINDEX));
+			else
+				bot_.sendMessageWithKeyBoard(WHEREAREYOUNOW, chatID_, this, buttons);
+			this.isWaitingForAnswer = true;
 		}
-		System.out.println("run this");
-		bot_.sendMessageWithKeyBoard(WHEREAREYOUNOW, chatID_, this, buttons);
-		this.isWaitingForAnswer = true;
+		catch(Exception e) { e.printStackTrace(System.out); }
 	}
 	@Override
 	public String gotUpdate(String data) throws Exception {
@@ -161,7 +172,12 @@ public class TimeManager implements MyManager,Runnable {
 	}
 	@Override
 	public JSONArray getCommands() {
-		return new JSONArray("[{\"name\":\"timestat\",\"args\":[{\"name\":\"num\",\"type\":\"int\",\"isOpt\":true}],\"help\":\"statistics about time used\"}]");
+		JSONArray res = new JSONArray();
+		res.put(AbstractManager.makeCommand("timestat", "statistics about time used", 
+				Arrays.asList(AbstractManager.makeCommandArg("num", StandardParser.ArgTypes.integer, true),
+						AbstractManager.makeCommandArg("key", StandardParser.ArgTypes.string, true)
+						)));
+		return res;
 	}
 	@Override
 	public String processReply(int messageID,String msg) {

@@ -23,7 +23,6 @@ import util.parsers.StandardParser;
 public class HabitManager implements util.MyManager
 {
 	JSONArray habits = null;
-	JSONObject habitReminders = null;
 	JSONObject streaks = null;
 	Long chatID_;
 	Scheduler scheduler = null;
@@ -80,7 +79,6 @@ public class HabitManager implements util.MyManager
 		scheduler = scheduler_in;
 		chatID_ = chatID;
 		habits = util.StorageManager.get("habits",false).getJSONArray("obj");
-		this.habitReminders = util.StorageManager.get("habitReminders",true); 
 		failTimes = new Hashtable<String,Date>(habits.length());
 		streaks = StorageManager.get("habitstreaks",true);
 		for(int i = 0; i < habits.length(); i++)
@@ -94,54 +92,8 @@ public class HabitManager implements util.MyManager
 			{
 				scheduler.schedule(habit.getString("cronline"),
 						new HabitRunnable(i,HabitRunnableEnum.SENDREMINDER));
-				makeDates(habit.optJSONObject("randomReminder"),this.habitReminders,habit.getString("name"),
-						timer,bot_,chatID_);
 				this.updateStreaks(i, 0);
 			}
-		}
-	}
-	protected static void makeDates(JSONObject obj_, JSONObject objC_, String name_, Timer timer, MyBasicBot bot, Long chatID_2) throws Exception
-	{
-		if(obj_==null) return;
-		final MyBasicBot bot_ = bot;
-		final String name = name_;
-		final Long chatID_ = chatID_2;
-		JSONArray data_ = objC_.optJSONArray(name_);
-		int howManyTimes = obj_.getInt("count");
-		Long[] dates = new Long[howManyTimes];
-		
-		if(data_ == null)
-		{
-			objC_.put(name_, data_ = new JSONArray());
-		
-			System.out.println(String.format("run schedule: %s", name_));
-			Date startDate = Test.parseDate(obj_.getString("start")),
-					endDate = Test.parseDate(obj_.getString("end"));
-			System.out.println(String.format("got startDate=%s, endDate=%s",
-					startDate.toString(),endDate.toString()));
-			dates = Test.getUniform(startDate.getTime(), endDate.getTime(), howManyTimes);
-			for(int i = 0; i < dates.length; i++)
-			{
-				Date d = new Date(dates[i]);
-				data_.put(Test.writeDate(d));
-			}
-		}
-		else
-		{
-			for(int i = 0; i < dates.length; i++)
-				dates[i] = Test.parseDate(data_.getString(i)).getTime();
-		}
-		
-		Date curDate = new Date();
-		for(int i = 0; i < dates.length; i++)
-		{
-			System.out.println(String.format("schedule: %s at %s", name,Test.writeDate(new Date(dates[i]))));
-			if(dates[i]>curDate.getTime())
-				timer.schedule(new TimerTask(){
-							@Override
-							public void run() {
-								bot_.sendMessage(String.format("execute: %s!", name), chatID_);
-							}},dates[i] - curDate.getTime());
 		}
 	}
 	public String getHabitsInfo() throws Exception
@@ -179,6 +131,12 @@ public class HabitManager implements util.MyManager
 	}
 	public String taskDone(String name)
 	{
+		if( name.isEmpty() )
+		{
+			final String key = "done/habit";
+			name = (String) this.hash_.get(key);
+			this.hash_.put(key, name);
+		}
 		for(int i = 0; i < habits.length(); i++)
 		{
 			JSONObject habit = habits.getJSONObject(i);
@@ -211,7 +169,7 @@ public class HabitManager implements util.MyManager
 			}
 				
 			if(res.getString("name").compareTo("done")==0) 
-				return taskDone(res.getString("habit"));
+				return taskDone(res.optString("habit"));
 		}
 		return null;
 	}
@@ -222,11 +180,7 @@ public class HabitManager implements util.MyManager
 		{
 			tb.newRow();
 			tb.addToken("name");
-			//tb.addToken("next date");
 			tb.addToken("isP?");
-			//tb.addToken("timeToDo");
-			//tb.addToken("streak");
-			//tb.addToken("");
 		}
 		for(int i = 0; i < habits.length(); i++) {
 			JSONObject habit = habits.getJSONObject(i);
@@ -239,14 +193,8 @@ public class HabitManager implements util.MyManager
 			 * LocalUtil.DateToString() which we normally use. This is so,
 			 * since Scheduler is already set up for the correct timezone. 
 			 */
-			//tb.addToken((p.nextMatchingDate()).toString());
 			tb.addToken(habit.optBoolean("isWaiting") ? 
 				("("+ (habit.getInt("count")-habit.getInt("doneCount"))+")"):"");
-			/*tb.addToken(habit.optBoolean("isWaiting") ?
-				LocalUtil.milisToTimeFormat(failTimes.get(habit.get("name")).getTime()- (new Date().getTime())):
-				LocalUtil.milisToTimeFormat(habit.getInt("delaymin")*60*1000));*/
-			//tb.addToken(this.printStreak(i));
-			//tb.addToken(".");
 		}
 		return tb.toString();
 	}
@@ -294,7 +242,6 @@ public class HabitManager implements util.MyManager
 	protected String printStreak(int index)
 	{
 		JSONObject streak = streaks.getJSONObject(habits.getJSONObject(index).getString("name"));
-		/*Integer.toString(this.streaks.optInt(habit.getString("name"),0));*/
 		return streak.getInt("accum")+"("+streak.getInt("streak")+")";
 	}
 	@Override
@@ -304,10 +251,8 @@ public class HabitManager implements util.MyManager
 		res.put(AbstractManager.makeCommand("habits", "list all habits and info",
 				Arrays.asList(AbstractManager.makeCommandArg("key", StandardParser.ArgTypes.string, true))));
 		res.put(AbstractManager.makeCommand("done", "done habit",
-				Arrays.asList(AbstractManager.makeCommandArg("habit", StandardParser.ArgTypes.remainder, false))));
-
-		/*return new JSONArray("[{\"name\":\"habits\",\"args\":[],\"help\":\"list all habits and info\"}\n" + 
-				",{\"name\":\"done\",\"args\":[{\"name\":\"habit\",\"type\":\"remainder\"}],\"help\":\"done habit\"}]");*/
+				Arrays.asList(AbstractManager.makeCommandArg("habit", StandardParser.ArgTypes.remainder, true))));
+		
 		return res;
 	}
 	@Override

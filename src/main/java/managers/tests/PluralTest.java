@@ -36,7 +36,7 @@ public class PluralTest extends Test {
 	public String processReply(String reply,int count) {
 		JSONObject obj = germanplurals.getJSONObject(indexes_.get(count));
 		//return germanplurals.getJSONObject(indexes_.get(count)).toString();
-		return String.format("english=%d, article=%s, plural=%s",
+		return String.format("english=%s, article=%s, plural=%s",
 				obj.getString("english"),
 				obj.getString("article"),
 				obj.getString("plural"));

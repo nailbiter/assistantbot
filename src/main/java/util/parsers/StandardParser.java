@@ -135,6 +135,8 @@ public class StandardParser extends AbstractParser{
 					}
 					if(arg.getString("type").compareTo("remainder")==0)
 					{
+						if( isArgOpt(arg) && !( ( j + 1 ) < tokens.length ) ) 
+							continue;
 						StringBuilder sb = new StringBuilder(tokens[j+1]);
 						/*FIXME: the next snippet may cause troubles if
 						 *  tokens are separated by several whitespace chars
