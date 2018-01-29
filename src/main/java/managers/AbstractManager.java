@@ -42,13 +42,6 @@ public abstract class AbstractManager implements MyManager {
 		return false;
 	}
 	protected JSONArray jsonarray = null;
-	/* (non-Javadoc)
-	 * @see util.MyManager#gotUpdate(java.lang.String)
-	 */
-	@Override
-	public String gotUpdate(String data) throws Exception {
-		return null;
-	}
 	static JSONObject makeCommand(String name,String help,List<JSONObject> args)
 	{
 		JSONObject cmd = new JSONObject();

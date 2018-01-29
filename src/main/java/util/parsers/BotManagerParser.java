@@ -38,14 +38,6 @@ public class BotManagerParser extends AbstractParser {
 	}
 
 	/* (non-Javadoc)
-	 * @see util.MyManager#gotUpdate(java.lang.String)
-	 */
-	@Override
-	public String gotUpdate(String data) throws Exception {
-		return null;
-	}
-
-	/* (non-Javadoc)
 	 * @see util.parsers.AbstractParser#parse(java.lang.String)
 	 */
 	@Override

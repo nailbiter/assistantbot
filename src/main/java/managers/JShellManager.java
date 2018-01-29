@@ -63,10 +63,6 @@ public class JShellManager implements util.MyManager{
 		return null;
 	}
 	@Override
-	public String gotUpdate(String data) throws Exception {
-		return null;
-	}
-	@Override
 	public JSONArray getCommands() {
 		return new JSONArray("[{\"name\":\"login\",\"args\":[{\"name\":\"passwd\",\"type\":\"string\"}],\"help\":\"login into shell\"},\"cmd\"]");
 	}

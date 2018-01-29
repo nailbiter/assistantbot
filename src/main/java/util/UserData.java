@@ -1,8 +1,10 @@
 package util;
+import java.util.ArrayList;
 /**
  * @author nailbiter
  */
 import java.util.Hashtable;
+import java.util.List;
 
 import org.json.JSONObject;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
@@ -11,14 +13,19 @@ import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 import org.telegram.telegrambots.logging.BotLogger;
+
+import managers.OptionReplier;
+
 import org.telegram.telegrambots.api.objects.Message;
 
 /**
  * @author nailbiter
  *
  */
-public interface UserData {
-	public void Update(JSONObject res);
-	/*String getLastTo(){ return lastTo; }
-	String getLastFrom(){ return lastFrom; }*/
+public abstract class UserData {
+	abstract public void Update(JSONObject res);
+	public List<OptionReplier> getOptionRepliers()
+	{
+		return new ArrayList<OptionReplier>();
+	}
 }

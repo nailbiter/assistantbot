@@ -1,6 +1,7 @@
 package util;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.json.JSONObject;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
@@ -12,7 +13,14 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 import org.telegram.telegrambots.logging.BotLogger;
 
+import managers.OptionReplier;
+
 public abstract class MyBasicBot extends TelegramLongPollingBot {
+	private Logger logger_; 
+	public MyBasicBot()
+	{
+		logger_ = Logger.getLogger(this.getClass().getName());
+	}
 	protected static String toHTML(String arg)
 	{
 		return 
@@ -24,10 +32,10 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 				+"</code>";
 	}
 	public void onUpdateReceived(Update update) {
-		// We check if the update has a message and the message has text
-		if (update.hasMessage()) {
-			try 
-			{
+		try 
+		{
+			// We check if the update has a message and the message has text
+			if (update.hasMessage()) {
 				SendMessage message = new SendMessage();;
 				String reply = null;
 				if(update.getMessage().isReply())
@@ -44,26 +52,36 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 				message.setParseMode("HTML");
 				
 				sendMessage(message); // Call method to send the message
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
+			else if(update.hasCallbackQuery())
+				this.processUpdateWithCallbackQuery(update);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		else if(update.hasCallbackQuery())
-		{
-			String call_data = update.getCallbackQuery().getData();
-			System.out.println("got call_data="+call_data);
-			//long message_id = update.getCallbackQuery().getMessage().getMessageId();
-            long chat_id = update.getCallbackQuery().getMessage().getChatId();
-			try {
-				SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
-						.setChatId(chat_id)
-								.setText("<code>"+lastWhoSentMessageWithKeyBoard.gotUpdate(call_data)+"</code>");
-				message.setParseMode("HTML");
-				sendMessage(message); // Call method to send the message
-			} catch (Exception e) {
-				e.printStackTrace(System.out);
-			}
-		}
+	}
+	void processUpdateWithCallbackQuery(Update update) throws Exception
+	{
+		String call_data = update.getCallbackQuery().getData();
+		int message_id = update.getCallbackQuery().getMessage().getMessageId();
+		long chat_id = update.getCallbackQuery().getMessage().getChatId();
+		UserData ud = this.userData.get(chat_id);
+		String res = null;
+		
+		System.out.println("got call_data="+call_data);
+		
+		List<OptionReplier> repliers = ud.getOptionRepliers();
+		System.out.format("got %d repliers\n", repliers.size());
+		for(int i = 0; i < repliers.size(); i++)
+			if( (res = repliers.get(i).optionReply(call_data, message_id)) != null)
+				break;
+		if(res==null) throw new Exception("noone to reply!");
+		
+		//TODO: modify buttons
+		SendMessage message = new SendMessage()
+				.setChatId(chat_id)
+				.setText(toHTML(res));
+		message.setParseMode("HTML");
+		sendMessage(message); // Call method to send the message
 	}
 	private String processReply(Update update) throws Exception {
 		int replyID = update.getMessage().getReplyToMessage().getMessageId();
@@ -135,8 +153,15 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 		}
 		catch(Exception e){ e.printStackTrace(System.out); }
 	}
-	protected MyManager lastWhoSentMessageWithKeyBoard = null;
-	public void sendMessageWithKeyBoard(String msg,Long chatID_,MyManager whom,
+	/**
+	 * 
+	 * @param msg
+	 * @param chatID_
+	 * @param whom
+	 * @param buttons
+	 * @return message id
+	 */
+	public int sendMessageWithKeyBoard(String msg,Long chatID_,MyManager whom,
 			List<List<InlineKeyboardButton>> buttons)
 	{
 		try 
@@ -148,9 +173,15 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 			InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
 			markupInline.setKeyboard(buttons);
 			message.setReplyMarkup(markupInline);
-			this.lastWhoSentMessageWithKeyBoard = whom;
-			sendMessage(message);
+			Message res = sendMessage(message); 
+			int id = res.getMessageId();
+			logger_.info(String.format("return id=%d", id));
+			return id;
 		}
-		catch(Exception e){ e.printStackTrace(System.out); }
+		catch(Exception e)
+		{ 
+			e.printStackTrace(System.out);
+			return -1;
+		}
 	}
 }

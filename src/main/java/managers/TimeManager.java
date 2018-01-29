@@ -32,7 +32,7 @@ import util.parsers.StandardParser;
  * @author nailbiter
  *
  */
-public class TimeManager implements MyManager,Runnable {
+public class TimeManager implements MyManager,Runnable, OptionReplier {
 	Scheduler scheduler_;
 	Long chatID_;
 	MyBasicBot bot_;
@@ -53,7 +53,7 @@ public class TimeManager implements MyManager,Runnable {
 			System.out.println(this.getClass().getName()+" got comd: /"+res.getString("name"));
 			if(res.getString("name").compareTo("timestat")==0)
 			{
-				int num = res.optInt("num",24);
+				int num = res.optInt("num",48);
 				System.out.println("got num="+num);
 				Hashtable<String,Integer> ht = new Hashtable<String,Integer>();
 				{
@@ -139,9 +139,13 @@ public class TimeManager implements MyManager,Runnable {
 		}
 	}
 	protected static final String WHEREAREYOUNOW = "北鼻，你在幹什麼？";
+	int waitingMessageID = -1;
 	@Override
 	public void run(){
-		try {
+		try 
+		{
+			System.out.println("run this");
+			
 			if(this.isWaitingForAnswer)
 			{
 				if(userData_.isSleeping())
@@ -149,16 +153,17 @@ public class TimeManager implements MyManager,Runnable {
 				else
 					gotUpdate(categories.getString(TimeManager.NOWORKINDEX));
 			}
-			System.out.println("run this");
-			if(userData_.isSleeping())
-				gotUpdate(categories.getString(TimeManager.SLEEPINDEX));
 			else
-				bot_.sendMessageWithKeyBoard(WHEREAREYOUNOW, chatID_, this, buttons);
-			this.isWaitingForAnswer = true;
+			{
+				if(userData_.isSleeping())
+					gotUpdate(categories.getString(TimeManager.SLEEPINDEX));
+				else
+					waitingMessageID = bot_.sendMessageWithKeyBoard(WHEREAREYOUNOW, chatID_, this, buttons);
+				this.isWaitingForAnswer = true;
+			}
 		}
 		catch(Exception e) { e.printStackTrace(System.out); }
 	}
-	@Override
 	public String gotUpdate(String data) throws Exception {
 		time.put(String.format("%s:%s", LocalUtil.DateToString(new Date()),data));
 		this.isWaitingForAnswer = false;
@@ -182,5 +187,21 @@ public class TimeManager implements MyManager,Runnable {
 	@Override
 	public String processReply(int messageID,String msg) {
 		return null;
+	}
+	@Override
+	public String optionReply(String option, Integer msgID) {
+		try {
+			if(this.isWaitingForAnswer && this.waitingMessageID==msgID)
+				return this.gotUpdate(option);
+			else
+			{
+				System.out.format("wfa=%s, id: %d vs %d",this.isWaitingForAnswer ? "true":"false", 
+						this.waitingMessageID,msgID);
+				return null;
+			}
+		} catch (Exception e) {
+			e.printStackTrace(System.out);
+			return null;
+		}
 	}
 }

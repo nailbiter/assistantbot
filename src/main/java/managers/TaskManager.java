@@ -227,14 +227,6 @@ public class TaskManager implements MyManager {
 		return tb.toString();
 	}
 
-	/* (non-Javadoc)
-	 * @see util.MyManager#gotUpdate(java.lang.String)
-	 */
-	@Override
-	public String gotUpdate(String data) throws Exception {
-		return null;
-	}
-
 	@Override
 	public JSONArray getCommands() {
 		return new JSONArray("[{\"name\":\"tasknew\",\"args\":[{\"name\":\"estimate\",\"type\":\"int\"}],\"help\":\"create new task\"}\n" + 

@@ -131,12 +131,13 @@ public class HabitManager implements util.MyManager
 	}
 	public String taskDone(String name)
 	{
-		if( name.isEmpty() )
 		{
 			final String key = "done/habit";
-			name = (String) this.hash_.get(key);
+			if( name.isEmpty() )
+				name = (String) this.hash_.get(key);
 			this.hash_.put(key, name);
 		}
+			
 		for(int i = 0; i < habits.length(); i++)
 		{
 			JSONObject habit = habits.getJSONObject(i);
@@ -197,10 +198,6 @@ public class HabitManager implements util.MyManager
 				("("+ (habit.getInt("count")-habit.getInt("doneCount"))+")"):"");
 		}
 		return tb.toString();
-	}
-	@Override
-	public String gotUpdate(String data) throws Exception {
-		return null;
 	}
 	/**
 	 * @param code -1 means failure, 0 means init, 1 means success 

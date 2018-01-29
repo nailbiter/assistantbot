@@ -166,8 +166,4 @@ public class StandardParser extends AbstractParser{
 		}
 		return null;
 	}
-	@Override
-	public String gotUpdate(String data) throws Exception {
-		return null;
-	}
 }

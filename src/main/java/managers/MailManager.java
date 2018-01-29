@@ -127,14 +127,6 @@ public class MailManager implements MyManager {
 	{
 		return flags.toString().contains("\\Seen");
 	}
-
-	/* (non-Javadoc)
-	 * @see util.MyManager#gotUpdate(java.lang.String)
-	 */
-	@Override
-	public String gotUpdate(String data) throws Exception {
-		return null;
-	}
 	@Override
 	protected void finalize()
 	{

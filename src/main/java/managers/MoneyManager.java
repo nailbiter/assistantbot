@@ -109,10 +109,6 @@ public class MoneyManager implements util.MyManager{
 		return null;
 	}
 	@Override
-	public String gotUpdate(String data) throws Exception {
-		return null;
-	}
-	@Override
 	public JSONArray getCommands() {
 		return new JSONArray("[{\"name\":\"moneycats\",\"args\":[],\"help\":\"list all money categories and info\"}\n" + 
 				",{\"name\":\"money\",\"args\":[{\"name\":\"amount\",\"type\":\"int\"},{\"name\":\"category\",\"type\":\"string\",\"isOpt\":true}],\"help\":\"spent money\"}\n" + 

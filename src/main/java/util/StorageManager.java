@@ -46,12 +46,7 @@ public class StorageManager {
 				}
 				return null;
 			}
-
-			@Override
-			public String gotUpdate(String data) throws Exception {
-				return null;
-			}
-
+			
 			@Override
 			public JSONArray getCommands() {
 				return new JSONArray("[{\"name\":\"dump\",\"args\":[],\"help\":\"dump all text files\"}]");

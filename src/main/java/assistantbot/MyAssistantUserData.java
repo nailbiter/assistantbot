@@ -7,13 +7,14 @@ import org.json.JSONObject;
 import it.sauronsoftware.cron4j.Scheduler;
 import managers.BadHabitManager;
 import managers.MiscUtilManager;
+import managers.OptionReplier;
 import managers.SleepManager;
 import util.LocalUtil;
 import util.MyManager;
 import util.UserData;
 import util.parsers.AbstractParser;
 
-public class MyAssistantUserData implements UserData {
+public class MyAssistantUserData extends UserData {
 	protected Scheduler scheduler = null; //FIXME: should it be a singleton?
 	protected static boolean ISBOTMANAGER = false;
 	protected List<MyManager> managers = new ArrayList<MyManager>();
@@ -75,5 +76,19 @@ public class MyAssistantUserData implements UserData {
 				}
 			}
 		}
+	}
+	@Override
+	public List<OptionReplier> getOptionRepliers()
+	{
+		ArrayList<OptionReplier> res = new ArrayList<OptionReplier>();
+		for(int i = 0; i < managers.size(); i++)
+		{
+			if(OptionReplier.class.isAssignableFrom(managers.get(i).getClass()))
+			{
+				res.add((OptionReplier)managers.get(i));
+				System.out.format("adding %s\n", managers.get(i).getClass().getName());
+			}
+		}
+		return res;
 	}
 }
