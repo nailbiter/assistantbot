@@ -3,7 +3,7 @@ package util.parsers;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import util.MyManager;
+import managers.MyManager;
 
 public abstract class AbstractParser implements MyManager {
 

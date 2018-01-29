@@ -10,6 +10,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import managers.MyManager;
+
 public class StorageManager {
 	protected static Hashtable<String,JSONObject> registeredObjects = new Hashtable<String,JSONObject>();
 	protected static MyManager myManager = null;

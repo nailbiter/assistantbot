@@ -7,9 +7,9 @@ import java.util.Random;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import managers.MyManager;
 import managers.TestManager;
 import util.LocalUtil;
-import util.MyManager;
 
 public class PluralTest extends Test {
 	JSONArray germanplurals = null;

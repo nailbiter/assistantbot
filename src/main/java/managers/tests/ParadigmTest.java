@@ -3,8 +3,8 @@ package managers.tests;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import managers.MyManager;
 import managers.TestManager;
-import util.MyManager;
 
 public class ParadigmTest extends Test {
 	public ParadigmTest(JSONObject obj,JSONObject data,TestManager master,String name) throws Exception {

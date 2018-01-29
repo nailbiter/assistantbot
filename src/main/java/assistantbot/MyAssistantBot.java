@@ -16,9 +16,9 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.telegram.telegrambots.api.objects.Message;
 
+import managers.MyManager;
 import util.KeyRing;
 import util.MyBasicBot;
-import util.MyManager;
 import util.UserData;
 import util.Util;
 

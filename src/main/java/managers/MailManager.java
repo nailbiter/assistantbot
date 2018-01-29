@@ -11,7 +11,6 @@ import assistantbot.MyAssistantUserData;
 import it.sauronsoftware.cron4j.Scheduler;
 import util.KeyRing;
 import util.MyBasicBot;
-import util.MyManager;
 
 import java.io.IOException;
 import java.util.Properties;

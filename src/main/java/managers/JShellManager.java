@@ -9,7 +9,7 @@ import util.KeyRing;
 import util.MyBasicBot;
 import util.Util;
 
-public class JShellManager implements util.MyManager{
+public class JShellManager implements managers.MyManager{
 	protected JShell shell = null;
 	protected boolean isLocked = true;
 	MyBasicBot bot_;

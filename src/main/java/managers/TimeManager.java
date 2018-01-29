@@ -20,7 +20,6 @@ import assistantbot.MyAssistantUserData;
 import it.sauronsoftware.cron4j.Scheduler;
 import util.LocalUtil;
 import util.MyBasicBot;
-import util.MyManager;
 import util.StorageManager;
 import util.parsers.StandardParser;
 
@@ -158,7 +157,7 @@ public class TimeManager implements MyManager,Runnable, OptionReplier {
 				if(userData_.isSleeping())
 					gotUpdate(categories.getString(TimeManager.SLEEPINDEX));
 				else
-					waitingMessageID = bot_.sendMessageWithKeyBoard(WHEREAREYOUNOW, chatID_, this, buttons);
+					waitingMessageID = bot_.sendMessageWithKeyBoard(WHEREAREYOUNOW, chatID_, buttons);
 				this.isWaitingForAnswer = true;
 			}
 		}

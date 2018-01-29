@@ -10,9 +10,9 @@ import java.util.TimerTask;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import managers.MyManager;
 import managers.TestManager;
 import util.LocalUtil;
-import util.MyManager;
 
 abstract public class Test implements Runnable
 {

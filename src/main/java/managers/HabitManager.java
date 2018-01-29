@@ -20,7 +20,7 @@ import util.MyBasicBot;
 import util.StorageManager;
 import util.parsers.StandardParser;
 
-public class HabitManager implements util.MyManager
+public class HabitManager implements managers.MyManager
 {
 	JSONArray habits = null;
 	JSONObject streaks = null;

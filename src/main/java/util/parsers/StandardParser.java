@@ -5,8 +5,8 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import managers.MyManager;
 import util.LocalUtil;
-import util.MyManager;
 
 public class StandardParser extends AbstractParser{
 	JSONArray cmds_;

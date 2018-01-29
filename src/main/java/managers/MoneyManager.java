@@ -1,4 +1,5 @@
 package managers;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -7,12 +8,16 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import assistantbot.MyAssistantUserData;
 import util.MyBasicBot;
+import util.parsers.StandardParser;
 
-public class MoneyManager implements util.MyManager{
+public class MoneyManager implements managers.MyManager,OptionReplier{
 	JSONArray money = null;
 	JSONObject categories = null;
-	public MoneyManager(MyBasicBot bot)
+	JSONArray cats = null;
+	MyAssistantUserData ud_ = null;
+	public MoneyManager(MyAssistantUserData myAssistantUserData)
 	{
 		JSONObject obj= util.StorageManager.get("money", true);
 		if(!obj.has("array"))
@@ -21,6 +26,12 @@ public class MoneyManager implements util.MyManager{
 		if(!obj.has("categories"))
 			obj.put("categories", MoneyManager.makeInitCategories());
 		categories = obj.getJSONObject("categories");
+		
+		cats = new JSONArray();
+		for(int i = 0; i < categories.names().length(); i++)
+			cats.put(categories.getString(categories.names().getString(i)));
+		
+		ud_ = myAssistantUserData;
 	}
 	protected static JSONObject makeInitCategories()
 	{
@@ -30,11 +41,18 @@ public class MoneyManager implements util.MyManager{
 				.put("1", "food");
 		return cats;
 	}
-	public void putMoney(int amount,String categoryAlias)
+	Hashtable<Integer,Integer> pendingOperations = new Hashtable<Integer,Integer>();
+	public String putMoney(int amount)
+	{
+		int msgid = ud_.sendMessageWithKeyBoard("which category?", cats);
+		this.pendingOperations.put(msgid, amount);
+		return String.format("prepare to put %d",amount);
+	}
+	private void putMoney(int amount,String categoryName)
 	{
 		money.put(new JSONObject()
 				.put("amount", amount)
-				.put("category", categories.get(categoryAlias))
+				.put("category", categoryName)
 				.put("date",new Date().toString()));
 	}
 	public String getLastCosts(int howMuch)
@@ -99,9 +117,7 @@ public class MoneyManager implements util.MyManager{
 			if(res.getString("name").compareTo("moneycats")==0) 
 				return getMoneyCats();
 			if(res.getString("name").compareTo("money")==0) {
-				putMoney(res.getInt("amount"), res.getString("category"));
-				return String.format("put %d in category %s",
-						res.getInt("amount"),getCategory(res.getString("category")));
+				return putMoney(res.getInt("amount")/*, res.getString("category")*/);
 			}
 			if(res.getString("name").equals("costs"))
 				return getLastCosts(res.getInt("num"));
@@ -110,12 +126,33 @@ public class MoneyManager implements util.MyManager{
 	}
 	@Override
 	public JSONArray getCommands() {
-		return new JSONArray("[{\"name\":\"moneycats\",\"args\":[],\"help\":\"list all money categories and info\"}\n" + 
-				",{\"name\":\"money\",\"args\":[{\"name\":\"amount\",\"type\":\"int\"},{\"name\":\"category\",\"type\":\"string\",\"isOpt\":true}],\"help\":\"spent money\"}\n" + 
+		JSONArray res = new JSONArray(
+				"[{\"name\":\"moneycats\",\"args\":[],\"help\":\"list all money categories and info\"}\n" + 
 				",{\"name\":\"costs\",\"args\":[{\"name\":\"num\",\"type\":\"int\",\"isOpt\":true}]}]");
+		res.put(AbstractManager.makeCommand("money", "spent money", 
+				Arrays.asList(AbstractManager.makeCommandArg(
+						"amount",
+						StandardParser.ArgTypes.integer, 
+						false))));
+		return res;
+		//",{\"name\":\"money\",\"args\":[{\"name\":\"amount\",\"type\":\"int\"},{\"name\":\"category\",\"type\":\"string\",\"isOpt\":true}],\"help\":\"spent money\"}\n" +
 	}
 	@Override
 	public String processReply(int messageID,String msg) {
 		return null;
+	}
+	@Override
+	public String optionReply(String option, Integer msgID) {
+		if(this.pendingOperations.containsKey(msgID))
+		{
+			//TODO
+			this.putMoney(this.pendingOperations.get(msgID), option);
+			String res = String.format("put %d in category %s",
+					this.pendingOperations.get(msgID),option);
+			this.pendingOperations.remove(msgID);
+			return res;
+		}
+		else
+			return null;
 	}
 }

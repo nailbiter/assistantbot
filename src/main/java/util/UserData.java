@@ -24,8 +24,7 @@ import org.telegram.telegrambots.api.objects.Message;
  */
 public abstract class UserData {
 	abstract public void Update(JSONObject res);
-	public List<OptionReplier> getOptionRepliers()
-	{
-		return new ArrayList<OptionReplier>();
+	public String processUpdateWithCallbackQuery(String call_data, int message_id)  {
+		return null;
 	}
 }

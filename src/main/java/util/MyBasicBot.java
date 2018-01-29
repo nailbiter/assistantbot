@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import org.json.JSONObject;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
+import org.telegram.telegrambots.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -13,7 +14,7 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 import org.telegram.telegrambots.logging.BotLogger;
 
-import managers.OptionReplier;
+import managers.MyManager;
 
 public abstract class MyBasicBot extends TelegramLongPollingBot {
 	private Logger logger_; 
@@ -65,23 +66,22 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 		int message_id = update.getCallbackQuery().getMessage().getMessageId();
 		long chat_id = update.getCallbackQuery().getMessage().getChatId();
 		UserData ud = this.userData.get(chat_id);
-		String res = null;
 		
 		System.out.println("got call_data="+call_data);
 		
-		List<OptionReplier> repliers = ud.getOptionRepliers();
-		System.out.format("got %d repliers\n", repliers.size());
-		for(int i = 0; i < repliers.size(); i++)
-			if( (res = repliers.get(i).optionReply(call_data, message_id)) != null)
-				break;
-		if(res==null) throw new Exception("noone to reply!");
-		
-		//TODO: modify buttons
-		SendMessage message = new SendMessage()
+		String reply = toHTML(ud.processUpdateWithCallbackQuery(call_data, message_id));
+		EditMessageText emt = new EditMessageText()
 				.setChatId(chat_id)
-				.setText(toHTML(res));
+				.setMessageId(message_id)
+				.setText(reply)
+				.setParseMode("HTML");
+		execute(emt);
+		/*SendMessage message = new SendMessage()
+				.setChatId(chat_id)
+				.setText();
 		message.setParseMode("HTML");
 		sendMessage(message); // Call method to send the message
+		*/
 	}
 	private String processReply(Update update) throws Exception {
 		int replyID = update.getMessage().getReplyToMessage().getMessageId();
@@ -161,7 +161,7 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 	 * @param buttons
 	 * @return message id
 	 */
-	public int sendMessageWithKeyBoard(String msg,Long chatID_,MyManager whom,
+	public int sendMessageWithKeyBoard(String msg,Long chatID_,
 			List<List<InlineKeyboardButton>> buttons)
 	{
 		try 
