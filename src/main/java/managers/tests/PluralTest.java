@@ -22,14 +22,15 @@ public class PluralTest extends Test {
 	}
 
 	@Override
-	protected String isCalled(int count) {
+	protected String[] isCalled(int count) {
 		while((indexes_.size()-1) < count)
 			indexes_.add(rand.nextInt(germanplurals.length()));
 		int index = indexes_.get(count);
 		
-		return String.format("what is english, gender and plural for %s", germanplurals
+		String[] res = { String.format("what is english, gender and plural for %s", germanplurals
 				.getJSONObject(index)
-				.getString("word"));
+				.getString("word"))};
+		return res;
 	}
 
 	@Override

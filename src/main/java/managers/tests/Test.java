@@ -1,11 +1,14 @@
 package managers.tests;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Hashtable;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -22,6 +25,7 @@ abstract public class Test implements Runnable
 	protected TestManager master_ = null;
 	protected String name_;
 	protected static final String ARRAYKEY = "a";
+	protected Logger logger_ = null;
 	public Test(JSONObject obj,JSONObject data,TestManager master,String name) throws Exception
 	{
 		obj_ = obj;
@@ -29,6 +33,8 @@ abstract public class Test implements Runnable
 		name_ = name;
 		master_ = master;
 		timer_ = new Timer();
+		this.pendingMessages_ = new Hashtable<Integer,Integer>();
+		logger_ = Logger.getLogger(this.getClass().getName());
 		if(DEBUG) makeDates();
 		schedule();
 	}
@@ -50,11 +56,12 @@ abstract public class Test implements Runnable
 		return c.getTime();
 	}
 	public static String writeDate(Date d){ return String.format("%d:%d", d.getHours(),d.getMinutes()); }
+	protected int getCount() {return obj_.getInt("count");}
 	protected void makeDates() throws Exception
 	{
 		data_.put(ARRAYKEY, new JSONArray());
 		System.out.println(String.format("run schedule: %s", name_));
-		int howManyTimes = obj_.getInt("count");
+		int howManyTimes = this.getCount();
 		Date startDate = Test.parseDate(obj_.getString("start")),
 				endDate = Test.parseDate(obj_.getString("end"));
 		System.out.println(String.format("got startDate=%s, endDate=%s",
@@ -85,12 +92,29 @@ abstract public class Test implements Runnable
 			}
 		}
 	}
+	protected Hashtable<Integer,Integer> pendingMessages_ = null;
 	protected class TestReminder extends TimerTask{
 		int index_;
 		TestReminder(int index) {index_ = index;}
 		@Override
-		public void run() { master_.makeCall(Test.this, isCalled(index_), index_); }
+		public void run() 
+		{
+			String[] res = isCalled(index_);
+			int id = -1;
+			if(res.length == 1)
+				id = master_.makeCall(Test.this, res[0], index_);
+			else
+			{
+				logger_.info(String.format("%b %b %s", 
+						Test.this.pendingMessages_==null,
+						master_==null,res[0]));
+				id = pendingMessages_.put(
+					  master_.sendMessageWithKeyBoard(res[0], Arrays.copyOfRange(res, 1, res.length)),
+					  index_);
+			}
+		}
 	}
+	void onRun(int index,int messageID) {}
 	public static Long[] getUniform(Long l1, Long l2, int howManyTimes)
 	{
 		Long[] dates = new Long[howManyTimes];
@@ -105,11 +129,7 @@ abstract public class Test implements Runnable
 		}
 		return dates;
 	}
-	/*
-	 * TODO: allow it to return choice
-	 * by returning Object instead of String (choice will correspond to String[] or something)
-	 */
-	abstract protected String isCalled(int count);
+	abstract protected String[] isCalled(int count);
 	abstract public String processReply(String reply,int count);
 	@Override
 	public String toString()

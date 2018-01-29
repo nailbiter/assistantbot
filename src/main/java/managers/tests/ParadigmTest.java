@@ -19,94 +19,50 @@ public class ParadigmTest extends Test {
 				obj_.getInt("count"));
 	}
 	@Override
-	protected String isCalled(int count) {
+	protected String[] isCalled(int count) {
 		if(count == 0)
-			return "test: the";
+			return new String[] {"test: the"};
 		if(count == 1)
-			return "test: welch";
+			return new String[] {"test: welch"};
 		if(count == 2)
-			return "test: a";
+			return new String[] {"test: a"};
 		if(count == 3)
-			return "test: mein";
+			return new String[] {"test: mein"};
 		return null;
 	}
 	@Override
 	public String processReply(String reply, int count) {
 		System.out.println(String.format("paradigm: processReply(count=%d,obj_=%s)",count,obj_.toString()));
-		return this.verify(reply,obj_.getJSONArray("data").getJSONArray(count));
+		return this.verify(reply,
+				obj_.getJSONArray("data").getJSONArray(count).getJSONArray(0),
+				obj_.getJSONArray("data").getJSONArray(count).getJSONArray(1),
+				obj_.getJSONArray("data").getJSONArray(count).getJSONArray(2));
 	}
-	private String verify(String reply,JSONArray answer)
+	private String verify(String reply,JSONArray answer,JSONArray row, JSONArray col)
 	{
-		int colNum = answer.length() / 4;
+		int colNum = row.length(),
+				rowNum = col.length() - 1;
+		logger_.info(String.format("colnum=%d, rownum=%d", colNum,rowNum));
 		boolean isCorrect = true;
-		String[] genders = (colNum == 3) ? new String[] {"--","M","F","N"} : new String[] {"--","M","F","N","Pl"},
-				cases = new String[] {"N", "A","G","D"};
-		util.TableBuilder tb = new util.TableBuilder().addNewlineAndTokens(genders);
+		util.TableBuilder tb = new util.TableBuilder();
 		String[] tokens = reply.split(" ");
-		for(int i = 0; i < 4 ; i++)
+		for(int i = 0; i < rowNum ; i++)
 		{
-			tb.newRow().addToken(cases[i]);
-			/*switch(i)
-			{
-			case 0:
-				tb.addToken("N");
-				break;
-			case 1:
-				tb.addToken("A");
-				break;
-			case 2:
-				tb.addToken("G");
-				break;
-			case 3:
-				tb.addToken("D");
-				break;
-			}*/
-			
+			tb.newRow();
 			for(int j = 0; j < colNum; j++)
 			{
-				String answerS = answer.getString(4*j+i),
-						correct = tokens[4*j+i];
+				String answerS = answer.getString(rowNum*j+i),
+						correct = tokens[rowNum*j+i];
 				boolean isThisCorrect = answerS.equalsIgnoreCase(correct);
 				isCorrect = isCorrect && isThisCorrect;
 				tb.addToken(isThisCorrect ? answerS : String.format("<%s>", answerS));
 			}
 		}
+		logger_.info(String.format("tb=\n%s", tb.toString()));
+		
+		tb
+			.addRow(row, 0)
+			.addCol(col, 0);
 		return tb.toString();
 	}
-	/*private String verifySixteen(String reply,String[] answer)
-	{
-		boolean isCorrect = true;
-		util.TableBuilder tb = new util.TableBuilder()
-				.addNewlineAndTokens(new String[] {"--","M","F","N","Pl"});
-		String[] tokens = reply.split(" ");
-		for(int i = 0; i < 4 ; i++)
-		{
-			tb.newRow();
-			switch(i)
-			{
-				case 0:
-					tb.addToken("N");
-					break;
-				case 1:
-					tb.addToken("A");
-					break;
-				case 2:
-					tb.addToken("G");
-					break;
-				case 3:
-					tb.addToken("D");
-					break;
-			}
-			
-			for(int j = 0; j < 4; j++ )
-			{
-				String answerS = answer[4*j+i],
-						correct = tokens[4*j+i];
-				boolean isThisCorrect = answerS.equals(correct);
-				isCorrect = isCorrect && isThisCorrect;
-				tb.addToken(isThisCorrect ? answerS : String.format("<%s>", answerS));
-			}
-		}
-		return tb.toString();
-	}*/
 }

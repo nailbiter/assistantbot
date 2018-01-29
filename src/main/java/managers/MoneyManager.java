@@ -145,7 +145,6 @@ public class MoneyManager implements managers.MyManager,OptionReplier{
 	public String optionReply(String option, Integer msgID) {
 		if(this.pendingOperations.containsKey(msgID))
 		{
-			//TODO
 			this.putMoney(this.pendingOperations.get(msgID), option);
 			String res = String.format("put %d in category %s",
 					this.pendingOperations.get(msgID),option);

@@ -2,10 +2,45 @@ package util;
 
 import java.util.ArrayList;
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
 
 public class TableBuilder {
 	ArrayList<ArrayList<String>> tokens = new ArrayList<ArrayList<String>>();
 	ArrayList<Integer> lengths = new ArrayList<Integer>();
+	public TableBuilder addRow(JSONArray row,int index)
+	{
+		if(row.length()==0)
+			return this;
+		
+		ArrayList<String> list = new ArrayList<String>();
+		for(int i = 0; i < row.length(); i++)
+		{
+			list.add(row.getString(i));
+			lengths.add(i, Math.max(lengths.get(i), row.getString(i).length()));
+		}
+		tokens.add(index,list);
+			
+		/*for(int i = 0; i < row.length(); i++)
+		{
+			tokens.get(i).add(index,row.getString(i));
+			lengths.add(i, Math.max(lengths.get(i), row.getString(i).length()));
+		}*/
+		return this;
+	}
+	public TableBuilder addCol(JSONArray col,int index)
+	{
+		if(col.length()==0)
+			return this;
+		
+		int maxlen = -1;
+		for(int i = 0; i < col.length(); i++)
+		{
+			tokens.get(i).add(index,col.getString(i));
+			maxlen = Math.max(col.getString(i).length(), maxlen);
+		}
+		lengths.add(index,maxlen);
+		return this;
+	}
 	public TableBuilder newRow()
 	{
 		tokens.add(new ArrayList<String>());
@@ -43,10 +78,8 @@ public class TableBuilder {
 			lengths.set(idx, token.length());
 		return this;
 	}
-	public TableBuilder addToken(int value)
-	{
-		return addToken(Integer.toString(value));
-	}
+	public TableBuilder addToken(int value) { return addToken(Integer.toString(value)); }
+	protected final static int OFFSET = 3;
 	@Override
 	public String toString()
 	{
@@ -58,13 +91,11 @@ public class TableBuilder {
 		{
 			for(int j = 0; j < tokens.get(i).size(); j++)
 			{
-				sb.append(StringUtils.rightPad(tokens.get(i).get(j), lengths.get(j)+3));
+				sb.append(StringUtils.rightPad(tokens.get(i).get(j), lengths.get(j) + OFFSET));
 			}
 			sb.append("\n");
 		}
-		if(true)
-			return sb.toString();
-		else
-			return "oentiheutni";
+		
+		return sb.toString();
 	}
 }

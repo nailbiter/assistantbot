@@ -43,12 +43,12 @@ public class MyAssistantUserData extends UserData {
 				managers.add(new managers.MoneyManager(this));
 				managers.add(new managers.HabitManager(chatID,bot,scheduler));
 				managers.add(new managers.TaskManager(chatID, bot));
-				managers.add(new managers.TestManager(chatID, bot,scheduler));
+				managers.add(new managers.TestManager(chatID, bot,scheduler,this));
 				managers.add(sm_ = new managers.SleepManager(bot));
 				managers.add(new managers.TimeManager(chatID,bot,scheduler,this));
 				managers.add(new managers.MailManager(chatID,bot,scheduler,this));
 				managers.add(new MiscUtilManager());
-				managers.add(new BadHabitManager());
+				managers.add(new BadHabitManager(this));
 			}
 			managers.add(util.StorageManager.getMyManager());
 			managers.add(new managers.JShellManager(bot));
@@ -111,7 +111,6 @@ public class MyAssistantUserData extends UserData {
 	 */
 	public int sendMessageWithKeyBoard(String msg, JSONArray categories)
 	{
-		//TODO: send message w keyboard
 		final int ROWNUM = 2;
 		logger_.info(String.format("categories=%s", categories.toString()));
 		
