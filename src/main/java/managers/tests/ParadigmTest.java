@@ -1,5 +1,7 @@
 package managers.tests;
 
+import java.util.Timer;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -7,8 +9,8 @@ import managers.MyManager;
 import managers.TestManager;
 
 public class ParadigmTest extends Test {
-	public ParadigmTest(JSONObject obj,JSONObject data,TestManager master,String name) throws Exception {
-		super(obj,data,master,name);
+	public ParadigmTest(JSONObject obj,JSONObject data,TestManager master,String name,Timer t) throws Exception {
+		super(obj,data,master,name,t);
 	}
 	@Override
 	public String toString()

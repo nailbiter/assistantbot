@@ -1,6 +1,7 @@
 package managers.tests;
 
 import java.util.Arrays;
+import static java.util.concurrent.TimeUnit.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -8,6 +9,8 @@ import java.util.Hashtable;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Logger;
 
 import org.json.JSONArray;
@@ -26,13 +29,15 @@ abstract public class Test implements Runnable
 	protected String name_;
 	protected static final String ARRAYKEY = "a";
 	protected Logger logger_ = null;
-	public Test(JSONObject obj,JSONObject data,TestManager master,String name) throws Exception
+	protected Hashtable<Integer,Integer> pendingMessages_ = null;
+	ScheduledExecutorService scheduler_ = Executors.newScheduledThreadPool(1);
+	public Test(JSONObject obj,JSONObject data,TestManager master,String name,Timer t) throws Exception
 	{
 		obj_ = obj;
 		data_ = data;
 		name_ = name;
 		master_ = master;
-		timer_ = new Timer();
+		timer_ = t;
 		this.pendingMessages_ = new Hashtable<Integer,Integer>();
 		logger_ = Logger.getLogger(this.getClass().getName());
 		if(DEBUG) makeDates();
@@ -80,34 +85,41 @@ abstract public class Test implements Runnable
 		Date curDate = new Date();
 		JSONArray array = data_.getJSONArray(ARRAYKEY);
 		
-		System.out.println(String.format("curDate=%s",LocalUtil.DateToString(curDate)));
+		logger_.info(String.format("curDate=%s",LocalUtil.DateToString(curDate)));
+		//FIXME: we need to remove previously scheduled reminders
 		for(int i = 0; i < array.length(); i++)
 		{
 			Date d = parseDate(array.getString(i));
 			Long delay = d.getTime() - curDate.getTime();
 			if( delay >= 0 )
 			{
-				System.out.println(String.format("schedule %d at %s", i,LocalUtil.DateToString(d)));
-				timer_.schedule(new TestReminder(i), delay);
+				System.out.println(String.format("schedule %d at %s after %d", 
+						i,LocalUtil.DateToString(d),delay / 1000));
+				scheduler_.schedule(new TestReminder(i), delay/1000,SECONDS);
 			}
 		}
 	}
-	protected Hashtable<Integer,Integer> pendingMessages_ = null;
 	protected class TestReminder extends TimerTask{
 		int index_;
 		TestReminder(int index) {index_ = index;}
 		@Override
 		public void run() 
 		{
+			logger_.info(String.format("run this index=%d", index_));
 			String[] res = isCalled(index_);
 			int id = -1;
+			if(res==null || res.length==0)
+				logger_.info("bad");
 			if(res.length == 1)
 				id = master_.makeCall(Test.this, res[0], index_);
 			else
 			{
-				logger_.info(String.format("%b %b %s", 
-						Test.this.pendingMessages_==null,
+				if(logger_!=null) 
+					logger_.info(String.format("%b %b %s", 
+						pendingMessages_==null,
 						master_==null,res[0]));
+				else
+					System.out.println("logger==null");
 				id = pendingMessages_.put(
 					  master_.sendMessageWithKeyBoard(res[0], Arrays.copyOfRange(res, 1, res.length)),
 					  index_);

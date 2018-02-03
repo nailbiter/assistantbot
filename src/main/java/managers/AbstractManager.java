@@ -24,7 +24,7 @@ public abstract class AbstractManager implements MyManager {
 	 */
 	@Override
 	public String getResultAndFormat(JSONObject res) throws Exception {
-		System.out.println(String.format("got: %s", res.toString()));
+		System.out.println(String.format("%s got: %s",this.getClass().getName(), res.toString()));
 		if(res.has("name") && hasCommand(res))
 		{
 			System.out.println("dispatcher got: "+res.toString());

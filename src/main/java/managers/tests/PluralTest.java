@@ -3,6 +3,7 @@ package managers.tests;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Timer;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -15,8 +16,8 @@ public class PluralTest extends Test {
 	JSONArray germanplurals = null;
 	Random rand = new Random();
 	List<Integer> indexes_ = new ArrayList<Integer>();
-	public PluralTest(JSONObject obj,JSONObject data,TestManager master,String name) throws Exception {
-		super(obj,data,master,name);
+	public PluralTest(JSONObject obj,JSONObject data,TestManager master,String name, Timer timer_) throws Exception {
+		super(obj,data,master,name,timer_);
 		germanplurals = LocalUtil.getJSONArrayFromRes(this, "germanplurals");
 		System.out.println(String.format("germanplurals has %d elements", germanplurals.length()));
 	}

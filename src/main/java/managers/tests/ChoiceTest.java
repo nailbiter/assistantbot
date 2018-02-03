@@ -6,6 +6,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.Timer;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Logger;
 
 import org.json.JSONArray;
@@ -24,8 +27,8 @@ public class ChoiceTest extends Test implements OptionReplier {
 		public int index, id;
 		IndexAndID() { index = id = -1;}
 	}
-	public ChoiceTest(JSONObject obj, JSONObject data, TestManager master, String name) throws Exception {
-		super(obj, data, master, name);
+	public ChoiceTest(JSONObject obj, JSONObject data, TestManager master, String name,Timer t) throws Exception {
+		super(obj, data, master, name,t);
 		info_ = obj.getJSONArray("data");
 		rand_ = new Random();
 		answerChoices_ = this.makeAnswerChoices(info_);

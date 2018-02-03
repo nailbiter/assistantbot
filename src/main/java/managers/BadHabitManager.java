@@ -16,7 +16,7 @@ import util.parsers.StandardParser;
 
 public class BadHabitManager extends AbstractManager implements OptionReplier {
 	JSONArray badhabits = null;
-	String[] bh = {"alcohol","porn","mast"};
+	String[] bh = {"alcohol","porn","mast","bite nails"};
 	JSONArray bhjson = new JSONArray();
 	MyAssistantUserData ud_ = null;
 	Set<Integer> pendingMessages = new HashSet<Integer>();

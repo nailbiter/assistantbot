@@ -6,6 +6,7 @@ package managers;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Timer;
 import java.util.logging.Logger;
 
 import org.json.JSONArray;
@@ -30,13 +31,15 @@ public class TestManager extends AbstractManager implements OptionReplier {
 	List<Test> tests = null;
 	private Logger logger_ = null;
 	MyAssistantUserData ud_ = null;
+	Timer timer_ = null;
 	public TestManager(Long chatID, MyBasicBot bot, Scheduler scheduler, MyAssistantUserData myAssistantUserData) throws Exception{
 		ud_ = myAssistantUserData;
 		chatID_ = chatID;
 		bot_ = bot;
 		scheduler_ = scheduler;
 		tests = new ArrayList<Test>();
-		logger_ = Logger.getLogger(this.getClass().getName()); 
+		logger_ = Logger.getLogger(this.getClass().getName());
+		timer_ = new Timer();
 		
 		JSONObject obj = StorageManager.get("tests", false),
 				objData = StorageManager.get("testsData", true);
@@ -54,11 +57,11 @@ public class TestManager extends AbstractManager implements OptionReplier {
 		System.out.println(String.format("objData=%s, obj=%s", objData.toString(),obj.toString()));
 		
 		if(name.equals("paradigm"))
-			tests.add(new ParadigmTest(obj.getJSONObject(name),objData.getJSONObject(name),this,name));
+			tests.add(new ParadigmTest(obj.getJSONObject(name),objData.getJSONObject(name),this,name,timer_));
 		if(name.equals("plural"))
-			tests.add(new PluralTest(obj.getJSONObject(name),objData.getJSONObject(name),this,name));
+			tests.add(new PluralTest(obj.getJSONObject(name),objData.getJSONObject(name),this,name,timer_));
 		if(name.equals("genders"))
-			tests.add(new ChoiceTest(obj.getJSONObject(name),objData.getJSONObject(name),this,name));
+			tests.add(new ChoiceTest(obj.getJSONObject(name),objData.getJSONObject(name),this,name,timer_));
 	}
 
 	private void schedule() throws Exception

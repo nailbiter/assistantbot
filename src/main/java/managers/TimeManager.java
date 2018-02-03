@@ -13,6 +13,7 @@ import java.util.PriorityQueue;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
@@ -31,8 +32,9 @@ import util.parsers.StandardParser;
  * @author nailbiter
  *
  */
-public class TimeManager implements MyManager,Runnable, OptionReplier {
+public class TimeManager extends AbstractManager implements MyManager,Runnable, OptionReplier {
 	Scheduler scheduler_;
+	protected boolean isSleeping;
 	Long chatID_;
 	MyBasicBot bot_;
 	ArrayList<List<InlineKeyboardButton>> buttons = null;
@@ -42,52 +44,42 @@ public class TimeManager implements MyManager,Runnable, OptionReplier {
 	boolean isWaitingForAnswer;
 	MyAssistantUserData userData_ = null;
 	protected static final int SLEEPINDEX = 0, NOWORKINDEX = 8;
-	/* (non-Javadoc)
-	 * @see util.MyManager#getResultAndFormat(org.json.JSONObject)
-	 */
-	@Override
-	public String getResultAndFormat(JSONObject res) throws Exception {
-		if(res.has("name"))
+	JSONObject obj_ = null;
+	JSONArray sleepingtimes_ = null, wakingtimes_ = null;
+	public String timestat(JSONObject res) {
+		int num = res.optInt("num",48);
+		System.out.println("got num="+num);
+		Hashtable<String,Integer> ht = new Hashtable<String,Integer>();
 		{
-			System.out.println(this.getClass().getName()+" got comd: /"+res.getString("name"));
-			if(res.getString("name").compareTo("timestat")==0)
+			int idx = this.time.length() - 1; 
+			while(num>0 && idx >= 0)
 			{
-				int num = res.optInt("num",48);
-				System.out.println("got num="+num);
-				Hashtable<String,Integer> ht = new Hashtable<String,Integer>();
-				{
-					int idx = this.time.length() - 1; 
-					while(num>0 && idx >= 0)
-					{
-						String cat = time.getString(idx);
-						cat = cat.substring(cat.lastIndexOf(":")+1);
-						if(!ht.containsKey(cat))
-							ht.put(cat, 0);
-						int res1 = ht.get(cat);
-						ht.put(cat, res1+1);
-						num--; idx--;
-					}
-				}
-				List<Map.Entry<String, Integer>> list = 
-						new LinkedList<Map.Entry<String,Integer>>(ht.entrySet());
-				Collections.sort(list,new Comparator<Map.Entry<String,Integer>>()
-					{
-						@Override
-						public int compare(Entry<String, Integer> o1, Entry<String, Integer> o2) {
-							return Integer.compare(o2.getValue(),o1.getValue());
-						}
-					});
-				util.TableBuilder tb = new util.TableBuilder();
-				for(int i = 0; i < list.size(); i++){
-					tb.newRow();
-					tb.addToken(list.get(i).getKey()+":");
-					tb.addToken(printTime(list.get(i).getValue(),res.optString("key")));
-				}
-				
-				return tb.toString();
+				String cat = time.getString(idx);
+				cat = cat.substring(cat.lastIndexOf(":")+1);
+				if(!ht.containsKey(cat))
+					ht.put(cat, 0);
+				int res1 = ht.get(cat);
+				ht.put(cat, res1+1);
+				num--; idx--;
 			}
 		}
-		return null;
+		List<Map.Entry<String, Integer>> list = 
+				new LinkedList<Map.Entry<String,Integer>>(ht.entrySet());
+		Collections.sort(list,new Comparator<Map.Entry<String,Integer>>()
+			{
+				@Override
+				public int compare(Entry<String, Integer> o1, Entry<String, Integer> o2) {
+					return Integer.compare(o2.getValue(),o1.getValue());
+				}
+			});
+		util.TableBuilder tb = new util.TableBuilder();
+		for(int i = 0; i < list.size(); i++){
+			tb.newRow();
+			tb.addToken(list.get(i).getKey()+":");
+			tb.addToken(printTime(list.get(i).getValue(),res.optString("key")));
+		}
+		
+		return tb.toString();
 	}
 	protected String printTime(int num, String key)
 	{
@@ -108,6 +100,14 @@ public class TimeManager implements MyManager,Runnable, OptionReplier {
 		if(!timeObj.has("arr"))
 			timeObj.put("arr", new JSONArray());
 		time = timeObj.getJSONArray("arr");
+		isSleeping = false;
+		obj_ = util.StorageManager.get("sleep", true);
+		if(!obj_.has("sleepingtimes"))
+			obj_.put("sleepingtimes", new JSONArray());
+		if(!obj_.has("wakingtimes"))
+			obj_.put("wakingtimes", new JSONArray());
+		this.sleepingtimes_ = obj_.getJSONArray("sleepingtimes");
+		this.wakingtimes_ = obj_.getJSONArray("wakingtimes");
 	}
 	protected void makeButtons()
 	{
@@ -147,14 +147,14 @@ public class TimeManager implements MyManager,Runnable, OptionReplier {
 			
 			if(this.isWaitingForAnswer)
 			{
-				if(userData_.isSleeping())
+				if(isSleeping())
 					gotUpdate(categories.getString(TimeManager.SLEEPINDEX));
 				else
 					gotUpdate(categories.getString(TimeManager.NOWORKINDEX));
 			}
 			else
 			{
-				if(userData_.isSleeping())
+				if(isSleeping())
 					gotUpdate(categories.getString(TimeManager.SLEEPINDEX));
 				else
 					waitingMessageID = bot_.sendMessageWithKeyBoard(WHEREAREYOUNOW, chatID_, buttons);
@@ -181,6 +181,8 @@ public class TimeManager implements MyManager,Runnable, OptionReplier {
 				Arrays.asList(AbstractManager.makeCommandArg("num", StandardParser.ArgTypes.integer, true),
 						AbstractManager.makeCommandArg("key", StandardParser.ArgTypes.string, true)
 						)));
+		res.put(makeCommand("sleepstart","start sleeping",new ArrayList<JSONObject>()));
+		res.put(makeCommand("sleepend","end sleeping",new ArrayList<JSONObject>()));
 		return res;
 	}
 	@Override
@@ -202,5 +204,28 @@ public class TimeManager implements MyManager,Runnable, OptionReplier {
 			e.printStackTrace(System.out);
 			return null;
 		}
+	}
+	public boolean isSleeping(){ return this.isSleeping; }
+	public String sleepstart(JSONObject obj)
+	{
+		this.isSleeping = true;
+		this.sleepingtimes_.put((new Date()).getTime());
+		return "start sleeping";
+	}
+	public String sleepend(JSONObject obj)
+	{
+		this.isSleeping = false;
+		this.wakingtimes_.put((new Date()).getTime());
+		if(this.isWaitingForAnswer)
+		{
+			try { gotUpdate(categories.getString(TimeManager.SLEEPINDEX)); }
+			catch (Exception e) {
+				e.printStackTrace(System.out);
+				return "cannot gotUpdate";
+			}
+		}
+		return String.format("you have slept for: %s", LocalUtil.milisToTimeFormat(
+				this.wakingtimes_.getLong(this.wakingtimes_.length() - 1) - 
+				this.sleepingtimes_.getLong(this.sleepingtimes_.length() - 1)));
 	}
 }
