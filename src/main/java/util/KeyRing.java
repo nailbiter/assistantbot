@@ -31,9 +31,8 @@ public class KeyRing {
 		init();
 		return obj_.getString("mailpassword");
 	}
-	public static String getMail(int i)
-	{
+	public static String get(String key) {
 		init();
-		return obj_.getJSONArray("mails").getString(i);
+		return obj_.getString(key);
 	}
 }

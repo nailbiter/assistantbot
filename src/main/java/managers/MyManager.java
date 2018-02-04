@@ -3,8 +3,7 @@ package managers;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public interface MyManager {
+public interface MyManager extends Replier{
 	abstract public String getResultAndFormat(JSONObject res) throws Exception;
 	public JSONArray getCommands();
-	public String processReply(int messageID,String msg);
 }

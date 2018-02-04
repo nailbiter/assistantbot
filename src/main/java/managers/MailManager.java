@@ -9,10 +9,14 @@ import org.json.JSONObject;
 
 import assistantbot.MyAssistantUserData;
 import it.sauronsoftware.cron4j.Scheduler;
+import mail.MailReplier;
+import mail.MyMail;
 import util.KeyRing;
 import util.MyBasicBot;
+import util.parsers.StandardParser;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Properties;
 
 import javax.mail.Folder;
@@ -32,78 +36,31 @@ import javax.mail.Flags;
 public class MailManager implements MyManager {
 	protected Long chatID_ = null;
 	MyBasicBot bot_ = null;
-	Scheduler scheduler_ = null;
-	Folder fol_ = null;
-	Store st_ = null;
-	String ID = null;
 	MyAssistantUserData userData_ = null;
-	protected String TOSHIMAIL;
-	public MailManager(Long chatID, MyBasicBot bot, Scheduler scheduler, MyAssistantUserData myAssistantUserData) throws Exception{
+	MyMail mymail_ = null;
+	public MailManager(Long chatID, MyBasicBot bot, Scheduler scheduler, MyAssistantUserData myAssistantUserData) throws Exception
+	{
+		String mail = KeyRing.get("memail");
+		mymail_ = new MyMail(mail, "mail." + mail.substring(mail.indexOf("@")+1), 993,
+				KeyRing.getMailPassword(), "INBOX",scheduler);
 		this.chatID_ = chatID;
 		this.bot_ = bot;
-		this.scheduler_ = scheduler;
 		this.userData_ = myAssistantUserData;
-		this.TOSHIMAIL = KeyRing.getMail(0);
 		
-		String host = "mail.ms.u-tokyo.ac.jp";
-		int port = 993;
-		String user = KeyRing.getMail(1);
-		String password = KeyRing.getMailPassword();
-		String target_folder = "INBOX";
-
-		Properties props = System.getProperties();
-		Session sess = Session.getInstance(props, null);
-//		sess.setDebug(true);
-
-		st_ = sess.getStore("imaps");
-		st_.connect(host, port, user, password);
-		fol_ = st_.getFolder(target_folder);
-		if(!fol_.exists())
-			throw new Exception(String.format("%s is not exist.", target_folder));
-		fol_.open(Folder.READ_ONLY);
-		fol_.addMessageCountListener(this.getMessageCountListener());
-		ID = scheduler.schedule("* * * * *", 
-				new Runnable() {public void run() {try {
-			fol_.getMessageCount();
-		} catch (MessagingException e) {
-			e.printStackTrace();
-		}}});
-	}
-	protected MessageCountListener getMessageCountListener() {
-		return new MessageCountListener() {
+		mymail_.setReplier(KeyRing.get("tmail"), new MailReplier() {
 			@Override
-			public void messagesAdded(MessageCountEvent ev) {
-			    Message[] msgs = ev.getMessages();
-			    StringBuilder sb = new StringBuilder();
-
-			    // Just dump out the new messages
-			    for (int i = 0; i < msgs.length; i++) {
-					try {
-						if(isFromK(msgs[i]))
-							sb.append(String.format("new mail from K!: %s\n", msgs[i].getSubject()));
-					} catch (Exception ioex) { 
-					    ioex.printStackTrace();	
-					}
-			    }
-			    if( sb.length() > 0 )
-			    		bot_.sendMessage(sb.toString(), chatID_);
+			public void onMessageArrived(Message m) throws Exception {
+				bot_.sendMessage(String.format("new mail from K!: %s\n", m.getSubject()), chatID_);
 			}
-
+		});
+		
+		mymail_.setReplier(KeyRing.get("megmail"), new MailReplier() {
 			@Override
-			public void messagesRemoved(MessageCountEvent arg0) {}
-		};
+			public void onMessageArrived(Message m) throws Exception {
+				bot_.sendMessage(String.format("new mail from me!: %s\n", m.getSubject()), chatID_);
+			}
+		});
 	}
-	protected boolean isFromK(Message m) throws Exception
-	{
-		Address[] senders = m.getFrom();
-		for(int i = 0; i < senders.length; i++)
-			if(senders[i].toString().contains(TOSHIMAIL))
-				return true;
-		return false;
-	}
-	/* (non-Javadoc)
-	 * @see util.MyManager#getResultAndFormat(org.json.JSONObject)
-	 */
 	@Override
 	public String getResultAndFormat(JSONObject res) throws Exception {
 		if(res.has("name"))
@@ -111,34 +68,19 @@ public class MailManager implements MyManager {
 			System.out.println(this.getClass().getName()+" got comd: /"+res.getString("name"));
 			if(res.getString("name").compareTo("mailfreq")==0)
 			{
-				scheduler_.reschedule(ID, MailManager.getSchedulingPattern(res.getInt("freq")));
+				mymail_.reschedule(res.getInt("freq"));
 				return String.format("set freq to %d min", res.getInt("freq"));
 			}
 		}
 		return null;
 	}
-	protected static String getSchedulingPattern (int min) throws Exception
-	{
-		if(min <= 0) throw new Exception("min<=0: "+min);
-		return (min==1) ? "* * * * *" : String.format("*/%d * * * *", min);
-	}
-	static boolean isSeen(Flags flags)
-	{
-		return flags.toString().contains("\\Seen");
-	}
-	@Override
-	protected void finalize()
-	{
-		try {
-			fol_.close(false);
-			st_.close();
-		} catch (MessagingException e) {
-			e.printStackTrace();
-		}
-	}
 	@Override
 	public JSONArray getCommands() {
-		return new JSONArray("[{\"name\":\"mailfreq\",\"args\":[{\"name\":\"freq\",\"type\":\"int\"}],\"help\":\"set mailbox check freq to MIN\"}]");
+		JSONArray res = new JSONArray();
+		res.put(AbstractManager.makeCommand("mailfreq", "set mailbox check freq to MIN", 
+				Arrays.asList(AbstractManager.makeCommandArg("freq", StandardParser.ArgTypes.integer, 
+						true))));
+		return res;
 	}
 	@Override
 	public String processReply(int messageID,String msg) {

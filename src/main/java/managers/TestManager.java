@@ -44,7 +44,7 @@ public class TestManager extends AbstractManager implements OptionReplier {
 		JSONObject obj = StorageManager.get("tests", false),
 				objData = StorageManager.get("testsData", true);
 		addTest("paradigm",obj,objData);
-		addTest("genders",obj,objData);
+		//addTest("genders",obj,objData);
 		//addTest("plural",obj,objData);
 		System.out.println(String.format("#tests=%d", tests.size()));
 		schedule();
