@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import assistantbot.MyAssistantUserData;
 import it.sauronsoftware.cron4j.Scheduler;
+import mail.KMailReplier;
 import mail.MailReplier;
 import mail.MyMail;
 import util.KeyRing;
@@ -47,19 +48,14 @@ public class MailManager implements MyManager {
 		this.bot_ = bot;
 		this.userData_ = myAssistantUserData;
 		
-		mymail_.setReplier(KeyRing.get("tmail"), new MailReplier() {
-			@Override
-			public void onMessageArrived(Message m) throws Exception {
-				bot_.sendMessage(String.format("new mail from K!: %s\n", m.getSubject()), chatID_);
-			}
-		});
-		
-		mymail_.setReplier(KeyRing.get("megmail"), new MailReplier() {
-			@Override
-			public void onMessageArrived(Message m) throws Exception {
-				bot_.sendMessage(String.format("new mail from me!: %s\n", m.getSubject()), chatID_);
-			}
-		});
+		addReplier(KeyRing.get("tmail"));
+		addReplier(KeyRing.get("megmail"));
+	}
+	private void addReplier(String m)
+	{
+		KMailReplier kmr = new KMailReplier(m,bot_,chatID_,userData_,mymail_);
+		mymail_.setMailReplier(m,kmr);
+		mymail_.setMessageReplier(kmr);
 	}
 	@Override
 	public String getResultAndFormat(JSONObject res) throws Exception {
@@ -84,6 +80,6 @@ public class MailManager implements MyManager {
 	}
 	@Override
 	public String processReply(int messageID,String msg) {
-		return null;
+		return mymail_.processReply(messageID, msg);
 	}
 }

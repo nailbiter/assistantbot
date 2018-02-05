@@ -113,7 +113,7 @@ public class StorageManager {
 				   str = itr.next();
 			       System.out.println("Key: "+str+" & Value: "+registeredObjects.get(str));
 			       fw = new FileWriter(LocalUtil.getJarFolder()+str+".json");
-			       fw.write(registeredObjects.get(str).toString());
+			       fw.write(registeredObjects.get(str).toString(2));
 			       fw.close(); 
 			 }
 			 catch(Exception e)
