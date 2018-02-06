@@ -45,21 +45,23 @@ public class MyMail implements Replier{
 	Store st_ = null;
 	String ID;
 	Scheduler scheduler_;
-	String user,mail_;
+	String user_,mail_,host_;
 	Hashtable<String, MailReplier> repliers_ = new Hashtable<String,MailReplier>();
 	List<Replier>  messageRepliers_ = new ArrayList<Replier>();
 	Session sess_ = null;
+	String password_ = null;
 	public MyMail(String mail, String host, int port, String password, String target_folder, Scheduler scheduler) throws Exception
 	{
 		mail_ = mail;
+		host_ = host;
+		password_ = password;
 		scheduler_ = scheduler;
-		user = mail.substring(0, mail.indexOf("@"));
+		user_ = mail.substring(0, mail.indexOf("@"));
 		Properties props = System.getProperties();
 		sess_ = Session.getInstance(props, null);
-//		sess.setDebug(true);
 
 		st_ = sess_.getStore("imaps");
-		st_.connect(host, port, user, password);
+		st_.connect(host, port, user_, password);
 		fol_ = st_.getFolder(target_folder);
 		if(!fol_.exists())
 			throw new Exception(String.format("%s is not exist.", target_folder));
@@ -141,175 +143,143 @@ public class MyMail implements Replier{
 				return res;
 		return null;
 	}
-	public void replyTo(Message m) throws Exception {
-		logger_.info("replyTo 1");
-		
-		inmain(m,logger_);
+	public void replyTo(Message m,String body) throws Exception {
+		inmain(m,body);
 	} 
-   public static void inmain(Message m, Logger logger_) {
-    		String  to, subject = null, from = "leontiev@ms.u-tokyo.ac.jp", 
+   public void inmain(Message m, String string) throws Exception {
+    		String  to, subject = null, from = mail_, 
     			cc = null, bcc = null, url = null;
     		String mailhost = null;
     		String mailer = "msgsend";
     		String file = null;
-    		String protocol = null, host = null, user = null, password = "k2h-vdE-LE4-EGg";
+    		String protocol = null, host = null, user = null, password = password_;
     		String record = null;	// name of folder in which to record mail
     		boolean debug = false;
 
-    		try {
-    		    /*
-    		     * Prompt for To and Subject, if not specified.
-    		     */
-    		    if ( true ) {
-    			// XXX - concatenate all remaining arguments
-    			to = "alozz1991@gmail.com";//argv[optind];
-    			/*System.out.println("To: " + to);
-    		    } else {
-    			System.out.print("To: ");
-    			System.out.flush();
-    			to = in.readLine();
-    		    }*/
-    			Random r = new Random();
-    			subject = String.format("test: %d", r.nextInt());
-    			System.out.format("subject: %s",subject);
-    		    /*if (subject == null) {
-    			System.out.print("Subject: ");
-    			System.out.flush();
-    			subject = in.readLine();
-    		    } else {
-    			System.out.println("Subject: " + subject);
-    		    }*/
+		to = KeyRing.get("megmail");
+		Random r = new Random();
+		subject = String.format("test: %d", r.nextInt());
+		System.out.format("subject: %s",subject);
 
-    		    /*
-    		     * Initialize the JavaMail Session.
-    		     */
-    		    Properties props = System.getProperties();
-    		    // XXX - could use Session.getTransport() and Transport.connect()
-    		    // XXX - assume we're using SMTP
-    		    mailhost = "mail.ms.u-tokyo.ac.jp";
-    		    if (mailhost != null)
-    			    props.put("mail.smtp.host", mailhost);
-    	        props.put("mail.smtp.port", 587);
+	    /*
+	     * Initialize the JavaMail Session.
+	     */
+	    Properties props = System.getProperties();
+	    // XXX - could use Session.getTransport() and Transport.connect()
+	    // XXX - assume we're using SMTP
+	    mailhost = host_;
+	    if (mailhost != null)
+		    props.put("mail.smtp.host", mailhost);
+        props.put("mail.smtp.port", 587);
 
-    	        props.put("mail.debug", "true");
-    	        props.put("mail.smtp.auth", "true");
-    	        props.put("mail.smtp.user", "leontiev");
-    	        props.put("mail.smtp.password","k2h-vdE-LE4-EGg");
-    	        props.put("mail.smtp.starttls.enable","true");
-    	        props.put("mail.smtp.EnableSSL.enable","true");
-    	        password = "k2h-vdE-LE4-EGg";
-    	        host = "mail.ms.u-tokyo.ac.jp";
-    	        user = "leontiev";
+        props.put("mail.debug", "true");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.user", user_);
+        props.put("mail.smtp.password",password_);
+        props.put("mail.smtp.starttls.enable","true");
+        props.put("mail.smtp.EnableSSL.enable","true");
+        password = password_;
+        host = host_;
+        user = user_;
 
-    	        System.out.format("host=%s",mailhost);
+        System.out.format("host=%s",mailhost);
 
-    		    // Get a Session object
-    	        SmtpAuthenticator authentication = new SmtpAuthenticator();
-    		    Session session = Session.getInstance(props, authentication);
-    		    if (debug)
-    			    session.setDebug(true);
+	    // Get a Session object
+        SmtpAuthenticator authentication = new SmtpAuthenticator();
+	    Session session = Session.getInstance(props, authentication);
+	    if (debug)
+		    session.setDebug(true);
 
-    		    /*
-    		     * Construct the message and send it.
-    		     */
-    		    Message msg = new MimeMessage(session);
-    		    if(m != null) {
-    		    		msg.setReplyTo(m.getFrom());
-    		    		Message rm = m.reply(true);
-    		    		String subj = rm.getSubject();
-    		    		logger_.info(String.format("subj: %s", subj));
-    		    		msg.setSubject(subj);
-    		    }
-    		    if (from != null)
-    		    		msg.setFrom(new InternetAddress(from));
-    		    else
-    			msg.setFrom();
+	    /*
+	     * Construct the message and send it.
+	     */
+	    Message msg = new MimeMessage(session);
+	    if(m != null) {
+	    		msg.setReplyTo(m.getFrom());
+	    		Message rm = m.reply(true);
+	    		String subj = rm.getSubject();
+	    		logger_.info(String.format("subj: %s", subj));
+	    		msg.setSubject(subj);
+	    }
+	    if (from != null)
+	    		msg.setFrom(new InternetAddress(from));
+	    else
+		msg.setFrom();
 
-    		    msg.setRecipients(Message.RecipientType.TO,
-    						InternetAddress.parse(to, false));
-    		    if (cc != null)
-    			msg.setRecipients(Message.RecipientType.CC,
-    						InternetAddress.parse(cc, false));
-    		    if (bcc != null)
-    			msg.setRecipients(Message.RecipientType.BCC,
-    						InternetAddress.parse(bcc, false));
+	    msg.setRecipients(Message.RecipientType.TO,
+					InternetAddress.parse(to, false));
+	    if (cc != null)
+		msg.setRecipients(Message.RecipientType.CC,
+					InternetAddress.parse(cc, false));
+	    if (bcc != null)
+		msg.setRecipients(Message.RecipientType.BCC,
+					InternetAddress.parse(bcc, false));
 
-    		    //msg.setSubject(subject);
+	    String text = string;
 
-    		    String text = "this is BODY";//collect(in);
+	    if (file != null) {
+		MimeBodyPart mbp1 = new MimeBodyPart();
+		mbp1.setText(text);
+		MimeBodyPart mbp2 = new MimeBodyPart();
+		mbp2.attachFile(file);
+		MimeMultipart mp = new MimeMultipart();
+		mp.addBodyPart(mbp1);
+		mp.addBodyPart(mbp2);
+		msg.setContent(mp);
+	    } else {
+		// If the desired charset is known, you can use
+		// setText(text, charset)
+		msg.setText(text);
+	    }
 
-    		    if (file != null) {
-    			// Attach the specified file.
-    			// We need a multipart message to hold the attachment.
-    			MimeBodyPart mbp1 = new MimeBodyPart();
-    			mbp1.setText(text);
-    			MimeBodyPart mbp2 = new MimeBodyPart();
-    			mbp2.attachFile(file);
-    			MimeMultipart mp = new MimeMultipart();
-    			mp.addBodyPart(mbp1);
-    			mp.addBodyPart(mbp2);
-    			msg.setContent(mp);
-    		    } else {
-    			// If the desired charset is known, you can use
-    			// setText(text, charset)
-    			msg.setText(text);
-    		    }
+	    msg.setHeader("X-Mailer", mailer);
+	    msg.setSentDate(new Date());
 
-    		    msg.setHeader("X-Mailer", mailer);
-    		    msg.setSentDate(new Date());
+	    // send the thing off
+	    Transport.send(msg);
 
-    		    // send the thing off
-    		    Transport.send(msg);
+	    System.out.println("\nMail was sent successfully.");
 
-    		    System.out.println("\nMail was sent successfully.");
+	    /*
+	     * Save a copy of the message, if requested.
+	     */
+	    if (record != null) {
+		// Get a Store object
+		Store store = null;
+		if (url != null) {
+		    URLName urln = new URLName(url);
+		    store = session.getStore(urln);
+		    store.connect();
+		} else {
+		    if (protocol != null)		
+			    store = session.getStore(protocol);
+		    else
+			    store = session.getStore();
+			    store.connect();
+		}
 
-    		    /*
-    		     * Save a copy of the message, if requested.
-    		     */
-    		    if (record != null) {
-    			// Get a Store object
-    			Store store = null;
-    			if (url != null) {
-    			    URLName urln = new URLName(url);
-    			    store = session.getStore(urln);
-    			    store.connect();
-    			} else {
-    			    if (protocol != null)		
-    				    store = session.getStore(protocol);
-    			    else
-    				    store = session.getStore();
+		// Get record Folder.  Create if it does not exist.
+		Folder folder = store.getFolder(record);
+		if (folder == null) {
+		    System.err.println("Can't get record folder.");
+		    System.exit(1);
+		}
+		if (!folder.exists())
+		    folder.create(Folder.HOLDS_MESSAGES);
 
-    			    // Connect
-    			    /*if (host != null || user != null || password != null)
-    				    store.connect(host, user, "k2h-vdE-LE4-EGg");
-    			    else*/
-    				    store.connect();
-    			}
+		Message[] msgs = new Message[1];
+		msgs[0] = msg;
+		folder.appendMessages(msgs);
 
-    			// Get record Folder.  Create if it does not exist.
-    			Folder folder = store.getFolder(record);
-    			if (folder == null) {
-    			    System.err.println("Can't get record folder.");
-    			    System.exit(1);
-    			}
-    			if (!folder.exists())
-    			    folder.create(Folder.HOLDS_MESSAGES);
-
-    			Message[] msgs = new Message[1];
-    			msgs[0] = msg;
-    			folder.appendMessages(msgs);
-
-    			System.out.println("Mail was recorded successfully.");
-    		    }
-    		}} catch (Exception e) {
-    		    e.printStackTrace();
+		System.out.println("Mail was recorded successfully.");
+    		    
     		}
     	    }
-    	    static class SmtpAuthenticator extends Authenticator {
+    	    class SmtpAuthenticator extends Authenticator {
     	        public SmtpAuthenticator() {super();}
     	        @Override
     	        public PasswordAuthentication getPasswordAuthentication() {
-    	        				return new PasswordAuthentication("leontiev", "k2h-vdE-LE4-EGg");
+    	        				return new PasswordAuthentication(user_, password_);
     	        }
     	    }
    }

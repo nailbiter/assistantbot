@@ -24,8 +24,7 @@ public class KMailReplier implements MailReplier, Replier {
 	public void onMessageArrived(Message m) throws Exception {
 		bot_.sendMessage(String.format("new mail from %s: %s\n",tmail_.substring(0,tmail_.indexOf("@")).toUpperCase(),
 				m.getSubject()), chatID_);
-		//TODO: reply to mail
-		mymail_.replyTo(m);
+		mymail_.replyTo(m,"this is my BODY\ndo you like it?");
 	}
 
 	@Override
