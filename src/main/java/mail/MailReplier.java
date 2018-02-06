@@ -1,8 +1,7 @@
 package mail;
 
-import javax.mail.Message;
+import org.json.JSONObject;
 
-//FIXME: Message m -> JSONObject m (decouple)
 public interface MailReplier {
-	public void onMessageArrived(Message m) throws Exception;
+	public void onMessageArrived(JSONObject message) throws Exception;
 }

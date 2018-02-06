@@ -30,6 +30,9 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import it.sauronsoftware.cron4j.Scheduler;
 import managers.MailManager;
 import managers.Replier;
@@ -102,7 +105,7 @@ public class MyMail implements Replier{
 							String adr = itr.next();
 							if(isFrom(msgs[i],adr))
 							{
-								repliers_.get(adr).onMessageArrived(msgs[i]);
+								repliers_.get(adr).onMessageArrived(MsgToJSON(msgs[i]));
 							}
 						}
 					} catch (Exception ioex) { 
@@ -114,6 +117,18 @@ public class MyMail implements Replier{
 			@Override
 			public void messagesRemoved(MessageCountEvent arg0) {}
 		};
+	}
+	Hashtable<Integer,Message> msgs_ = new Hashtable<Integer,Message>();
+	Random rand_ = new Random();
+	private JSONObject MsgToJSON(Message m) throws Exception
+	{
+		JSONObject res = new JSONObject();
+		int id = rand_.nextInt();
+		msgs_.put(id, m);
+		
+		return res
+				.put("id", id)
+				.put("subject", m.getSubject());
 	}
 	public void reschedule(int freq) throws Exception
 	{
@@ -143,8 +158,8 @@ public class MyMail implements Replier{
 				return res;
 		return null;
 	}
-	public void replyTo(Message m,String body) throws Exception {
-		inmain(m,body);
+	public void replyTo(JSONObject message,String body) throws Exception {
+		inmain(msgs_.get(message.getInt("id")),body);
 	} 
    public void inmain(Message m, String string) throws Exception {
     		String  to, subject = null, from = mail_, 

@@ -1,6 +1,6 @@
 package mail;
 
-import javax.mail.Message;
+import org.json.JSONObject;
 
 import assistantbot.MyAssistantUserData;
 import managers.Replier;
@@ -21,10 +21,10 @@ public class KMailReplier implements MailReplier, Replier {
 		mymail_ = mymail;
 	}
 	@Override
-	public void onMessageArrived(Message m) throws Exception {
+	public void onMessageArrived(JSONObject message) throws Exception {
 		bot_.sendMessage(String.format("new mail from %s: %s\n",tmail_.substring(0,tmail_.indexOf("@")).toUpperCase(),
-				m.getSubject()), chatID_);
-		mymail_.replyTo(m,"this is my BODY\ndo you like it?");
+				message.getString("subject")), chatID_);
+		mymail_.replyTo(message,"this is my BODY\ndo you like it?");
 	}
 
 	@Override
