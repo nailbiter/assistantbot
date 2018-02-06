@@ -41,7 +41,7 @@ public class MyAssistantUserData extends UserData {
 				scheduler = new Scheduler();
 				scheduler.setTimeZone(LocalUtil.getTimezone());
 				managers.add(new managers.MoneyManager(this));
-				managers.add(new managers.HabitManager(chatID,bot,scheduler));
+				managers.add(new managers.HabitManager(chatID,bot,scheduler,this));
 				managers.add(new managers.TaskManager(chatID, bot));
 				managers.add(new managers.TestManager(chatID, bot,scheduler,this));
 				managers.add(tm_ = new managers.TimeManager(chatID,bot,scheduler,this));

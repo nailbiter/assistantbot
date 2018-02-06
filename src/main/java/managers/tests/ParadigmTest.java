@@ -1,18 +1,21 @@
 package managers.tests;
 
 import java.util.Timer;
+import java.util.logging.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import managers.MyManager;
+import managers.Replier;
 import managers.TestManager;
 
-public class ParadigmTest extends Test {
+public class ParadigmTest{
+	JSONObject obj_;
+	private Logger logger_ = Logger.getLogger(this.getClass().getName());
 	public ParadigmTest(JSONObject obj,JSONObject data,TestManager master,String name,Timer t) throws Exception {
-		super(obj,data,master,name,t);
+		obj_ = obj;
 	}
-	@Override
 	public String toString()
 	{
 		return String.format("start=%s, end=%s, count=%d", 
@@ -20,8 +23,7 @@ public class ParadigmTest extends Test {
 				obj_.getString("end"),
 				obj_.getInt("count"));
 	}
-	@Override
-	protected String[] isCalled(int count) {
+	public String[] isCalled(int count) {
 		if(count == 0)
 			return new String[] {"test: the"};
 		if(count == 1)
@@ -32,7 +34,6 @@ public class ParadigmTest extends Test {
 			return new String[] {"test: mein"};
 		return null;
 	}
-	@Override
 	public String processReply(String reply, int count) {
 		System.out.println(String.format("paradigm: processReply(count=%d,obj_=%s)",count,obj_.toString()));
 		return this.verify(reply,

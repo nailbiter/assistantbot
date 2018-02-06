@@ -142,16 +142,19 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 		this.waitingForReply.get(chatID_).put(res.getMessageId(), whom);
 		return res.getMessageId();
 	}
-	public void sendMessage(String msg,Long chatID_)
+	public int sendMessage(String msg,Long chatID_)
 	{
 		try 
 		{
 			SendMessage message = new SendMessage()
 					.setChatId(chatID_)
 							.setText(msg);
-			sendMessage(message);
+			return sendMessage(message).getMessageId();
 		}
-		catch(Exception e){ e.printStackTrace(System.out); }
+		catch(Exception e){ 
+			e.printStackTrace(System.out);
+			return -1;
+		}
 	}
 	/**
 	 * 

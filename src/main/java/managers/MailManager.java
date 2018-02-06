@@ -48,8 +48,8 @@ public class MailManager implements MyManager {
 		this.bot_ = bot;
 		this.userData_ = myAssistantUserData;
 		
-		//addReplier(KeyRing.get("tmail"));
-		addReplier(KeyRing.get("megmail"));
+		addReplier(KeyRing.get("tmail"));
+		//addReplier(KeyRing.get("megmail"));
 	}
 	private void addReplier(String m)
 	{
