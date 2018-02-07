@@ -47,10 +47,11 @@ public class HabitManager implements managers.MyManager, OptionReplier
 		public void run() { HabitRunnableDispatch(index_,code_); }
 	}
 
-	protected String getReminderMessage(int index)
+	protected String getReminderMessage(JSONObject habit)
 	{
-		return String.format("don't forget to execute %s !",
-				habits_.getJSONObject(index).getString("name"));
+		return String.format("don't forget to execute %s !%s",
+				habit.getString("name"),
+				habit.has("info") ? String.format("\n%s", habit.getString("info")) : "");
 	}
 	protected String getFailureMessage(int index)
 	{
@@ -60,7 +61,7 @@ public class HabitManager implements managers.MyManager, OptionReplier
 	{
 		System.out.println(String.format("HabitRunnableDispatch(%d,%s)", index,code.toString()));
 		if(code == HabitRunnableEnum.SENDREMINDER) {
-			bot_.sendMessage(getReminderMessage(index), chatID_);
+			bot_.sendMessage(getReminderMessage(habits_.getJSONObject(index)), chatID_);
 			habits_.getJSONObject(index).put("isWaiting", true);
 			failTimes.put(habits_.getJSONObject(index).getString("name"), 
 					new Date(System.currentTimeMillis()+
