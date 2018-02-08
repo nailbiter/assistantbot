@@ -17,6 +17,7 @@ import util.MyBasicBot;
 import util.parsers.StandardParser;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Properties;
 
@@ -34,11 +35,12 @@ import javax.mail.Flags;
  * @author nailbiter
  *
  */
-public class MailManager implements MyManager {
+public class MailManager implements MyManager, OptionReplier{
 	protected Long chatID_ = null;
 	MyBasicBot bot_ = null;
 	MyAssistantUserData userData_ = null;
 	MyMail mymail_ = null;
+	public static final String MAILREPLY = "mailreply";
 	public MailManager(Long chatID, MyBasicBot bot, Scheduler scheduler, MyAssistantUserData myAssistantUserData) throws Exception
 	{
 		String mail = KeyRing.get("memail");
@@ -76,10 +78,15 @@ public class MailManager implements MyManager {
 		res.put(AbstractManager.makeCommand("mailfreq", "set mailbox check freq to MIN", 
 				Arrays.asList(AbstractManager.makeCommandArg("freq", StandardParser.ArgTypes.integer, 
 						true))));
+		//res.put(AbstractManager.makeCommand(MAILREPLY, "reply to mail",new ArrayList<JSONObject>()));
 		return res;
 	}
 	@Override
 	public String processReply(int messageID,String msg) {
 		return mymail_.processReply(messageID, msg);
+	}
+	@Override
+	public String optionReply(String option, Integer msgID) throws Exception {
+		return mymail_.optionReply(option, msgID);
 	}
 }

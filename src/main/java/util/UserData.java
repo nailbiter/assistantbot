@@ -24,7 +24,7 @@ import org.telegram.telegrambots.api.objects.Message;
  */
 public abstract class UserData {
 	abstract public void Update(JSONObject res);
-	public String processUpdateWithCallbackQuery(String call_data, int message_id)  {
+	public String processUpdateWithCallbackQuery(String call_data, int message_id) throws Exception  {
 		return null;
 	}
 }

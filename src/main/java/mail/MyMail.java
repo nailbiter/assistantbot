@@ -35,6 +35,7 @@ import org.json.JSONObject;
 
 import it.sauronsoftware.cron4j.Scheduler;
 import managers.MailManager;
+import managers.OptionReplier;
 import managers.Replier;
 import util.KeyRing;
 
@@ -42,7 +43,7 @@ import util.KeyRing;
  * @author nailbiter
  * Class for mail handling
  */
-public class MyMail implements Replier{
+public class MyMail implements Replier, OptionReplier{
 	private Logger logger_ = Logger.getLogger(this.getClass().getName());
 	Folder fol_ = null;
 	Store st_ = null;
@@ -50,9 +51,11 @@ public class MyMail implements Replier{
 	Scheduler scheduler_;
 	String user_,mail_,host_;
 	Hashtable<String, MailReplier> repliers_ = new Hashtable<String,MailReplier>();
-	List<Replier>  messageRepliers_ = new ArrayList<Replier>();
+	List<MailReplier>  messageRepliers_ = new ArrayList<MailReplier>();
 	Session sess_ = null;
 	String password_ = null;
+	TemplateManager templatemanager_ = new TemplateManager();
+	TemplateManager getTemplateManager() { return this.templatemanager_; }
 	public MyMail(String mail, String host, int port, String password, String target_folder, Scheduler scheduler) throws Exception
 	{
 		mail_ = mail;
@@ -78,7 +81,7 @@ public class MyMail implements Replier{
 		}}});
 	}
 	public void setMailReplier(String mail_from,MailReplier mr) { this.repliers_.put(mail_from, mr); }
-	public void setMessageReplier(Replier r)	{this.messageRepliers_.add(r);}
+	public void setMessageReplier(MailReplier r)	{this.messageRepliers_.add(r);}
 	protected boolean isFrom(Message m,String tmail) throws Exception
 	{
 		//logger_.info(String.format("compare subj=%s, tmail=%s", m.getSubject(),tmail));
@@ -158,9 +161,17 @@ public class MyMail implements Replier{
 				return res;
 		return null;
 	}
+	@Override
+	public String optionReply(String option, Integer msgID) throws Exception {
+		String res = null;
+		for(int i = 0; i < this.messageRepliers_.size(); i++)
+			if((res = this.messageRepliers_.get(i).optionReply(option, msgID)) != null)
+				return res;
+		return null;
+	}
 	public void replyTo(JSONObject message,String body) throws Exception {
 		inmain(msgs_.get(message.getInt("id")),body);
-	} 
+	}
    public void inmain(Message m, String string) throws Exception {
     		String  to, subject = null, from = mail_, 
     			cc = null, bcc = null, url = null;
@@ -171,7 +182,12 @@ public class MyMail implements Replier{
     		String record = null;	// name of folder in which to record mail
     		boolean debug = false;
 
-		to = KeyRing.get("megmail");
+		if(true)
+			to = m.getFrom()[0].toString();
+		else
+			to = KeyRing.get("megmail");
+    		logger_.info(String.format("to=%s", to));
+		
 		Random r = new Random();
 		subject = String.format("test: %d", r.nextInt());
 		System.out.format("subject: %s",subject);
@@ -200,7 +216,7 @@ public class MyMail implements Replier{
         System.out.format("host=%s",mailhost);
 
 	    // Get a Session object
-        SmtpAuthenticator authentication = new SmtpAuthenticator();
+        SmtpAuthenticator authentication = new SmtpAuthenticator(user_,password_);
 	    Session session = Session.getInstance(props, authentication);
 	    if (debug)
 		    session.setDebug(true);
@@ -220,6 +236,8 @@ public class MyMail implements Replier{
 	    		msg.setFrom(new InternetAddress(from));
 	    else
 		msg.setFrom();
+	    
+	    cc = KeyRing.get("megmail");
 
 	    msg.setRecipients(Message.RecipientType.TO,
 					InternetAddress.parse(to, false));
@@ -289,12 +307,5 @@ public class MyMail implements Replier{
 		System.out.println("Mail was recorded successfully.");
     		    
     		}
-    	    }
-    	    class SmtpAuthenticator extends Authenticator {
-    	        public SmtpAuthenticator() {super();}
-    	        @Override
-    	        public PasswordAuthentication getPasswordAuthentication() {
-    	        				return new PasswordAuthentication(user_, password_);
-    	        }
     	    }
    }

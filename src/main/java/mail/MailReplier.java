@@ -2,6 +2,9 @@ package mail;
 
 import org.json.JSONObject;
 
-public interface MailReplier {
+import managers.OptionReplier;
+import managers.Replier;
+
+public interface MailReplier extends Replier, OptionReplier{
 	public void onMessageArrived(JSONObject message) throws Exception;
-}
+}	

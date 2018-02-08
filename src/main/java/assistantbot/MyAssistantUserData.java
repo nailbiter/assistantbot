@@ -80,7 +80,7 @@ public class MyAssistantUserData extends UserData {
 		}
 	}
 	@Override
-	public String processUpdateWithCallbackQuery(String call_data, int message_id){
+	public String processUpdateWithCallbackQuery(String call_data, int message_id) throws Exception{
 		String res = null;
 		List<OptionReplier> repliers = this.getOptionRepliers();
 		System.out.format("got %d repliers\n", repliers.size());

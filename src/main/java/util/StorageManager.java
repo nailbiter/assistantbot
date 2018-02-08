@@ -2,9 +2,11 @@ package util;
 
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -14,6 +16,7 @@ import managers.MyManager;
 
 public class StorageManager {
 	protected static Hashtable<String,JSONObject> registeredObjects = new Hashtable<String,JSONObject>();
+	protected static Logger logger_ = Logger.getLogger(StorageManager.class.getName());
 	protected static MyManager myManager = null;
 	public static MyManager getMyManager() {return myManager;}
 	public static void init() throws Exception
@@ -68,6 +71,25 @@ public class StorageManager {
 	            System.out.println("Shutdown hook ran!");
 	            onShutdown();
 	        }});
+	}
+	public static String getFile(String name) throws Exception
+	{
+		FileReader fr = null;
+		String fname = LocalUtil.getJarFolder()+name;
+		logger_.info(String.format("fname=%s", fname));
+		
+		fr = new FileReader(fname);
+		StringBuilder sb = new StringBuilder();
+        int character;
+        while ((character = fr.read()) != -1) {
+        		sb.append((char)character);
+            //System.out.print((char) character);
+        }
+        System.out.println("found "+sb.toString());
+		fr.close();
+		String res = sb.toString();
+		logger_.info(String.format("res=%s", res));
+		return res;
 	}
 	public static JSONObject get(String name,boolean register)
 	{
