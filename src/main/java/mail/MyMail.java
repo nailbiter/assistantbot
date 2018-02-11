@@ -174,7 +174,7 @@ public class MyMail implements Replier, OptionReplier{
 	}
    public void inmain(Message m, String string) throws Exception {
     		String  to, subject = null, from = mail_, 
-    			cc = null, bcc = null, url = null;
+    			cc = KeyRing.get("memail"), bcc = null, url = null;
     		String mailhost = null;
     		String mailer = "msgsend";
     		String file = null;
@@ -236,8 +236,6 @@ public class MyMail implements Replier, OptionReplier{
 	    		msg.setFrom(new InternetAddress(from));
 	    else
 		msg.setFrom();
-	    
-	    cc = KeyRing.get("megmail");
 
 	    msg.setRecipients(Message.RecipientType.TO,
 					InternetAddress.parse(to, false));

@@ -43,18 +43,6 @@ public class KMailReplier implements MailReplier{
 
 	@Override
 	public String processReply(int messageID, String msg) {
-		/*if( !messages_.containsKey(messageID) )
-			return null;
-		
-		try{
-			String[] tokens =  msg.split(" ");
-			if( !tokens[0].equals("/" + MailManager.MAILREPLY) )
-				return "unknown command";
-			mymail_.replyTo(messages_.get(messageID),"this is my BODY\ndo you like it?");
-			messages_.remove(messageID);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}*/
 		return null;
 	}
 	@Override
