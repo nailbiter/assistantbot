@@ -113,7 +113,7 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 	{
 		categories = new JSONArray()
 				.put("сон")			//0
-				.put("japanese")		//1
+				.put("parttime")		//1
 				.put("логистика")	//2
 				.put("gym")			//3
 				.put("reading")		//4

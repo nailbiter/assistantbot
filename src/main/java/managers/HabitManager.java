@@ -49,7 +49,7 @@ public class HabitManager implements managers.MyManager, OptionReplier
 
 	protected String getReminderMessage(JSONObject habit)
 	{
-		return String.format("don't forget to execute %s !%s",
+		return String.format("don't forget to execute: %s !%s",
 				habit.getString("name"),
 				habit.has("info") ? String.format("\n%s", habit.getString("info")) : "");
 	}

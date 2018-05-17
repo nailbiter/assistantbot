@@ -24,15 +24,19 @@ public class ParadigmTest{
 				obj_.getInt("count"));
 	}
 	public String[] isCalled(int count) {
-		if(count == 0)
+		/*if(count == 0)
 			return new String[] {"test: the"};
 		if(count == 1)
 			return new String[] {"test: welch"};
 		if(count == 2)
 			return new String[] {"test: a"};
 		if(count == 3)
-			return new String[] {"test: mein"};
-		return null;
+			return new String[] {"test: mein"};*/
+		if(obj_.getJSONArray("data").length() >= count)
+			return new String[] {String.format("paradigm test: %s", 
+					obj_.getJSONArray("data").getJSONArray(count).getString(3))};
+		else
+			return null;
 	}
 	public String processReply(String reply, int count) {
 		System.out.println(String.format("paradigm: processReply(count=%d,obj_=%s)",count,obj_.toString()));

@@ -88,7 +88,9 @@ public class Task
 			tt.cancel();
 		tt = new TaskReminder(this,m_);
 		
-		JSONArray history = obj_.getJSONArray("history");
+		JSONArray history = this.getHistory();
+		if( history.length() == 0 )
+			return;
 		Long date = history.getLong(history.length() - 2);
 		int timeInMin = history.getInt(history.length() - 1);
 		
