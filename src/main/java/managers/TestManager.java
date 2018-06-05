@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Random;
+import java.util.RandomAccess;
 import java.util.Timer;
 import java.util.logging.Logger;
 
@@ -31,6 +33,7 @@ public class TestManager extends AbstractManager implements OptionReplier {
 	MyAssistantUserData ud_ = null;
 	Timer timer_ = null;
 	ParadigmTest paradigmtest_ = null;
+	Random rand = new Random();
 	public TestManager(Long chatID, MyBasicBot bot, Scheduler scheduler, MyAssistantUserData myAssistantUserData) throws Exception{
 		ud_ = myAssistantUserData;
 		chatID_ = chatID;
@@ -67,9 +70,16 @@ public class TestManager extends AbstractManager implements OptionReplier {
 	public JSONArray getCommands() {
 		JSONArray res = new JSONArray();
 		res.put(AbstractManager.makeCommand("tests","show tests",new ArrayList<JSONObject>()));
+		res.put(AbstractManager.makeCommand("testrand","show random test",new ArrayList<JSONObject>()));
 		res.put(makeCommand("testdo","paradigm test done",
 				Arrays.asList(makeCommandArg("index", StandardParser.ArgTypes.integer, false))));
 		return res;
+	}
+	public String testrand(JSONObject obj) throws Exception
+	{
+		JSONObject o = new JSONObject()
+				.put("index",rand.nextInt(paradigmtest_.getSize()));
+		return testdo(o);
 	}
 	public String testdo(JSONObject obj) throws Exception
 	{

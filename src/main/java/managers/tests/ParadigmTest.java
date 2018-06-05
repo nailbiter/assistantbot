@@ -23,6 +23,9 @@ public class ParadigmTest{
 				obj_.getString("end"),
 				obj_.getInt("count"));
 	}
+	public int getSize() {
+		return obj_.getJSONArray("data").length();
+	}
 	public String[] isCalled(int count) {
 		/*if(count == 0)
 			return new String[] {"test: the"};

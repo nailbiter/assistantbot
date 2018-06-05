@@ -45,7 +45,7 @@ public class MyAssistantUserData extends UserData {
 				managers.add(new managers.TaskManager(chatID, bot));
 				managers.add(new managers.TestManager(chatID, bot,scheduler,this));
 				managers.add(tm_ = new managers.TimeManager(chatID,bot,scheduler,this));
-				managers.add(new managers.MailManager(chatID,bot,scheduler,this));
+				//managers.add(new managers.MailManager(chatID,bot,scheduler,this));
 				managers.add(new MiscUtilManager());
 				managers.add(new BadHabitManager(this));
 			}

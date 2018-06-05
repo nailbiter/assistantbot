@@ -112,15 +112,15 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 	protected void makeButtons()
 	{
 		categories = new JSONArray()
-				.put("сон")			//0
+				.put("sleeping")		//0
 				.put("parttime")		//1
-				.put("логистика")	//2
+				.put("logistics")	//2
 				.put("gym")			//3
 				.put("reading")		//4
-				.put("работа")		//5
-				.put("отдых")		//6
-				.put("общение")		//7
-				.put("без дела")		//8
+				.put("work")			//5
+				.put("rest")			//6
+				.put("social")		//7
+				.put("useless")		//8
 				.put("german")		//9
 				.put("coding")		//10
 				.put("math project");
