@@ -74,7 +74,7 @@ public class StorageManager {
 	            dumpAllObjects();
 	        }});
 		scheduler_ = new Scheduler();
-		scheduler_.schedule("*/15 * * * *", new Runnable() {
+		scheduler_.schedule("1,31 * * * *", new Runnable() {
 			public void run() {
 				StorageManager.dumpAllObjects();
 			}
