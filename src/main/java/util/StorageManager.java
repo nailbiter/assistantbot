@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import it.sauronsoftware.cron4j.Scheduler;
 import managers.MyManager;
 
 public class StorageManager {
@@ -19,11 +20,11 @@ public class StorageManager {
 	protected static Logger logger_ = Logger.getLogger(StorageManager.class.getName());
 	protected static MyManager myManager = null;
 	public static MyManager getMyManager() {return myManager;}
+	protected static Scheduler scheduler_ = null;
 	public static void init() throws Exception
 	{
 		myManager = new MyManager()
 		{
-
 			@Override
 			public String getResultAndFormat(JSONObject res) throws Exception {
 				if(res.has("name"))
@@ -31,7 +32,7 @@ public class StorageManager {
 					System.out.println(this.getClass().getName()+" got comd: /"+res.getString("name"));
 					if(res.getString("name").compareTo("dump")==0)
 					{
-						onShutdown();
+						dumpAllObjects();
 						StringBuilder sb = new StringBuilder();
 						sb.append("dumped:\n");
 						Iterator<String> itr = registeredObjects.keySet().iterator();
@@ -64,13 +65,21 @@ public class StorageManager {
 	
 		};
 		Runtime.getRuntime().addShutdownHook(new Thread()
+
 	    {
 	        @Override
 	        public void run()
 	        {
 	            System.out.println("Shutdown hook ran!");
-	            onShutdown();
+	            dumpAllObjects();
 	        }});
+		scheduler_ = new Scheduler();
+		scheduler_.schedule("*/15 * * * *", new Runnable() {
+			public void run() {
+				StorageManager.dumpAllObjects();
+			}
+		});
+		scheduler_.start();
 	}
 	public static String getFile(String name) throws Exception
 	{
@@ -124,7 +133,7 @@ public class StorageManager {
 		System.out.println("register "+name);
 		registeredObjects.put(name, ref);
 	}
-	protected static void onShutdown()
+	protected static void dumpAllObjects()
 	{
 		Iterator<String> itr = registeredObjects.keySet().iterator();
 		String str;

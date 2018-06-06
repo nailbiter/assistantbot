@@ -127,8 +127,8 @@ public class MoneyManager implements managers.MyManager,OptionReplier{
 	@Override
 	public JSONArray getCommands() {
 		JSONArray res = new JSONArray(
-				"[{\"name\":\"moneycats\",\"args\":[],\"help\":\"list all money categories and info\"}\n" + 
-				",{\"name\":\"costs\",\"args\":[{\"name\":\"num\",\"type\":\"int\",\"isOpt\":true}]}]");
+				"["+ 
+				"{\"name\":\"costs\",\"args\":[{\"name\":\"num\",\"type\":\"int\",\"isOpt\":true}]}]");
 		res.put(AbstractManager.makeCommand("money", "spent money", 
 				Arrays.asList(AbstractManager.makeCommandArg(
 						"amount",

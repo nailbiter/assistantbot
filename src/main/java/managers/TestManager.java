@@ -81,6 +81,10 @@ public class TestManager extends AbstractManager implements OptionReplier {
 				.put("index",rand.nextInt(paradigmtest_.getSize()));
 		return testdo(o);
 	}
+	public String tests(JSONObject obj) throws Exception
+	{
+		return String.format("# of paradigm tests: %d", paradigmtest_.getSize());
+	}
 	public String testdo(JSONObject obj) throws Exception
 	{
 		int index = obj.getInt("index") - 1;
