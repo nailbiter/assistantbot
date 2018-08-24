@@ -19,7 +19,7 @@ zip: botmanager.zip
 	du -hs $<
 
 
-botmanager.zip : $(addprefix $(RESFOLDER), keyring.json) target/$(JARNAME).jar Makefile
+botmanager.zip : $(addprefix $(RESFOLDER), keyring.json parser.json) target/$(JARNAME).jar Makefile
 	zip -9 $(basename $@) $^
 target/$(JARNAME).jar : $(addprefix src/main/java/,$(addsuffix .java,$(SOURCES)))
 	mvn package
