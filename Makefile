@@ -1,10 +1,9 @@
 .PHONY: all zip dryrun
 
 JARNAME=assistantBot-0.0.1-SNAPSHOT-jar-with-dependencies
-
 RESFOLDER=src/main/resources/
-KEYS=-r $(RESFOLDER) -t bottoken -n AlexCovenBot
 LOGFILE=log/log.txt
+KEYS=-r $(RESFOLDER) -t bottoken -n AlexCovenBot
 
 #sources
 UTILSOURCES=KeyRing LocalUtil MyBasicBot MyManager Parser StorageManager TableBuilder UserData Util 
@@ -13,8 +12,8 @@ SOURCES=$(addprefix util/,$(UTILSOURCES)) $(MAINSOURCES) opts/Option
 
 all: target/$(JARNAME).jar
 	java -jar $< $(KEYS) 2>&1 | tee $(LOGFILE)
-dryrun: target/$(JARNAME).jar
-	java -jar $< $(KEYS) 2>&1 | tee $(LOGFILE)
+dryrun: 
+	java -jar target/$(JARNAME).jar $(KEYS) 2>&1 | tee $(LOGFILE)
 zip: botmanager.zip
 	unzip -l $<
 	du -hs $<
