@@ -30,6 +30,7 @@ public class JShellManager implements util.MyManager{
 	}
 	@Override
 	public String getResultAndFormat(JSONObject res) throws Exception {
+		System.out.println(String.format("res=%s in %s", res.toString(),this.getClass().getName()));
 		if(res.has("filename") && !isLocked)
 		{
 			File file = Util.downloadPhotoByFilePath(res.getString("filepath"),bot_);
@@ -43,7 +44,7 @@ public class JShellManager implements util.MyManager{
 			if(isLocked)
 				return "log in first";
 			System.out.println("got cmd: "+res.getString("cmd"));
-			execute(res.getString("cmd"));
+			return execute(res.getString("cmd"));
 		}
 		if(res.has("name"))
 		{

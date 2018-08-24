@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.Map;
 import java.util.Scanner;
 
 import org.apache.commons.io.IOUtils;
@@ -21,10 +22,14 @@ import util.Util;
 
 public class MyAssistantBot extends MyBasicBot {
 	util.Parser parser;
-	MyAssistantBot()
+	String tokenname = null;
+	String botname = null;
+	MyAssistantBot(Map<Character, Object> commandline)
 	{
 		try
 		{
+			botname = (String)commandline.get('n');
+			tokenname = (String)commandline.get('t');
 			util.StorageManager.init();
 			parser = new util.Parser(util.LocalUtil.getJSONArrayFromRes(this, "parser"));
 		}
@@ -61,27 +66,29 @@ public class MyAssistantBot extends MyBasicBot {
 			return str;
 		if((str = md.getMoneyManager().getResultAndFormat(res))!=null)
 			return str;
-		if((str = md.getJShellManager().getResultAndFormat(res))!=null)
-			return str;
 		if((str = md.getTimeManager().getResultAndFormat(res))!=null)
 			return str;
 		if(res.has("name"))
 		{
 			System.out.println("got comd: /"+res.getString("name"));
-			if(res.getString("name").compareTo("help")==0)
+			if(res.getString("name").equals("help")) {
+				System.out.println("was here!");
 				return parser.getHelpMessage();
+			}
 		}
+		if((str = md.getJShellManager().getResultAndFormat(res))!=null)
+			return str;
 		throw new Exception("unrecognized command");
 	}
 
 	@Override
 	public String getBotUsername() {
-		return "AssistantBot";
+		return botname;
 	}
 
 	@Override
 	public String getBotToken() {
-		return util.KeyRing.getToken();
+		return util.KeyRing.getString(tokenname);
 	}
 
 }

@@ -32,14 +32,44 @@
 	  <artifactId>java-cup-runtime</artifactId>
 	  <version>11b-20160615</version>
 	</dependency>
-    <dependency>
-    	<groupId>org.apache.commons</groupId>
-    	<artifactId>commons-lang3</artifactId>
-    	<version>3.0</version>
-    </dependency>
+	    <dependency>
+		<groupId>org.apache.commons</groupId>
+		<artifactId>commons-lang3</artifactId>
+		<version>3.0</version>
+	    </dependency>
+	<!-- https://mvnrepository.com/artifact/gnu.getopt/java-getopt -->
+	<dependency>
+	    <groupId>gnu.getopt</groupId>
+	    <artifactId>java-getopt</artifactId>
+	    <version>1.0.13</version>
+	</dependency>
   </dependencies>
   <build>
 	  <plugins>
+		<plugin>
+		    <groupId>org.apache.maven.plugins</groupId>
+		    <artifactId>maven-assembly-plugin</artifactId>
+		    <executions>
+			<execution>
+			    <phase>package</phase>
+			    <goals>
+				<goal>single</goal>
+			    </goals>
+			    <configuration>
+				<archive>
+				<manifest>
+				    <mainClass>
+					    Main
+				    </mainClass>
+				</manifest>
+				</archive>
+				<descriptorRefs>
+				    <descriptorRef>jar-with-dependencies</descriptorRef>
+				</descriptorRefs>
+			    </configuration>
+			</execution>
+		    </executions>
+		</plugin>
 		  <plugin>
 		  <groupId>com.github.vbmacher</groupId>
 		  <artifactId>cup-maven-plugin</artifactId>

@@ -3,3 +3,5 @@
 *.swp
 *.swo
 .settings
+log/log.txt
+botmanager.zip

@@ -26,6 +26,7 @@ public class StorageManager {
 	{
 		FileReader fr = null;
 		JSONObject res = null;
+		System.out.println(String.format("%s.get(%s,%s)", StorageManager.class.getName(),name,register));
 		try {
 			System.out.println("StorageManager got "+name);
 			String fname = LocalUtil.getJarFolder()+name+".json";

@@ -4,22 +4,23 @@ import org.json.JSONObject;
 
 public class KeyRing {
 	protected static boolean isInit = false;
-	static String token,passwd;
+	static String passwd;
+	static JSONObject obj;
 	protected static void init()
 	{
 		if(!isInit)
 		{
-			JSONObject obj = StorageManager.get("keyring",false);
-			token = obj.getString("bottoken");
+			obj = StorageManager.get("keyring", false);
+//			token = obj.getString("bottoken");
 			passwd = obj.getString("passwd");
 			isInit = true;
 		}
 	}
-	public static String getToken()
-	{
+	public static String getString(String key) {
 		init();
-		return token; //assistantBot
+		return obj.getString(key);
 	}
+	
 	public static String getPasswd()
 	{
 		init();
