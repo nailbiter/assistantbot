@@ -1,4 +1,4 @@
-.PHONY: all zip
+.PHONY: all zip dryrun
 
 JARNAME=assistantBot-0.0.1-SNAPSHOT-jar-with-dependencies
 
@@ -12,6 +12,8 @@ MAINSOURCES=HabitManager JShellManager Main MoneyManager MyAssistantBot MyAssist
 SOURCES=$(addprefix util/,$(UTILSOURCES)) $(MAINSOURCES) opts/Option
 
 all: target/$(JARNAME).jar
+	java -jar $< $(KEYS) 2>&1 | tee $(LOGFILE)
+dryrun: target/$(JARNAME).jar
 	java -jar $< $(KEYS) 2>&1 | tee $(LOGFILE)
 zip: botmanager.zip
 	unzip -l $<
