@@ -13,7 +13,8 @@ import managers.TestManager;
 public class ParadigmTest{
 	JSONObject obj_;
 	private Logger logger_ = Logger.getLogger(this.getClass().getName());
-	public ParadigmTest(JSONObject obj,JSONObject data,TestManager master,String name,Timer t) throws Exception {
+	public ParadigmTest(JSONObject obj,JSONObject data,TestManager master,String name,Timer t) throws Exception 
+	{
 		obj_ = obj;
 	}
 	public String toString()
@@ -23,25 +24,31 @@ public class ParadigmTest{
 				obj_.getString("end"),
 				obj_.getInt("count"));
 	}
-	public int getSize() {
+	public int getSize() 
+	{
 		return obj_.getJSONArray("data").length();
 	}
-	public String[] isCalled(int count) {
-		/*if(count == 0)
-			return new String[] {"test: the"};
-		if(count == 1)
-			return new String[] {"test: welch"};
-		if(count == 2)
-			return new String[] {"test: a"};
-		if(count == 3)
-			return new String[] {"test: mein"};*/
+	public String[] isCalled(int count) 
+	{
 		if(obj_.getJSONArray("data").length() >= count)
-			return new String[] {String.format("paradigm test: %s", 
-					obj_.getJSONArray("data").getJSONArray(count).getString(3))};
+			return new String[] {String.format("paradigm test: %s", getTestName(count))};
 		else
 			return null;
 	}
-	public String processReply(String reply, int count) {
+	public String getTestName(int count)
+	{
+		return obj_.getJSONArray("data").getJSONArray(count).getString(3);
+	}
+	public int getColNum(int count) 
+	{
+		return obj_.getJSONArray("data").getJSONArray(count).getJSONArray(1).length();
+	}
+	public int getRowNum(int count) 
+	{
+		return obj_.getJSONArray("data").getJSONArray(count).getJSONArray(2).length()-1;
+	}
+	public String processReply(String reply, int count) 
+	{
 		System.out.println(String.format("paradigm: processReply(count=%d,obj_=%s)",count,obj_.toString()));
 		return this.verify(reply,
 				obj_.getJSONArray("data").getJSONArray(count).getJSONArray(0),

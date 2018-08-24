@@ -20,6 +20,7 @@ import it.sauronsoftware.cron4j.Scheduler;
 import managers.tests.ParadigmTest;
 import util.MyBasicBot;
 import util.StorageManager;
+import util.TableBuilder;
 import util.parsers.StandardParser;
 
 /**
@@ -83,7 +84,14 @@ public class TestManager extends AbstractManager implements OptionReplier {
 	}
 	public String tests(JSONObject obj) throws Exception
 	{
-		return String.format("# of paradigm tests: %d", paradigmtest_.getSize());
+//		return String.format("# of paradigm tests: %d", paradigmtest_.getSize());
+		TableBuilder tb = new TableBuilder();
+		tb.addNewlineAndTokens("#", "name","layout");
+		for(int i = 0; i < paradigmtest_.getSize(); i++)
+			tb.addNewlineAndTokens(Integer.toString(i), 
+					paradigmtest_.getTestName(i),
+					String.format("%dx%d", paradigmtest_.getRowNum(i),paradigmtest_.getColNum(i)));
+		return tb.toString();
 	}
 	public String testdo(JSONObject obj) throws Exception
 	{
