@@ -4,75 +4,91 @@
   <artifactId>assistantBot</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>AssistantBot</name>
-  <dependencies>
-    <dependency>
-        <groupId>org.telegram</groupId>
-        <artifactId>telegrambots</artifactId>
-        <version>3.5</version>
-    </dependency>
-    <dependency>
-    	<groupId>org.apache.commons</groupId>
-    	<artifactId>commons-lang3</artifactId>
-    	<version>3.0</version>
-    </dependency>
-    <dependency>
-    	<groupId>com.sun.mail</groupId>
-    	<artifactId>javax.mail</artifactId>
-    	<version>1.6.0</version>
-    </dependency>
-  </dependencies>
-<properties>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.compiler.target>1.7</maven.compiler.target>
+  <properties>
+    	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	<maven.compiler.source>1.8</maven.compiler.source>
+	<maven.compiler.target>1.8</maven.compiler.target>
   </properties>
+  <dependencies>
+<!-- https://mvnrepository.com/artifact/com.sun/tools -->
+	<dependency>
+	    <groupId>com.sun</groupId>
+	    <artifactId>tools</artifactId>
+	    <version>1.5.0</version>
+	    <scope>system</scope>
+	    <systemPath>${project.basedir}/lib/tools.jar</systemPath>
+	</dependency>
+	    <dependency>
+		<groupId>org.telegram</groupId>
+		<artifactId>telegrambots</artifactId>
+		<version>3.5</version>
+	    </dependency>
+	<!-- https://mvnrepository.com/artifact/it.sauronsoftware.cron4j/cron4j -->
+	<dependency>
+	    <groupId>it.sauronsoftware.cron4j</groupId>
+	    <artifactId>cron4j</artifactId>
+	    <version>2.2.5</version>
+	</dependency>
+	<dependency>
+	  <groupId>com.github.vbmacher</groupId>
+	  <artifactId>java-cup-runtime</artifactId>
+	  <version>11b-20160615</version>
+	</dependency>
+	    <dependency>
+		<groupId>org.apache.commons</groupId>
+		<artifactId>commons-lang3</artifactId>
+		<version>3.0</version>
+	    </dependency>
+	<!-- https://mvnrepository.com/artifact/gnu.getopt/java-getopt -->
+	<dependency>
+	    <groupId>gnu.getopt</groupId>
+	    <artifactId>java-getopt</artifactId>
+	    <version>1.0.13</version>
+	</dependency>
+  </dependencies>
   <build>
 	  <plugins>
-	<plugin>
-		<groupId>com.github.vbmacher</groupId>
-		<artifactId>cup-maven-plugin</artifactId>
-		<version>11b-20160615</version>
-		<executions>
-		<execution>
-		<goals>
-		<goal>generate</goal>
-		  </goals>
-		      </execution>
-			</executions>
-		<configuration>
-			<className>MyParserClassName</className>
-			<symbolsName>MySymbolsClassName</symbolsName>
-		</configuration>
-	</plugin>
 		<plugin>
-		  <groupId>org.apache.maven.plugins</groupId>
-		  <artifactId>maven-resources-plugin</artifactId>
-		  <version>3.0.2</version>
+		    <groupId>org.apache.maven.plugins</groupId>
+		    <artifactId>maven-assembly-plugin</artifactId>
+		    <executions>
+			<execution>
+			    <phase>package</phase>
+			    <goals>
+				<goal>single</goal>
+			    </goals>
+			    <configuration>
+				<archive>
+				<manifest>
+				    <mainClass>
+					    Main
+				    </mainClass>
+				</manifest>
+				</archive>
+				<descriptorRefs>
+				    <descriptorRef>jar-with-dependencies</descriptorRef>
+				</descriptorRefs>
+			    </configuration>
+			</execution>
+		    </executions>
+		</plugin>
+		  <plugin>
+		  <groupId>com.github.vbmacher</groupId>
+		  <artifactId>cup-maven-plugin</artifactId>
+		  <version>11b-20160615</version>
+		  <executions>
+		    <execution>
+		      <goals>
+			<goal>generate</goal>
+		      </goals>
+		    </execution>
+		  </executions>
 		  <configuration>
-		    <encoding>UTF-8</encoding>
+		    <className>MyParserClassName</className>
+		    <symbolsName>MySymbolsClassName</symbolsName>
+		    <cupDefinition>./src/main/java/jshell/commandline/commandline.cup</cupDefinition>
 		  </configuration>
 		</plugin>
-<plugin>
-  <artifactId>maven-assembly-plugin</artifactId>
-  <configuration>
-    <archive>
-      <manifest>
-        <mainClass>Main</mainClass>
-      </manifest>
-    </archive>
-    <descriptorRefs>
-      <descriptorRef>jar-with-dependencies</descriptorRef>
-    </descriptorRefs>
-  </configuration>
-  <executions>
-    <execution>
-      <id>make-assembly</id> <!-- this is used for inheritance merges -->
-      <phase>package</phase> <!-- bind to the packaging phase -->
-      <goals>
-        <goal>single</goal>
-      </goals>
-    </execution>
-  </executions>
-</plugin>
-	  </plugins>
+	</plugins>
   </build>
 </project>
