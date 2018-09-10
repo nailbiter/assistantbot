@@ -39,5 +39,14 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="src/main/resources/java-cup-11b-runtime.jar"/>
 	<classpathentry kind="lib" path="src/main/resources/java-cup-11b.jar"/>
+	<classpathentry kind="lib" path="/Users/oleksiileontiev/.m2/repository/javax/mail/mail/1.4/mail-1.4.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="maven.groupId" value="javax.mail"/>
+			<attribute name="maven.artifactId" value="mail"/>
+			<attribute name="maven.version" value="1.4"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
