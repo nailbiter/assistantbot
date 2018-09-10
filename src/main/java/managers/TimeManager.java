@@ -12,10 +12,19 @@ import java.util.Map.Entry;
 import java.util.PriorityQueue;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+
+import com.mongodb.BasicDBObject;
+import com.mongodb.Block;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Sorts;
 
 import assistantbot.MyAssistantUserData;
 import it.sauronsoftware.cron4j.Scheduler;
@@ -40,29 +49,35 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 	ArrayList<List<InlineKeyboardButton>> buttons = null;
 	JSONArray categories = null;
 	protected static int ROWNUM = 2;
-	JSONArray time = null;
+//	JSONArray time = null;
 	boolean isWaitingForAnswer;
 	MyAssistantUserData userData_ = null;
 	protected static final int SLEEPINDEX = 0, NOWORKINDEX = 8;
 	JSONObject obj_ = null;
 	JSONArray sleepingtimes_ = null, wakingtimes_ = null;
-	public String timestat(JSONObject res) {
+	protected MongoClient mongoCient_;
+	MongoCollection time_;
+	protected static final int DELAYMIN=30;
+	
+	public String timestat(JSONObject res) {		
 		int num = res.optInt("num",48);
 		System.out.println("got num="+num);
-		Hashtable<String,Integer> ht = new Hashtable<String,Integer>();
-		{
-			int idx = this.time.length() - 1; 
-			while(num>0 && idx >= 0)
-			{
-				String cat = time.getString(idx);
-				cat = cat.substring(cat.lastIndexOf(":")+1);
-				if(!ht.containsKey(cat))
-					ht.put(cat, 0);
-				int res1 = ht.get(cat);
-				ht.put(cat, res1+1);
-				num--; idx--;
-			}
-		}
+		
+		final Hashtable<String,Integer> ht = new Hashtable<String,Integer>();
+		Block<Document> printBlock = new Block<Document>() {
+		       @Override
+		       public void apply(final Document doc) {
+//		           System.out.println(document.toJson());
+		    	   JSONObject obj = new JSONObject(doc.toJson());
+		    	   String cat = obj.getString("category");
+		    	   if(!ht.containsKey(cat))
+						ht.put(cat, 0);
+					int res1 = ht.get(cat);
+					ht.put(cat, res1+1);
+		       }
+		};
+		
+		time_.find().sort(Sorts.descending("_id")).limit(num).forEach(printBlock);
 		List<Map.Entry<String, Integer>> list = 
 				new LinkedList<Map.Entry<String,Integer>>(ht.entrySet());
 		Collections.sort(list,new Comparator<Map.Entry<String,Integer>>()
@@ -80,6 +95,7 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 		}
 		
 		return tb.toString();
+//		return "stub";
 	}
 	protected String printTime(int num, String key)
 	{
@@ -88,18 +104,20 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 		else
 			return StringUtils.repeat("*",num);
 	}
-	public TimeManager(Long chatID,MyBasicBot bot,Scheduler scheduler_in, MyAssistantUserData myAssistantUserData) {
+	public TimeManager(Long chatID,MyBasicBot bot,Scheduler scheduler_in, MongoClient mongoClient, MyAssistantUserData myAssistantUserData) {
+		this.mongoCient_ = mongoClient;
+		time_ = mongoClient.getDatabase("test").getCollection("time");
 		this.scheduler_ = scheduler_in;
 		this.chatID_ = chatID;
 		this.bot_ = bot;
 		this.isWaitingForAnswer = false;
 		this.userData_ = myAssistantUserData;
 		makeButtons();
-		scheduler_.schedule("*/30 * * * *",this);
-		JSONObject timeObj = StorageManager.get("time", true);
-		if(!timeObj.has("arr"))
-			timeObj.put("arr", new JSONArray());
-		time = timeObj.getJSONArray("arr");
+		scheduler_.schedule(String.format("*/%d * * * *",DELAYMIN),this);
+//		JSONObject timeObj = StorageManager.get("time", true);
+//		if(!timeObj.has("arr"))
+//			timeObj.put("arr", new JSONArray());
+//		time = timeObj.getJSONArray("arr");
 		isSleeping = false;
 		obj_ = util.StorageManager.get("sleep", true);
 		if(!obj_.has("sleepingtimes"))
@@ -137,7 +155,7 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 			}
 		}
 	}
-	protected static final String WHEREAREYOUNOW = "北鼻，你在幹什麼？";
+	protected static final String WHEREAREYOUNOW = "蛹鈴ｼｻ�ｼ御ｽ�蝨ｨ蟷ｹ莉�鮗ｼ�ｼ�";
 	int waitingMessageID = -1;
 	@Override
 	public void run(){
@@ -164,7 +182,13 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 		catch(Exception e) { e.printStackTrace(System.out); }
 	}
 	public String gotUpdate(String data) throws Exception {
-		time.put(String.format("%s:%s", LocalUtil.DateToString(new Date()),data));
+//		time.put(String.format("%s:%s", LocalUtil.DateToString(new Date()),data));
+		Document res = new Document();
+		res.put("date", new Date());
+		res.put("category", data);
+//		res.put(key, v)
+		time_.insertOne(res);
+		
 		this.isWaitingForAnswer = false;
 		return "got: "+data+"\n"+this.getLifetime();
 	}

@@ -48,5 +48,14 @@
 			<attribute name="maven.scope" value="compile"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/PC019/.m2/repository/org/mongodb/mongodb-driver/3.6.4/mongodb-driver-3.6.4.jar" sourcepath="C:/Users/PC019/.m2/repository/org/mongodb/mongodb-driver/3.6.4/mongodb-driver-3.6.4-sources.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="maven.groupId" value="org.mongodb"/>
+			<attribute name="maven.artifactId" value="mongodb-driver"/>
+			<attribute name="maven.version" value="3.6.4"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

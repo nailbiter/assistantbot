@@ -3,36 +3,36 @@ package util;
 import org.json.JSONObject;
 
 public class KeyRing {
-	protected static boolean isInit = false;
+//	protected static boolean isInit = false;
 	static String token,passwd;
 	static JSONObject obj_ = null;
-	protected static void init()
+	public static void init(String name)
 	{
-		if(!isInit)
-		{
-			obj_ = StorageManager.get("keyring",false);
-			token = obj_.getString("bottoken");
-			passwd = obj_.getString("passwd");
-			isInit = true;
-		}
+//		if(!isInit)
+//		{
+		obj_ = StorageManager.get("keyring",false);
+		token = obj_.getJSONObject("telegramtokens").getString(name);
+		passwd = obj_.getString("passwd");
+//		isInit = true;
+//		}
 	}
 	public static String getToken()
 	{
-		init();
-		return token; //assistantBot
+//		init();
+		return token;
 	}
 	public static String getPasswd()
 	{
-		init();
+//		init();
 		return passwd;
 	}
 	public static String getMailPassword()
 	{
-		init();
+//		init();
 		return obj_.getString("mailpassword");
 	}
 	public static String get(String key) {
-		init();
+//		init();
 		return obj_.getString(key);
 	}
 }

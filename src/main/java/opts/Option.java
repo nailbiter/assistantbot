@@ -15,8 +15,8 @@ public class Option {
 	public Option(char shortKey, boolean hasArgument){
 		this(shortKey);
 		this.hasArgument_ = hasArgument;
-//		return opt;
 	}
+	
 	static String toString(List<Option> options) {
 		StringBuilder sb = new StringBuilder();
 		for(Option o : options)

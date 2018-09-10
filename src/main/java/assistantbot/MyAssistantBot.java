@@ -8,6 +8,7 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import org.apache.commons.io.IOUtils;
@@ -23,11 +24,15 @@ import util.UserData;
 import util.Util;
 
 public class MyAssistantBot extends MyBasicBot {
-	public MyAssistantBot()
+	private String botUserName_, databasePassword_;
+	public MyAssistantBot(Map<Character, Object> commandline)
 	{
 		try
 		{
 			util.StorageManager.init();
+			botUserName_ = (String)commandline.get('n');
+			databasePassword_ = (String)commandline.get('p');
+			KeyRing.init(botUserName_);
 		}
 		catch(Exception e)
 		{
@@ -74,12 +79,15 @@ public class MyAssistantBot extends MyBasicBot {
 
 	@Override
 	public String getBotUsername() {
-		return "AssistantBot";
+//		return "AssistantBot";
+		return botUserName_;
 	}
 
 	@Override
 	public String getBotToken() {
 		return util.KeyRing.getToken();
 	}
-
+	String getDatabasePassword() {
+		return databasePassword_;
+	}
 }

@@ -1,13 +1,14 @@
 .PHONY: all
 
 JARNAME=assistantBot-0.0.1-SNAPSHOT-jar-with-dependencies
-RESFOLDER=src/main/resources/assistantBotFiles
+RESFOLDER=src/main/resources/assistantBotFiles/
 LOGFILE=log/log.txt
-KEYS=-r $(RESFOLDER) -t bottoken -n AlexCovenBot
+KEYS=-r $(RESFOLDER) -n AssistantBot -p `cat secret.txt`
 
 #sources
 UTILSOURCES=
-SOURCES=$(addprefix util/,$(UTILSOURCES)) opts/Option Main
+MANAGERSOURCES=TimeManager
+SOURCES=$(addprefix managers/,$(MANAGERSOURCES)) opts/Option Main
 
 
 all: target/$(JARNAME).jar

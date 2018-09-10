@@ -7,6 +7,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
+
 import it.sauronsoftware.cron4j.Scheduler;
 import managers.BadHabitManager;
 import managers.MiscUtilManager;
@@ -35,6 +40,12 @@ public class MyAssistantUserData extends UserData {
 			chatID_ = chatID;
 			bot_ = bot;
 			logger_ = Logger.getLogger(this.getClass().getName());
+			MongoClientURI uri = new MongoClientURI(
+					String.format("mongodb+srv://alozz1991:%s@cluster0-1eyj1.mongodb.net/test?retryWrites=true", 
+							bot.getDatabasePassword()));
+			MongoClient mongoClient = new MongoClient(uri);
+//			DB database = mongoClient.getDB("test");
+//			DBCollection collection = database.getCollection("time");
 			
 			if(!MyAssistantUserData.ISBOTMANAGER)
 			{
@@ -44,7 +55,7 @@ public class MyAssistantUserData extends UserData {
 				managers.add(new managers.HabitManager(chatID,bot,scheduler,this));
 				managers.add(new managers.TaskManager(chatID, bot));
 				managers.add(new managers.TestManager(chatID, bot,scheduler,this));
-				managers.add(tm_ = new managers.TimeManager(chatID,bot,scheduler,this));
+				managers.add(tm_ = new managers.TimeManager(chatID,bot,scheduler,mongoClient,this));
 				//managers.add(new managers.MailManager(chatID,bot,scheduler,this));
 				managers.add(new MiscUtilManager());
 				managers.add(new BadHabitManager(this));

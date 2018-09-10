@@ -2,3 +2,7 @@
 /target/
 *.swo
 *.swp
+log/
+secret.txt
+.settings/
+.classpath
