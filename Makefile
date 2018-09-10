@@ -6,9 +6,9 @@ LOGFILE=log/log.txt
 KEYS=-r $(RESFOLDER) -n AssistantBot -p `cat secret.txt`
 
 #sources
-UTILSOURCES=
+ASBOTSOURCES=MyAssistantUserData MyAssistantBot
 MANAGERSOURCES=TimeManager
-SOURCES=$(addprefix managers/,$(MANAGERSOURCES)) opts/Option Main
+SOURCES=$(addprefix assistantbot/,$(ASBOTSOURCES)) $(addprefix managers/,$(MANAGERSOURCES)) opts/Option Main
 
 
 all: target/$(JARNAME).jar
@@ -16,3 +16,4 @@ all: target/$(JARNAME).jar
 
 target/$(JARNAME).jar : $(addprefix src/main/java/,$(addsuffix .java,$(SOURCES)))
 	mvn package
+

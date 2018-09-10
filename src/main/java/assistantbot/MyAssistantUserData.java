@@ -40,8 +40,10 @@ public class MyAssistantUserData extends UserData {
 			chatID_ = chatID;
 			bot_ = bot;
 			logger_ = Logger.getLogger(this.getClass().getName());
+            System.out.println("password: "+bot.getDatabasePassword());
 			MongoClientURI uri = new MongoClientURI(
-					String.format("mongodb+srv://alozz1991:%s@cluster0-1eyj1.mongodb.net/test?retryWrites=true", 
+					String.format("mongodb://%s:%s@ds149672.mlab.com:49672/logistics", 
+                            "nailbiter",
 							bot.getDatabasePassword()));
 			MongoClient mongoClient = new MongoClient(uri);
 //			DB database = mongoClient.getDB("test");

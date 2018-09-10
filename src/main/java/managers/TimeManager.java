@@ -106,7 +106,7 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 	}
 	public TimeManager(Long chatID,MyBasicBot bot,Scheduler scheduler_in, MongoClient mongoClient, MyAssistantUserData myAssistantUserData) {
 		this.mongoCient_ = mongoClient;
-		time_ = mongoClient.getDatabase("test").getCollection("time");
+		time_ = mongoClient.getDatabase("logistics").getCollection("time");
 		this.scheduler_ = scheduler_in;
 		this.chatID_ = chatID;
 		this.bot_ = bot;
@@ -114,10 +114,6 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 		this.userData_ = myAssistantUserData;
 		makeButtons();
 		scheduler_.schedule(String.format("*/%d * * * *",DELAYMIN),this);
-//		JSONObject timeObj = StorageManager.get("time", true);
-//		if(!timeObj.has("arr"))
-//			timeObj.put("arr", new JSONArray());
-//		time = timeObj.getJSONArray("arr");
 		isSleeping = false;
 		obj_ = util.StorageManager.get("sleep", true);
 		if(!obj_.has("sleepingtimes"))
@@ -155,7 +151,7 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 			}
 		}
 	}
-	protected static final String WHEREAREYOUNOW = "蛹鈴ｼｻ�ｼ御ｽ�蝨ｨ蟷ｹ莉�鮗ｼ�ｼ�";
+	protected static final String WHEREAREYOUNOW = "北鼻，你在幹什麼？";
 	int waitingMessageID = -1;
 	@Override
 	public void run(){
