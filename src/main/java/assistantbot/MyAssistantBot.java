@@ -17,6 +17,9 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.telegram.telegrambots.api.objects.Message;
 
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
+
 import managers.MyManager;
 import util.KeyRing;
 import util.MyBasicBot;
@@ -24,15 +27,20 @@ import util.UserData;
 import util.Util;
 
 public class MyAssistantBot extends MyBasicBot {
-	private String botUserName_, databasePassword_;
+	private String botUserName_;
+	MongoClient mongoClient = null;
 	public MyAssistantBot(Map<Character, Object> commandline)
 	{
 		try
 		{
 			util.StorageManager.init();
 			botUserName_ = (String)commandline.get('n');
-			databasePassword_ = (String)commandline.get('p');
-			KeyRing.init(botUserName_);
+//			databasePassword_ = 
+			MongoClientURI uri = new MongoClientURI(
+					String.format("mongodb://%s:%s@ds149672.mlab.com:49672/logistics", 
+                            "nailbiter",(String)commandline.get('p')));
+			mongoClient = new MongoClient(uri);
+			KeyRing.init(botUserName_,mongoClient);
 		}
 		catch(Exception e)
 		{
@@ -87,7 +95,10 @@ public class MyAssistantBot extends MyBasicBot {
 	public String getBotToken() {
 		return util.KeyRing.getToken();
 	}
-	String getDatabasePassword() {
-		return databasePassword_;
+//	String getDatabasePassword() {
+//		return databasePassword_;
+//	}
+	MongoClient getMongoClient() {
+		return mongoClient;
 	}
 }

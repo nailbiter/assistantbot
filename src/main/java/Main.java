@@ -12,7 +12,6 @@ import util.LocalUtil;
 public class Main {
     public static void main(String[] args) {
     	ArrayList<Option> opts = new ArrayList<Option>();
-    	//resource folder
     	opts.add(new Option('r',true));
     	//bot's name: also used to get token
     	opts.add(new Option('n',true));

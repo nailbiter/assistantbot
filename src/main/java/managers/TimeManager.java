@@ -49,7 +49,6 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 	ArrayList<List<InlineKeyboardButton>> buttons = null;
 	JSONArray categories = null;
 	protected static int ROWNUM = 2;
-//	JSONArray time = null;
 	boolean isWaitingForAnswer;
 	MyAssistantUserData userData_ = null;
 	protected static final int SLEEPINDEX = 0, NOWORKINDEX = 8;
@@ -59,7 +58,7 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 	MongoCollection time_;
 	protected static final int DELAYMIN=30;
 	
-	public String timestat(JSONObject res) {		
+	public String timestat(JSONObject res) {
 		int num = res.optInt("num",48);
 		System.out.println("got num="+num);
 		
@@ -67,7 +66,6 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 		Block<Document> printBlock = new Block<Document>() {
 		       @Override
 		       public void apply(final Document doc) {
-//		           System.out.println(document.toJson());
 		    	   JSONObject obj = new JSONObject(doc.toJson());
 		    	   String cat = obj.getString("category");
 		    	   if(!ht.containsKey(cat))
@@ -95,7 +93,6 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 		}
 		
 		return tb.toString();
-//		return "stub";
 	}
 	protected String printTime(int num, String key)
 	{

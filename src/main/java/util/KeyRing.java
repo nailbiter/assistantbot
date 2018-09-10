@@ -1,38 +1,39 @@
 package util;
 
+import org.bson.Document;
 import org.json.JSONObject;
 
+import com.mongodb.Block;
+import com.mongodb.MongoClient;
+
 public class KeyRing {
-//	protected static boolean isInit = false;
 	static String token,passwd;
 	static JSONObject obj_ = null;
-	public static void init(String name)
+	public static void init(String name, MongoClient mongoClient)
 	{
-//		if(!isInit)
-//		{
-		obj_ = StorageManager.get("keyring",false);
+		Block<Document> printBlock = new Block<Document>() {
+		       @Override
+		       public void apply(final Document doc) {
+		    	   obj_ = new JSONObject(doc.toJson());
+		       }
+		};
+		mongoClient.getDatabase("logistics").getCollection("keyring").find().limit(1).forEach(printBlock);
 		token = obj_.getJSONObject("telegramtokens").getString(name);
 		passwd = obj_.getString("passwd");
-//		isInit = true;
-//		}
 	}
 	public static String getToken()
 	{
-//		init();
 		return token;
 	}
 	public static String getPasswd()
 	{
-//		init();
 		return passwd;
 	}
 	public static String getMailPassword()
 	{
-//		init();
 		return obj_.getString("mailpassword");
 	}
 	public static String get(String key) {
-//		init();
 		return obj_.getString(key);
 	}
 }

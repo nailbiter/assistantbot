@@ -40,14 +40,7 @@ public class MyAssistantUserData extends UserData {
 			chatID_ = chatID;
 			bot_ = bot;
 			logger_ = Logger.getLogger(this.getClass().getName());
-            System.out.println("password: "+bot.getDatabasePassword());
-			MongoClientURI uri = new MongoClientURI(
-					String.format("mongodb://%s:%s@ds149672.mlab.com:49672/logistics", 
-                            "nailbiter",
-							bot.getDatabasePassword()));
-			MongoClient mongoClient = new MongoClient(uri);
-//			DB database = mongoClient.getDB("test");
-//			DBCollection collection = database.getCollection("time");
+			MongoClient mongoClient = bot.getMongoClient();
 			
 			if(!MyAssistantUserData.ISBOTMANAGER)
 			{
@@ -58,7 +51,6 @@ public class MyAssistantUserData extends UserData {
 				managers.add(new managers.TaskManager(chatID, bot));
 				managers.add(new managers.TestManager(chatID, bot,scheduler,this));
 				managers.add(tm_ = new managers.TimeManager(chatID,bot,scheduler,mongoClient,this));
-				//managers.add(new managers.MailManager(chatID,bot,scheduler,this));
 				managers.add(new MiscUtilManager());
 				managers.add(new BadHabitManager(this));
 			}
