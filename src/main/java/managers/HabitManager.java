@@ -23,7 +23,7 @@ import util.MyBasicBot;
 import util.StorageManager;
 import util.parsers.StandardParser;
 
-public class HabitManager implements managers.MyManager, OptionReplier
+public class HabitManager implements MyManager, OptionReplier
 {
 	JSONArray habits_ = null;
 	JSONObject streaks = null;
@@ -252,15 +252,10 @@ public class HabitManager implements managers.MyManager, OptionReplier
 						.put("accum", 0);
 				streaks.put(name, item);
 			}
-			/*if(streaks.has(habitname))
-				streaks.put(habitname, 0);*/
 			return;
 		}
 		if(code < 0)
 		{
-			/*
-			 streaks.put(habits.getJSONObject(index).getString("name"),0);
-			 */
 			JSONObject item = streaks.getJSONObject(name);
 			item.put("streak",0);
 			item.put("accum", item.getInt("accum")-1);

@@ -34,7 +34,7 @@ public class MyAssistantUserData extends UserData {
 	long chatID_;
 	MyBasicBot bot_ = null;
 	private Logger logger_; 
-	MyAssistantUserData(Long chatID,MyAssistantBot bot){
+	MyAssistantUserData(Long chatID,MyBasicBot bot){
 		try 
 		{
 			chatID_ = chatID;
@@ -133,4 +133,5 @@ public class MyAssistantUserData extends UserData {
 		
 		return bot_.sendMessageWithKeyBoard(msg, chatID_, buttons);
 	}
+	public MongoClient getMongoClient() { return bot_.getMongoClient(); }
 }

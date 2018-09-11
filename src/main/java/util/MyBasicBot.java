@@ -14,10 +14,13 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 import org.telegram.telegrambots.logging.BotLogger;
 
+import com.mongodb.MongoClient;
+
 import managers.MyManager;
 
 public abstract class MyBasicBot extends TelegramLongPollingBot {
 	private Logger logger_; 
+	protected MongoClient mongoClient = null;
 	public MyBasicBot()
 	{
 		logger_ = Logger.getLogger(this.getClass().getName());
@@ -186,5 +189,8 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 			e.printStackTrace(System.out);
 			return -1;
 		}
+	}
+	public MongoClient getMongoClient() {
+		return mongoClient;
 	}
 }

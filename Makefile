@@ -7,8 +7,13 @@ KEYS=-r $(RESFOLDER) -n AssistantBot -p `cat secret.txt`
 
 #sources
 ASBOTSOURCES=MyAssistantUserData MyAssistantBot
-MANAGERSOURCES=TimeManager
-SOURCES=$(addprefix assistantbot/,$(ASBOTSOURCES)) $(addprefix managers/,$(MANAGERSOURCES)) opts/Option Main
+MANAGERSOURCES=TimeManager MoneyManager
+UTILSOURCES=StorageManager
+SOURCES=\
+ $(addprefix assistantbot/,$(ASBOTSOURCES))\
+ $(addprefix managers/,$(MANAGERSOURCES))\
+ $(addprefix util/,$(UTILSOURCES))\
+ opts/Option Main
 
 
 all: target/$(JARNAME).jar

@@ -8,9 +8,13 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
+import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+
+import com.mongodb.Block;
+import com.mongodb.MongoClient;
 
 import it.sauronsoftware.cron4j.Scheduler;
 import managers.MyManager;
@@ -152,5 +156,18 @@ public class StorageManager {
 				 e.printStackTrace(System.out);
 			 }
 		    }
+	}
+	public static JSONArray GetJSONArrayFromDatabase(MongoClient mc, String databaseName, String collectionName, final String key) {
+		final JSONArray res = new JSONArray();
+		Block<Document> printBlock = new Block<Document>() {
+		       @Override
+		       public void apply(final Document doc) {
+		    	   JSONObject obj = new JSONObject(doc.toJson());
+		    	   res.put(obj.getString(key));
+		       }
+		};
+		mc.getDatabase(databaseName).getCollection(collectionName).find().forEach(printBlock);
+		
+		return res;
 	}
 }

@@ -34,10 +34,6 @@ import util.StorageManager;
 import util.parsers.StandardParser;
 
 /**
- * 
- */
-
-/**
  * @author nailbiter
  *
  */
@@ -53,9 +49,9 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 	MyAssistantUserData userData_ = null;
 	protected static final int SLEEPINDEX = 0, NOWORKINDEX = 8;
 	JSONObject obj_ = null;
-	JSONArray sleepingtimes_ = null, wakingtimes_ = null;
-	protected MongoClient mongoCient_;
-	MongoCollection time_;
+//	JSONArray sleepingtimes_ = null, wakingtimes_ = null;
+	protected MongoClient mongoClient_;
+	MongoCollection time_, sleepingTimes_, wakingTimes_;
 	protected static final int DELAYMIN=30;
 	
 	public String timestat(JSONObject res) {
@@ -75,7 +71,7 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 		       }
 		};
 		
-		time_.find().sort(Sorts.descending("_id")).limit(num).forEach(printBlock);
+		time_.find().sort(Sorts.descending("date")).limit(num).forEach(printBlock);
 		List<Map.Entry<String, Integer>> list = 
 				new LinkedList<Map.Entry<String,Integer>>(ht.entrySet());
 		Collections.sort(list,new Comparator<Map.Entry<String,Integer>>()
@@ -102,7 +98,7 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 			return StringUtils.repeat("*",num);
 	}
 	public TimeManager(Long chatID,MyBasicBot bot,Scheduler scheduler_in, MongoClient mongoClient, MyAssistantUserData myAssistantUserData) {
-		this.mongoCient_ = mongoClient;
+		this.mongoClient_ = mongoClient;
 		time_ = mongoClient.getDatabase("logistics").getCollection("time");
 		this.scheduler_ = scheduler_in;
 		this.chatID_ = chatID;
@@ -112,29 +108,12 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 		makeButtons();
 		scheduler_.schedule(String.format("*/%d * * * *",DELAYMIN),this);
 		isSleeping = false;
-		obj_ = util.StorageManager.get("sleep", true);
-		if(!obj_.has("sleepingtimes"))
-			obj_.put("sleepingtimes", new JSONArray());
-		if(!obj_.has("wakingtimes"))
-			obj_.put("wakingtimes", new JSONArray());
-		this.sleepingtimes_ = obj_.getJSONArray("sleepingtimes");
-		this.wakingtimes_ = obj_.getJSONArray("wakingtimes");
+		sleepingTimes_ = mongoClient.getDatabase("logistics").getCollection("sleepingtimes");
+		wakingTimes_ = mongoClient.getDatabase("logistics").getCollection("wakingtimes");
 	}
 	protected void makeButtons()
 	{
-		categories = new JSONArray()
-				.put("sleeping")		//0
-				.put("parttime")		//1
-				.put("logistics")	//2
-				.put("gym")			//3
-				.put("reading")		//4
-				.put("work")			//5
-				.put("rest")			//6
-				.put("social")		//7
-				.put("useless")		//8
-				.put("german")		//9
-				.put("coding")		//10
-				.put("math project");
+		categories = StorageManager.GetJSONArrayFromDatabase(mongoClient_, "logistics", "timecats", "name");
 		buttons = new ArrayList<List<InlineKeyboardButton>>();
 		for(int i = 0; i < categories.length();)
 		{
@@ -175,11 +154,9 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 		catch(Exception e) { e.printStackTrace(System.out); }
 	}
 	public String gotUpdate(String data) throws Exception {
-//		time.put(String.format("%s:%s", LocalUtil.DateToString(new Date()),data));
 		Document res = new Document();
 		res.put("date", new Date());
 		res.put("category", data);
-//		res.put(key, v)
 		time_.insertOne(res);
 		
 		this.isWaitingForAnswer = false;
@@ -226,13 +203,18 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 	public String sleepstart(JSONObject obj)
 	{
 		this.isSleeping = true;
-		this.sleepingtimes_.put((new Date()).getTime());
+//		this.sleepingtimes_.put((new Date()).getTime());
+		Document doc = new Document();
+		doc.put("startsleep", new Date());
+		sleepingTimes_.insertOne(doc);
 		return "start sleeping";
 	}
 	public String sleepend(JSONObject obj)
 	{
 		this.isSleeping = false;
-		this.wakingtimes_.put((new Date()).getTime());
+		Document lastWakeRecord = new Document();
+		lastWakeRecord.put("endsleep", new Date());
+		wakingTimes_.insertOne(lastWakeRecord);
 		if(this.isWaitingForAnswer)
 		{
 			try { gotUpdate(categories.getString(TimeManager.SLEEPINDEX)); }
@@ -241,8 +223,13 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 				return "cannot gotUpdate";
 			}
 		}
+		
+		final Document lastSleepRecord = (Document)sleepingTimes_.find().sort(Sorts.descending("startsleep")).first();
 		return String.format("you have slept for: %s", LocalUtil.milisToTimeFormat(
+				lastWakeRecord.getDate("endsleep").getTime() - 
+				lastSleepRecord.getDate("startsleep").getTime()
+				/*
 				this.wakingtimes_.getLong(this.wakingtimes_.length() - 1) - 
-				this.sleepingtimes_.getLong(this.sleepingtimes_.length() - 1)));
+				this.sleepingtimes_.getLong(this.sleepingtimes_.length() - 1)*/));
 	}
 }

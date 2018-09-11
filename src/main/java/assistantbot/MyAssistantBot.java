@@ -28,14 +28,12 @@ import util.Util;
 
 public class MyAssistantBot extends MyBasicBot {
 	private String botUserName_;
-	MongoClient mongoClient = null;
 	public MyAssistantBot(Map<Character, Object> commandline)
 	{
 		try
 		{
 			util.StorageManager.init();
 			botUserName_ = (String)commandline.get('n');
-//			databasePassword_ = 
 			MongoClientURI uri = new MongoClientURI(
 					String.format("mongodb://%s:%s@ds149672.mlab.com:49672/logistics", 
                             "nailbiter",(String)commandline.get('p')));
@@ -94,11 +92,5 @@ public class MyAssistantBot extends MyBasicBot {
 	@Override
 	public String getBotToken() {
 		return util.KeyRing.getToken();
-	}
-//	String getDatabasePassword() {
-//		return databasePassword_;
-//	}
-	MongoClient getMongoClient() {
-		return mongoClient;
 	}
 }
