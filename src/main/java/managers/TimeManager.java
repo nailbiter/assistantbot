@@ -24,7 +24,9 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
+import com.mongodb.client.model.Updates;
 
 import assistantbot.MyAssistantUserData;
 import it.sauronsoftware.cron4j.Scheduler;
@@ -212,9 +214,11 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 	public String sleepend(JSONObject obj)
 	{
 		this.isSleeping = false;
-		Document lastWakeRecord = new Document();
-		lastWakeRecord.put("endsleep", new Date());
-		wakingTimes_.insertOne(lastWakeRecord);
+		Document lastRecord = (Document)sleepingTimes_.find().sort(Sorts.descending("startsleep")).first();
+		Date now = new Date();
+		sleepingTimes_.updateOne(Filters.eq("_id",lastRecord.getObjectId("_id")),
+				Updates.set("endsleep", now)); 
+		
 		if(this.isWaitingForAnswer)
 		{
 			try { gotUpdate(categories.getString(TimeManager.SLEEPINDEX)); }
@@ -224,12 +228,8 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 			}
 		}
 		
-		final Document lastSleepRecord = (Document)sleepingTimes_.find().sort(Sorts.descending("startsleep")).first();
 		return String.format("you have slept for: %s", LocalUtil.milisToTimeFormat(
-				lastWakeRecord.getDate("endsleep").getTime() - 
-				lastSleepRecord.getDate("startsleep").getTime()
-				/*
-				this.wakingtimes_.getLong(this.wakingtimes_.length() - 1) - 
-				this.sleepingtimes_.getLong(this.sleepingtimes_.length() - 1)*/));
+				now.getTime() - 
+				lastRecord.getDate("startsleep").getTime()));
 	}
 }
