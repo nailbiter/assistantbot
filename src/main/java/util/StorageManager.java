@@ -117,7 +117,6 @@ public class StorageManager {
             int character;
             while ((character = fr.read()) != -1) {
             		sb.append((char)character);
-                //System.out.print((char) character);
             }
             System.out.println("found "+sb.toString());
 			fr.close();
@@ -164,6 +163,19 @@ public class StorageManager {
 		       public void apply(final Document doc) {
 		    	   JSONObject obj = new JSONObject(doc.toJson());
 		    	   res.put(obj.getString(key));
+		       }
+		};
+		mc.getDatabase(databaseName).getCollection(collectionName).find().forEach(printBlock);
+		
+		return res;
+	}
+	public static JSONArray GetJSONArrayFromDatabase(MongoClient mc, String databaseName, String collectionName) {
+		final JSONArray res = new JSONArray();
+		Block<Document> printBlock = new Block<Document>() {
+		       @Override
+		       public void apply(final Document doc) {
+		    	   JSONObject obj = new JSONObject(doc.toJson());
+		    	   res.put(obj);
 		       }
 		};
 		mc.getDatabase(databaseName).getCollection(collectionName).find().forEach(printBlock);

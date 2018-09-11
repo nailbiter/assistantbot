@@ -40,7 +40,7 @@ public abstract class AbstractManager implements MyManager {
 		return false;
 	}
 	protected JSONArray jsonarray = null;
-	static JSONObject makeCommand(String name,String help,List<JSONObject> args)
+	public static JSONObject makeCommand(String name,String help,List<JSONObject> args)
 	{
 		JSONObject cmd = new JSONObject();
 		cmd.put("name", name);
@@ -51,7 +51,7 @@ public abstract class AbstractManager implements MyManager {
 		cmd.put("args", array);
 		return cmd;
 	}
-	static JSONObject makeCommandArg(String name,StandardParser.ArgTypes type,boolean isOpt)
+	public static JSONObject makeCommandArg(String name,StandardParser.ArgTypes type,boolean isOpt)
 	{
 		JSONObject arg = new JSONObject();
 		

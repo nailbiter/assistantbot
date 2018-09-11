@@ -217,7 +217,7 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 		Document lastRecord = (Document)sleepingTimes_.find().sort(Sorts.descending("startsleep")).first();
 		Date now = new Date();
 		sleepingTimes_.updateOne(Filters.eq("_id",lastRecord.getObjectId("_id")),
-				Updates.set("endsleep", now)); 
+				Updates.set("endsleep", now));
 		
 		if(this.isWaitingForAnswer)
 		{

@@ -1,4 +1,4 @@
-package managers;
+package managers.habits;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,84 +11,49 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Logger;
 
+import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
+
 import assistantbot.MyAssistantUserData;
 import it.sauronsoftware.cron4j.Predictor;
 import it.sauronsoftware.cron4j.Scheduler;
+import managers.AbstractManager;
+import managers.MyManager;
+import managers.OptionReplier;
 import util.LocalUtil;
 import util.MyBasicBot;
 import util.StorageManager;
 import util.parsers.StandardParser;
 
-public class HabitManager implements MyManager, OptionReplier
+public class HabitManager extends HabitManagerBase implements MyManager, OptionReplier
 {
+	enum StreakUpdateEnum{
+		FAILURE,INIT,SUCCESS;
+	}
 	JSONArray habits_ = null;
-	JSONObject streaks = null;
-	Long chatID_;
-	Scheduler scheduler = null;
-	MyBasicBot bot_;
-	Timer timer = new Timer();
+//	JSONObject streaks = null;
 	Hashtable<String,Date> failTimes = null;
 	private Hashtable<String,Object> hash_ = new Hashtable<String,Object>();
-	MyAssistantUserData ud_ = null;
-	Logger logger_ = null;
-	enum HabitRunnableEnum{
-		SENDREMINDER, SETFAILURE;
-	}
-	class HabitRunnable extends TimerTask
-	{
-		int index_;
-		HabitRunnableEnum code_;
-		HabitRunnable(int index,HabitRunnableEnum code){ index_ = index; code_ = code;}
-		@Override
-		public void run() { HabitRunnableDispatch(index_,code_); }
-	}
+	Set<Integer> optionMsgs_ = new HashSet<Integer>();
+	MongoCollection streaks_ = null;
 
-	protected String getReminderMessage(JSONObject habit)
-	{
-		return String.format("don't forget to execute: %s !%s",
-				habit.getString("name"),
-				habit.has("info") ? String.format("\n%s", habit.getString("info")) : "");
-	}
-	protected String getFailureMessage(int index)
-	{
-		return String.format("you failed the task %s !", habits_.getJSONObject(index).getString("name"));
-	}
-	protected void HabitRunnableDispatch(int index,HabitRunnableEnum code)
-	{
-		System.out.println(String.format("HabitRunnableDispatch(%d,%s)", index,code.toString()));
-		if(code == HabitRunnableEnum.SENDREMINDER) {
-			bot_.sendMessage(getReminderMessage(habits_.getJSONObject(index)), chatID_);
-			habits_.getJSONObject(index).put("isWaiting", true);
-			failTimes.put(habits_.getJSONObject(index).getString("name"), 
-					new Date(System.currentTimeMillis()+
-							habits_.getJSONObject(index).getInt("delaymin")*60*1000));
-			timer.schedule(new HabitRunnable(index,HabitRunnableEnum.SETFAILURE),
-					habits_.getJSONObject(index).getInt("delaymin")*60*1000);
-		}
-		if(code==HabitRunnableEnum.SETFAILURE){
-			if(habits_.getJSONObject(index).getBoolean("isWaiting"))
-			{
-				habits_.getJSONObject(index).put("isWaiting", false);
-				//add logging
-				this.updateStreaks(index, -1);
-				bot_.sendMessage(getFailureMessage(index), chatID_);
-			}
-		}
-	}
 	public HabitManager(Long chatID,MyBasicBot bot,Scheduler scheduler_in, MyAssistantUserData myAssistantUserData) throws Exception
 	{
-		logger_ = Logger.getLogger(this.getClass().getName());
-		ud_ = myAssistantUserData;
-		bot_ = bot;
-		scheduler = scheduler_in;
-		chatID_ = chatID;
-		habits_ = util.StorageManager.get("habits",false).getJSONArray("obj");
+		super(chatID,bot,scheduler_in,myAssistantUserData);
+		streaks_ = bot.getMongoClient().getDatabase("logistics").getCollection("habitstreaks");
+		
+		fetchHabits();
 		failTimes = new Hashtable<String,Date>(habits_.length());
-		streaks = StorageManager.get("habitstreaks",true);
+//		streaks = StorageManager.get("habitstreaks",true);
+	}
+	void fetchHabits() {
+		habits_ = util.StorageManager.get("habits",false).getJSONArray("obj");
 		for(int i = 0; i < habits_.length(); i++)
 		{	
 			JSONObject habit = habits_.getJSONObject(i);
@@ -99,8 +64,8 @@ public class HabitManager implements MyManager, OptionReplier
 			if(habit.optBoolean("enabled",true))
 			{
 				scheduler.schedule(habit.getString("cronline"),
-						new HabitRunnable(i,HabitRunnableEnum.SENDREMINDER));
-				this.updateStreaks(i, 0);
+						new HabitRunnable(i,HabitRunnableEnum.SENDREMINDER,this));
+				this.updateStreaks(i, StreakUpdateEnum.INIT);
 			}
 		}
 	}
@@ -132,7 +97,7 @@ public class HabitManager implements MyManager, OptionReplier
 			tb.addToken(habit.optBoolean("isWaiting") ?
 				LocalUtil.milisToTimeFormat(failTimes.get(habit.get("name")).getTime()- (new Date().getTime())):
 				LocalUtil.milisToTimeFormat(habit.getInt("delaymin")*60*1000));
-			tb.addToken(this.printStreak(i));
+			tb.addToken(this.printStreak(habit.getString("name")));
 			tb.addToken(".");
 		}
 		return tb.toString();
@@ -155,7 +120,7 @@ public class HabitManager implements MyManager, OptionReplier
 				if(habit.getInt("doneCount")>=habit.getInt("count"))
 				{
 					habit.put("isWaiting", false);
-					this.updateStreaks(i, 1);
+					this.updateStreaks(i, StreakUpdateEnum.SUCCESS);
 					return "done task "+habit.getString("name");
 				}
 				else
@@ -183,7 +148,6 @@ public class HabitManager implements MyManager, OptionReplier
 		}
 		return null;
 	}
-	Set<Integer> optionMsgs_ = new HashSet<Integer>();
 	private String doneg(JSONObject res) {
 		logger_.info("in doneg!");
 		JSONArray habits = new JSONArray();
@@ -240,39 +204,41 @@ public class HabitManager implements MyManager, OptionReplier
 	/**
 	 * @param code -1 means failure, 0 means init, 1 means success 
 	 */
-	protected void updateStreaks(int index,int code)
+	protected void updateStreaks(int index,StreakUpdateEnum code)
 	{
 		String name = habits_.getJSONObject(index).getString("name");
-		if(code==0)
+		if(code==StreakUpdateEnum.INIT)
 		{
-			if(streaks.optJSONObject(name)==null)
-			{
-				JSONObject item = new JSONObject()
-						.put("streak", 0)
-						.put("accum", 0);
-				streaks.put(name, item);
+			if(streaks_.count(Filters.eq("name",name))==0) {
+				Document doc = new Document();
+				doc.put("streak", 0);
+				doc.put("accum", 0);
+				streaks_.insertOne(doc);
 			}
-			return;
 		}
-		if(code < 0)
+		else if(code==StreakUpdateEnum.FAILURE)
 		{
-			JSONObject item = streaks.getJSONObject(name);
-			item.put("streak",0);
-			item.put("accum", item.getInt("accum")-1);
-			return;
+//			JSONObject item = streaks.getJSONObject(name);
+			streaks_.updateOne(Filters.eq("name",name),
+					Updates.combine(Updates.set("streak", 0),Updates.inc("accum", -1)));
+//			item.put("streak",0);
+//			item.put("accum", item.getInt("accum")-1);
 		}
-		if(code > 0)
+		else if(code==StreakUpdateEnum.SUCCESS)
 		{
-			JSONObject item = streaks.getJSONObject(name);
-			item.put("streak",item.getInt("streak")+1);
-			item.put("accum", item.getInt("accum")+1);
-			return;
+//			JSONObject item = streaks.getJSONObject(name);
+//			item.put("streak",item.getInt("streak")+1);
+//			item.put("accum", item.getInt("accum")+1);
+			streaks_.updateOne(Filters.eq("name",name),
+					Updates.combine(Updates.inc("streak", 1),Updates.inc("accum", 1)));
 		}
 	}
-	protected String printStreak(int index)
+	protected String printStreak(String name)
 	{
-		JSONObject streak = streaks.getJSONObject(habits_.getJSONObject(index).getString("name"));
-		return streak.getInt("accum")+"("+streak.getInt("streak")+")";
+		Document doc = (Document)streaks_.find(Filters.eq("name",name)).first();
+				//streaks.getJSONObject(habits_.getJSONObject(index).getString("name"));
+		return String.format("%d(%d)", doc.getInteger("accum"),doc.getInteger("streak"));
+//				streak.getInt("accum")+"("+streak.getInt("streak")+")";
 	}
 	@Override
 	public JSONArray getCommands() {
@@ -296,5 +262,36 @@ public class HabitManager implements MyManager, OptionReplier
 			return this.taskDone(option);
 		else
 			return null;
+	}
+	@Override
+	protected String getReminderMessage(int index)
+	{
+		JSONObject habit = habits_.getJSONObject(index);
+		return String.format("don't forget to execute: %s !%s",
+				habit.getString("name"),
+				habit.has("info") ? String.format("\n%s", habit.getString("info")) : "");
+	}
+	@Override
+	protected String getFailureMessage(int index)
+	{
+		return String.format("you failed the task %s !", habits_.getJSONObject(index).getString("name"));
+	}
+	@Override
+	boolean waitingForHabit(int index) {
+		return habits_.getJSONObject(index).getBoolean("isWaiting");
+	}
+	@Override
+	void processFailure(int index) {
+		habits_.getJSONObject(index).put("isWaiting", false);
+		updateStreaks(index, StreakUpdateEnum.FAILURE);		
+	}
+	@Override
+	void processSetReminder(int index) {
+		habits_.getJSONObject(index).put("isWaiting", true);
+		failTimes.put(habits_.getJSONObject(index).getString("name"), 
+				new Date(System.currentTimeMillis()+
+						habits_.getJSONObject(index).getInt("delaymin")*60*1000));
+		timer.schedule(new HabitRunnable(index,HabitRunnableEnum.SETFAILURE,this),
+				habits_.getJSONObject(index).getInt("delaymin")*60*1000);
 	}
 }
