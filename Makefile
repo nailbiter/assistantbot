@@ -7,12 +7,13 @@ KEYS=-r $(RESFOLDER) -n AssistantBot -p `cat secret.txt`
 
 #sources
 ASBOTSOURCES=MyAssistantUserData MyAssistantBot
-MANAGERSOURCES=TimeManager MoneyManager
+MANAGERSOURCES=TimeManager MoneyManager TestManager
 UTILSOURCES=StorageManager
 SOURCES=\
  $(addprefix assistantbot/,$(ASBOTSOURCES))\
  $(addprefix managers/,$(MANAGERSOURCES))\
  $(addprefix util/,$(UTILSOURCES))\
+ managers/tests/ParadigmTest\
  opts/Option Main
 
 

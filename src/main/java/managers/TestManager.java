@@ -43,25 +43,11 @@ public class TestManager extends AbstractManager implements OptionReplier {
 		logger_ = Logger.getLogger(this.getClass().getName());
 		timer_ = new Timer();
 		
-		JSONObject obj = StorageManager.get("tests", false),
-				objData = StorageManager.get("testsData", true);
-		addTest("paradigm",obj,objData);
-		//addTest("genders",obj,objData);
-		//addTest("plural",obj,objData);
+		addParadigmTest();
 	}
-	private void addTest(String name,JSONObject obj, JSONObject objData) throws Exception
+	private void addParadigmTest() throws Exception
 	{
-		if(!objData.has(name))
-			objData.put(name, new JSONObject());
-		
-		System.out.println(String.format("objData=%s, obj=%s", objData.toString(),obj.toString()));
-		
-		if(name.equals("paradigm"))
-			paradigmtest_ = new ParadigmTest(obj.getJSONObject(name),objData.getJSONObject(name),this,name,timer_);
-		/*if(name.equals("plural"))
-			tests.add(new PluralTest(obj.getJSONObject(name),objData.getJSONObject(name),this,name,timer_));
-		if(name.equals("genders"))
-			tests.add(new ChoiceTest(obj.getJSONObject(name),objData.getJSONObject(name),this,name,timer_));*/
+		paradigmtest_ = new ParadigmTest(bot_);
 	}
 
 	/* (non-Javadoc)
@@ -84,10 +70,9 @@ public class TestManager extends AbstractManager implements OptionReplier {
 	}
 	public String tests(JSONObject obj) throws Exception
 	{
-//		return String.format("# of paradigm tests: %d", paradigmtest_.getSize());
 		TableBuilder tb = new TableBuilder();
 		tb.addNewlineAndTokens("#", "name","layout");
-		for(int i = 0; i < paradigmtest_.getSize(); i++)
+		for(int i = 1; i <= paradigmtest_.getSize(); i++)
 			tb.addNewlineAndTokens(Integer.toString(i), 
 					paradigmtest_.getTestName(i),
 					String.format("%dx%d", paradigmtest_.getRowNum(i),paradigmtest_.getColNum(i)));
@@ -95,7 +80,7 @@ public class TestManager extends AbstractManager implements OptionReplier {
 	}
 	public String testdo(JSONObject obj) throws Exception
 	{
-		int index = obj.getInt("index") - 1;
+		int index = obj.getInt("index");
 		String[] res = this.paradigmtest_.isCalled(index);
 		logger_.info(String.format("run this index=%d", index));
 		int id = -1;

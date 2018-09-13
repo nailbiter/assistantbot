@@ -16,6 +16,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 
+import com.mongodb.Block;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
@@ -31,16 +32,14 @@ import util.MyBasicBot;
 import util.StorageManager;
 import util.parsers.StandardParser;
 
-public class HabitManager extends HabitManagerBase implements MyManager, OptionReplier
+public class HabitManager extends HabitManagerBase implements OptionReplier
 {
 	enum StreakUpdateEnum{
 		FAILURE,INIT,SUCCESS;
 	}
 	JSONArray habits_ = null;
-//	JSONObject streaks = null;
 	Hashtable<String,Date> failTimes = null;
 	private Hashtable<String,Object> hash_ = new Hashtable<String,Object>();
-	Set<Integer> optionMsgs_ = new HashSet<Integer>();
 	MongoCollection streaks_ = null;
 
 	public HabitManager(Long chatID,MyBasicBot bot,Scheduler scheduler_in, MyAssistantUserData myAssistantUserData) throws Exception
@@ -50,24 +49,31 @@ public class HabitManager extends HabitManagerBase implements MyManager, OptionR
 		
 		fetchHabits();
 		failTimes = new Hashtable<String,Date>(habits_.length());
-//		streaks = StorageManager.get("habitstreaks",true);
 	}
 	void fetchHabits() {
-		habits_ = util.StorageManager.get("habits",false).getJSONArray("obj");
-		for(int i = 0; i < habits_.length(); i++)
-		{	
-			JSONObject habit = habits_.getJSONObject(i);
-			if(!habit.has("count"))
-				habit.put("count", 1);
-			habit.put("doneCount",0);
-			habit.put("isWaiting",false);
-			if(habit.optBoolean("enabled",true))
-			{
-				scheduler.schedule(habit.getString("cronline"),
-						new HabitRunnable(i,HabitRunnableEnum.SENDREMINDER,this));
-				this.updateStreaks(i, StreakUpdateEnum.INIT);
-			}
-		}
+		habits_ = new JSONArray();
+		bot_.getMongoClient().getDatabase("logistics").getCollection("habits")
+			.find(new Document("enabled",true)).forEach(new Block<Document>() {
+				@Override
+				public void apply(Document doc) {
+					habits_.put(new JSONObject(doc.toJson()));
+				}
+			});
+//		habits_ = util.StorageManager.get("habits",false).getJSONArray("obj");
+//		for(int i = 0; i < habits_.length(); i++)
+//		{	
+//			JSONObject habit = habits_.getJSONObject(i);
+//			if(!habit.has("count"))
+//				habit.put("count", 1);
+//			habit.put("doneCount",0);
+//			habit.put("isWaiting",false);
+//			if(habit.optBoolean("enabled",true))
+//			{
+//				scheduler.schedule(habit.getString("cronline"),
+//						new HabitRunnable(i,HabitRunnableEnum.SENDREMINDER,this));
+//				this.updateStreaks(i, StreakUpdateEnum.INIT);
+//			}
+//		}
 	}
 	public String getHabitsInfo() throws Exception
 	{
@@ -102,8 +108,7 @@ public class HabitManager extends HabitManagerBase implements MyManager, OptionR
 		}
 		return tb.toString();
 	}
-	public String taskDone(String name)
-	{
+	public String taskDone(String name){
 		{
 			final String key = "done/habit";
 			if( name.isEmpty() )
@@ -129,26 +134,7 @@ public class HabitManager extends HabitManagerBase implements MyManager, OptionR
 		}
 		return "unknown task";
 	}
-	@Override
-	public String getResultAndFormat(JSONObject res) throws Exception {
-		if(res.has("name"))
-		{
-			System.out.println(this.getClass().getName()+" got comd: /"+res.getString("name"));
-			if(res.getString("name").compareTo("habits")==0)
-			{
-				if(res.optString("key").contains("s"))
-					return getHabitsInfoShort();
-				else
-					return getHabitsInfo();
-			}
-			if(res.getString("name").compareTo("done")==0) 
-				return taskDone(res.optString("habit"));
-			if(res.getString("name").compareTo("doneg")==0)
-				return doneg(res);
-		}
-		return null;
-	}
-	private String doneg(JSONObject res) {
+	protected String doneg(JSONObject res) {
 		logger_.info("in doneg!");
 		JSONArray habits = new JSONArray();
 		
@@ -176,7 +162,7 @@ public class HabitManager extends HabitManagerBase implements MyManager, OptionR
 			return null;
 		}
 	}
-	private String getHabitsInfoShort() {
+	protected String getHabitsInfoShort() {
 		System.out.println("getHabitsInfoShort");
 		System.out.println("len="+habits_.length());
 		util.TableBuilder tb = new util.TableBuilder();
@@ -201,14 +187,9 @@ public class HabitManager extends HabitManagerBase implements MyManager, OptionR
 		}
 		return tb.toString();
 	}
-	/**
-	 * @param code -1 means failure, 0 means init, 1 means success 
-	 */
-	protected void updateStreaks(int index,StreakUpdateEnum code)
-	{
+	protected void updateStreaks(int index,StreakUpdateEnum code) {
 		String name = habits_.getJSONObject(index).getString("name");
-		if(code==StreakUpdateEnum.INIT)
-		{
+		if(code==StreakUpdateEnum.INIT){
 			if(streaks_.count(Filters.eq("name",name))==0) {
 				Document doc = new Document();
 				doc.put("streak", 0);
@@ -216,64 +197,32 @@ public class HabitManager extends HabitManagerBase implements MyManager, OptionR
 				streaks_.insertOne(doc);
 			}
 		}
-		else if(code==StreakUpdateEnum.FAILURE)
-		{
-//			JSONObject item = streaks.getJSONObject(name);
+		else if(code==StreakUpdateEnum.FAILURE){
 			streaks_.updateOne(Filters.eq("name",name),
 					Updates.combine(Updates.set("streak", 0),Updates.inc("accum", -1)));
-//			item.put("streak",0);
-//			item.put("accum", item.getInt("accum")-1);
 		}
-		else if(code==StreakUpdateEnum.SUCCESS)
-		{
-//			JSONObject item = streaks.getJSONObject(name);
-//			item.put("streak",item.getInt("streak")+1);
-//			item.put("accum", item.getInt("accum")+1);
+		else if(code==StreakUpdateEnum.SUCCESS){
 			streaks_.updateOne(Filters.eq("name",name),
 					Updates.combine(Updates.inc("streak", 1),Updates.inc("accum", 1)));
 		}
 	}
-	protected String printStreak(String name)
-	{
+	protected String printStreak(String name) {
 		Document doc = (Document)streaks_.find(Filters.eq("name",name)).first();
-				//streaks.getJSONObject(habits_.getJSONObject(index).getString("name"));
 		return String.format("%d(%d)", doc.getInteger("accum"),doc.getInteger("streak"));
-//				streak.getInt("accum")+"("+streak.getInt("streak")+")";
-	}
-	@Override
-	public JSONArray getCommands() {
-		JSONArray res = new JSONArray();
-		
-		res.put(AbstractManager.makeCommand("habits", "list all habits and info",
-				Arrays.asList(AbstractManager.makeCommandArg("key", StandardParser.ArgTypes.string, true))));
-		res.put(AbstractManager.makeCommand("done", "done habit",
-				Arrays.asList(AbstractManager.makeCommandArg("habit", StandardParser.ArgTypes.remainder, true))));
-		res.put(AbstractManager.makeCommand("doneg", "done habit graphically",new ArrayList<JSONObject>()));
-		
-		return res;
 	}
 	@Override
 	public String processReply(int messageID,String msg) {
 		return null;
 	}
 	@Override
-	public String optionReply(String option, Integer msgID) {
-		if(this.optionMsgs_.contains(msgID))
-			return this.taskDone(option);
-		else
-			return null;
-	}
-	@Override
-	protected String getReminderMessage(int index)
-	{
+	protected String getReminderMessage(int index) {
 		JSONObject habit = habits_.getJSONObject(index);
 		return String.format("don't forget to execute: %s !%s",
 				habit.getString("name"),
 				habit.has("info") ? String.format("\n%s", habit.getString("info")) : "");
 	}
 	@Override
-	protected String getFailureMessage(int index)
-	{
+	protected String getFailureMessage(int index) {
 		return String.format("you failed the task %s !", habits_.getJSONObject(index).getString("name"));
 	}
 	@Override
