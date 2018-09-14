@@ -36,4 +36,7 @@ public class KeyRing {
 	public static String get(String key) {
 		return obj_.getString(key);
 	}
+	public static JSONObject getTrello() {
+		return obj_.getJSONObject("trello");
+	}
 }

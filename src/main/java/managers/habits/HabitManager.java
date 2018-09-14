@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Formatter;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -16,6 +17,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 
+import com.julienvey.trello.Trello;
+import com.julienvey.trello.domain.Board;
+import com.julienvey.trello.domain.Card;
+import com.julienvey.trello.domain.TList;
+import com.julienvey.trello.impl.TrelloImpl;
+import com.julienvey.trello.impl.http.ApacheHttpClient;
 import com.mongodb.Block;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
@@ -27,6 +34,7 @@ import it.sauronsoftware.cron4j.Scheduler;
 import managers.AbstractManager;
 import managers.MyManager;
 import managers.OptionReplier;
+import util.KeyRing;
 import util.LocalUtil;
 import util.MyBasicBot;
 import util.StorageManager;
@@ -41,6 +49,9 @@ public class HabitManager extends HabitManagerBase implements OptionReplier
 	Hashtable<String,Date> failTimes = null;
 	private Hashtable<String,Object> hash_ = new Hashtable<String,Object>();
 	MongoCollection streaks_ = null;
+	private static final String HABITBOARDID = "kDCITi9O";
+	private static final String PENDINGLISTNAME = "PENDING";
+	TList pendingList_ = null;
 
 	public HabitManager(Long chatID,MyBasicBot bot,Scheduler scheduler_in, MyAssistantUserData myAssistantUserData) throws Exception
 	{
@@ -49,6 +60,26 @@ public class HabitManager extends HabitManagerBase implements OptionReplier
 		
 		fetchHabits();
 		failTimes = new Hashtable<String,Date>(habits_.length());
+		fetchPendingHabits();
+	}
+	private void fetchPendingHabits() {
+		Trello trelloApi = new TrelloImpl(KeyRing.getTrello().getString("key"),
+				KeyRing.getTrello().getString("token"),
+				new ApacheHttpClient());
+		Board board = trelloApi.getBoard(HABITBOARDID );
+		System.out.println(String.format("board is named: %s(%d)", board.getName(),board.fetchLists().size()));
+
+		List<TList> lists = board.fetchLists();
+		for(TList list : lists) {
+			System.out.println(String.format("list: %s", list.getName()));
+			if(list.getName().equals(PENDINGLISTNAME))
+				pendingList_ = list;
+		}
+		Date now = new Date();
+		for(Card card : pendingList_.getCards()) {
+			Date due = card.getDue();
+//			if(due.after(now))
+		}
 	}
 	void fetchHabits() {
 		habits_ = new JSONArray();
@@ -59,21 +90,6 @@ public class HabitManager extends HabitManagerBase implements OptionReplier
 					habits_.put(new JSONObject(doc.toJson()));
 				}
 			});
-//		habits_ = util.StorageManager.get("habits",false).getJSONArray("obj");
-//		for(int i = 0; i < habits_.length(); i++)
-//		{	
-//			JSONObject habit = habits_.getJSONObject(i);
-//			if(!habit.has("count"))
-//				habit.put("count", 1);
-//			habit.put("doneCount",0);
-//			habit.put("isWaiting",false);
-//			if(habit.optBoolean("enabled",true))
-//			{
-//				scheduler.schedule(habit.getString("cronline"),
-//						new HabitRunnable(i,HabitRunnableEnum.SENDREMINDER,this));
-//				this.updateStreaks(i, StreakUpdateEnum.INIT);
-//			}
-//		}
 	}
 	public String getHabitsInfo() throws Exception
 	{

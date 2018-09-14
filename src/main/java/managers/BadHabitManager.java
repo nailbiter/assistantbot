@@ -20,21 +20,6 @@ public class BadHabitManager extends AbstractManager implements OptionReplier {
 	JSONArray bhjson = new JSONArray();
 	MyAssistantUserData ud_ = null;
 	Set<Integer> pendingMessages = new HashSet<Integer>();
-	/*@Override
-	public String getResultAndFormat(JSONObject res) throws Exception {
-		System.out.println(String.format("got: %s", res.toString()));
-		if(res.has("name") && hasCommand(res))
-		{
-			if(res.getString("name").equals("bhs"))
-				return listBadHabits(res.optInt("count",10));
-			JSONArray ress = new JSONArray()
-					.put(LocalUtil.DateToString(new Date()))
-					.put(res.getString("name"));
-			badhabits.put(ress);
-			return ress.toString();
-		}
-		return null;
-	}*/
 	private String listBadHabits(int count) {
 		int index = this.badhabits.length() - 1;
 		util.TableBuilder tb = new util.TableBuilder();

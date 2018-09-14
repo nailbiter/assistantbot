@@ -20,12 +20,18 @@ public class MiscUtilManager extends AbstractManager {
 	/*public MiscUtilManager() {}*/
 	@Override
 	public JSONArray getCommands() {
-		return new JSONArray().put(AbstractManager.makeCommand("rand", "return random",
-				Arrays.asList(makeCommandArg("key",StandardParser.ArgTypes.string,true))));
+		return new JSONArray()
+				.put(AbstractManager.makeCommand("rand", "return random",
+				Arrays.asList(makeCommandArg("key",StandardParser.ArgTypes.string,true))))
+				.put(AbstractManager.makeCommand("exit", "exit the bot", new ArrayList<JSONObject>()));
 	}
 	@Override
 	public String processReply(int messageID, String msg) {
 		return null;
+	}
+	public String exit(JSONObject obj) {
+		System.exit(0);
+		return "";
 	}
 	public String rand(JSONObject obj)
 	{
