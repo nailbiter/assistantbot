@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Objects;
 
+import org.json.JSONObject;
 import org.telegram.telegrambots.api.methods.GetFile;
 import org.telegram.telegrambots.api.objects.Document;
 import org.telegram.telegrambots.api.objects.PhotoSize;
@@ -78,5 +79,13 @@ public class Util{
 		}
 		System.out.println("here with: "+res.toString());
         return res.toString();
+	}
+	public static JSONObject FindInJSONArray(JSONArray array,String key,String val) {
+		for(Object o: array) {
+			JSONObject obj = (JSONObject)o;
+			if(obj.getString(key).equals(val))
+				return obj;
+		}
+		return null;
 	}
 }

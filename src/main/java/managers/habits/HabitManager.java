@@ -24,6 +24,7 @@ import com.julienvey.trello.domain.TList;
 import com.julienvey.trello.impl.TrelloImpl;
 import com.julienvey.trello.impl.http.ApacheHttpClient;
 import com.mongodb.Block;
+import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
@@ -38,6 +39,7 @@ import util.KeyRing;
 import util.LocalUtil;
 import util.MyBasicBot;
 import util.StorageManager;
+import util.Util;
 import util.parsers.StandardParser;
 
 public class HabitManager extends HabitManagerBase implements OptionReplier
@@ -48,48 +50,58 @@ public class HabitManager extends HabitManagerBase implements OptionReplier
 	JSONArray habits_ = null;
 	Hashtable<String,Date> failTimes = null;
 	private Hashtable<String,Object> hash_ = new Hashtable<String,Object>();
-	MongoCollection streaks_ = null;
+	MongoCollection<Document> streaks_ = null;
 	private static final String HABITBOARDID = "kDCITi9O";
 	private static final String PENDINGLISTNAME = "PENDING";
-	TList pendingList_ = null;
+	private TrelloImpl trelloApi_;
+	TList pendingList_;
 
 	public HabitManager(Long chatID,MyBasicBot bot,Scheduler scheduler_in, MyAssistantUserData myAssistantUserData) throws Exception
 	{
 		super(chatID,bot,scheduler_in,myAssistantUserData);
 		streaks_ = bot.getMongoClient().getDatabase("logistics").getCollection("habitstreaks");
-		
-		fetchHabits();
-		failTimes = new Hashtable<String,Date>(habits_.length());
-		fetchPendingHabits();
-	}
-	private void fetchPendingHabits() {
-		Trello trelloApi = new TrelloImpl(KeyRing.getTrello().getString("key"),
+		trelloApi_ = new TrelloImpl(KeyRing.getTrello().getString("key"),
 				KeyRing.getTrello().getString("token"),
 				new ApacheHttpClient());
+		
+		habits_ = FetchHabits(bot_.getMongoClient());
+		failTimes = new Hashtable<String,Date>(habits_.length());
+		pendingList_ = FetchPendingHabits(trelloApi_);
+	}
+	private static TList FetchPendingHabits(TrelloImpl trelloApi) {
 		Board board = trelloApi.getBoard(HABITBOARDID );
 		System.out.println(String.format("board is named: %s(%d)", board.getName(),board.fetchLists().size()));
 
 		List<TList> lists = board.fetchLists();
+		TList pendingList = null;
 		for(TList list : lists) {
 			System.out.println(String.format("list: %s", list.getName()));
 			if(list.getName().equals(PENDINGLISTNAME))
-				pendingList_ = list;
+				pendingList = list;
 		}
-		Date now = new Date();
-		for(Card card : pendingList_.getCards()) {
-			Date due = card.getDue();
-//			if(due.after(now))
-		}
+		return pendingList;
 	}
-	void fetchHabits() {
-		habits_ = new JSONArray();
-		bot_.getMongoClient().getDatabase("logistics").getCollection("habits")
+	static JSONArray FetchHabits(MongoClient mongoClient) {
+		final JSONArray habits = new JSONArray();
+		mongoClient.getDatabase("logistics").getCollection("habits")
 			.find(new Document("enabled",true)).forEach(new Block<Document>() {
 				@Override
 				public void apply(Document doc) {
-					habits_.put(new JSONObject(doc.toJson()));
+					habits.put(new JSONObject(doc.toJson()));
 				}
 			});
+		return habits;
+	}
+	protected JSONArray getPendingHabits() {
+		JSONArray res = new JSONArray();
+		List<Card> cards = pendingList_.getCards();
+		Date now = new Date();
+		for(Card card:cards) {
+			Date due = card.getDue(); 
+			if(due!=null && due.after(now))
+				res.put(card.getName());
+		}
+		return res;
 	}
 	public String getHabitsInfo() throws Exception
 	{
@@ -152,16 +164,9 @@ public class HabitManager extends HabitManagerBase implements OptionReplier
 	}
 	protected String doneg(JSONObject res) {
 		logger_.info("in doneg!");
-		JSONArray habits = new JSONArray();
 		
 		try {
-			for(int i = 0; i < habits_.length(); i++) {
-				JSONObject habit = habits_.getJSONObject(i);
-				if( !habit.optBoolean("enabled",true) || !habit.optBoolean("isWaiting") )
-					continue;
-				habits.put(habit.getString("name"));
-			}
-			
+			JSONArray habits = this.getPendingHabits();
 			if(habits.length() > 1)
 			{
 				int id = ud_.sendMessageWithKeyBoard("which habbit?", habits);
@@ -180,31 +185,21 @@ public class HabitManager extends HabitManagerBase implements OptionReplier
 	}
 	protected String getHabitsInfoShort() {
 		System.out.println("getHabitsInfoShort");
-		System.out.println("len="+habits_.length());
+		JSONArray habits = this.getPendingHabits();
+		System.out.println("len="+habits.length());
 		util.TableBuilder tb = new util.TableBuilder();
 		{
 			tb.newRow();
 			tb.addToken("name");
-			tb.addToken("isP?");
 		}
-		for(int i = 0; i < habits_.length(); i++) {
-			JSONObject habit = habits_.getJSONObject(i);
-			Predictor p = new Predictor(habit.getString("cronline"));
-			if(!habit.optBoolean("enabled",true) || !habit.optBoolean("isWaiting"))
-				continue;
+		for(Object o:habits) {
+			String name = (String)o;
 			tb.newRow();
-			tb.addToken(habit.getString("name"));
-			/* NOTE: in the next line we use Date.toString() in place of
-			 * LocalUtil.DateToString() which we normally use. This is so,
-			 * since Scheduler is already set up for the correct timezone. 
-			 */
-			tb.addToken(habit.optBoolean("isWaiting") ? 
-				("("+ (habit.getInt("count")-habit.getInt("doneCount"))+")"):"");
+			tb.addToken(name);
 		}
 		return tb.toString();
 	}
-	protected void updateStreaks(int index,StreakUpdateEnum code) {
-		String name = habits_.getJSONObject(index).getString("name");
+	protected void updateStreaks(String name,StreakUpdateEnum code) {
 		if(code==StreakUpdateEnum.INIT){
 			if(streaks_.count(Filters.eq("name",name))==0) {
 				Document doc = new Document();
@@ -231,32 +226,52 @@ public class HabitManager extends HabitManagerBase implements OptionReplier
 		return null;
 	}
 	@Override
-	protected String getReminderMessage(int index) {
-		JSONObject habit = habits_.getJSONObject(index);
-		return String.format("don't forget to execute: %s !%s",
-				habit.getString("name"),
-				habit.has("info") ? String.format("\n%s", habit.getString("info")) : "");
+	protected String getReminderMessage(String name) {
+		return String.format("don't forget to execute: %s !\n%s",
+				name,
+				Util.FindInJSONArray(habits_, "name", name));
 	}
 	@Override
-	protected String getFailureMessage(int index) {
-		return String.format("you failed the task %s !", habits_.getJSONObject(index).getString("name"));
+	protected String getFailureMessage(String name) {
+		return String.format("you failed the task %s !", name);
 	}
 	@Override
-	boolean waitingForHabit(int index) {
-		return habits_.getJSONObject(index).getBoolean("isWaiting");
+	boolean waitingForHabit(String name) {
+		List<Card> cards = pendingList_.getCards();
+		Date now = new Date();
+		for(Card card:cards) {
+			if(card.getName().equals(name)) {
+				Date due = card.getDue(); 
+				if(due!=null && due.after(now))
+					return true;
+				else
+					return false;
+			}
+		}
+		return false;
 	}
 	@Override
-	void processFailure(int index) {
-		habits_.getJSONObject(index).put("isWaiting", false);
-		updateStreaks(index, StreakUpdateEnum.FAILURE);		
+	void processFailure(String name) {
+		updateStreaks(name, StreakUpdateEnum.FAILURE);		
 	}
 	@Override
-	void processSetReminder(int index) {
-		habits_.getJSONObject(index).put("isWaiting", true);
-		failTimes.put(habits_.getJSONObject(index).getString("name"), 
+	void processSetReminder(String name) {
+		Card card = new Card();
+		card.setName(name);
+		int delaymin = Util.FindInJSONArray(habits_, "name", name).getInt("delaymin");
+		card.setDue(new Date(System.currentTimeMillis()+delaymin*60*1000));
+		setUpReminder(name,delaymin);
+//		failTimes.put(habits_.getJSONObject(index).getString("name"), 
+//				new Date(System.currentTimeMillis()+
+//						habits_.getJSONObject(index).getInt("delaymin")*60*1000));
+//		timer.schedule(new HabitRunnable(index,HabitRunnableEnum.SETFAILURE,this),
+//				habits_.getJSONObject(index).getInt("delaymin")*60*1000);
+	}
+	void setUpReminder(String name,int min) {
+		failTimes.put(name, 
 				new Date(System.currentTimeMillis()+
-						habits_.getJSONObject(index).getInt("delaymin")*60*1000));
-		timer.schedule(new HabitRunnable(index,HabitRunnableEnum.SETFAILURE,this),
-				habits_.getJSONObject(index).getInt("delaymin")*60*1000);
+						min*60*1000));
+		timer.schedule(new HabitRunnable(name,HabitRunnableEnum.SETFAILURE,this),
+				min*60*1000);
 	}
 }

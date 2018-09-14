@@ -6,10 +6,17 @@ import managers.habits.HabitManagerBase.HabitRunnableEnum;
 
 class HabitRunnable extends TimerTask
 {
-	int index_;
+//	int index_;
+	String name_;
 	HabitRunnableEnum code_;
 	HabitManager hm_;
-	HabitRunnable(int index,HabitRunnableEnum code, HabitManager hm){ index_ = index; code_ = code; hm_ = hm;}
+	HabitRunnable(String name,HabitRunnableEnum code, HabitManager hm){ 
+		name_=name;
+		code_ = code;
+		hm_ = hm;
+	}
 	@Override
-	public void run() { hm_.HabitRunnableDispatch(index_,code_); }
+	public void run() { 
+		hm_.HabitRunnableDispatch(name_,code_); 
+	}
 }

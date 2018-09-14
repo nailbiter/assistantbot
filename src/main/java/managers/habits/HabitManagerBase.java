@@ -37,18 +37,18 @@ abstract class HabitManagerBase implements MyManager {
 		scheduler = scheduler_in;
 		chatID_ = chatID;
 	}
-	void HabitRunnableDispatch(int index,HabitRunnableEnum code)
+	void HabitRunnableDispatch(String name,HabitRunnableEnum code)
 	{
-		System.out.println(String.format("HabitRunnableDispatch(%d,%s)", index,code.toString()));
+		System.out.println(String.format("HabitRunnableDispatch(%s,%s)", name,code.toString()));
 		if(code == HabitRunnableEnum.SENDREMINDER) {
-			bot_.sendMessage(getReminderMessage(index), chatID_);
-			processSetReminder(index);
+			bot_.sendMessage(getReminderMessage(name), chatID_);
+			processSetReminder(name);
 		}
 		if(code==HabitRunnableEnum.SETFAILURE){
-			if(waitingForHabit(index))
+			if(waitingForHabit(name))
 			{
-				bot_.sendMessage(getFailureMessage(index), chatID_);
-				processFailure(index);
+				bot_.sendMessage(getFailureMessage(name), chatID_);
+				processFailure(name);
 			}
 		}
 	}
@@ -94,9 +94,9 @@ abstract class HabitManagerBase implements MyManager {
 	abstract protected String taskDone(String optString);
 	abstract protected String getHabitsInfo() throws Exception;
 	abstract protected String getHabitsInfoShort();
-	abstract boolean waitingForHabit(int index);
-	abstract void processFailure(int index);
-	abstract void processSetReminder(int index);
-	abstract String getFailureMessage(int index);
-	abstract String getReminderMessage(int index);
+	abstract boolean waitingForHabit(String name);
+	abstract void processFailure(String name);
+	abstract void processSetReminder(String name);
+	abstract String getFailureMessage(String name);
+	abstract String getReminderMessage(String name);
 }
