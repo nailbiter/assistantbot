@@ -1,4 +1,5 @@
 package managers.habits;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,8 +13,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Logger;
 
+import org.apache.http.client.ClientProtocolException;
 import org.bson.Document;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 
@@ -42,7 +45,7 @@ import util.StorageManager;
 import util.Util;
 import util.parsers.StandardParser;
 
-public class HabitManager extends HabitManagerBase implements OptionReplier
+public class HabitManager extends HabitManagerBase
 {
 	enum StreakUpdateEnum{
 		FAILURE,INIT,SUCCESS;
@@ -55,6 +58,7 @@ public class HabitManager extends HabitManagerBase implements OptionReplier
 	private static final String PENDINGLISTNAME = "PENDING";
 	private TrelloImpl trelloApi_;
 	TList pendingList_;
+	private TrelloAssistant ta_;
 
 	public HabitManager(Long chatID,MyBasicBot bot,Scheduler scheduler_in, MyAssistantUserData myAssistantUserData) throws Exception
 	{
@@ -64,18 +68,20 @@ public class HabitManager extends HabitManagerBase implements OptionReplier
 		trelloApi_ = new TrelloImpl(KeyRing.getTrello().getString("key"),
 				KeyRing.getTrello().getString("token"),
 				new ApacheHttpClient());
+		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
+				KeyRing.getTrello().getString("token"));
 		habits_ = FetchHabits(bot_.getMongoClient());
 		failTimes = new Hashtable<String,Date>(habits_.length());
 		pendingList_ = FetchPendingList(trelloApi_);
 		
-		List<Card> cards = pendingList_.getCards();
-		Date now = new Date();
-		for(Card card:cards) {
-			Date due = card.getDue(); 
-			if(due!=null && due.after(now)) {
-				System.out.println(String.format("setting up card %s at %s", 
-						card.getName(),due.toString()));
-				//TODO
+		JSONArray cards = ta_.getCardsInList(pendingList_.getId());
+		for(Object o:cards) {
+			JSONObject obj = (JSONObject)o;
+			if(IsHabitPending(obj)) {
+				Date due = new Date(obj.getString("due"));
+				System.out.println(String.format("setting up reminder for the card %s at %s", 
+						obj.getString("name"),due.toString()));
+				this.setUpReminder(obj.getString("name"), due);
 			}
 		}
 	}
@@ -91,26 +97,36 @@ public class HabitManager extends HabitManagerBase implements OptionReplier
 		}
 		return null;
 	}
-	static JSONArray FetchHabits(MongoClient mongoClient) {
+	JSONArray FetchHabits(MongoClient mongoClient) {
 		final JSONArray habits = new JSONArray();
 		mongoClient.getDatabase("logistics").getCollection("habits")
-			.find(new Document("enabled",true)).forEach(new Block<Document>() {
+			.find(Filters.eq("enabled",true)).forEach(new Block<Document>() {
 				@Override
 				public void apply(Document doc) {
 					habits.put(new JSONObject(doc.toJson()));
+					System.out.println(String.format("schedule habit %s at %s", doc.get("name"),doc.get("cronline")));
+					HabitManager.this.scheduler.schedule(doc.getString("cronline"),
+							new HabitRunnable(doc.getString("name"),HabitRunnableEnum.SENDREMINDER,HabitManager.this));
+					HabitManager.this.updateStreaks(doc.getString("name"), StreakUpdateEnum.INIT);
 				}
 			});
 		return habits;
 	}
-	protected JSONArray getPendingHabits() {
+	protected JSONArray getPendingHabitNames() {
 		JSONArray res = new JSONArray();
-		List<Card> cards = pendingList_.getCards();
-		Date now = new Date();
-		for(Card card:cards) {
-			Date due = card.getDue(); 
-			if(due!=null && due.after(now))
-				res.put(card.getName());
+		JSONArray cards;
+		try {
+			cards = ta_.getCardsInList(pendingList_.getId());
+			for(Object o:cards) {
+				JSONObject obj = (JSONObject)o;
+				if(IsHabitPending(obj)) {
+					res.put(obj.getString("name"));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		
 		return res;
 	}
 	public String getHabitsInfo() throws Exception
@@ -153,30 +169,37 @@ public class HabitManager extends HabitManagerBase implements OptionReplier
 				name = (String) this.hash_.get(key);
 			this.hash_.put(key, name);
 		}
-			
-		for(int i = 0; i < habits_.length(); i++)
-		{
-			JSONObject habit = habits_.getJSONObject(i);
-			if(habit.getString("name").startsWith(name) && habit.optBoolean("isWaiting"))
-			{
-				habit.put("doneCount",habit.getInt("doneCount")+1);
-				if(habit.getInt("doneCount")>=habit.getInt("count"))
-				{
-					habit.put("isWaiting", false);
-					this.updateStreaks(name, StreakUpdateEnum.SUCCESS);
-					return "done task "+habit.getString("name");
+		
+		JSONArray cards = new JSONArray();
+		try {
+			cards = ta_.getCardsInList(pendingList_.getId());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		for(Object o:cards) {
+			JSONObject obj = (JSONObject)o;
+			if(IsHabitPending(obj)) {
+				if(obj.getString("name").startsWith(name)) {
+					try {
+						ta_.setCardDuedone(obj.getString("id"), true);
+						this.updateStreaks(obj.getString("name"), StreakUpdateEnum.SUCCESS);
+						return "done task "+obj.getString("name");
+					} catch (JSONException | IOException e) {
+						e.printStackTrace();
+					}
 				}
-				else
-					return (habit.getInt("count")-habit.getInt("doneCount"))+" remains";
 			}
 		}
 		return "unknown task";
+	}
+	static boolean IsHabitPending(JSONObject habit) {
+		return !habit.optBoolean("dueComplete",false);
 	}
 	protected String doneg(JSONObject res) {
 		logger_.info("in doneg!");
 		
 		try {
-			JSONArray habits = this.getPendingHabits();
+			JSONArray habits = this.getPendingHabitNames();
 			if(habits.length() > 1)
 			{
 				int id = ud_.sendMessageWithKeyBoard("which habbit?", habits);
@@ -195,7 +218,7 @@ public class HabitManager extends HabitManagerBase implements OptionReplier
 	}
 	protected String getHabitsInfoShort() {
 		System.out.println("getHabitsInfoShort");
-		JSONArray habits = this.getPendingHabits();
+		JSONArray habits = this.getPendingHabitNames();
 		System.out.println("len="+habits.length());
 		util.TableBuilder tb = new util.TableBuilder();
 		{
@@ -232,37 +255,42 @@ public class HabitManager extends HabitManagerBase implements OptionReplier
 		return String.format("%d(%d)", doc.getInteger("accum"),doc.getInteger("streak"));
 	}
 	@Override
-	public String processReply(int messageID,String msg) {
-		return null;
-	}
-	@Override
 	protected String getReminderMessage(String name) {
 		return String.format("don't forget to execute: %s !\n%s",
 				name,
-				Util.FindInJSONArray(habits_, "name", name));
+				Util.FindInJSONArray(habits_, "name", name).getString("info"));
 	}
 	@Override
 	protected String getFailureMessage(String name) {
 		return String.format("you failed the task %s !", name);
 	}
 	@Override
-	boolean waitingForHabit(String name) {
-		List<Card> cards = pendingList_.getCards();
-		Date now = new Date();
-		for(Card card:cards) {
-			if(card.getName().equals(name)) {
-				Date due = card.getDue(); 
-				if(due!=null && due.after(now))
-					return true;
-				else
-					return false;
+	void IfWaitingForHabit(String name,JSONObjectCallback cb) {
+		JSONArray cards = new JSONArray();
+		try {
+			cards = ta_.getCardsInList(pendingList_.getId());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		for(Object o:cards) {
+			JSONObject obj = (JSONObject)o;
+			if(obj.getString("name").equals(name)) {
+				if(IsHabitPending(obj)) {
+					cb.run(obj);
+					return;
+				}
+					
 			}
 		}
-		return false;
 	}
 	@Override
-	void processFailure(String name) {
-		updateStreaks(name, StreakUpdateEnum.FAILURE);		
+	void processFailure(JSONObject obj) {
+		updateStreaks(obj.getString("name"), StreakUpdateEnum.FAILURE);
+		try {
+			ta_.setCardDuedone(obj.getString("id"), true);
+		} catch (JSONException | IOException e) {
+			e.printStackTrace();
+		}
 	}
 	@Override
 	void processSetReminder(String name) {
@@ -270,6 +298,7 @@ public class HabitManager extends HabitManagerBase implements OptionReplier
 		card.setName(name);
 		int delaymin = Util.FindInJSONArray(habits_, "name", name).getInt("delaymin");
 		card.setDue(new Date(System.currentTimeMillis()+delaymin*60*1000));
+		pendingList_.createCard(card);
 		setUpReminder(name,delaymin);
 	}
 	void setUpReminder(String name,Date date) {

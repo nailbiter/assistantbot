@@ -15,11 +15,12 @@ import assistantbot.MyAssistantUserData;
 import it.sauronsoftware.cron4j.Scheduler;
 import managers.AbstractManager;
 import managers.MyManager;
+import managers.OptionReplier;
 import managers.habits.HabitManagerBase.HabitRunnableEnum;
 import util.MyBasicBot;
 import util.parsers.StandardParser;
 
-abstract class HabitManagerBase implements MyManager {
+abstract class HabitManagerBase implements MyManager, OptionReplier{
 	enum HabitRunnableEnum{
 		SENDREMINDER, SETFAILURE;
 	}
@@ -45,11 +46,13 @@ abstract class HabitManagerBase implements MyManager {
 			processSetReminder(name);
 		}
 		if(code==HabitRunnableEnum.SETFAILURE){
-			if(waitingForHabit(name))
-			{
-				bot_.sendMessage(getFailureMessage(name), chatID_);
-				processFailure(name);
-			}
+			IfWaitingForHabit(name,new JSONObjectCallback() {
+				@Override
+				public void run(JSONObject obj) {
+					bot_.sendMessage(getFailureMessage(obj.getString("name")), chatID_);
+					processFailure(obj);
+				}
+			});
 		}
 	}
 	@Override
@@ -94,9 +97,13 @@ abstract class HabitManagerBase implements MyManager {
 	abstract protected String taskDone(String optString);
 	abstract protected String getHabitsInfo() throws Exception;
 	abstract protected String getHabitsInfoShort();
-	abstract boolean waitingForHabit(String name);
-	abstract void processFailure(String name);
+	abstract void IfWaitingForHabit(String name,JSONObjectCallback cb);
+	abstract void processFailure(JSONObject obj);
 	abstract void processSetReminder(String name);
 	abstract String getFailureMessage(String name);
 	abstract String getReminderMessage(String name);
+	@Override
+	public String processReply(int messageID,String msg) {
+		return null;
+	}
 }
