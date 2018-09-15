@@ -59,27 +59,37 @@ public class HabitManager extends HabitManagerBase implements OptionReplier
 	public HabitManager(Long chatID,MyBasicBot bot,Scheduler scheduler_in, MyAssistantUserData myAssistantUserData) throws Exception
 	{
 		super(chatID,bot,scheduler_in,myAssistantUserData);
+		
 		streaks_ = bot.getMongoClient().getDatabase("logistics").getCollection("habitstreaks");
 		trelloApi_ = new TrelloImpl(KeyRing.getTrello().getString("key"),
 				KeyRing.getTrello().getString("token"),
 				new ApacheHttpClient());
-		
 		habits_ = FetchHabits(bot_.getMongoClient());
 		failTimes = new Hashtable<String,Date>(habits_.length());
-		pendingList_ = FetchPendingHabits(trelloApi_);
+		pendingList_ = FetchPendingList(trelloApi_);
+		
+		List<Card> cards = pendingList_.getCards();
+		Date now = new Date();
+		for(Card card:cards) {
+			Date due = card.getDue(); 
+			if(due!=null && due.after(now)) {
+				System.out.println(String.format("setting up card %s at %s", 
+						card.getName(),due.toString()));
+				//TODO
+			}
+		}
 	}
-	private static TList FetchPendingHabits(TrelloImpl trelloApi) {
+	private static TList FetchPendingList(TrelloImpl trelloApi) {
 		Board board = trelloApi.getBoard(HABITBOARDID );
 		System.out.println(String.format("board is named: %s(%d)", board.getName(),board.fetchLists().size()));
 
 		List<TList> lists = board.fetchLists();
-		TList pendingList = null;
 		for(TList list : lists) {
 			System.out.println(String.format("list: %s", list.getName()));
 			if(list.getName().equals(PENDINGLISTNAME))
-				pendingList = list;
+				return list;
 		}
-		return pendingList;
+		return null;
 	}
 	static JSONArray FetchHabits(MongoClient mongoClient) {
 		final JSONArray habits = new JSONArray();
@@ -153,7 +163,7 @@ public class HabitManager extends HabitManagerBase implements OptionReplier
 				if(habit.getInt("doneCount")>=habit.getInt("count"))
 				{
 					habit.put("isWaiting", false);
-					this.updateStreaks(i, StreakUpdateEnum.SUCCESS);
+					this.updateStreaks(name, StreakUpdateEnum.SUCCESS);
 					return "done task "+habit.getString("name");
 				}
 				else
@@ -261,11 +271,10 @@ public class HabitManager extends HabitManagerBase implements OptionReplier
 		int delaymin = Util.FindInJSONArray(habits_, "name", name).getInt("delaymin");
 		card.setDue(new Date(System.currentTimeMillis()+delaymin*60*1000));
 		setUpReminder(name,delaymin);
-//		failTimes.put(habits_.getJSONObject(index).getString("name"), 
-//				new Date(System.currentTimeMillis()+
-//						habits_.getJSONObject(index).getInt("delaymin")*60*1000));
-//		timer.schedule(new HabitRunnable(index,HabitRunnableEnum.SETFAILURE,this),
-//				habits_.getJSONObject(index).getInt("delaymin")*60*1000);
+	}
+	void setUpReminder(String name,Date date) {
+		failTimes.put(name, date);
+		timer.schedule(new HabitRunnable(name,HabitRunnableEnum.SETFAILURE,this),date);
 	}
 	void setUpReminder(String name,int min) {
 		failTimes.put(name, 
