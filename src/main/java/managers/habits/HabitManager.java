@@ -56,6 +56,7 @@ public class HabitManager extends HabitManagerBase
 	MongoCollection<Document> streaks_ = null;
 	private static final String HABITBOARDID = "kDCITi9O";
 	private static final String PENDINGLISTNAME = "PENDING";
+	private static final String FAILLABELCOLOR = "green";
 	private TrelloImpl trelloApi_;
 	TList pendingList_;
 	private TrelloAssistant ta_;
@@ -288,6 +289,7 @@ public class HabitManager extends HabitManagerBase
 		updateStreaks(obj.getString("name"), StreakUpdateEnum.FAILURE);
 		try {
 			ta_.setCardDuedone(obj.getString("id"), true);
+			ta_.setLabel(obj.getString("id"), FAILLABELCOLOR);
 		} catch (JSONException | IOException e) {
 			e.printStackTrace();
 		}
