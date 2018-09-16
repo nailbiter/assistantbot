@@ -58,7 +58,7 @@ public class HabitManager extends HabitManagerBase
 	private static final String PENDINGLISTNAME = "PENDING";
 	private static final String FAILLABELCOLOR = "green";
 	private TrelloImpl trelloApi_;
-	TList pendingList_;
+	String pendingList_;
 	private TrelloAssistant ta_;
 
 	public HabitManager(Long chatID,MyBasicBot bot,Scheduler scheduler_in, MyAssistantUserData myAssistantUserData) throws Exception
@@ -73,9 +73,9 @@ public class HabitManager extends HabitManagerBase
 				KeyRing.getTrello().getString("token"));
 		habits_ = FetchHabits(bot_.getMongoClient());
 		failTimes = new Hashtable<String,Date>(habits_.length());
-		pendingList_ = FetchPendingList(trelloApi_);
+		pendingList_ = FetchPendingList(trelloApi_).getId();
 		
-		JSONArray cards = ta_.getCardsInList(pendingList_.getId());
+		JSONArray cards = ta_.getCardsInList(pendingList_);
 		for(Object o:cards) {
 			JSONObject obj = (JSONObject)o;
 			if(IsHabitPending(obj)) {
@@ -117,7 +117,7 @@ public class HabitManager extends HabitManagerBase
 		JSONArray res = new JSONArray();
 		JSONArray cards;
 		try {
-			cards = ta_.getCardsInList(pendingList_.getId());
+			cards = ta_.getCardsInList(pendingList_);
 			for(Object o:cards) {
 				JSONObject obj = (JSONObject)o;
 				if(IsHabitPending(obj)) {
@@ -173,7 +173,7 @@ public class HabitManager extends HabitManagerBase
 		
 		JSONArray cards = new JSONArray();
 		try {
-			cards = ta_.getCardsInList(pendingList_.getId());
+			cards = ta_.getCardsInList(pendingList_);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -269,7 +269,7 @@ public class HabitManager extends HabitManagerBase
 	void IfWaitingForHabit(String name,JSONObjectCallback cb) {
 		JSONArray cards = new JSONArray();
 		try {
-			cards = ta_.getCardsInList(pendingList_.getId());
+			cards = ta_.getCardsInList(pendingList_);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -296,11 +296,18 @@ public class HabitManager extends HabitManagerBase
 	}
 	@Override
 	void processSetReminder(String name) {
-		Card card = new Card();
-		card.setName(name);
+//		Card card = new Card();
+//		card.setName(name);
 		int delaymin = Util.FindInJSONArray(habits_, "name", name).getInt("delaymin");
-		card.setDue(new Date(System.currentTimeMillis()+delaymin*60*1000));
-		pendingList_.createCard(card);
+//		card.setDue();
+//		pendingList_.createCard(card);
+		try {
+			ta_.addCard(pendingList_, new JSONObject()
+					.put("name", name)
+					.put("due", new Date(System.currentTimeMillis()+delaymin*60*1000)));
+		} catch (JSONException | IOException e) {
+			e.printStackTrace();
+		}
 		setUpReminder(name,delaymin);
 	}
 	void setUpReminder(String name,Date date) {
