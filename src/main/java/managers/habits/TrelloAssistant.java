@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -93,7 +94,7 @@ public class TrelloAssistant {
 	 */
 	void addCard(String idList,JSONObject card) throws ClientProtocolException, IOException {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-		
+		dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
 		String uri = String.format("https://api.trello.com/1/cards?key=%s&token=%s&idList=%s&name=%s%s", 
 				key_,
 				token_,
