@@ -15,6 +15,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,7 +23,7 @@ import org.json.JSONObject;
 
 public class TrelloAssistant {
 	String key_, token_;
-	HttpClient client_ = HttpClients.createDefault();
+	CloseableHttpClient client_ = HttpClients.createDefault();
 	TrelloAssistant(String key, String token) {
 		key_ = key;
 		token_ = token;
@@ -39,11 +40,11 @@ public class TrelloAssistant {
 		HttpPut put = new HttpPut(String.format("https://api.trello.com/1/cards/%s?key=%s&token=%s&dueComplete=%s", cardid,key_,token_,duedone?"true":"false"));
 		client_.execute(put);
 	}
-	static String GetString(String url,HttpClient client_) throws ClientProtocolException, IOException {
+	static String GetString(String url,CloseableHttpClient client_) throws ClientProtocolException, IOException {
 		System.out.println(String.format("%s method for url: %s","get", url));
 		HttpGet get = new HttpGet(url);
 		System.out.println("here 1");
-		HttpResponse chr = client_.execute(get);
+		CloseableHttpResponse chr = client_.execute(get);
 		System.out.println("here 2");
 		BufferedReader br = new BufferedReader(new InputStreamReader(chr.getEntity().getContent()));
 		System.out.println("here 3");
@@ -55,6 +56,7 @@ public class TrelloAssistant {
 			sb.append(line);
 	    }
 		System.out.println(String.format("res: %s",sb.toString()));
+		chr.close();
 		return sb.toString();
 	}
 	public void setLabel(String cardid, String labelColor) throws ClientProtocolException, IOException {

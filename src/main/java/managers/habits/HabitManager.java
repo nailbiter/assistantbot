@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Logger;
@@ -77,6 +78,7 @@ public class HabitManager extends HabitManagerBase
 		
 		JSONArray cards = ta_.getCardsInList(pendingList_);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
 		for(Object o:cards) {
 			JSONObject obj = (JSONObject)o;
 			if(IsHabitPending(obj)) {
