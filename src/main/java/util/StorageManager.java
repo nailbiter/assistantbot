@@ -77,13 +77,13 @@ public class StorageManager {
 	            System.out.println("Shutdown hook ran!");
 	            dumpAllObjects();
 	        }});
-		scheduler_ = new Scheduler();
-		scheduler_.schedule("1,31 * * * *", new Runnable() {
-			public void run() {
-				StorageManager.dumpAllObjects();
-			}
-		});
-		scheduler_.start();
+//		scheduler_ = new Scheduler();
+//		scheduler_.schedule("1,31 * * * *", new Runnable() {
+//			public void run() {
+//				StorageManager.dumpAllObjects();
+//			}
+//		});
+//		scheduler_.start();
 	}
 	public static String getFile(String name) throws Exception
 	{

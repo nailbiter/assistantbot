@@ -28,24 +28,33 @@ public class TrelloAssistant {
 		token_ = token;
 	}
 	JSONArray getCardsInList(String listid) throws ClientProtocolException, IOException {
-		JSONArray res = new JSONArray();
 		System.out.println(String.format("id: %s", listid));
-		return new JSONArray(GetString(String.format("https://api.trello.com/1/lists/%s/cards?key=%s&token=%s&fields=name,due,dueComplete,id", listid,key_,token_),client_));
+		String line = GetString(String.format("https://api.trello.com/1/lists/%s/cards?key=%s&token=%s&fields=name,due,dueComplete,id", listid,key_,token_),
+				client_);
+		JSONArray res = new JSONArray(line);
+		System.out.println(String.format("res.len = %d", res.length()));
+		return res;
 	}
 	void setCardDuedone(String cardid,boolean duedone) throws ClientProtocolException, IOException {
 		HttpPut put = new HttpPut(String.format("https://api.trello.com/1/cards/%s?key=%s&token=%s&dueComplete=%s", cardid,key_,token_,duedone?"true":"false"));
-		HttpResponse chr = client_.execute(put);
+		client_.execute(put);
 	}
 	static String GetString(String url,HttpClient client_) throws ClientProtocolException, IOException {
+		System.out.println(String.format("%s method for url: %s","get", url));
 		HttpGet get = new HttpGet(url);
+		System.out.println("here 1");
 		HttpResponse chr = client_.execute(get);
-		
+		System.out.println("here 2");
 		BufferedReader br = new BufferedReader(new InputStreamReader(chr.getEntity().getContent()));
+		System.out.println("here 3");
 		StringBuilder sb = new StringBuilder();
 		String line;
+		System.out.println("here 4");
 		while ((line = br.readLine()) != null) {
+			System.out.println("here in loop");
 			sb.append(line);
 	    }
+		System.out.println(String.format("res: %s",sb.toString()));
 		return sb.toString();
 	}
 	public void setLabel(String cardid, String labelColor) throws ClientProtocolException, IOException {

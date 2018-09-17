@@ -1,5 +1,6 @@
 package managers.habits;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -8,6 +9,7 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.logging.Logger;
 
+import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -96,7 +98,7 @@ abstract class HabitManagerBase implements MyManager, OptionReplier{
 	abstract protected String doneg(JSONObject res);
 	abstract protected String taskDone(String optString);
 	abstract protected String getHabitsInfo() throws Exception;
-	abstract protected String getHabitsInfoShort();
+	abstract protected String getHabitsInfoShort() throws ClientProtocolException, IOException;
 	abstract void IfWaitingForHabit(String name,JSONObjectCallback cb);
 	abstract void processFailure(JSONObject obj);
 	abstract void processSetReminder(String name);

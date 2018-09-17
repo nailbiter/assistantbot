@@ -115,19 +115,16 @@ public class HabitManager extends HabitManagerBase
 			});
 		return habits;
 	}
-	protected JSONArray getPendingHabitNames() {
+	protected JSONArray getPendingHabitNames() throws ClientProtocolException, IOException {
 		JSONArray res = new JSONArray();
 		JSONArray cards;
-		try {
-			cards = ta_.getCardsInList(pendingList_);
-			for(Object o:cards) {
-				JSONObject obj = (JSONObject)o;
-				if(IsHabitPending(obj)) {
-					res.put(obj.getString("name"));
-				}
+		cards = ta_.getCardsInList(pendingList_);
+		for(Object o:cards) {
+			JSONObject obj = (JSONObject)o;
+			System.out.format("\tprocessing: %s\n",obj.toString());
+			if(IsHabitPending(obj)) {
+				res.put(obj.getString("name"));
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		
 		return res;
@@ -219,7 +216,7 @@ public class HabitManager extends HabitManagerBase
 			return null;
 		}
 	}
-	protected String getHabitsInfoShort() {
+	protected String getHabitsInfoShort() throws ClientProtocolException, IOException {
 		System.out.println("getHabitsInfoShort");
 		JSONArray habits = this.getPendingHabitNames();
 		System.out.println("len="+habits.length());
