@@ -35,14 +35,6 @@ public class TrelloAssistant {
 	void setCardDuedone(String cardid,boolean duedone) throws ClientProtocolException, IOException {
 		HttpPut put = new HttpPut(String.format("https://api.trello.com/1/cards/%s?key=%s&token=%s&dueComplete=%s", cardid,key_,token_,duedone?"true":"false"));
 		HttpResponse chr = client_.execute(put);
-		
-//		BufferedReader br = new BufferedReader(new InputStreamReader(chr.getEntity().getContent()));
-//		StringBuilder sb = new StringBuilder();
-//		String line;
-//		while ((line = br.readLine()) != null) {
-//			sb.append(line);
-//	    }
-//		System.out.println(String.format("reply: %s", sb.toString()));
 	}
 	static String GetString(String url,HttpClient client_) throws ClientProtocolException, IOException {
 		HttpGet get = new HttpGet(url);
@@ -59,30 +51,15 @@ public class TrelloAssistant {
 	public void setLabel(String cardid, String labelColor) throws ClientProtocolException, IOException {
 		System.out.println(String.format("cardid=%s, label=%s", cardid,labelColor));
 		String uri = String.format("https://api.trello.com/1/cards/%s/labels?key=%s&token=%s&color=%s&name=failed", cardid,key_,token_,labelColor);
-		System.out.println(String.format("uri: %s", uri));
-		HttpPost put = new HttpPost(uri);
-		if(true)
-			client_.execute(put);
-		else {
-			HttpResponse chr = client_.execute(put); 
-			BufferedReader br = new BufferedReader(new InputStreamReader(chr.getEntity().getContent()));
-			StringBuilder sb = new StringBuilder();
-			String line;
-			while ((line = br.readLine()) != null) {
-				sb.append(line);
-		    }
-			System.out.println(String.format("reply: %s", sb.toString()));
-		}
+        PostString(uri,client_,true);
 	}
 	String findListByName(String boardId,String listName) throws Exception {
 		String r = GetString(
 				String.format("https://api.trello.com/1/boards/%s/lists?key=%s&token=%s&cards=none&fields=name", boardId,key_,token_),
 				client_); 
 		JSONArray res = new JSONArray(r);
-//		System.out.println(String.format("res: %s",r));
 		for(Object o:res) {
 			JSONObject obj = (JSONObject)o;
-//			System.out.println("\t"+obj);
 			if(obj.getString("name").equals(listName))
 				return obj.getString("id");
 		}

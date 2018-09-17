@@ -76,10 +76,12 @@ public class HabitManager extends HabitManagerBase
 		pendingList_ = FetchPendingList(trelloApi_).getId();
 		
 		JSONArray cards = ta_.getCardsInList(pendingList_);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		for(Object o:cards) {
 			JSONObject obj = (JSONObject)o;
 			if(IsHabitPending(obj)) {
-				Date due = new Date(obj.getString("due"));
+                System.out.println(String.format("setting up reminder for %s",obj.toString()));
+                Date due = dateFormat.parse(obj.getString("due"));
 				System.out.println(String.format("setting up reminder for the card %s at %s", 
 						obj.getString("name"),due.toString()));
 				this.setUpReminder(obj.getString("name"), due);
