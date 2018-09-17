@@ -36,7 +36,7 @@ public class TrelloAssistant {
 		System.out.println(String.format("res.len = %d", res.length()));
 		return res;
 	}
-	void setCardDuedone(String cardid,boolean duedone) throws ClientProtocolException, IOException {
+	public void setCardDuedone(String cardid,boolean duedone) throws ClientProtocolException, IOException {
 		HttpPut put = new HttpPut(String.format("https://api.trello.com/1/cards/%s?key=%s&token=%s&dueComplete=%s", cardid,key_,token_,duedone?"true":"false"));
 		CloseableHttpResponse chr = client_.execute(put);
 		chr.close();
@@ -62,7 +62,7 @@ public class TrelloAssistant {
 	 * 	name
 	 * 	due
 	 */
-	void addCard(String idList,JSONObject card) throws ClientProtocolException, IOException {
+	public void addCard(String idList,JSONObject card) throws ClientProtocolException, IOException {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
 		String uri = String.format("https://api.trello.com/1/cards?key=%s&token=%s&idList=%s&name=%s%s", 

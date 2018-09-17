@@ -37,6 +37,8 @@ import assistantbot.MyAssistantUserData;
 import it.sauronsoftware.cron4j.Predictor;
 import it.sauronsoftware.cron4j.Scheduler;
 import managers.habits.HabitManagerBase;
+import managers.habits.HabitRunnable;
+import managers.habits.JSONObjectCallback;
 import managers.habits.TrelloAssistant;
 import util.KeyRing;
 import util.LocalUtil;
@@ -109,7 +111,7 @@ public class HabitManager extends HabitManagerBase
 				public void apply(Document doc) {
 					habits.put(new JSONObject(doc.toJson()));
 					System.out.println(String.format("schedule habit %s at %s", doc.get("name"),doc.get("cronline")));
-					HabitManager.this.scheduler.schedule(doc.getString("cronline"),
+					HabitManager.this.scheduler_.schedule(doc.getString("cronline"),
 							new HabitRunnable(doc.getString("name"),HabitRunnableEnum.SENDREMINDER,HabitManager.this));
 					HabitManager.this.updateStreaks(doc.getString("name"), StreakUpdateEnum.INIT);
 				}
@@ -266,7 +268,7 @@ public class HabitManager extends HabitManagerBase
 		return String.format("you failed the task %s !", name);
 	}
 	@Override
-	void IfWaitingForHabit(String name,JSONObjectCallback cb) {
+	protected void IfWaitingForHabit(String name,JSONObjectCallback cb) {
 		JSONArray cards = new JSONArray();
 		try {
 			cards = ta_.getCardsInList(pendingList_);
@@ -285,7 +287,7 @@ public class HabitManager extends HabitManagerBase
 		}
 	}
 	@Override
-	void processFailure(JSONObject obj) {
+	protected void processFailure(JSONObject obj) {
 		updateStreaks(obj.getString("name"), StreakUpdateEnum.FAILURE);
 		try {
 			ta_.setCardDuedone(obj.getString("id"), true);
@@ -295,12 +297,8 @@ public class HabitManager extends HabitManagerBase
 		}
 	}
 	@Override
-	void processSetReminder(String name) {
-//		Card card = new Card();
-//		card.setName(name);
+	protected void processSetReminder(String name) {
 		int delaymin = Util.FindInJSONArray(habits_, "name", name).getInt("delaymin");
-//		card.setDue();
-//		pendingList_.createCard(card);
 		try {
 			ta_.addCard(pendingList_, new JSONObject()
 					.put("name", name)
@@ -319,6 +317,6 @@ public class HabitManager extends HabitManagerBase
 				new Date(System.currentTimeMillis()+
 						min*60*1000));
 		timer.schedule(new HabitRunnable(name,HabitRunnableEnum.SETFAILURE,this),
-				min*60*1000);
+				(long)min*60*1000);
 	}
 }

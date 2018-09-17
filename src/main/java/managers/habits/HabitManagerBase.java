@@ -23,21 +23,21 @@ import util.MyBasicBot;
 import util.parsers.StandardParser;
 
 public abstract class HabitManagerBase implements MyManager, OptionReplier{
-	enum HabitRunnableEnum{
+	public enum HabitRunnableEnum{
 		SENDREMINDER, SETFAILURE;
 	}
-	Set<Integer> optionMsgs_ = new HashSet<Integer>();
-	MyAssistantUserData ud_ = null;
-	Scheduler scheduler = null;
+	protected Set<Integer> optionMsgs_ = new HashSet<Integer>();
+	protected MyAssistantUserData ud_ = null;
+	protected Scheduler scheduler_ = null;
 	protected MyBasicBot bot_;
-	Timer timer = new Timer();
-	Logger logger_ = null;
+	protected Timer timer = new Timer();
+	protected Logger logger_ = null;
 	Long chatID_;
 	protected HabitManagerBase(Long chatID,MyBasicBot bot,Scheduler scheduler_in, MyAssistantUserData myAssistantUserData){
 		logger_ = Logger.getLogger(this.getClass().getName());
 		ud_ = myAssistantUserData;
 		bot_ = bot;
-		scheduler = scheduler_in;
+		scheduler_ = scheduler_in;
 		chatID_ = chatID;
 	}
 	void HabitRunnableDispatch(String name,HabitRunnableEnum code)

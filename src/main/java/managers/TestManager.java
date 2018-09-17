@@ -56,7 +56,7 @@ public class TestManager extends AbstractManager implements OptionReplier {
 	@Override
 	public JSONArray getCommands() {
 		JSONArray res = new JSONArray();
-		res.put(AbstractManager.makeCommand("tests","show tests",
+		res.put(AbstractManager.makeCommand("tests","show tests, -1 reloads",
 				Arrays.asList(makeCommandArg("index", StandardParser.ArgTypes.integer, true))));
 		res.put(AbstractManager.makeCommand("testrand","show random test",new ArrayList<JSONObject>()));
 		res.put(makeCommand("testdo","paradigm test done",
@@ -80,9 +80,13 @@ public class TestManager extends AbstractManager implements OptionReplier {
 						String.format("%dx%d", paradigmtest_.getRowNum(i),paradigmtest_.getColNum(i)));
 			return tb.toString();
 		} else if(obj.getInt("index")>0) {
-			return null;
-		}else
-			throw new Exception("index<0");
+			return paradigmtest_.showTest(obj.getInt("index"));
+		}else {
+//			throw new Exception("index<0");
+			paradigmtest_ = new ParadigmTest(bot_);
+			return "tests reloaded";
+		}
+			
 	}
 	public String testdo(JSONObject obj) throws Exception
 	{
