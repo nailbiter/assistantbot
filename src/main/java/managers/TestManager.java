@@ -56,7 +56,8 @@ public class TestManager extends AbstractManager implements OptionReplier {
 	@Override
 	public JSONArray getCommands() {
 		JSONArray res = new JSONArray();
-		res.put(AbstractManager.makeCommand("tests","show tests",new ArrayList<JSONObject>()));
+		res.put(AbstractManager.makeCommand("tests","show tests",
+				Arrays.asList(makeCommandArg("index", StandardParser.ArgTypes.integer, true))));
 		res.put(AbstractManager.makeCommand("testrand","show random test",new ArrayList<JSONObject>()));
 		res.put(makeCommand("testdo","paradigm test done",
 				Arrays.asList(makeCommandArg("index", StandardParser.ArgTypes.integer, false))));
@@ -70,13 +71,18 @@ public class TestManager extends AbstractManager implements OptionReplier {
 	}
 	public String tests(JSONObject obj) throws Exception
 	{
-		TableBuilder tb = new TableBuilder();
-		tb.addNewlineAndTokens("#", "name","layout");
-		for(int i = 1; i <= paradigmtest_.getSize(); i++)
-			tb.addNewlineAndTokens(Integer.toString(i), 
-					paradigmtest_.getTestName(i),
-					String.format("%dx%d", paradigmtest_.getRowNum(i),paradigmtest_.getColNum(i)));
-		return tb.toString();
+		if(!obj.has("index")) {
+			TableBuilder tb = new TableBuilder();
+			tb.addNewlineAndTokens("#", "name","layout");
+			for(int i = 1; i <= paradigmtest_.getSize(); i++)
+				tb.addNewlineAndTokens(Integer.toString(i), 
+						paradigmtest_.getTestName(i),
+						String.format("%dx%d", paradigmtest_.getRowNum(i),paradigmtest_.getColNum(i)));
+			return tb.toString();
+		} else if(obj.getInt("index")>0) {
+			return null;
+		}else
+			throw new Exception("index<0");
 	}
 	public String testdo(JSONObject obj) throws Exception
 	{

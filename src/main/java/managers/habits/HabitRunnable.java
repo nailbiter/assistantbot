@@ -2,6 +2,7 @@ package managers.habits;
 
 import java.util.TimerTask;
 
+import managers.HabitManager;
 import managers.habits.HabitManagerBase.HabitRunnableEnum;
 
 class HabitRunnable extends TimerTask

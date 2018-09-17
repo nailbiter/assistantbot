@@ -1,4 +1,4 @@
-package managers.habits;
+package managers;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,9 +36,8 @@ import com.mongodb.client.model.Updates;
 import assistantbot.MyAssistantUserData;
 import it.sauronsoftware.cron4j.Predictor;
 import it.sauronsoftware.cron4j.Scheduler;
-import managers.AbstractManager;
-import managers.MyManager;
-import managers.OptionReplier;
+import managers.habits.HabitManagerBase;
+import managers.habits.TrelloAssistant;
 import util.KeyRing;
 import util.LocalUtil;
 import util.MyBasicBot;

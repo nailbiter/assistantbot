@@ -24,11 +24,11 @@ import org.json.JSONObject;
 public class TrelloAssistant {
 	String key_, token_;
 	CloseableHttpClient client_ = HttpClients.createDefault();
-	TrelloAssistant(String key, String token) {
+	public TrelloAssistant(String key, String token) {
 		key_ = key;
 		token_ = token;
 	}
-	JSONArray getCardsInList(String listid) throws ClientProtocolException, IOException {
+	public JSONArray getCardsInList(String listid) throws ClientProtocolException, IOException {
 		System.out.println(String.format("id: %s", listid));
 		String line = GetString(String.format("https://api.trello.com/1/lists/%s/cards?key=%s&token=%s&fields=name,due,dueComplete,id", listid,key_,token_),
 				client_);
@@ -38,26 +38,8 @@ public class TrelloAssistant {
 	}
 	void setCardDuedone(String cardid,boolean duedone) throws ClientProtocolException, IOException {
 		HttpPut put = new HttpPut(String.format("https://api.trello.com/1/cards/%s?key=%s&token=%s&dueComplete=%s", cardid,key_,token_,duedone?"true":"false"));
-		client_.execute(put);
-	}
-	static String GetString(String url,CloseableHttpClient client_) throws ClientProtocolException, IOException {
-		System.out.println(String.format("%s method for url: %s","get", url));
-		HttpGet get = new HttpGet(url);
-		System.out.println("here 1");
-		CloseableHttpResponse chr = client_.execute(get);
-		System.out.println("here 2");
-		BufferedReader br = new BufferedReader(new InputStreamReader(chr.getEntity().getContent()));
-		System.out.println("here 3");
-		StringBuilder sb = new StringBuilder();
-		String line;
-		System.out.println("here 4");
-		while ((line = br.readLine()) != null) {
-			System.out.println("here in loop");
-			sb.append(line);
-	    }
-		System.out.println(String.format("res: %s",sb.toString()));
+		CloseableHttpResponse chr = client_.execute(put);
 		chr.close();
-		return sb.toString();
 	}
 	public void setLabel(String cardid, String labelColor) throws ClientProtocolException, IOException {
 		System.out.println(String.format("cardid=%s, label=%s", cardid,labelColor));
@@ -91,13 +73,14 @@ public class TrelloAssistant {
 				card.has("due")?("&due="+URLEncoder.encode(dateFormat.format(((Date)card.get("due"))))):"");
 		PostString(uri,client_,true);
 	}
-	static void PostString(String uri,HttpClient client_,boolean verbose) throws ClientProtocolException, IOException {
+	static void PostString(String uri,CloseableHttpClient client_,boolean verbose) throws ClientProtocolException, IOException {
 		System.out.println(String.format("uri: %s", uri));
 		HttpPost put = new HttpPost(uri);
 		if(!verbose) {
-			client_.execute(put);
+			CloseableHttpResponse chr = client_.execute(put);
+			chr.close();
 		}else{
-			HttpResponse chr = client_.execute(put); 
+			CloseableHttpResponse chr = client_.execute(put); 
 			BufferedReader br = new BufferedReader(new InputStreamReader(chr.getEntity().getContent()));
 			StringBuilder sb = new StringBuilder();
 			String line;
@@ -105,6 +88,21 @@ public class TrelloAssistant {
 				sb.append(line);
 		    }
 			System.out.println(String.format("reply: %s", sb.toString()));
+			chr.close();
 		}
+	}
+	static String GetString(String url,CloseableHttpClient client_) throws ClientProtocolException, IOException {
+		System.out.println(String.format("%s method for url: %s","get", url));
+		HttpGet get = new HttpGet(url);
+		CloseableHttpResponse chr = client_.execute(get);
+		BufferedReader br = new BufferedReader(new InputStreamReader(chr.getEntity().getContent()));
+		StringBuilder sb = new StringBuilder();
+		String line;
+		while ((line = br.readLine()) != null) {
+			sb.append(line);
+	    }
+		System.out.println(String.format("res: %s",sb.toString()));
+		chr.close();
+		return sb.toString();
 	}
 }

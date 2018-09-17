@@ -22,18 +22,18 @@ import managers.habits.HabitManagerBase.HabitRunnableEnum;
 import util.MyBasicBot;
 import util.parsers.StandardParser;
 
-abstract class HabitManagerBase implements MyManager, OptionReplier{
+public abstract class HabitManagerBase implements MyManager, OptionReplier{
 	enum HabitRunnableEnum{
 		SENDREMINDER, SETFAILURE;
 	}
 	Set<Integer> optionMsgs_ = new HashSet<Integer>();
 	MyAssistantUserData ud_ = null;
 	Scheduler scheduler = null;
-	MyBasicBot bot_;
+	protected MyBasicBot bot_;
 	Timer timer = new Timer();
 	Logger logger_ = null;
 	Long chatID_;
-	HabitManagerBase(Long chatID,MyBasicBot bot,Scheduler scheduler_in, MyAssistantUserData myAssistantUserData){
+	protected HabitManagerBase(Long chatID,MyBasicBot bot,Scheduler scheduler_in, MyAssistantUserData myAssistantUserData){
 		logger_ = Logger.getLogger(this.getClass().getName());
 		ud_ = myAssistantUserData;
 		bot_ = bot;
@@ -99,11 +99,11 @@ abstract class HabitManagerBase implements MyManager, OptionReplier{
 	abstract protected String taskDone(String optString);
 	abstract protected String getHabitsInfo() throws Exception;
 	abstract protected String getHabitsInfoShort() throws ClientProtocolException, IOException;
-	abstract void IfWaitingForHabit(String name,JSONObjectCallback cb);
-	abstract void processFailure(JSONObject obj);
-	abstract void processSetReminder(String name);
-	abstract String getFailureMessage(String name);
-	abstract String getReminderMessage(String name);
+	abstract protected void IfWaitingForHabit(String name,JSONObjectCallback cb);
+	abstract protected void processFailure(JSONObject obj);
+	abstract protected void processSetReminder(String name);
+	abstract protected String getFailureMessage(String name);
+	abstract protected String getReminderMessage(String name);
 	@Override
 	public String processReply(int messageID,String msg) {
 		return null;

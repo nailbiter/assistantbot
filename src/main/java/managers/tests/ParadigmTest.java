@@ -57,6 +57,33 @@ public class ParadigmTest{
 				obj.getJSONArray("topMostRow"),
 				obj.getJSONArray("leftMostColumn"));
 	}
+	public String showTest(int count) {
+		JSONObject obj = new JSONObject(tests_.find(new Document("id",count)).first().toJson());
+		JSONArray col = obj.getJSONArray("leftMostColumn"),
+				row = obj.getJSONArray("topMostRow"),
+				answer = obj.getJSONArray("data");
+		for(int i = col.length()-1; i>=0;i--)
+			col.put(i+1,col.getString(i));;
+		col.put(0,CORNERSTONE);
+		int colNum = row.length(),
+				rowNum = col.length() - 1;
+		logger_.info(String.format("colnum=%d, rownum=%d", colNum,rowNum));
+		util.TableBuilder tb = new util.TableBuilder();
+		for(int i = 0; i < rowNum ; i++)
+		{
+			tb.newRow();
+			for(int j = 0; j < colNum; j++)
+			{
+				tb.addToken(answer.getString(rowNum*j+i));
+			}
+		}
+		logger_.info(String.format("tb=\n%s", tb.toString()));
+		
+		tb
+			.addRow(row, 0)
+			.addCol(col, 0);
+		return tb.toString();
+	}
 	private String verify(String reply,JSONArray answer,JSONArray row, JSONArray col)
 	{
 		for(int i = col.length()-1; i>=0;i--)
