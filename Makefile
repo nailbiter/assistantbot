@@ -8,8 +8,8 @@ KEYS=-r $(RESFOLDER) -n AssistantBot -p `cat secret.txt`
 #sources
 ASBOTSOURCES=MyAssistantUserData MyAssistantBot
 MANAGERSOURCES=$(addsuffix Manager,Time Money Test MiscUtil Habit)
-UTILSOURCES=StorageManager
-HABITMANAGERSOURCES=HabitManagerBase TrelloAssistant JSONObjectCallback
+UTILSOURCES=StorageManager TrelloAssistant
+HABITMANAGERSOURCES=HabitManagerBase JSONObjectCallback
 SOURCES=\
  $(addprefix assistantbot/,$(ASBOTSOURCES))\
  $(addprefix managers/,$(MANAGERSOURCES))\

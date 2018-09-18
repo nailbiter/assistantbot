@@ -1,4 +1,4 @@
-package managers.habits;
+package util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -46,7 +46,7 @@ public class TrelloAssistant {
 		String uri = String.format("https://api.trello.com/1/cards/%s/labels?key=%s&token=%s&color=%s&name=failed", cardid,key_,token_,labelColor);
         PostString(uri,client_,true);
 	}
-	String findListByName(String boardId,String listName) throws Exception {
+	public String findListByName(String boardId,String listName) throws Exception {
 		String r = GetString(
 				String.format("https://api.trello.com/1/boards/%s/lists?key=%s&token=%s&cards=none&fields=name", boardId,key_,token_),
 				client_); 

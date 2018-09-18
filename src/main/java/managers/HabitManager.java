@@ -39,11 +39,11 @@ import it.sauronsoftware.cron4j.Scheduler;
 import managers.habits.HabitManagerBase;
 import managers.habits.HabitRunnable;
 import managers.habits.JSONObjectCallback;
-import managers.habits.TrelloAssistant;
 import util.KeyRing;
 import util.LocalUtil;
 import util.MyBasicBot;
 import util.StorageManager;
+import util.TrelloAssistant;
 import util.Util;
 import util.parsers.StandardParser;
 
@@ -56,7 +56,7 @@ public class HabitManager extends HabitManagerBase
 	Hashtable<String,Date> failTimes = null;
 	private Hashtable<String,Object> hash_ = new Hashtable<String,Object>();
 	MongoCollection<Document> streaks_ = null;
-	private static final String HABITBOARDID = "kDCITi9O";
+	public static final String HABITBOARDID = "kDCITi9O";
 	private static final String PENDINGLISTNAME = "PENDING";
 	private static final String FAILLABELCOLOR = "green";
 	private TrelloImpl trelloApi_;
