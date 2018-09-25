@@ -17,6 +17,7 @@ import com.mongodb.client.model.Sorts;
 import assistantbot.MyAssistantUserData;
 import util.MyBasicBot;
 import util.parsers.StandardParser;
+import util.parsers.StandardParser.ArgTypes;
 
 public class MoneyManager implements managers.MyManager,OptionReplier{
 	JSONArray cats = new JSONArray();
@@ -37,19 +38,21 @@ public class MoneyManager implements managers.MyManager,OptionReplier{
 		
 		ud_ = myAssistantUserData;
 	}
-	Hashtable<Integer,Integer> pendingOperations = new Hashtable<Integer,Integer>();
-	public String putMoney(int amount)
+	Hashtable<Integer,JSONObject> pendingOperations = new Hashtable<Integer,JSONObject>();
+	public String putMoney(JSONObject obj)
 	{
 		int msgid = ud_.sendMessageWithKeyBoard("which category?", cats);
-		this.pendingOperations.put(msgid, amount);
-		return String.format("prepare to put %d",amount);
+		this.pendingOperations.put(msgid, obj);
+		return String.format("prepare to put %s",obj.toString());
 	}
-	private void putMoney(int amount,String categoryName)
+	private void putMoney(JSONObject obj,String categoryName)
 	{
+//		int amount = ;
 		Document res = new Document();
-		res.put("amount", amount);
+		res.put("amount", obj.getInt("amount"));
 		res.put("category", categoryName);
 		res.put("date", new Date());
+		res.put("comment", obj.optString("comment"));
 		money.insertOne(res);
 	}
 	public String getLastCosts(int howMuch)
@@ -113,8 +116,8 @@ public class MoneyManager implements managers.MyManager,OptionReplier{
 			System.out.println(this.getClass().getName()+" got comd: /"+res.getString("name"));
 			if(res.getString("name").compareTo("moneycats")==0) 
 				return getMoneyCats();
-			if(res.getString("name").compareTo("money")==0) {
-				return putMoney(res.getInt("amount"));
+			if(res.getString("name").equals("money")) {
+				return putMoney(res);
 			}
 			if(res.getString("name").equals("costs"))
 				return getLastCosts(res.getInt("num"));
@@ -127,10 +130,8 @@ public class MoneyManager implements managers.MyManager,OptionReplier{
 				"["+ 
 				"{\"name\":\"costs\",\"args\":[{\"name\":\"num\",\"type\":\"int\",\"isOpt\":true}]}]");
 		res.put(AbstractManager.makeCommand("money", "spent money", 
-				Arrays.asList(AbstractManager.makeCommandArg(
-						"amount",
-						StandardParser.ArgTypes.integer, 
-						false))));
+				Arrays.asList(AbstractManager.makeCommandArg("amount",StandardParser.ArgTypes.integer, false),
+						AbstractManager.makeCommandArg("comment", ArgTypes.remainder, true))));
 		return res;
 	}
 	@Override
@@ -142,8 +143,8 @@ public class MoneyManager implements managers.MyManager,OptionReplier{
 		if(this.pendingOperations.containsKey(msgID))
 		{
 			this.putMoney(this.pendingOperations.get(msgID), option);
-			String res = String.format("put %d in category %s",
-					this.pendingOperations.get(msgID),option);
+			String res = String.format("put %s in category %s",
+					this.pendingOperations.get(msgID).toString(),option);
 			this.pendingOperations.remove(msgID);
 			return res;
 		}

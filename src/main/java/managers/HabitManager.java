@@ -184,7 +184,8 @@ public class HabitManager extends HabitManagerBase
 			if(IsHabitPending(obj)) {
 				if(obj.getString("name").startsWith(name)) {
 					try {
-						ta_.setCardDuedone(obj.getString("id"), true);
+//						ta_.setCardDuedone(obj.getString("id"), true);
+						ta_.removeCard(obj.getString("id"));
 						this.updateStreaks(obj.getString("name"), StreakUpdateEnum.SUCCESS);
 						return "done task "+obj.getString("name");
 					} catch (JSONException | IOException e) {

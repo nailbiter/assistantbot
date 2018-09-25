@@ -12,6 +12,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
@@ -91,6 +92,24 @@ public class TrelloAssistant {
 			chr.close();
 		}
 	}
+	static void DeleteString(String uri,CloseableHttpClient client_,boolean verbose) throws ClientProtocolException, IOException {
+		System.out.println(String.format("uri in DeleteString: %s", uri));
+		HttpDelete put = new HttpDelete(uri);
+		if(!verbose) {
+			CloseableHttpResponse chr = client_.execute(put);
+			chr.close();
+		}else{
+			CloseableHttpResponse chr = client_.execute(put); 
+			BufferedReader br = new BufferedReader(new InputStreamReader(chr.getEntity().getContent()));
+			StringBuilder sb = new StringBuilder();
+			String line;
+			while ((line = br.readLine()) != null) {
+				sb.append(line);
+		    }
+			System.out.println(String.format("reply: %s", sb.toString()));
+			chr.close();
+		}
+	}
 	static String GetString(String url,CloseableHttpClient client_) throws ClientProtocolException, IOException {
 		System.out.println(String.format("%s method for url: %s","get", url));
 		HttpGet get = new HttpGet(url);
@@ -104,5 +123,10 @@ public class TrelloAssistant {
 		System.out.println(String.format("res: %s",sb.toString()));
 		chr.close();
 		return sb.toString();
+	}
+	public void removeCard(String id) throws ClientProtocolException, IOException {
+		//https://api.trello.com/1/cards/id
+		String uri = String.format("https://api.trello.com/1/cards/%s?key=%s&token=%s",id,key_,token_);
+		DeleteString(uri,client_,true);
 	}
 }
