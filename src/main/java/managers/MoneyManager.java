@@ -1,10 +1,13 @@
 package managers;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -23,6 +26,7 @@ public class MoneyManager implements managers.MyManager,OptionReplier{
 	JSONArray cats = new JSONArray();
 	MyAssistantUserData ud_ = null;
 	MongoCollection<Document> money;
+	private static final String PATTERN = "yyyyMMddHHmm";
 	public MoneyManager(MyAssistantUserData myAssistantUserData)
 	{
 		MongoClient mongoClient = myAssistantUserData.getMongoClient();
@@ -39,19 +43,36 @@ public class MoneyManager implements managers.MyManager,OptionReplier{
 		ud_ = myAssistantUserData;
 	}
 	Hashtable<Integer,JSONObject> pendingOperations = new Hashtable<Integer,JSONObject>();
-	public String putMoney(JSONObject obj)
+	public String putMoney(JSONObject obj) throws ParseException
 	{
 		int msgid = ud_.sendMessageWithKeyBoard("which category?", cats);
+		
+		{
+			String comment = obj.optString("comment");
+			System.out.format("comment=%s\n", comment);
+			if(comment.matches("^"+StringUtils.repeat("[0-9]",PATTERN.length())+".*")) {
+				System.out.format("%s matches!\n", comment);
+				SimpleDateFormat sdf = new SimpleDateFormat(PATTERN);
+				Date d = sdf.parse(comment.substring(0,PATTERN.length()));
+				obj.put("date", d);
+				obj.put("comment", comment.substring(PATTERN.length()));
+			}
+			else
+				System.out.format("%s doesn't match!\n",comment);
+		}
+		
 		this.pendingOperations.put(msgid, obj);
 		return String.format("prepare to put %s",obj.toString());
 	}
 	private void putMoney(JSONObject obj,String categoryName)
 	{
-//		int amount = ;
 		Document res = new Document();
 		res.put("amount", obj.getInt("amount"));
 		res.put("category", categoryName);
-		res.put("date", new Date());
+		if(obj.has("date"))
+			res.put("date", (Date)obj.get("date"));
+		else
+			res.put("date", new Date());
 		res.put("comment", obj.optString("comment"));
 		money.insertOne(res);
 	}
