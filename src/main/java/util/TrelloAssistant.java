@@ -47,6 +47,29 @@ public class TrelloAssistant {
 		String uri = String.format("https://api.trello.com/1/cards/%s/labels?key=%s&token=%s&color=%s&name=failed", cardid,key_,token_,labelColor);
         PostString(uri,client_,true);
 	}
+	public void moveCard(String cardid, String newListId) throws ClientProtocolException, IOException {
+		System.out.println(String.format("cardid=%s, newListId=%s", cardid,newListId));
+		String uri = String.format("https://api.trello.com/1/cards/id?key=%s&token=%s&idList=%s", cardid,key_,token_,newListId);
+        PutString(uri,client_,true);
+	}
+	private static void PutString(String uri,CloseableHttpClient client_,boolean verbose) throws ClientProtocolException, IOException {
+		System.out.println(String.format("uri: %s", uri));
+		HttpPut put = new HttpPut(uri);
+		if(!verbose) {
+			CloseableHttpResponse chr = client_.execute(put);
+			chr.close();
+		}else{
+			CloseableHttpResponse chr = client_.execute(put); 
+			BufferedReader br = new BufferedReader(new InputStreamReader(chr.getEntity().getContent()));
+			StringBuilder sb = new StringBuilder();
+			String line;
+			while ((line = br.readLine()) != null) {
+				sb.append(line);
+		    }
+			System.out.println(String.format("reply: %s", sb.toString()));
+			chr.close();
+		}
+	}
 	public String findListByName(String boardId,String listName) throws Exception {
 		String r = GetString(
 				String.format("https://api.trello.com/1/boards/%s/lists?key=%s&token=%s&cards=none&fields=name", boardId,key_,token_),
