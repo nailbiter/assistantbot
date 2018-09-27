@@ -49,7 +49,7 @@ public class TrelloAssistant {
 	}
 	public void moveCard(String cardid, String newListId) throws ClientProtocolException, IOException {
 		System.out.println(String.format("cardid=%s, newListId=%s", cardid,newListId));
-		String uri = String.format("https://api.trello.com/1/cards/id?key=%s&token=%s&idList=%s", cardid,key_,token_,newListId);
+		String uri = String.format("https://api.trello.com/1/cards/%s?key=%s&token=%s&idList=%s", cardid,key_,token_,newListId);
         PutString(uri,client_,true);
 	}
 	private static void PutString(String uri,CloseableHttpClient client_,boolean verbose) throws ClientProtocolException, IOException {
