@@ -22,6 +22,8 @@ import util.MyBasicBot;
 import util.StorageManager;
 import util.TableBuilder;
 import util.parsers.StandardParser;
+import static managers.AbstractManager.makeCommand;
+import static managers.AbstractManager.makeCommandArg;
 
 /**
  * @author nailbiter
@@ -56,18 +58,20 @@ public class TestManager extends AbstractManager implements OptionReplier {
 	@Override
 	public JSONArray getCommands() {
 		JSONArray res = new JSONArray();
-		res.put(AbstractManager.makeCommand("tests","show tests, -1 reloads",
+		res.put(makeCommand("tests","show tests, -1 reloads",
 				Arrays.asList(makeCommandArg("index", StandardParser.ArgTypes.integer, true))));
-		res.put(AbstractManager.makeCommand("testrand","show random test",new ArrayList<JSONObject>()));
+		res.put(makeCommand("testsetscore","set test score",
+				Arrays.asList(
+						makeCommandArg("mode",StandardParser.ArgTypes.string,true),
+						makeCommandArg("score",StandardParser.ArgTypes.string,true),
+						makeCommandArg("testnum",StandardParser.ArgTypes.integer,true))));
 		res.put(makeCommand("testdo","paradigm test done",
 				Arrays.asList(makeCommandArg("index", StandardParser.ArgTypes.integer, false))));
 		return res;
 	}
-	public String testrand(JSONObject obj) throws Exception
-	{
-		JSONObject o = new JSONObject()
-				.put("index",rand.nextInt(paradigmtest_.getSize()));
-		return testdo(o);
+	public String testsetscore(JSONObject obj) throws Exception{
+		
+		return obj.toString();
 	}
 	public String tests(JSONObject obj) throws Exception
 	{

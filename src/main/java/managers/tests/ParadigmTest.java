@@ -95,6 +95,7 @@ public class ParadigmTest{
 		boolean isCorrect = true;
 		util.TableBuilder tb = new util.TableBuilder();
 		String[] tokens = reply.split(" ");
+		int numOfCorrectAnswers = 0;
 		for(int i = 0; i < rowNum ; i++)
 		{
 			tb.newRow();
@@ -103,6 +104,8 @@ public class ParadigmTest{
 				String answerS = answer.getString(rowNum*j+i),
 						correct = tokens[rowNum*j+i];
 				boolean isThisCorrect = answerS.equalsIgnoreCase(correct);
+				if(isThisCorrect)
+					numOfCorrectAnswers++;
 				isCorrect = isCorrect && isThisCorrect;
 				tb.addToken(isThisCorrect ? answerS : String.format("<%s>", answerS));
 			}
@@ -112,6 +115,6 @@ public class ParadigmTest{
 		tb
 			.addRow(row, 0)
 			.addCol(col, 0);
-		return tb.toString();
+		return tb.toString()+String.format("%d/%d", numOfCorrectAnswers,rowNum*colNum);
 	}
 }

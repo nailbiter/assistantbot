@@ -95,16 +95,6 @@ public class HabitManager extends HabitManagerBase
 	}
 	private String FetchPendingListId(TrelloImpl trelloApi) throws Exception {
 		return ta_.findListByName(HABITBOARDID, PENDINGLISTNAME);
-//		Board board = trelloApi.getBoard(HABITBOARDID );
-//		System.out.println(String.format("board is named: %s(%d)", board.getName(),board.fetchLists().size()));
-//
-//		List<TList> lists = board.fetchLists();
-//		for(TList list : lists) {
-//			System.out.println(String.format("list: %s", list.getName()));
-//			if(list.getName().equals(PENDINGLISTNAME))
-//				return list;
-//		}
-//		return null;
 	}
 	JSONArray FetchHabits(MongoClient mongoClient) {
 		final JSONArray habits = new JSONArray();
