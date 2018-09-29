@@ -68,7 +68,7 @@ public class TestManager extends AbstractManager implements OptionReplier {
 				Arrays.asList(makeCommandArg("index", StandardParser.ArgTypes.integer, true))));
 		res.put(makeCommand("testsetscore","set test score, MODE=s|u, score=15/19",
 				Arrays.asList(
-						makeCommandArg("mode",StandardParser.ArgTypes.string,true),
+//						makeCommandArg("mode",StandardParser.ArgTypes.string,true),
 						makeCommandArg("score",StandardParser.ArgTypes.string,true),
 						makeCommandArg("testnum",StandardParser.ArgTypes.integer,true))));
 		res.put(makeCommand("testdo","paradigm test done",
