@@ -5,6 +5,7 @@ package managers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
@@ -12,8 +13,11 @@ import java.util.RandomAccess;
 import java.util.Timer;
 import java.util.logging.Logger;
 
+import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import com.mongodb.client.MongoCollection;
 
 import assistantbot.MyAssistantUserData;
 import it.sauronsoftware.cron4j.Scheduler;
@@ -37,6 +41,7 @@ public class TestManager extends AbstractManager implements OptionReplier {
 	Timer timer_ = null;
 	ParadigmTest paradigmtest_ = null;
 	Random rand = new Random();
+	private MongoCollection<Document> testScores_;
 	public TestManager(Long chatID, MyBasicBot bot, Scheduler scheduler, MyAssistantUserData myAssistantUserData) throws Exception{
 		ud_ = myAssistantUserData;
 		chatID_ = chatID;
@@ -46,6 +51,7 @@ public class TestManager extends AbstractManager implements OptionReplier {
 		timer_ = new Timer();
 		
 		addParadigmTest();
+		testScores_ = bot_.getMongoClient().getDatabase("logistics").getCollection("scoresOfTests");
 	}
 	private void addParadigmTest() throws Exception
 	{
@@ -60,7 +66,7 @@ public class TestManager extends AbstractManager implements OptionReplier {
 		JSONArray res = new JSONArray();
 		res.put(makeCommand("tests","show tests, -1 reloads",
 				Arrays.asList(makeCommandArg("index", StandardParser.ArgTypes.integer, true))));
-		res.put(makeCommand("testsetscore","set test score",
+		res.put(makeCommand("testsetscore","set test score, MODE=s|u, score=15/19",
 				Arrays.asList(
 						makeCommandArg("mode",StandardParser.ArgTypes.string,true),
 						makeCommandArg("score",StandardParser.ArgTypes.string,true),
@@ -70,7 +76,12 @@ public class TestManager extends AbstractManager implements OptionReplier {
 		return res;
 	}
 	public String testsetscore(JSONObject obj) throws Exception{
-		
+		Document doc = new Document();
+		doc.put("date", new Date());
+		doc.put("testindex", obj.getInt("testnum"));
+		String[] scoreParts = obj.getString("score").split("/");
+		doc.put("score", Double.parseDouble(scoreParts[0].trim())/Double.parseDouble(scoreParts[1].trim()));
+		testScores_.insertOne(doc);
 		return obj.toString();
 	}
 	public String tests(JSONObject obj) throws Exception
@@ -86,7 +97,6 @@ public class TestManager extends AbstractManager implements OptionReplier {
 		} else if(obj.getInt("index")>0) {
 			return paradigmtest_.showTest(obj.getInt("index"));
 		}else {
-//			throw new Exception("index<0");
 			paradigmtest_ = new ParadigmTest(bot_);
 			return "tests reloaded";
 		}
