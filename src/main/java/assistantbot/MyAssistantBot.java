@@ -28,16 +28,19 @@ import util.Util;
 
 public class MyAssistantBot extends MyBasicBot {
 	private String botUserName_;
+	public static MongoClient GetMongoClient(String password) {
+		MongoClientURI uri = new MongoClientURI(
+				String.format("mongodb://%s:%s@ds149672.mlab.com:49672/logistics", 
+                        "nailbiter",password));
+		return new MongoClient(uri);
+	}
 	public MyAssistantBot(Map<Character, Object> commandline)
 	{
 		try
 		{
 			util.StorageManager.init();
 			botUserName_ = (String)commandline.get('n');
-			MongoClientURI uri = new MongoClientURI(
-					String.format("mongodb://%s:%s@ds149672.mlab.com:49672/logistics", 
-                            "nailbiter",(String)commandline.get('p')));
-			mongoClient = new MongoClient(uri);
+			mongoClient = GetMongoClient((String)commandline.get('p'));
 			KeyRing.init(botUserName_,mongoClient);
 		}
 		catch(Exception e)

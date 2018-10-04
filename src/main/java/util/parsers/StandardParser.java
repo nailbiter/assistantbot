@@ -11,6 +11,7 @@ import util.LocalUtil;
 public class StandardParser extends AbstractParser{
 	JSONArray cmds_;
 	String defaultName_ = null;
+	private String prefix_ = "/";
 	public enum ArgTypes{remainder, string, integer};
 	public StandardParser(JSONArray cmds) throws Exception
 	{
@@ -18,6 +19,9 @@ public class StandardParser extends AbstractParser{
 		
 		LocalUtil.SortJSONArray(cmds_,"name");
 		this.defaultName_ = this.getNameOfDefault();
+	}
+	public void setPrefix(String prefix) {
+		prefix_ = prefix;
 	}
 	protected String getNameOfDefault() throws Exception
 	{
@@ -58,7 +62,7 @@ public class StandardParser extends AbstractParser{
 			JSONObject cmd = cmds_.optJSONObject(i);
 			if(cmd==null)
 				continue;
-			res.append("\t/"+cmd.getString("name") + " : "+cmd.optString("help","")+"\n");
+			res.append("\t"+prefix_+cmd.getString("name") + " : "+cmd.optString("help","")+"\n");
 		}
 		return res.toString();
 	}
@@ -93,7 +97,6 @@ public class StandardParser extends AbstractParser{
 	}
 	protected static String printArg(JSONObject arg)
 	{
-		//return arg.getString("name").toUpperCase();
 		if(StandardParser.isArgOpt(arg))
 			return String.format("[%s%s]", arg.getString("name").toUpperCase(),
 					arg.getString("type").substring(0, 1));
@@ -110,7 +113,7 @@ public class StandardParser extends AbstractParser{
 		{
 			if(cmds_.optJSONObject(i)==null)
 				continue;
-			if(tokens[0].compareTo("/"+cmds_.getJSONObject(i).getString("name"))==0)
+			if(tokens[0].compareTo(prefix_+cmds_.getJSONObject(i).getString("name"))==0)
 			{
 				JSONArray args = cmds_.getJSONObject(i).getJSONArray("args");
 				JSONObject res = new JSONObject().put("name", cmds_.getJSONObject(i).getString("name"));
@@ -160,7 +163,7 @@ public class StandardParser extends AbstractParser{
 	public String getResultAndFormat(JSONObject res) throws Exception {
 		if(res.has("name"))
 		{
-			System.out.println(this.getClass().getName()+" got comd: /"+res.getString("name"));
+			System.out.println(this.getClass().getName()+" got comd: "+prefix_+res.getString("name"));
 			if(res.getString("name").compareTo("help")==0)
 				return getHelpMessage();
 		}

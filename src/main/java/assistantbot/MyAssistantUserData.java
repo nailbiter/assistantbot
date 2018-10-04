@@ -14,6 +14,7 @@ import com.mongodb.MongoClientURI;
 
 import it.sauronsoftware.cron4j.Scheduler;
 import managers.BadHabitManager;
+import managers.GermanManager;
 import managers.MiscUtilManager;
 import managers.MyManager;
 import managers.OptionReplier;
@@ -53,6 +54,7 @@ public class MyAssistantUserData extends UserData {
 				managers.add(tm_ = new managers.TimeManager(chatID,bot,scheduler,mongoClient,this));
 				managers.add(new MiscUtilManager());
 				managers.add(new BadHabitManager(this));
+				managers.add(new GermanManager(mongoClient));
 			}
 			managers.add(util.StorageManager.getMyManager());
 			managers.add(new managers.JShellManager(bot));
