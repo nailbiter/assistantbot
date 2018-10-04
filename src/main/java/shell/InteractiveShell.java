@@ -18,7 +18,8 @@ import managers.MyManager;
 import util.parsers.StandardParser;
 
 public class InteractiveShell {
-	private static final boolean USELOCALDB = true;
+	private static final boolean USELOCALDB = false;
+	private static String PROMPT = "assistantbot> ";
 	public static void Start(String password) throws Exception {
 		ArrayList<MyManager> managers = new ArrayList<MyManager>();
 		PopulateManagers(managers,password);
@@ -32,13 +33,12 @@ public class InteractiveShell {
 		
 		Completer completer = new StringsCompleter(commands);
         LineReader reader = LineReaderBuilder.builder().completer(completer).build();
-        String prompt = "assistantbot> ";
         String line = null,str = null;
         
         while (true) {
             line = null;
             try {
-                line = reader.readLine(prompt);
+                line = reader.readLine(PROMPT);
                 if(line.equals("exit")) {
                 	return;
                 }else {

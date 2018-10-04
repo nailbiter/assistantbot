@@ -29,4 +29,3 @@ offline: target/$(JARNAME).jar
 
 target/$(JARNAME).jar : $(addprefix src/main/java/,$(addsuffix .java,$(SOURCES))) pom.xml
 	mvn package
-
