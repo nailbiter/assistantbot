@@ -42,6 +42,7 @@ public class TestManager extends AbstractManager implements OptionReplier {
 	ParadigmTest paradigmtest_ = null;
 	Random rand = new Random();
 	private MongoCollection<Document> testScores_;
+	int lastUsedTestIndex = -1;
 	public TestManager(Long chatID, MyBasicBot bot, Scheduler scheduler, MyAssistantUserData myAssistantUserData) throws Exception{
 		ud_ = myAssistantUserData;
 		chatID_ = chatID;
@@ -68,8 +69,7 @@ public class TestManager extends AbstractManager implements OptionReplier {
 				Arrays.asList(makeCommandArg("index", StandardParser.ArgTypes.integer, true))));
 		res.put(makeCommand("testsetscore","set test score, MODE=s|u, score=15/19",
 				Arrays.asList(
-//						makeCommandArg("mode",StandardParser.ArgTypes.string,true),
-						makeCommandArg("score",StandardParser.ArgTypes.string,true),
+						makeCommandArg("score",StandardParser.ArgTypes.string,false),
 						makeCommandArg("testnum",StandardParser.ArgTypes.integer,true))));
 		res.put(makeCommand("testdo","paradigm test done",
 				Arrays.asList(makeCommandArg("index", StandardParser.ArgTypes.integer, false))));
@@ -78,7 +78,7 @@ public class TestManager extends AbstractManager implements OptionReplier {
 	public String testsetscore(JSONObject obj) throws Exception{
 		Document doc = new Document();
 		doc.put("date", new Date());
-		doc.put("testindex", obj.getInt("testnum"));
+		doc.put("testindex", obj.optInt("testnum",this.lastUsedTestIndex));
 		String[] scoreParts = obj.getString("score").split("/");
 		doc.put("score", Double.parseDouble(scoreParts[0].trim())/Double.parseDouble(scoreParts[1].trim()));
 		testScores_.insertOne(doc);
@@ -94,11 +94,9 @@ public class TestManager extends AbstractManager implements OptionReplier {
 						paradigmtest_.getTestName(i),
 						String.format("%dx%d", paradigmtest_.getRowNum(i),paradigmtest_.getColNum(i)));
 			return tb.toString();
-		} else if(obj.getInt("index")>0) {
-			return paradigmtest_.showTest(obj.getInt("index"));
-		}else {
-			paradigmtest_ = new ParadigmTest(bot_);
-			return "tests reloaded";
+		} else {
+			lastUsedTestIndex = obj.getInt("index");
+			return paradigmtest_.showTest(lastUsedTestIndex);
 		}
 			
 	}
@@ -129,7 +127,8 @@ public class TestManager extends AbstractManager implements OptionReplier {
 		logger_.info(String.format("index=%d", index));
 		if(index == null)
 			return null;
-		return this.paradigmtest_.processReply(msg, index);
+		this.lastUsedTestIndex = index;
+		return this.paradigmtest_.processReply(msg, this.lastUsedTestIndex);
 	}
 	Hashtable<Integer,Integer> waitingForReply = new Hashtable<Integer,Integer>();
 	@Override
