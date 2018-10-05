@@ -51,7 +51,7 @@ public class MyAssistantBot extends MyBasicBot {
 			util.StorageManager.init();
 			botUserName_ = (String)commandline.get('n');
 			mongoClient = GetMongoClient((String)commandline.get('p'));
-			KeyRing.init("",mongoClient);
+			KeyRing.init(botUserName_,mongoClient);
 		}
 		catch(Exception e)
 		{
