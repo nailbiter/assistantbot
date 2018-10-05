@@ -173,12 +173,12 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 	@Override
 	public JSONArray getCommands() {
 		JSONArray res = new JSONArray();
-		res.put(AbstractManager.makeCommand("timestat", "statistics about time used", 
-				Arrays.asList(AbstractManager.makeCommandArg("num", StandardParser.ArgTypes.integer, true),
-						AbstractManager.makeCommandArg("key", StandardParser.ArgTypes.string, true)
+		res.put(AbstractManager.MakeCommand("timestat", "statistics about time used", 
+				Arrays.asList(AbstractManager.MakeCommandArg("num", StandardParser.ArgTypes.integer, true),
+						AbstractManager.MakeCommandArg("key", StandardParser.ArgTypes.string, true)
 						)));
-		res.put(makeCommand("sleepstart","start sleeping",new ArrayList<JSONObject>()));
-		res.put(makeCommand("sleepend","end sleeping",new ArrayList<JSONObject>()));
+		res.put(MakeCommand("sleepstart","start sleeping",new ArrayList<JSONObject>()));
+		res.put(MakeCommand("sleepend","end sleeping",new ArrayList<JSONObject>()));
 		return res;
 	}
 	@Override

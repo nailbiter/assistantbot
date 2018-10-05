@@ -61,11 +61,11 @@ public abstract class HabitManagerBase implements MyManager, OptionReplier{
 	public JSONArray getCommands() {
 		JSONArray res = new JSONArray();
 		
-		res.put(AbstractManager.makeCommand("habits", "list all habits and info",
-				Arrays.asList(AbstractManager.makeCommandArg("key", StandardParser.ArgTypes.string, true))));
-		res.put(AbstractManager.makeCommand("done", "done habit",
-				Arrays.asList(AbstractManager.makeCommandArg("habit", StandardParser.ArgTypes.remainder, true))));
-		res.put(AbstractManager.makeCommand("doneg", "done habit graphically",new ArrayList<JSONObject>()));
+		res.put(AbstractManager.MakeCommand("habits", "list all habits and info",
+				Arrays.asList(AbstractManager.MakeCommandArg("key", StandardParser.ArgTypes.string, true))));
+		res.put(AbstractManager.MakeCommand("done", "done habit",
+				Arrays.asList(AbstractManager.MakeCommandArg("habit", StandardParser.ArgTypes.remainder, true))));
+		res.put(AbstractManager.MakeCommand("doneg", "done habit graphically",new ArrayList<JSONObject>()));
 		
 		return res;
 	}

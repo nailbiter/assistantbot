@@ -75,8 +75,8 @@ public class MailManager implements MyManager, OptionReplier{
 	@Override
 	public JSONArray getCommands() {
 		JSONArray res = new JSONArray();
-		res.put(AbstractManager.makeCommand("mailfreq", "set mailbox check freq to MIN", 
-				Arrays.asList(AbstractManager.makeCommandArg("freq", StandardParser.ArgTypes.integer, 
+		res.put(AbstractManager.MakeCommand("mailfreq", "set mailbox check freq to MIN", 
+				Arrays.asList(AbstractManager.MakeCommandArg("freq", StandardParser.ArgTypes.integer, 
 						true))));
 		//res.put(AbstractManager.makeCommand(MAILREPLY, "reply to mail",new ArrayList<JSONObject>()));
 		return res;

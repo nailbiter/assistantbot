@@ -9,40 +9,36 @@ import assistantbot.MyAssistantBot;
 import opts.Option;
 import shell.InteractiveShell;
 import util.LocalUtil;
+import static opts.Option.ArgEnum;
 
 public class Main {
     public static void main(String[] args) {
     	ArrayList<Option> opts = new ArrayList<Option>();
-    	//res folder
-    	opts.add(new Option('r',true));
-    	//bot's name: also used to get token
-    	opts.add(new Option('n',true));
-    	//database password
-    	opts.add(new Option('p',true));
-    	//isOffline
-    	opts.add(new Option('o',false));
+    	opts.add(new Option('r',ArgEnum.HASARGUMENT,"res folder"));
+    	opts.add(new Option('n',ArgEnum.HASARGUMENT,"bot's name: also used to get token"));
+    	opts.add(new Option('p',ArgEnum.HASARGUMENT,"database password"));
+    	opts.add(new Option('o',ArgEnum.HASARGUMENT,String.format("isOffline, %s=local|remote", Option.DEFARGNAME)));
     	Map<Character,Object> commandline = Option.processKeyArgs(Main.class.getName(), args, opts);
     	System.out.println(String.format("hi!: %s\nlen=%d", commandline.toString(),
     			((String)commandline.get('p')).length()));
     	LocalUtil.setJarFolder((String)commandline.get('r'));
     	
-    	if(commandline.containsKey('o') && (boolean)commandline.get('o')) {
+    	if(commandline.containsKey('o')) {
     		try {
-				InteractiveShell.Start((String)commandline.get('p'));
+				InteractiveShell.Start((String)commandline.get('p'),(String)commandline.get('o'));
 			} catch (Exception e) {
-				e.printStackTrace();
+				e.printStackTrace(System.out);
 			}
-    		System.exit(0);
-    	}
-    	
-        ApiContextInitializer.init();
-        System.out.println("here I go!");
-        TelegramBotsApi botsApi = new TelegramBotsApi();
+    	} else {
+            ApiContextInitializer.init();
+            System.out.println("here I go!");
+            TelegramBotsApi botsApi = new TelegramBotsApi();
 
-        try {
-            botsApi.registerBot(new MyAssistantBot(commandline));
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
+            try {
+                botsApi.registerBot(new MyAssistantBot(commandline));
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+    	}
     }
 }

@@ -12,16 +12,30 @@ import org.json.JSONObject;
 import com.mongodb.MongoClient;
 
 import assistantbot.MyAssistantBot;
-import managers.AbstractManager;
 import managers.GermanManager;
+import managers.MiscUtilManager;
 import managers.MyManager;
+import util.KeyRing;
 import util.parsers.StandardParser;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
+import org.slf4j.LoggerFactory;
 
 public class InteractiveShell {
-	private static final boolean USELOCALDB = false;
+	private static final String OFFLINEBOTNAME = "offline";
+	private static boolean USELOCALDB;
 	private static String PROMPT = "assistantbot> ";
-	public static void Start(String password) throws Exception {
+	public static void Start(String password, String useLocalDB) throws Exception {
+		if(useLocalDB.toUpperCase().equals("LOCAL"))
+			USELOCALDB = true;
+		else if(useLocalDB.toUpperCase().equals("REMOTE"))
+			USELOCALDB = false;
+		else
+			throw new Exception(String.format("unknown parameter for -o: \"%s\"", useLocalDB));
+		System.out.format("USELOCALDB=%s\n", Boolean.toString(USELOCALDB));
+		
 		ArrayList<MyManager> managers = new ArrayList<MyManager>();
+		DisableLogging();
 		PopulateManagers(managers,password);
 		StandardParser parser = new StandardParser(managers);
 		managers.add(parser);
@@ -56,6 +70,11 @@ public class InteractiveShell {
             }
         }
 	}
+	private static void DisableLogging() {
+		LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+		ch.qos.logback.classic.Logger rootLogger = loggerContext.getLogger("org.mongodb.driver");
+		rootLogger.setLevel(Level.OFF);
+	}
 	private static void PopulateCommands(ArrayList<String> commands, ArrayList<MyManager> managers) {
 		for(MyManager am : managers) {
 			JSONArray cmds = am.getCommands();
@@ -66,13 +85,16 @@ public class InteractiveShell {
 		}
 		commands.add("exit");
 	}
-	private static void PopulateManagers(ArrayList<MyManager> managers, String password) {
+	private static void PopulateManagers(ArrayList<MyManager> managers, String password) throws Exception {
 		MongoClient mc = USELOCALDB ? new MongoClient() : MyAssistantBot.GetMongoClient(password);
 		
 		System.setProperty("DEBUG.MONGO", "false");
 		System.setProperty("DB.TRACE", "false");
+		
+		KeyRing.init(OFFLINEBOTNAME,mc);
 
 		managers.add(new GermanManager(mc));
+		managers.add(new MiscUtilManager(mc));
 		managers.add(new MyManager() {
 			@Override
 			public String processReply(int messageID, String msg) {

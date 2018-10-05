@@ -19,12 +19,6 @@ public class TableBuilder {
 			lengths.add(i, Math.max(lengths.get(i), row.getString(i).length()));
 		}
 		tokens.add(index,list);
-			
-		/*for(int i = 0; i < row.length(); i++)
-		{
-			tokens.get(i).add(index,row.getString(i));
-			lengths.add(i, Math.max(lengths.get(i), row.getString(i).length()));
-		}*/
 		return this;
 	}
 	public TableBuilder addCol(JSONArray col,int index)

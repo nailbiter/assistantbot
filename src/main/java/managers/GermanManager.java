@@ -24,10 +24,10 @@ public class GermanManager extends AbstractManager {
 	@Override
 	public JSONArray getCommands() {
 		return new JSONArray()
-				.put(AbstractManager.makeCommand("germangender", "german gender",
-				Arrays.asList(makeCommandArg("word",StandardParser.ArgTypes.remainder,false))))
-				.put(AbstractManager.makeCommand("germanplural", "german plural",
-						Arrays.asList(makeCommandArg("word",StandardParser.ArgTypes.remainder,false))));
+				.put(AbstractManager.MakeCommand("germangender", "german gender",
+				Arrays.asList(MakeCommandArg("word",StandardParser.ArgTypes.remainder,false))))
+				.put(AbstractManager.MakeCommand("germanplural", "german plural",
+						Arrays.asList(MakeCommandArg("word",StandardParser.ArgTypes.remainder,false))));
 	}
 	public GermanManager(MongoClient mc){
 		genderCollection_ = mc.getDatabase("logistics").getCollection("gender");

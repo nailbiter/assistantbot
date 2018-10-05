@@ -59,7 +59,8 @@ public class StorageManager {
 			
 			@Override
 			public JSONArray getCommands() {
-				return new JSONArray("[{\"name\":\"dump\",\"args\":[],\"help\":\"dump all text files\"}]");
+//				return new JSONArray("[{\"name\":\"dump\",\"args\":[],\"help\":\"dump all text files\"}]");
+				return new JSONArray();
 			}
 
 			@Override

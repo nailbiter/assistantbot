@@ -29,9 +29,19 @@ import util.Util;
 public class MyAssistantBot extends MyBasicBot {
 	private String botUserName_;
 	public static MongoClient GetMongoClient(String password) {
-		MongoClientURI uri = new MongoClientURI(
-				String.format("mongodb://%s:%s@ds149672.mlab.com:49672/logistics", 
-                        "nailbiter",password));
+//		System.out.println("GetMongoClient");
+		String url = String.format("mongodb://%s:%s@ds149672.mlab.com:49672/logistics", 
+                "nailbiter",password);
+//		System.out.format("GetMongoClient, url=\"%s\"\n",url);
+		MongoClientURI uri = null;
+		try {
+			uri = new MongoClientURI(url);
+		}
+		catch(Exception e) {
+			System.out.format("EXCEPTION!\n");
+		}
+//		System.out.format("GetMongoClient, url=\"%s\"\n",url);
+//		System.out.format("uri=\"%s\"\n", uri);
 		return new MongoClient(uri);
 	}
 	public MyAssistantBot(Map<Character, Object> commandline)
@@ -41,7 +51,7 @@ public class MyAssistantBot extends MyBasicBot {
 			util.StorageManager.init();
 			botUserName_ = (String)commandline.get('n');
 			mongoClient = GetMongoClient((String)commandline.get('p'));
-			KeyRing.init(botUserName_,mongoClient);
+			KeyRing.init("",mongoClient);
 		}
 		catch(Exception e)
 		{

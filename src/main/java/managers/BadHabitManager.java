@@ -58,9 +58,9 @@ public class BadHabitManager extends AbstractManager implements OptionReplier {
 		/*for(int i = 0; i < bh.length; i++)
 			res.put(super.makeCommand(pref+bh[i], String.format("bad habit: %s", bh[i]), 
 					new ArrayList<JSONObject>()));*/
-		res.put(super.makeCommand(pref+"", "confess bad habit",new ArrayList<JSONObject>()));
-		res.put(super.makeCommand(pref+"s", "watch bad habits", 
-				Arrays.asList(super.makeCommandArg("count", StandardParser.ArgTypes.integer, true))));
+		res.put(super.MakeCommand(pref+"", "confess bad habit",new ArrayList<JSONObject>()));
+		res.put(super.MakeCommand(pref+"s", "watch bad habits", 
+				Arrays.asList(super.MakeCommandArg("count", StandardParser.ArgTypes.integer, true))));
 		return res;
 	}
 

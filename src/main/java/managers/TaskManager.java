@@ -137,9 +137,9 @@ public class TaskManager implements MyManager, TaskManagerForTask {
 				"[{\"name\":\"taskdone\",\"args\":[{\"name\":\"taskid\",\"type\":\"int\"}],\"help\":\"mark task as done\"}\n" + 
 				",{\"name\":\"tasks\",\"args\":[{\"name\":\"tasknum\",\"type\":\"int\",\"isOpt\":true}],\"help\":\"show list of tasks\"}\n" + 
 				",{\"name\":\"taskpostpone\",\"args\":[{\"name\":\"taskid\",\"type\":\"int\"},{\"name\":\"estimate\",\"type\":\"int\"}],\"help\":\"postpone a task\"}]");
-		res.put(AbstractManager.makeCommand("tasknew", "create new task",
-				Arrays.asList(AbstractManager.makeCommandArg("estimate",StandardParser.ArgTypes.integer, false),
-				AbstractManager.makeCommandArg("description",StandardParser.ArgTypes.remainder, true))));
+		res.put(AbstractManager.MakeCommand("tasknew", "create new task",
+				Arrays.asList(AbstractManager.MakeCommandArg("estimate",StandardParser.ArgTypes.integer, false),
+				AbstractManager.MakeCommandArg("description",StandardParser.ArgTypes.remainder, true))));
 		return res;
 	}
 

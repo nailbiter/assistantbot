@@ -150,9 +150,9 @@ public class MoneyManager implements managers.MyManager,OptionReplier{
 		JSONArray res = new JSONArray(
 				"["+ 
 				"{\"name\":\"costs\",\"args\":[{\"name\":\"num\",\"type\":\"int\",\"isOpt\":true}]}]");
-		res.put(AbstractManager.makeCommand("money", "spent money", 
-				Arrays.asList(AbstractManager.makeCommandArg("amount",StandardParser.ArgTypes.integer, false),
-						AbstractManager.makeCommandArg("comment", ArgTypes.remainder, true))));
+		res.put(AbstractManager.MakeCommand("money", "spent money", 
+				Arrays.asList(AbstractManager.MakeCommandArg("amount",StandardParser.ArgTypes.integer, false),
+						AbstractManager.MakeCommandArg("comment", ArgTypes.remainder, true))));
 		return res;
 	}
 	@Override
