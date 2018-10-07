@@ -76,8 +76,8 @@ public class TestManager extends AbstractManager implements OptionReplier {
 		return res;
 	}
 	public String testsetscore(JSONObject obj) throws Exception{
-		if(!obj.has("testindex"))
-			obj.put("testindex", this.lastUsedTestIndex);
+		if(!obj.has("testnum"))
+			obj.put("testnum", this.lastUsedTestIndex);
 		
 		String[] scoreParts = obj.getString("score").split("/");
 		obj.put("score", Double.parseDouble(scoreParts[0].trim())/Double.parseDouble(scoreParts[1].trim()));
