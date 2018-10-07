@@ -107,7 +107,7 @@ public class TestManager extends AbstractManager implements OptionReplier {
 	}
 	public String testdo(JSONObject obj) throws Exception
 	{
-		int index = obj.getInt("index");
+		int index = lastUsedTestIndex = obj.getInt("index");
 		String[] res = this.paradigmtest_.isCalled(index);
 		logger_.info(String.format("run this index=%d", index));
 		int id = -1;
