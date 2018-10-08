@@ -1,6 +1,5 @@
 package managers;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -9,19 +8,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.PriorityQueue;
-
 import org.apache.commons.lang3.StringUtils;
 import org.bson.Document;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
-import com.mongodb.BasicDBObject;
 import com.mongodb.Block;
-import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
@@ -32,30 +25,38 @@ import assistantbot.MyAssistantUserData;
 import it.sauronsoftware.cron4j.Scheduler;
 import util.LocalUtil;
 import util.MyBasicBot;
-import util.StorageManager;
+import util.Util;
 import util.parsers.StandardParser;
+import static java.util.Arrays.asList;
+import static util.StorageManager.GetJSONArrayFromDatabase;
 
 /**
  * @author nailbiter
  *
  */
 public class TimeManager extends AbstractManager implements MyManager,Runnable, OptionReplier {
-	Scheduler scheduler_;
-	protected boolean isSleeping;
+	private static final int DELAYMIN = 30;
+	protected static int ROWNUM = 2;
+	protected static final String NOWORKCATNAME = "useless";
+	protected static final String WHEREAREYOUNOW = "北鼻，你在幹什麼？";
+	private static final Date MYDEATHDATA_ = new Date(1991 + 80, 12, 24);
+	protected JSONObject sleepingObj_ = null;
 	Long chatID_;
 	MyBasicBot bot_;
-	ArrayList<List<InlineKeyboardButton>> buttons = null;
-	JSONArray categories = null;
-	protected static int ROWNUM = 2;
-	boolean isWaitingForAnswer;
-	MyAssistantUserData userData_ = null;
-	protected static final int SLEEPINDEX = 0, NOWORKINDEX = 8;
-	JSONObject obj_ = null;
-//	JSONArray sleepingtimes_ = null, wakingtimes_ = null;
-	protected MongoClient mongoClient_;
-	MongoCollection time_, sleepingTimes_, wakingTimes_;
-	protected static final int DELAYMIN=30;
+	JSONArray categories_;
+	boolean isWaitingForAnswer_ = false;
+	MongoCollection<Document> time_, sleepingTimes_;
+	int waitingForTimeReportMessageId_ = -1;
+	int waitingForPersistentCategoryChoiceMessageId_ = -1;
 	
+	public TimeManager(Long chatID,MyBasicBot bot,Scheduler scheduler, MongoClient mc, MyAssistantUserData maud) {
+		time_ = mc.getDatabase("logistics").getCollection("time");
+		chatID_ = chatID;
+		bot_ = bot;
+		categories_ = GetJSONArrayFromDatabase(mc, "logistics", "timecats");
+		scheduler.schedule(String.format("*/%d * * * *",DELAYMIN), this);
+		sleepingTimes_ = mc.getDatabase("logistics").getCollection("sleepingtimes");
+	}
 	public String timestat(JSONObject res) {
 		int num = res.optInt("num",48);
 		System.out.println("got num="+num);
@@ -92,93 +93,100 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 		
 		return tb.toString();
 	}
-	protected String printTime(int num, String key)
+	protected static String printTime(int num, String key)
 	{
 		if(key.contains("n"))
 			return String.format("%.1fh", num/2.0);
 		else
 			return StringUtils.repeat("*",num);
 	}
-	public TimeManager(Long chatID,MyBasicBot bot,Scheduler scheduler_in, MongoClient mongoClient, MyAssistantUserData myAssistantUserData) {
-		this.mongoClient_ = mongoClient;
-		time_ = mongoClient.getDatabase("logistics").getCollection("time");
-		this.scheduler_ = scheduler_in;
-		this.chatID_ = chatID;
-		this.bot_ = bot;
-		this.isWaitingForAnswer = false;
-		this.userData_ = myAssistantUserData;
-		makeButtons();
-		scheduler_.schedule(String.format("*/%d * * * *",DELAYMIN),this);
-		isSleeping = false;
-		sleepingTimes_ = mongoClient.getDatabase("logistics").getCollection("sleepingtimes");
-		wakingTimes_ = mongoClient.getDatabase("logistics").getCollection("wakingtimes");
-	}
-	protected void makeButtons()
+	protected static ArrayList<List<InlineKeyboardButton>> MakeButtons(JSONArray categories)
 	{
-		categories = StorageManager.GetJSONArrayFromDatabase(mongoClient_, "logistics", "timecats", "name");
-		buttons = new ArrayList<List<InlineKeyboardButton>>();
+		ArrayList<List<InlineKeyboardButton>> buttons = new ArrayList<List<InlineKeyboardButton>>(); 
 		for(int i = 0; i < categories.length();)
 		{
 			buttons.add(new ArrayList<InlineKeyboardButton>());
 			for(int j = 0; j < ROWNUM && i < categories.length(); j++)
 			{
+				JSONObject obj = categories.getJSONObject(i);
 				buttons.get(buttons.size()-1).add(new InlineKeyboardButton()
-						.setText(categories.getString(i))
-						.setCallbackData(categories.getString(i)));
+						.setText(obj.getString("name"))
+						.setCallbackData(obj.getString("name")));
 				i++;
 			}
 		}
+		return buttons;
 	}
-	protected static final String WHEREAREYOUNOW = "北鼻，你在幹什麼？";
-	int waitingMessageID = -1;
+	private List<List<InlineKeyboardButton>> MakePerCatButtons(JSONArray categories) {
+		ArrayList<List<InlineKeyboardButton>> buttons = new ArrayList<List<InlineKeyboardButton>>(); 
+		int i = 0;
+		while(i < categories.length())
+		{
+			buttons.add(new ArrayList<InlineKeyboardButton>());
+			int j = 0;
+			while(j < ROWNUM && i < categories.length())
+			{
+				JSONObject obj = categories.getJSONObject(i);
+				if(!obj.getString("canBePersistent").equals("no")) {
+					buttons.get(buttons.size()-1).add(new InlineKeyboardButton()
+							.setText(obj.getString("name"))
+							.setCallbackData(obj.getString("name")));
+					j++;
+				}
+				i++; 
+			}
+		}
+		return buttons;
+	}
 	@Override
 	public void run(){
-		try 
-		{
-			System.out.println("run this");
+		try{
+			System.err.println("run this");
 			
-			if(this.isWaitingForAnswer)
-			{
-				if(isSleeping())
-					gotUpdate(categories.getString(TimeManager.SLEEPINDEX));
-				else
-					gotUpdate(categories.getString(TimeManager.NOWORKINDEX));
-			}
-			else
-			{
-				if(isSleeping())
-					gotUpdate(categories.getString(TimeManager.SLEEPINDEX));
-				else
-					waitingMessageID = bot_.sendMessageWithKeyBoard(WHEREAREYOUNOW, chatID_, buttons);
-				this.isWaitingForAnswer = true;
+			boolean isSleeping = isSleeping();
+			if(isWaitingForAnswer_) {
+				writeTimeEntry(NOWORKCATNAME);
+				waitingForTimeReportMessageId_ = bot_.sendMessageWithKeyBoard(WHEREAREYOUNOW, chatID_, MakeButtons(categories_));
+			} else if(isSleeping) {
+				gotUpdate(sleepingObj_.getString("name"));
+				if(sleepingObj_.getString("canBePersistent").equals("message")) {
+					waitingForTimeReportMessageId_ = 
+							bot_.sendMessageWithKeyBoard(WHEREAREYOUNOW, chatID_, MakeButtons(categories_));
+				}
+					
+			} else {
+				waitingForTimeReportMessageId_ = bot_.sendMessageWithKeyBoard(WHEREAREYOUNOW, chatID_, MakeButtons(categories_));
+				isWaitingForAnswer_ = true;
 			}
 		}
 		catch(Exception e) { e.printStackTrace(System.out); }
 	}
-	public String gotUpdate(String data) throws Exception {
+	
+	public String gotUpdate(String categoryName) throws Exception {
+		writeTimeEntry(categoryName);
+		this.isWaitingForAnswer_ = false;
+		return "got: "+categoryName+"\n"+this.getLifetime();
+	}
+	private void writeTimeEntry(String categoryName) {
 		Document res = new Document();
 		res.put("date", new Date());
-		res.put("category", data);
+		res.put("category", categoryName);
 		time_.insertOne(res);
-		
-		this.isWaitingForAnswer = false;
-		return "got: "+data+"\n"+this.getLifetime();
 	}
 	protected String getLifetime()
 	{
 		Date currentData = new Date();
-		Date myDeathData = new Date(1991 + 80, 12, 24);
-		return "remaining time to live: " + LocalUtil.milisToTimeFormat(myDeathData.getTime() - currentData.getTime());
+		return "remaining time to live: " + LocalUtil.milisToTimeFormat(MYDEATHDATA_.getTime() - currentData.getTime());
 	}
 	@Override
 	public JSONArray getCommands() {
 		JSONArray res = new JSONArray();
-		res.put(AbstractManager.MakeCommand("timestat", "statistics about time used", 
-				Arrays.asList(AbstractManager.MakeCommandArg("num", StandardParser.ArgTypes.integer, true),
-						AbstractManager.MakeCommandArg("key", StandardParser.ArgTypes.string, true)
-						)));
-		res.put(MakeCommand("sleepstart","start sleeping",new ArrayList<JSONObject>()));
-		res.put(MakeCommand("sleepend","end sleeping",new ArrayList<JSONObject>()));
+		res.put(MakeCommand("timestat", "statistics about time used", 
+				asList(
+						MakeCommandArg("num", StandardParser.ArgTypes.integer, true),
+						MakeCommandArg("key", StandardParser.ArgTypes.string, true))));
+		res.put(MakeCommand("sleepstart","start sleeping", new ArrayList<JSONObject>()));
+		res.put(MakeCommand("sleepend","end sleeping", new ArrayList<JSONObject>()));
 		return res;
 	}
 	@Override
@@ -188,48 +196,57 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 	@Override
 	public String optionReply(String option, Integer msgID) {
 		try {
-			if(this.isWaitingForAnswer && this.waitingMessageID==msgID)
+			if(waitingForPersistentCategoryChoiceMessageId_ == msgID) {
+				waitingForPersistentCategoryChoiceMessageId_ = -1;
+				return sleepstartReply(option);
+			}else if(this.isWaitingForAnswer_ && this.waitingForTimeReportMessageId_==msgID && !isSleeping()) {
 				return this.gotUpdate(option);
-			else
-			{
-				System.out.format("wfa=%s, id: %d vs %d",this.isWaitingForAnswer ? "true":"false", 
-						this.waitingMessageID,msgID);
+			} else {
+				System.err.format("wfa=%s, id: %d vs %d",this.isWaitingForAnswer_ ? "true":"false", 
+						this.waitingForTimeReportMessageId_,msgID);
 				return null;
 			}
 		} catch (Exception e) {
-			e.printStackTrace(System.out);
+			e.printStackTrace(System.err);
 			return null;
 		}
 	}
-	public boolean isSleeping(){ return this.isSleeping; }
+	public boolean isSleeping(){ 
+		return (sleepingObj_ != null); 
+	}
 	public String sleepstart(JSONObject obj)
+	{	
+		System.err.format("TimeManager.sleepstart\n");
+		if(!isWaitingForAnswer_) {
+			waitingForPersistentCategoryChoiceMessageId_ = 
+					bot_.sendMessageWithKeyBoard("choose the cat", chatID_, MakePerCatButtons(categories_));
+			return "choose the category";
+		} else {
+			return String.format("cannot /sleepstart because isWaitingForAnswer_=%s", 
+					Boolean.toString(isWaitingForAnswer_));
+		}
+	}
+	protected String sleepstartReply(String categoryName)
 	{
-		this.isSleeping = true;
-//		this.sleepingtimes_.put((new Date()).getTime());
+		sleepingObj_ = Util.FindInJSONArray(categories_, "name", categoryName);
 		Document doc = new Document();
 		doc.put("startsleep", new Date());
+		doc.put("category", categoryName);
 		sleepingTimes_.insertOne(doc);
-		return "start sleeping";
+		return String.format("sleepstart %s",sleepingObj_.toString());
 	}
 	public String sleepend(JSONObject obj)
 	{
-		this.isSleeping = false;
+		
 		Document lastRecord = (Document)sleepingTimes_.find().sort(Sorts.descending("startsleep")).first();
 		Date now = new Date();
 		sleepingTimes_.updateOne(Filters.eq("_id",lastRecord.getObjectId("_id")),
 				Updates.set("endsleep", now));
-		
-		if(this.isWaitingForAnswer)
-		{
-			try { gotUpdate(categories.getString(TimeManager.SLEEPINDEX)); }
-			catch (Exception e) {
-				e.printStackTrace(System.out);
-				return "cannot gotUpdate";
-			}
-		}
-		
-		return String.format("you have slept for: %s", LocalUtil.milisToTimeFormat(
+		String res = String.format("you have \"%s\" for: %s", sleepingObj_.getString("name"),
+				LocalUtil.milisToTimeFormat(
 				now.getTime() - 
-				lastRecord.getDate("startsleep").getTime()));
+				lastRecord.getDate("startsleep").getTime())); 
+		sleepingObj_ = null;
+		return res;
 	}
 }

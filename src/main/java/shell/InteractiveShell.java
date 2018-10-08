@@ -36,7 +36,7 @@ public class InteractiveShell {
 		
 		ArrayList<MyManager> managers = new ArrayList<MyManager>();
 		DisableLogging();
-		PopulateManagers(managers,password);
+		PopulateManagers(managers, password);
 		StandardParser parser = new StandardParser(managers);
 		managers.add(parser);
 		parser.setPrefix("");
