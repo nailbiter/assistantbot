@@ -146,16 +146,17 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 			boolean isSleeping = isSleeping();
 			if(isWaitingForAnswer_) {
 				writeTimeEntry(NOWORKCATNAME);
-				waitingForTimeReportMessageId_ = bot_.sendMessageWithKeyBoard(WHEREAREYOUNOW, chatID_, MakeButtons(categories_));
+				waitingForTimeReportMessageId_ = 
+						bot_.sendMessageWithKeyBoard(WHEREAREYOUNOW, chatID_, MakeButtons(categories_));
 			} else if(isSleeping) {
 				gotUpdate(sleepingObj_.getString("name"));
 				if(sleepingObj_.getString("canBePersistent").equals("message")) {
 					waitingForTimeReportMessageId_ = 
 							bot_.sendMessageWithKeyBoard(WHEREAREYOUNOW, chatID_, MakeButtons(categories_));
 				}
-					
 			} else {
-				waitingForTimeReportMessageId_ = bot_.sendMessageWithKeyBoard(WHEREAREYOUNOW, chatID_, MakeButtons(categories_));
+				waitingForTimeReportMessageId_ = 
+						bot_.sendMessageWithKeyBoard(WHEREAREYOUNOW, chatID_, MakeButtons(categories_));
 				isWaitingForAnswer_ = true;
 			}
 		}
