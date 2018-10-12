@@ -69,7 +69,7 @@ public class TestManager extends AbstractManager implements OptionReplier {
 				Arrays.asList(MakeCommandArg("index", StandardParser.ArgTypes.integer, true))));
 		res.put(MakeCommand("testsetscore","set test score, MODE=s|u, score=15/19",
 				Arrays.asList(
-						MakeCommandArg("score",StandardParser.ArgTypes.string,false),
+						MakeCommandArg("score",StandardParser.ArgTypes.string,true),
 						MakeCommandArg("testnum",StandardParser.ArgTypes.integer,true))));
 		res.put(MakeCommand("testdo","paradigm test done",
 				Arrays.asList(MakeCommandArg("index", StandardParser.ArgTypes.integer, false))));
@@ -78,6 +78,8 @@ public class TestManager extends AbstractManager implements OptionReplier {
 	public String testsetscore(JSONObject obj) throws Exception{
 		if(!obj.has("testnum"))
 			obj.put("testnum", this.lastUsedTestIndex);
+		if(!obj.has("score"))
+			obj.put("score", "1/1");
 		
 		String[] scoreParts = obj.getString("score").split("/");
 		obj.put("score", Double.parseDouble(scoreParts[0].trim())/Double.parseDouble(scoreParts[1].trim()));
