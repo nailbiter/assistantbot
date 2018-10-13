@@ -107,6 +107,7 @@ public class HabitManager extends HabitManagerBase
 					System.out.println(String.format("schedule habit %s", obj.toString(2)));
 					HabitManager.this.scheduler_.schedule(doc.getString("cronline"),
 							new HabitRunnable(doc.getString("name"),HabitRunnableEnum.SENDREMINDER,HabitManager.this));
+                    System.err.format("schudeled %s successfully\n",obj.getString("name"));
 					HabitManager.this.updateStreaks(doc.getString("name"), StreakUpdateEnum.INIT);
 				}
 			});
