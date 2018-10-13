@@ -17,11 +17,14 @@ import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 
 import assistantbot.MyAssistantUserData;
 import it.sauronsoftware.cron4j.Scheduler;
 import managers.tests.ParadigmTest;
+import managers.tests.UrlTest;
+import managers.tests.Test;
 import util.MyBasicBot;
 import util.StorageManager;
 import util.TableBuilder;
@@ -39,7 +42,7 @@ public class TestManager extends AbstractManager implements OptionReplier {
 	private Logger logger_ = null;
 	MyAssistantUserData ud_ = null;
 	Timer timer_ = null;
-	ParadigmTest paradigmtest_ = null;
+	ArrayList<Test> testContainer_ = new ArrayList<Test>();
 	Random rand = new Random();
 	private MongoCollection<Document> testScores_;
 	int lastUsedTestIndex = -1;
@@ -51,14 +54,15 @@ public class TestManager extends AbstractManager implements OptionReplier {
 		logger_ = Logger.getLogger(this.getClass().getName());
 		timer_ = new Timer();
 		
-		addParadigmTest();
+		AddTests(testContainer_,bot_.getMongoClient());
+		
 		testScores_ = bot_.getMongoClient().getDatabase("logistics").getCollection("scoresOfTests");
 	}
-	private void addParadigmTest() throws Exception
-	{
-		paradigmtest_ = new ParadigmTest(bot_);
+	private static void AddTests(ArrayList<Test> testContainer, MongoClient mongoClient) throws Exception {
+		testContainer.clear();
+		ParadigmTest.AddTests(testContainer,mongoClient);
+		UrlTest.AddTests(testContainer,mongoClient);
 	}
-
 	/* (non-Javadoc)
 	 * @see util.MyManager#getCommands()
 	 */
@@ -95,22 +99,24 @@ public class TestManager extends AbstractManager implements OptionReplier {
 	{
 		if(!obj.has("index")) {
 			TableBuilder tb = new TableBuilder();
-			tb.addNewlineAndTokens("#", "name","layout");
-			for(int i = 1; i <= paradigmtest_.getSize(); i++)
-				tb.addNewlineAndTokens(Integer.toString(i), 
-						paradigmtest_.getTestName(i),
-						String.format("%dx%d", paradigmtest_.getRowNum(i),paradigmtest_.getColNum(i)));
+			tb.addNewlineAndTokens("#", "description");
+			for(int i = 1; i < testContainer_.size(); i++)
+				tb.addNewlineAndTokens(Integer.toString(i),
+						testContainer_.get(i).getName());
 			return tb.toString();
+		} else if(obj.getInt("index")<0) {
+			AddTests(testContainer_,bot_.getMongoClient());
+			return String.format("%d tests loaded", testContainer_.size());
 		} else {
 			lastUsedTestIndex = obj.getInt("index");
-			return paradigmtest_.showTest(lastUsedTestIndex);
+			return testContainer_.get(lastUsedTestIndex).showTest();
 		}
 			
 	}
 	public String testdo(JSONObject obj) throws Exception
 	{
 		int index = lastUsedTestIndex = obj.getInt("index");
-		String[] res = this.paradigmtest_.isCalled(index);
+		String[] res = this.testContainer_.get(index).isCalled();
 		logger_.info(String.format("run this index=%d", index));
 		int id = -1;
 		if(res==null || res.length==0)
@@ -135,7 +141,7 @@ public class TestManager extends AbstractManager implements OptionReplier {
 		if(index == null)
 			return null;
 		this.lastUsedTestIndex = index;
-		return this.paradigmtest_.processReply(msg, this.lastUsedTestIndex);
+		return testContainer_.get(lastUsedTestIndex).processReply(msg);
 	}
 	Hashtable<Integer,Integer> waitingForReply = new Hashtable<Integer,Integer>();
 	@Override

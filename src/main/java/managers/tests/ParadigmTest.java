@@ -1,5 +1,6 @@
 package managers.tests;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.logging.Logger;
 
@@ -8,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.mongodb.Block;
+import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 
 import managers.MyManager;
@@ -15,53 +17,35 @@ import managers.Replier;
 import managers.TestManager;
 import util.MyBasicBot;
 
-public class ParadigmTest{
+public class ParadigmTest extends Test{
 	private Logger logger_ = Logger.getLogger(this.getClass().getName());
 	private static final String CORNERSTONE = "--";
-	MongoCollection<Document> tests_;
 	
-	public ParadigmTest(MyBasicBot bot_) {
-		tests_ = bot_.getMongoClient().getDatabase("logistics").getCollection("paradigmTests");
+	public ParadigmTest(JSONObject obj) {
+		obj_ = obj;
 	}
-	public int getSize() 
+	public int getColNum() 
 	{
-		return (int)tests_.count();
+		return obj_.getJSONArray("topMostRow").length();
 	}
-	public String[] isCalled(int count) 
+	public int getRowNum() 
 	{
-		if(getSize() >= count) {
-			return new String[] {String.format("paradigm test: %s", 
-					(String)tests_.find(new Document("id",count)).first().get("name"))};
-		}
-		else
-			return null;
+		return obj_.getJSONArray("leftMostColumn").length();
 	}
-	public String getTestName(int count)
+	@Override
+	public String processReply(String reply) 
 	{
-		return isCalled(count)[0];
-	}
-	public int getColNum(int count) 
-	{
-		return new JSONObject(tests_.find(new Document("id",count)).first().toJson()).getJSONArray("topMostRow").length();
-	}
-	public int getRowNum(int count) 
-	{
-		return new JSONObject(tests_.find(new Document("id",count)).first().toJson()).getJSONArray("leftMostColumn").length();
-	}
-	public String processReply(String reply, int count) 
-	{
-		JSONObject obj = new JSONObject(tests_.find(new Document("id",count)).first().toJson());
-		System.out.println(String.format("paradigm: processReply(count=%d,obj_=%s)",count,obj.toString()));
 		return this.verify(reply,
-				obj.getJSONArray("data"),
-				obj.getJSONArray("topMostRow"),
-				obj.getJSONArray("leftMostColumn"));
+				obj_.getJSONArray("data"),
+				obj_.getJSONArray("topMostRow"),
+				obj_.getJSONArray("leftMostColumn"));
 	}
-	public String showTest(int count) {
-		JSONObject obj = new JSONObject(tests_.find(new Document("id",count)).first().toJson());
-		JSONArray col = obj.getJSONArray("leftMostColumn"),
-				row = obj.getJSONArray("topMostRow"),
-				answer = obj.getJSONArray("data");
+	@Override
+	public String showTest() {
+//		JSONObject obj = new JSONObject(tests_.find(new Document("id",count)).first().toJson());
+		JSONArray col = obj_.getJSONArray("leftMostColumn"),
+				row = obj_.getJSONArray("topMostRow"),
+				answer = obj_.getJSONArray("data");
 		for(int i = col.length()-1; i>=0;i--)
 			col.put(i+1,col.getString(i));;
 		col.put(0,CORNERSTONE);
@@ -116,5 +100,21 @@ public class ParadigmTest{
 			.addRow(row, 0)
 			.addCol(col, 0);
 		return tb.toString()+String.format("%d/%d", numOfCorrectAnswers,rowNum*colNum);
+	}
+	public static void AddTests(final ArrayList<Test> testContainer, MongoClient mongoClient) throws Exception
+	{
+		MongoCollection<Document> tests = mongoClient.getDatabase("logistics").getCollection("paradigmTests");
+		tests.find().forEach(new Block<Document>() {
+			@Override
+			public void apply(Document arg0) {
+				JSONObject obj = new JSONObject(arg0.toJson());
+				testContainer.add(new ParadigmTest(obj));
+			}
+		});
+	}
+	@Override
+	public String getName() {
+		return 
+				String.format("%s(%dx%d)", obj_.getString("name"),getRowNum(),getColNum());
 	}
 }
