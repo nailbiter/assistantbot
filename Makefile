@@ -1,4 +1,4 @@
-.PHONY: all offline pull
+.PHONY: all offline pull jar
 
 JARNAME=assistantBot-0.0.1-SNAPSHOT-jar-with-dependencies
 RESFOLDER=src/main/resources/assistantBotFiles/
@@ -33,3 +33,5 @@ target/$(JARNAME).jar : $(addprefix src/main/java/,$(addsuffix .java,$(SOURCES))
 	mvn package
 pull:
 	git pull
+jar:
+	mvn package
