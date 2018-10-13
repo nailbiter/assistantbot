@@ -6,6 +6,7 @@ package managers;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
@@ -53,15 +54,19 @@ public class TestManager extends AbstractManager implements OptionReplier {
 		scheduler_ = scheduler;
 		logger_ = Logger.getLogger(this.getClass().getName());
 		timer_ = new Timer();
-		
 		AddTests(testContainer_,bot_.getMongoClient());
-		
 		testScores_ = bot_.getMongoClient().getDatabase("logistics").getCollection("scoresOfTests");
 	}
 	private static void AddTests(ArrayList<Test> testContainer, MongoClient mongoClient) throws Exception {
 		testContainer.clear();
 		ParadigmTest.AddTests(testContainer,mongoClient);
 		UrlTest.AddTests(testContainer,mongoClient);
+		
+		HashSet<String> names = new HashSet<String>();
+		for(Test t:testContainer)
+			names.add(t.getName());
+		if(names.size()!=testContainer.size())
+			throw new Exception(String.format("testmanager size: %d<%d", names.size(),testContainer.size()));
 	}
 	/* (non-Javadoc)
 	 * @see util.MyManager#getCommands()
@@ -90,10 +95,10 @@ public class TestManager extends AbstractManager implements OptionReplier {
 		
 		Document doc = new Document();
 		doc.put("date", new Date());
-		doc.put("testindex", obj.getInt("testnum"));
+		doc.put("testname", testContainer_.get(obj.getInt("testnum")).getName());
 		doc.put("score", obj.getDouble("score"));
 		testScores_.insertOne(doc);
-		return String.format("put %s to scores",obj.toString());
+		return String.format("put %s to scores",doc.toJson());
 	}
 	public String tests(JSONObject obj) throws Exception
 	{
@@ -102,7 +107,7 @@ public class TestManager extends AbstractManager implements OptionReplier {
 			tb.addNewlineAndTokens("#", "description");
 			for(int i = 1; i < testContainer_.size(); i++)
 				tb.addNewlineAndTokens(Integer.toString(i),
-						testContainer_.get(i).getName());
+						testContainer_.get(i).toString());
 			return tb.toString();
 		} else if(obj.getInt("index")<0) {
 			AddTests(testContainer_,bot_.getMongoClient());
@@ -111,7 +116,6 @@ public class TestManager extends AbstractManager implements OptionReplier {
 			lastUsedTestIndex = obj.getInt("index");
 			return testContainer_.get(lastUsedTestIndex).showTest();
 		}
-			
 	}
 	public String testdo(JSONObject obj) throws Exception
 	{

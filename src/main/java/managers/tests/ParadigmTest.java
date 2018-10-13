@@ -113,8 +113,11 @@ public class ParadigmTest extends Test{
 		});
 	}
 	@Override
-	public String getName() {
-		return 
-				String.format("%s(%dx%d)", obj_.getString("name"),getRowNum(),getColNum());
+	public String toString() {
+		return String.format("%s(%dx%d)", obj_.getString("name"),getRowNum(),getColNum());
+	}
+	@Override
+	public String[] isCalled() {
+		return new String[] { String.format("paradigm test: %s", this.toString())};
 	}
 }
