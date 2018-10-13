@@ -5,13 +5,9 @@ import java.util.logging.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
-import com.mongodb.MongoClientURI;
-
 import it.sauronsoftware.cron4j.Scheduler;
 import managers.BadHabitManager;
 import managers.GermanManager;

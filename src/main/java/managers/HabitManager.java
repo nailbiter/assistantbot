@@ -1,30 +1,14 @@
 package managers;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.Formatter;
-import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.List;
-import java.util.Set;
 import java.util.TimeZone;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.logging.Logger;
-
 import org.apache.http.client.ClientProtocolException;
 import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.telegram.telegrambots.api.methods.send.SendMessage;
-
-import com.julienvey.trello.Trello;
-import com.julienvey.trello.domain.Board;
-import com.julienvey.trello.domain.Card;
-import com.julienvey.trello.domain.TList;
 import com.julienvey.trello.impl.TrelloImpl;
 import com.julienvey.trello.impl.http.ApacheHttpClient;
 import com.mongodb.Block;
@@ -42,10 +26,8 @@ import managers.habits.JSONObjectCallback;
 import util.KeyRing;
 import util.LocalUtil;
 import util.MyBasicBot;
-import util.StorageManager;
 import util.TrelloAssistant;
 import static util.Util.FindInJSONArray;
-import util.parsers.StandardParser;
 
 public class HabitManager extends HabitManagerBase
 {

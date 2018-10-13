@@ -12,7 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import com.mongodb.Block;
 import com.mongodb.MongoClient;

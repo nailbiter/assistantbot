@@ -4,15 +4,14 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.json.JSONObject;
-import org.telegram.telegrambots.api.methods.send.SendMessage;
-import org.telegram.telegrambots.api.methods.updatingmessages.EditMessageText;
-import org.telegram.telegrambots.api.objects.Message;
-import org.telegram.telegrambots.api.objects.Update;
-import org.telegram.telegrambots.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.exceptions.TelegramApiException;
-import org.telegram.telegrambots.logging.BotLogger;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.logging.BotLogger;
 
 import com.mongodb.MongoClient;
 
@@ -55,7 +54,7 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 				message.setChatId(update.getMessage().getChatId());								
 				message.setParseMode("HTML");
 				
-				sendMessage(message); // Call method to send the message
+				execute(message); // Call method to send the message
 			}
 			else if(update.hasCallbackQuery())
 				this.processUpdateWithCallbackQuery(update);
@@ -139,7 +138,7 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 				.setChatId(chatID_)
 						.setText(toHTML(msg));
 		message.setParseMode("HTML");
-		Message res = sendMessage(message);
+		Message res = execute(message);
 		if(!this.waitingForReply.containsKey(chatID_))
 			this.waitingForReply.put(chatID_, new Hashtable<Integer,MyManager>());
 		this.waitingForReply.get(chatID_).put(res.getMessageId(), whom);
@@ -152,7 +151,7 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 			SendMessage message = new SendMessage()
 					.setChatId(chatID_)
 							.setText(msg);
-			return sendMessage(message).getMessageId();
+			return execute(message).getMessageId();
 		}
 		catch(Exception e){ 
 			e.printStackTrace(System.out);
@@ -179,7 +178,7 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 			InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
 			markupInline.setKeyboard(buttons);
 			message.setReplyMarkup(markupInline);
-			Message res = sendMessage(message); 
+			Message res = execute(message); 
 			int id = res.getMessageId();
 			logger_.info(String.format("return id=%d", id));
 			return id;
