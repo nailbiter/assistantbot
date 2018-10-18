@@ -25,7 +25,7 @@ import assistantbot.MyAssistantUserData;
 import it.sauronsoftware.cron4j.Scheduler;
 import managers.tests.ParadigmTest;
 import managers.tests.UrlTest;
-import managers.tests.Test;
+import managers.tests.JsonTest;
 import util.MyBasicBot;
 import util.StorageManager;
 import util.TableBuilder;
@@ -43,7 +43,7 @@ public class TestManager extends AbstractManager implements OptionReplier {
 	private Logger logger_ = null;
 	MyAssistantUserData ud_ = null;
 	Timer timer_ = null;
-	ArrayList<Test> testContainer_ = new ArrayList<Test>();
+	ArrayList<JsonTest> testContainer_ = new ArrayList<JsonTest>();
 	Random rand = new Random();
 	private MongoCollection<Document> testScores_;
 	int lastUsedTestIndex = -1;
@@ -57,13 +57,13 @@ public class TestManager extends AbstractManager implements OptionReplier {
 		AddTests(testContainer_,bot_.getMongoClient());
 		testScores_ = bot_.getMongoClient().getDatabase("logistics").getCollection("scoresOfTests");
 	}
-	private static void AddTests(ArrayList<Test> testContainer, MongoClient mongoClient) throws Exception {
+	private static void AddTests(ArrayList<JsonTest> testContainer, MongoClient mongoClient) throws Exception {
 		testContainer.clear();
 		ParadigmTest.AddTests(testContainer,mongoClient);
 		UrlTest.AddTests(testContainer,mongoClient);
 		
 		HashSet<String> names = new HashSet<String>();
-		for(Test t:testContainer)
+		for(JsonTest t:testContainer)
 			names.add(t.getName());
 		if(names.size()!=testContainer.size())
 			throw new Exception(String.format("testmanager size: %d<%d", names.size(),testContainer.size()));

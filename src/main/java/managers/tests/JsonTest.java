@@ -2,7 +2,7 @@ package managers.tests;
 
 import org.json.JSONObject;
 
-abstract public class Test {
+abstract public class JsonTest {
 	protected JSONObject obj_;
 	abstract public String processReply(String msg);
 

@@ -17,7 +17,7 @@ import managers.Replier;
 import managers.TestManager;
 import util.MyBasicBot;
 
-public class ParadigmTest extends Test{
+public class ParadigmTest extends JsonTest{
 	private Logger logger_ = Logger.getLogger(this.getClass().getName());
 	private static final String CORNERSTONE = "--";
 	
@@ -101,7 +101,7 @@ public class ParadigmTest extends Test{
 			.addCol(col, 0);
 		return tb.toString()+String.format("%d/%d", numOfCorrectAnswers,rowNum*colNum);
 	}
-	public static void AddTests(final ArrayList<Test> testContainer, MongoClient mongoClient) throws Exception
+	public static void AddTests(final ArrayList<JsonTest> testContainer, MongoClient mongoClient) throws Exception
 	{
 		MongoCollection<Document> tests = mongoClient.getDatabase("logistics").getCollection("paradigmTests");
 		tests.find().forEach(new Block<Document>() {

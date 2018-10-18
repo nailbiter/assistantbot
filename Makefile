@@ -11,7 +11,7 @@ MANAGERSOURCES=$(addsuffix Manager,Time Money Test MiscUtil Habit German)
 UTILSOURCES=StorageManager TrelloAssistant
 HABITMANAGERSOURCES=HabitManagerBase JSONObjectCallback
 SHELLSOURCES=InteractiveShell
-TESTSOURCES=UrlTest Test ParadigmTest
+TESTSOURCES=UrlTest JsonTest ParadigmTest
 SOURCES=\
  $(addprefix assistantbot/,$(ASBOTSOURCES))\
  $(addprefix managers/,$(MANAGERSOURCES))\

@@ -9,12 +9,12 @@ import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 
-public class UrlTest extends Test {
+public class UrlTest extends JsonTest {
 	public UrlTest(JSONObject obj) {
 		obj_ = obj;
 	}
 
-	public static void AddTests(final ArrayList<Test> testContainer, MongoClient mongoClient) throws Exception
+	public static void AddTests(final ArrayList<JsonTest> testContainer, MongoClient mongoClient) throws Exception
 	{
 		MongoCollection<Document> tests = 
 				mongoClient.getDatabase("logistics").getCollection("urlTests");

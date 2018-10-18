@@ -50,7 +50,7 @@ public class HabitManager extends HabitManagerBase
 	{
 		super(chatID,bot,scheduler_in,myAssistantUserData);
 		
-		streaks_ = bot.getMongoClient().getDatabase("logistics").getCollection("habitstreaks");
+		streaks_ = bot.getMongoClient().getDatabase("logistics").getCollection("habitspunch");
 		trelloApi_ = new TrelloImpl(KeyRing.getTrello().getString("key"),
 				KeyRing.getTrello().getString("token"),
 				new ApacheHttpClient());
@@ -58,7 +58,7 @@ public class HabitManager extends HabitManagerBase
 				KeyRing.getTrello().getString("token"));
 		habits_ = FetchHabits(bot_.getMongoClient());
 		failTimes = new Hashtable<String,Date>(habits_.length());
-		pendingListId_ = FetchPendingListId(trelloApi_);
+		pendingListId_ = ta_.findListByName(HABITBOARDID, PENDINGLISTNAME);
 		failedListId_ = ta_.findListByName(HABITBOARDID, "FAILED");
 		
 		JSONArray cards = ta_.getCardsInList(pendingListId_);
@@ -74,9 +74,6 @@ public class HabitManager extends HabitManagerBase
 				this.setUpReminder(obj.getString("name"), due);
 			}
 		}
-	}
-	private String FetchPendingListId(TrelloImpl trelloApi) throws Exception {
-		return ta_.findListByName(HABITBOARDID, PENDINGLISTNAME);
 	}
 	JSONArray FetchHabits(MongoClient mongoClient) {
 		final JSONArray habits = new JSONArray();
@@ -213,22 +210,27 @@ public class HabitManager extends HabitManagerBase
 		return tb.toString();
 	}
 	protected void updateStreaks(String name,StreakUpdateEnum code) {
+		Document doc = new Document();
+		doc.put("date", new Date());
+		doc.put("name", name);
 		if(code==StreakUpdateEnum.INIT){
-			if(streaks_.count(Filters.eq("name",name))==0) {
-				Document doc = new Document();
-				doc.put("streak", 0);
-				doc.put("accum", 0);
-				streaks_.insertOne(doc);
-			}
+//			if(streaks_.count(Filters.eq("name",name))==0) {
+//				Document doc = new Document();
+//				doc.put("streak", 0);
+//				doc.put("accum", 0);
+//				streaks_.insertOne(doc);
+//			}
+			doc = null;
 		}
 		else if(code==StreakUpdateEnum.FAILURE){
-			streaks_.updateOne(Filters.eq("name",name),
-					Updates.combine(Updates.set("streak", 0),Updates.inc("accum", -1)));
+			doc.put("status", "FAILURE");
 		}
 		else if(code==StreakUpdateEnum.SUCCESS){
-			streaks_.updateOne(Filters.eq("name",name),
-					Updates.combine(Updates.inc("streak", 1),Updates.inc("accum", 1)));
+			doc.put("status", "SUCCESS");
 		}
+		
+		if(doc!=null)
+			streaks_.insertOne(doc);
 	}
 	protected String printStreak(String name) {
 		Document doc = (Document)streaks_.find(Filters.eq("name",name)).first();

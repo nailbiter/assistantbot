@@ -32,11 +32,17 @@ public class GermanManager extends AbstractManager {
 	public GermanManager(MongoClient mc){
 		genderCollection_ = mc.getDatabase("logistics").getCollection("gender");
 	}
+	protected static String EmptyWrap(String repl) {
+		if(repl==null || repl.isEmpty())
+			return "reply was empty";
+		else
+			return repl;
+	}
 	public String germangender(JSONObject obj) throws Exception {
-		return duden(obj.getString("word"),DudenConst.GENDER);
+		return EmptyWrap(duden(obj.getString("word"),DudenConst.GENDER));
 	}
 	public String germanplural(JSONObject obj) throws Exception {
-		return duden(obj.getString("word"),DudenConst.PLURAL);
+		return EmptyWrap(duden(obj.getString("word"),DudenConst.PLURAL));
 	}
 	@Override
 	public String processReply(int messageID, String msg) {
