@@ -3,6 +3,7 @@
 *.swo
 *.swp
 log/
+tmp/
 secret.txt
 .settings/
 .classpath

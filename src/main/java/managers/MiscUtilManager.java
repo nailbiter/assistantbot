@@ -25,6 +25,7 @@ import static managers.AbstractManager.MakeCommand;
 import static managers.AbstractManager.MakeCommandArg;
 import static java.util.Arrays.asList;
 import static util.parsers.StandardParser.ArgTypes;
+import static util.LocalUtil.GetRebootFileName;
 
 public class MiscUtilManager extends AbstractManager {
 	Random rand_ = new Random();
@@ -52,8 +53,12 @@ public class MiscUtilManager extends AbstractManager {
 				.put(MakeCommand("randset","return randomly generated set",
 						asList(MakeCommandArg("size",ArgTypes.integer,false))))
 				.put(AbstractManager.MakeCommand("exit", "exit the bot", new ArrayList<JSONObject>()))
+				.put(AbstractManager.MakeCommand("restart", "restart the bot", new ArrayList<JSONObject>()))
 				.put(AbstractManager.MakeCommand("ttask", "make new task", Arrays.asList((
 						MakeCommandArg("task",StandardParser.ArgTypes.remainder,false)))));
+	}
+	public String restart(JSONObject obj) {
+		return String.format("ready to reboot with %s", GetRebootFileName());
 	}
 	@Override
 	public String processReply(int messageID, String msg) {

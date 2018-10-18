@@ -42,7 +42,6 @@ public class ParadigmTest extends JsonTest{
 	}
 	@Override
 	public String showTest() {
-//		JSONObject obj = new JSONObject(tests_.find(new Document("id",count)).first().toJson());
 		JSONArray col = obj_.getJSONArray("leftMostColumn"),
 				row = obj_.getJSONArray("topMostRow"),
 				answer = obj_.getJSONArray("data");
@@ -70,8 +69,9 @@ public class ParadigmTest extends JsonTest{
 	}
 	private String verify(String reply,JSONArray answer,JSONArray row, JSONArray col)
 	{
+		col = new JSONArray(col.toString());
 		for(int i = col.length()-1; i>=0;i--)
-			col.put(i+1,col.getString(i));;
+			col.put(i+1,col.getString(i));
 		col.put(0,CORNERSTONE);
 		int colNum = row.length(),
 				rowNum = col.length() - 1;

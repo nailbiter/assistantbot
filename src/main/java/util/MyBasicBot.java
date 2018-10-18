@@ -24,7 +24,7 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 	{
 		logger_ = Logger.getLogger(this.getClass().getName());
 	}
-	protected static String toHTML(String arg)
+	protected static String ToHTML(String arg)
 	{
 		return 
 				"<code>"
@@ -50,7 +50,7 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 					reply = reply(update.getMessage());
 				}
 				
-				message.setText(toHTML(reply));
+				message.setText(ToHTML(reply));
 				message.setChatId(update.getMessage().getChatId());								
 				message.setParseMode("HTML");
 				
@@ -71,7 +71,7 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 		
 		System.out.println("got call_data="+call_data);
 		
-		String reply = toHTML(ud.processUpdateWithCallbackQuery(call_data, message_id));
+		String reply = ToHTML(ud.processUpdateWithCallbackQuery(call_data, message_id));
 		EditMessageText emt = new EditMessageText()
 				.setChatId(chat_id)
 				.setMessageId(message_id)
@@ -88,11 +88,11 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 	private String processReply(Update update) throws Exception {
 		int replyID = update.getMessage().getReplyToMessage().getMessageId();
 		System.out.println("reply id: "+replyID);
-		String reply = this.waitingForReply
+		String reply = this.waitingForReply_
 			.get(update.getMessage().getChatId())
 			.get(replyID)
 			.processReply(replyID,update.getMessage().getText());
-		this.waitingForReply.get(update.getMessage().getChatId()).remove(replyID);
+		this.waitingForReply_.get(update.getMessage().getChatId()).remove(replyID);
 		return reply;
 	}
 	abstract protected JSONObject parse(Message msg,UserData ud) throws Exception;
@@ -128,7 +128,7 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 	public String getLogString() {return getBotUsername();}
 	public abstract String getBotUsername();
 	public abstract String getBotToken();
-	Hashtable<Long,Hashtable<Integer,MyManager>> waitingForReply = new Hashtable<Long,Hashtable<Integer,MyManager>>();
+	Hashtable<Long,Hashtable<Integer,MyManager>> waitingForReply_ = new Hashtable<Long,Hashtable<Integer,MyManager>>();
 	/*
 	 * expect reply
 	 */
@@ -136,12 +136,12 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 	{
 		SendMessage message = new SendMessage()
 				.setChatId(chatID_)
-						.setText(toHTML(msg));
-		message.setParseMode("HTML");
+						.setText(/*ToHTML*/(msg));
+//		message.setParseMode("HTML");
 		Message res = execute(message);
-		if(!this.waitingForReply.containsKey(chatID_))
-			this.waitingForReply.put(chatID_, new Hashtable<Integer,MyManager>());
-		this.waitingForReply.get(chatID_).put(res.getMessageId(), whom);
+		if(!this.waitingForReply_.containsKey(chatID_))
+			this.waitingForReply_.put(chatID_, new Hashtable<Integer,MyManager>());
+		this.waitingForReply_.get(chatID_).put(res.getMessageId(), whom);
 		return res.getMessageId();
 	}
 	public int sendMessage(String msg,Long chatID_)

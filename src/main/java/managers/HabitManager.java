@@ -214,12 +214,6 @@ public class HabitManager extends HabitManagerBase
 		doc.put("date", new Date());
 		doc.put("name", name);
 		if(code==StreakUpdateEnum.INIT){
-//			if(streaks_.count(Filters.eq("name",name))==0) {
-//				Document doc = new Document();
-//				doc.put("streak", 0);
-//				doc.put("accum", 0);
-//				streaks_.insertOne(doc);
-//			}
 			doc = null;
 		}
 		else if(code==StreakUpdateEnum.FAILURE){

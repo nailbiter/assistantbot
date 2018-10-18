@@ -131,8 +131,10 @@ public class TestManager extends AbstractManager implements OptionReplier {
 			logger_.info(String.format("index=%d", id));
 			this.waitingForReply.put(id, index);
 		}
-		else
+		else {
 			sendMessageWithKeyBoard(res[0], Arrays.copyOfRange(res, 1, res.length));
+		}
+			
 		return res.toString();
 	}
 

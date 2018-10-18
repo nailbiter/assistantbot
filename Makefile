@@ -8,7 +8,7 @@ KEYS=-r $(RESFOLDER) -n AssistantBot -p `cat secret.txt`
 #sources
 ASBOTSOURCES=MyAssistantUserData MyAssistantBot
 MANAGERSOURCES=$(addsuffix Manager,Time Money Test MiscUtil Habit German)
-UTILSOURCES=StorageManager TrelloAssistant
+UTILSOURCES=StorageManager TrelloAssistant MyBasicBot
 HABITMANAGERSOURCES=HabitManagerBase JSONObjectCallback
 SHELLSOURCES=InteractiveShell
 TESTSOURCES=UrlTest JsonTest ParadigmTest
@@ -25,7 +25,10 @@ SOURCES=\
 
 all: target/$(JARNAME).jar
 	make -C src/main/resources/assistantBotFiles files
-	java -jar $< $(KEYS) 2>&1 | tee $(LOGFILE)
+	mkdir -p tmp
+	rm -rf tmp/restart.txt
+	#java -jar $< $(KEYS) 2>&1 | tee $(LOGFILE)
+	./src/main/pl/run.pl --cmd "java -jar $< $(KEYS) -t tmp/restart.txt" --tmpfile tmp/restart.txt 2>&1 | tee $(LOGFILE)
 offline: target/$(JARNAME).jar
 	java -jar $< -o remote $(KEYS) 2>&1 | tee $(LOGFILE)
 

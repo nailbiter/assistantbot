@@ -14,9 +14,9 @@ import org.json.JSONObject;
 
 public class LocalUtil {
 	protected static boolean isInit = false;
-//	protected static boolean onMac = false;
-	protected static String jarFolder; 
-	public static void setJarFolder(String jf) {jarFolder = jf;}
+	protected static String jarFolder;
+	private static String RebootFileName_; 
+	public static void SetJarFolder(String jf) {jarFolder = jf;}
 	protected static void init() throws Exception
 	{
 	}
@@ -63,5 +63,11 @@ public class LocalUtil {
 				});
 		for(int i = 0; i < list.size(); i++)
 			arr.put(list.get(i));
+	}
+	public static void SetRebootFileName(String string) {
+		RebootFileName_ = string;
+	}
+	public static String GetRebootFileName() {
+		return RebootFileName_;
 	}
 }
