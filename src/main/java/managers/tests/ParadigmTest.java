@@ -79,6 +79,9 @@ public class ParadigmTest extends JsonTest{
 		boolean isCorrect = true;
 		util.TableBuilder tb = new util.TableBuilder();
 		String[] tokens = reply.split(" ");
+		if(tokens.length!=answer.length()) {
+			return String.format("answer.length=(%d)!=(%d)", tokens.length,answer.length());
+		}
 		int numOfCorrectAnswers = 0;
 		for(int i = 0; i < rowNum ; i++)
 		{

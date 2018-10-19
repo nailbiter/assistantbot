@@ -55,7 +55,7 @@ public class MoneyManager implements managers.MyManager,OptionReplier{
 				SimpleDateFormat sdf = new SimpleDateFormat(PATTERN);
 				Date d = sdf.parse(comment.substring(0,PATTERN.length()));
 				obj.put("date", d);
-				obj.put("comment", comment.substring(PATTERN.length()));
+				obj.put("comment", comment.substring(PATTERN.length()).trim());
 			}
 			else
 				System.out.format("%s doesn't match!\n",comment);
