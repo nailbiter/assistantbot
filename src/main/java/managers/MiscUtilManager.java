@@ -19,6 +19,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 
 import util.KeyRing;
+import util.LocalUtil;
 import util.TrelloAssistant;
 import util.parsers.StandardParser;
 import static managers.AbstractManager.MakeCommand;
@@ -57,8 +58,9 @@ public class MiscUtilManager extends AbstractManager {
 				.put(AbstractManager.MakeCommand("ttask", "make new task", Arrays.asList((
 						MakeCommandArg("task",StandardParser.ArgTypes.remainder,false)))));
 	}
-	public String restart(JSONObject obj) {
-		return String.format("ready to reboot with %s", GetRebootFileName());
+	public String restart(JSONObject obj) throws IOException {
+		LocalUtil.SaveJSONObjectToFile(GetRebootFileName(), new JSONObject());
+		return exit(obj);
 	}
 	@Override
 	public String processReply(int messageID, String msg) {

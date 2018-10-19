@@ -1,5 +1,9 @@
 package util;
 
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,9 +13,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.mongodb.Block;
+import com.mongodb.MongoClient;
+
+/**
+ * 
+ * @author oleksiileontiev
+ * No dependency on telegram here
+ */
 public class LocalUtil {
 	protected static boolean isInit = false;
 	protected static String jarFolder;
@@ -69,5 +82,74 @@ public class LocalUtil {
 	}
 	public static String GetRebootFileName() {
 		return RebootFileName_;
+	}
+	public static JSONArray GetJSONArrayFromDatabase(MongoClient mc, String databaseName, String collectionName) {
+		final JSONArray res = new JSONArray();
+		Block<Document> printBlock = new Block<Document>() {
+		       @Override
+		       public void apply(final Document doc) {
+		    	   JSONObject obj = new JSONObject(doc.toJson());
+		    	   res.put(obj);
+		       }
+		};
+		mc.getDatabase(databaseName).getCollection(collectionName).find().forEach(printBlock);
+		
+		return res;
+	}
+	public static JSONArray GetJSONArrayFromDatabase(MongoClient mc, String databaseName, String collectionName, final String key) {
+		final JSONArray res = new JSONArray();
+		Block<Document> printBlock = new Block<Document>() {
+		       @Override
+		       public void apply(final Document doc) {
+		    	   JSONObject obj = new JSONObject(doc.toJson());
+		    	   res.put(obj.getString(key));
+		       }
+		};
+		mc.getDatabase(databaseName).getCollection(collectionName).find().forEach(printBlock);
+		
+		return res;
+	}
+	public static String GetFile(String name) throws Exception
+	{
+		FileReader fr = null;
+		String fname = getJarFolder()+name;
+		StorageManager.logger_.info(String.format("fname=%s", fname));
+		
+		fr = new FileReader(fname);
+		StringBuilder sb = new StringBuilder();
+	    int character;
+	    while ((character = fr.read()) != -1) {
+	    		sb.append((char)character);
+	        //System.out.print((char) character);
+	    }
+	    System.out.println("found "+sb.toString());
+		fr.close();
+		String res = sb.toString();
+		StorageManager.logger_.info(String.format("res=%s", res));
+		return res;
+	}
+	public static void SaveJSONObjectToFile(String filePath, JSONObject obj) throws IOException {
+		BufferedWriter writer = null;
+		try
+		{
+		    writer = new BufferedWriter(new FileWriter(filePath));
+		    writer.write(obj.toString());
+		}
+		catch ( IOException e)
+		{
+			throw e;
+		}
+		finally
+		{
+		    try
+		    {
+		        if ( writer != null)
+		        writer.close( );
+		    }
+		    catch ( IOException e)
+		    {
+		    	throw e;
+		    }
+		}
 	}
 }

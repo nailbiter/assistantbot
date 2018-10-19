@@ -24,6 +24,7 @@ use utf8;
 use Getopt::Long;
 
 
+#procedures
 #main
 my $cmd, my $tmpfile;
 GetOptions(
@@ -32,5 +33,16 @@ GetOptions(
 );
 printf("cmd: \"%s\"\n",$cmd);
 printf("tmpfile: \"%s\"\n",$tmpfile);
-system($cmd);
+
+while(1){
+	printf("run: %s\n",$cmd);
+	system($cmd);
+	if( -f $tmpfile){
+		printf("true branch\n");
+		unlink $tmpfile or warn "Could not unlink $tmpfile: $!";
+	} else {
+		printf("false branch\n");
+		last;
+	}
+}
 printf("THE END\n");

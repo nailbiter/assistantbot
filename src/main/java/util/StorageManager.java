@@ -8,13 +8,9 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
-import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-
-import com.mongodb.Block;
-import com.mongodb.MongoClient;
 
 import it.sauronsoftware.cron4j.Scheduler;
 import managers.MyManager;
@@ -70,7 +66,6 @@ public class StorageManager {
 	
 		};
 		Runtime.getRuntime().addShutdownHook(new Thread()
-
 	    {
 	        @Override
 	        public void run()
@@ -78,32 +73,6 @@ public class StorageManager {
 	            System.out.println("Shutdown hook ran!");
 	            dumpAllObjects();
 	        }});
-//		scheduler_ = new Scheduler();
-//		scheduler_.schedule("1,31 * * * *", new Runnable() {
-//			public void run() {
-//				StorageManager.dumpAllObjects();
-//			}
-//		});
-//		scheduler_.start();
-	}
-	public static String getFile(String name) throws Exception
-	{
-		FileReader fr = null;
-		String fname = LocalUtil.getJarFolder()+name;
-		logger_.info(String.format("fname=%s", fname));
-		
-		fr = new FileReader(fname);
-		StringBuilder sb = new StringBuilder();
-        int character;
-        while ((character = fr.read()) != -1) {
-        		sb.append((char)character);
-            //System.out.print((char) character);
-        }
-        System.out.println("found "+sb.toString());
-		fr.close();
-		String res = sb.toString();
-		logger_.info(String.format("res=%s", res));
-		return res;
 	}
 	public static JSONObject get(String name,boolean register)
 	{
@@ -156,31 +125,5 @@ public class StorageManager {
 				 e.printStackTrace(System.out);
 			 }
 		    }
-	}
-	public static JSONArray GetJSONArrayFromDatabase(MongoClient mc, String databaseName, String collectionName, final String key) {
-		final JSONArray res = new JSONArray();
-		Block<Document> printBlock = new Block<Document>() {
-		       @Override
-		       public void apply(final Document doc) {
-		    	   JSONObject obj = new JSONObject(doc.toJson());
-		    	   res.put(obj.getString(key));
-		       }
-		};
-		mc.getDatabase(databaseName).getCollection(collectionName).find().forEach(printBlock);
-		
-		return res;
-	}
-	public static JSONArray GetJSONArrayFromDatabase(MongoClient mc, String databaseName, String collectionName) {
-		final JSONArray res = new JSONArray();
-		Block<Document> printBlock = new Block<Document>() {
-		       @Override
-		       public void apply(final Document doc) {
-		    	   JSONObject obj = new JSONObject(doc.toJson());
-		    	   res.put(obj);
-		       }
-		};
-		mc.getDatabase(databaseName).getCollection(collectionName).find().forEach(printBlock);
-		
-		return res;
 	}
 }

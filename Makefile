@@ -4,6 +4,7 @@ JARNAME=assistantBot-0.0.1-SNAPSHOT-jar-with-dependencies
 RESFOLDER=src/main/resources/assistantBotFiles/
 LOGFILE=log/log.txt
 KEYS=-r $(RESFOLDER) -n AssistantBot -p `cat secret.txt`
+REBOOTFILE=tmp/restart.txt
 
 #sources
 ASBOTSOURCES=MyAssistantUserData MyAssistantBot
@@ -19,16 +20,16 @@ SOURCES=\
  $(addprefix util/,$(UTILSOURCES))\
  $(addprefix managers/tests/,$(TESTSOURCES))\
  $(addprefix managers/habits/,$(HABITMANAGERSOURCES))\
- managers/tests/ParadigmTest\
  opts/Option Main
 
 
 all: target/$(JARNAME).jar
 	make -C src/main/resources/assistantBotFiles files
 	mkdir -p tmp
-	rm -rf tmp/restart.txt
+	rm -rf $(REBOOTFILE)
 	#java -jar $< $(KEYS) 2>&1 | tee $(LOGFILE)
-	./src/main/pl/run.pl --cmd "java -jar $< $(KEYS) -t tmp/restart.txt" --tmpfile tmp/restart.txt 2>&1 | tee $(LOGFILE)
+	./src/main/pl/run.pl --cmd "java -jar $< $(KEYS) -t $(REBOOTFILE)" --tmpfile $(REBOOTFILE)\
+	       	2>&1 | tee $(LOGFILE)
 offline: target/$(JARNAME).jar
 	java -jar $< -o remote $(KEYS) 2>&1 | tee $(LOGFILE)
 

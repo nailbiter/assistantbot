@@ -24,11 +24,11 @@ import com.mongodb.client.model.Updates;
 import assistantbot.MyAssistantUserData;
 import it.sauronsoftware.cron4j.Scheduler;
 import util.LocalUtil;
+import static util.LocalUtil.GetJSONArrayFromDatabase;
 import util.MyBasicBot;
 import util.Util;
 import util.parsers.StandardParser;
 import static java.util.Arrays.asList;
-import static util.StorageManager.GetJSONArrayFromDatabase;
 
 /**
  * @author nailbiter
@@ -53,7 +53,7 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 		time_ = mc.getDatabase("logistics").getCollection("time");
 		chatID_ = chatID;
 		bot_ = bot;
-		categories_ = GetJSONArrayFromDatabase(mc, "logistics", "timecats");
+		categories_ = LocalUtil.GetJSONArrayFromDatabase(mc, "logistics", "timecats");
 		scheduler.schedule(String.format("*/%d * * * *",DELAYMIN), this);
 		sleepingTimes_ = mc.getDatabase("logistics").getCollection("sleepingtimes");
 	}
