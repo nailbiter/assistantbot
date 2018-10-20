@@ -16,6 +16,7 @@ import managers.MyManager;
 import managers.Replier;
 import managers.TestManager;
 import util.MyBasicBot;
+import util.TableBuilder;
 
 public class ParadigmTest extends JsonTest{
 	private Logger logger_ = Logger.getLogger(this.getClass().getName());
@@ -77,7 +78,7 @@ public class ParadigmTest extends JsonTest{
 				rowNum = col.length() - 1;
 		logger_.info(String.format("colnum=%d, rownum=%d", colNum,rowNum));
 		boolean isCorrect = true;
-		util.TableBuilder tb = new util.TableBuilder();
+		TableBuilder tb = new TableBuilder();
 		String[] tokens = reply.split(" ");
 		if(tokens.length!=answer.length()) {
 			return String.format("answer.length=(%d)!=(%d)", tokens.length,answer.length());
@@ -121,6 +122,45 @@ public class ParadigmTest extends JsonTest{
 	}
 	@Override
 	public String[] isCalled() {
-		return new String[] { String.format("paradigm test: %s", this.toString())};
+		return new String[] { String.format("paradigm test: %s\n%s", 
+				obj_.getString("name"),toTable().toString())};
+	}
+	private TableBuilder toTable() {
+//		private String verify(String reply,JSONArray answer,JSONArray row, JSONArray col)
+//		return this.verify(reply,
+//				obj_.getJSONArray("data"),
+//				obj_.getJSONArray("topMostRow"),
+//				obj_.getJSONArray("leftMostColumn"));
+		JSONArray col = new JSONArray(obj_.getJSONArray("leftMostColumn").toString());
+		for(int i = col.length()-1; i>=0;i--)
+			col.put(i+1,col.getString(i));
+		col.put(0,CORNERSTONE);
+		JSONArray row = obj_.getJSONArray("topMostRow");
+		int colNum = row.length(),
+				rowNum = col.length() - 1;
+		logger_.info(String.format("colnum=%d, rownum=%d", colNum,rowNum));
+//		boolean isCorrect = true;
+		TableBuilder tb = new TableBuilder();
+//		String[] tokens = reply.split(" ");
+		for(int i = 0; i < rowNum ; i++)
+		{
+			tb.newRow();
+			for(int j = 0; j < colNum; j++)
+			{
+//				String answerS = answer.getString(rowNum*j+i),
+//						correct = tokens[rowNum*j+i];
+//				boolean isThisCorrect = answerS.equalsIgnoreCase(correct);
+//				if(isThisCorrect)
+//					numOfCorrectAnswers++;
+//				isCorrect = isCorrect && isThisCorrect;
+				tb.addToken("*");
+			}
+		}
+//		logger_.info(String.format("tb=\n%s", tb.toString()));
+		
+		tb
+			.addRow(row, 0)
+			.addCol(col, 0);
+		return tb;
 	}
 }
