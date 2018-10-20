@@ -54,12 +54,13 @@ public class MiscUtilManager extends AbstractManager {
 				.put(MakeCommand("randset","return randomly generated set",
 						asList(MakeCommandArg("size",ArgTypes.integer,false))))
 				.put(AbstractManager.MakeCommand("exit", "exit the bot", new ArrayList<JSONObject>()))
-				.put(AbstractManager.MakeCommand("restart", "restart the bot", new ArrayList<JSONObject>()))
+				.put(MakeCommand("restart", "restart the bot", 
+						asList(MakeCommandArg("command",ArgTypes.remainder,true))))
 				.put(AbstractManager.MakeCommand("ttask", "make new task", Arrays.asList((
 						MakeCommandArg("task",StandardParser.ArgTypes.remainder,false)))));
 	}
 	public String restart(JSONObject obj) throws IOException {
-		LocalUtil.SaveJSONObjectToFile(GetRebootFileName(), new JSONObject());
+		LocalUtil.SaveJSONObjectToFile(GetRebootFileName(), obj);
 		return exit(obj);
 	}
 	@Override

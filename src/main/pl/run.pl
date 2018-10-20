@@ -22,9 +22,26 @@ use strict;
 use warnings;
 use utf8;
 use Getopt::Long;
+use JSON;
+use Data::Dumper;
 
 
 #procedures
+sub loadJsonFromFile{
+	my $fn = shift;
+	printf(STDERR "opening file %s\n",$fn);
+	my $document;
+	my $fh;
+	if(open($fh, $fn)){
+		$document = do { local $/; <$fh> };
+	} else {
+		$document ="{}";
+	}
+	printf(STDERR "doc: %s\n",$document);
+	close($fh);
+	return from_json($document);
+}
+
 #main
 my $cmd, my $tmpfile;
 GetOptions(
@@ -39,6 +56,11 @@ while(1){
 	system($cmd);
 	if( -f $tmpfile){
 		printf("true branch\n");
+		my $json = loadJsonFromFile($tmpfile);
+		printf("got: %s\n",Dumper($json));
+		if(exists $json->{command}){
+			system($json->{command});
+		}
 		unlink $tmpfile or warn "Could not unlink $tmpfile: $!";
 	} else {
 		printf("false branch\n");
