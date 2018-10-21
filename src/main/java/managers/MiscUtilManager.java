@@ -54,7 +54,7 @@ public class MiscUtilManager extends AbstractManager {
 				.put(MakeCommand("randset","return randomly generated set",
 						asList(MakeCommandArg("size",ArgTypes.integer,false))))
 				.put(AbstractManager.MakeCommand("exit", "exit the bot", new ArrayList<JSONObject>()))
-				.put(MakeCommand("restart", "restart the bot", 
+				.put(MakeCommand("restart", "restart the bot",
 						asList(MakeCommandArg("command",ArgTypes.remainder,true))))
 				.put(AbstractManager.MakeCommand("ttask", "make new task", Arrays.asList((
 						MakeCommandArg("task",StandardParser.ArgTypes.remainder,false)))));

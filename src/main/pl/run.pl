@@ -26,7 +26,16 @@ use JSON;
 use Data::Dumper;
 
 
+#global const's
+my $TESTFLAG = 0;
 #procedures
+sub myExec{
+	(my $cmd) = @_;
+	printf("exec: _%s\n",$cmd);
+	if(not $TESTFLAG){
+		system($cmd);
+	}
+}
 sub loadJsonFromFile{
 	my $fn = shift;
 	printf(STDERR "opening file %s\n",$fn);
@@ -43,13 +52,15 @@ sub loadJsonFromFile{
 }
 
 #main
-my $cmd, my $tmpfile;
+my $cmd, my $tmpfile, my $cmdfile;
 GetOptions(
 	"cmd=s" => \$cmd,
 	"tmpfile=s" => \$tmpfile,
+	"cmdfile=s" => \$cmdfile,
 );
 printf("cmd: \"%s\"\n",$cmd);
 printf("tmpfile: \"%s\"\n",$tmpfile);
+printf("cmdfile: \"%s\"\n",$cmdfile);
 
 while(1){
 	printf("run: %s\n",$cmd);
@@ -59,7 +70,12 @@ while(1){
 		my $json = loadJsonFromFile($tmpfile);
 		printf("got: %s\n",Dumper($json));
 		if(exists $json->{command}){
-			system($json->{command});
+			my $cmdjson = loadJsonFromFile($cmdfile);
+			if(exists $cmdjson->{$json->{command}}){
+				myExec($cmdjson->{$json->{command}});
+			} else {
+				printf("cannot execute %s\n",$cmdjson->{$json->{command}});
+			}
 		}
 		unlink $tmpfile or warn "Could not unlink $tmpfile: $!";
 	} else {
