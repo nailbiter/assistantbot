@@ -62,6 +62,7 @@ public class GymManager extends AbstractManager {
 		return tb.toString();
 	}
 	public String gymdone(JSONObject obj) throws Exception{
+		obj.remove("name");
 		obj.put("dayCount",dayCount_ );
 		obj.put("weekCount", gymSingleton_.getInt("weekCount"));
 		mongoClient_.getDatabase("logistics").getCollection("gymLog").insertOne(Document.parse(obj.toString()));
