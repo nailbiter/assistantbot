@@ -20,6 +20,7 @@ public class GymManager extends AbstractManager {
 	private JSONObject gymSingleton_;
 	private Logger logger_;
 	int dayCount_ = -1;
+	private JSONArray program_;
 
 	public GymManager(MongoClient mongoClient) throws Exception {
 		mongoClient_ = mongoClient;
@@ -47,14 +48,14 @@ public class GymManager extends AbstractManager {
 		if(args.getInt("dayCount")<=0 || args.getInt("dayCount")>4)
 			throw new Exception(String.format("%d<=0 || %d>4", args.getInt("dayCount"),args.getInt("dayCount")));
 		dayCount_ = args.getInt("dayCount");
-		JSONArray program = MongoUtil.GetJsonObjectFromDatabase(mongoClient_, "logistics.gymProgram",
+		program_ = MongoUtil.GetJsonObjectFromDatabase(mongoClient_, "logistics.gymProgram",
 				new JSONObject()
 				.put("weekCount", gymSingleton_.getInt("weekCount"))
 				.put("dayCount", args.getInt("dayCount"))).getJSONArray("program");
 		TableBuilder tb = new TableBuilder();
 		tb.addNewlineAndTokens("#","name", "reps");
 		int i = 1;
-		for(Object o:program) {
+		for(Object o:program_) {
 			JSONObject obj = (JSONObject)o;
 			tb.newRow();
 			tb.addToken(i++);
@@ -67,6 +68,9 @@ public class GymManager extends AbstractManager {
 		obj.remove("name");
 		obj.put("dayCount",dayCount_ );
 		obj.put("weekCount", gymSingleton_.getInt("weekCount"));
+		int exercisenum = obj.getInt("exercisenum");
+		obj.remove("exercisenum");
+		obj.put("exercise", program_.getJSONObject(exercisenum));
 		mongoClient_.getDatabase("logistics").getCollection("gymLog").insertOne(Document.parse(obj.toString()));
 		return String.format("added %s to %s",obj.toString() ,"logistics.gymLog");
 	}
