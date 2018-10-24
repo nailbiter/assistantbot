@@ -24,9 +24,11 @@ import com.mongodb.client.model.Updates;
 import assistantbot.MyAssistantUserData;
 import it.sauronsoftware.cron4j.Scheduler;
 import util.LocalUtil;
+import util.MongoUtil;
+import util.MongoUtil.GetJSONArrayFromDatabase;
+
 import static util.LocalUtil.GetJSONArrayFromDatabase;
 import util.MyBasicBot;
-import util.Util;
 import util.parsers.StandardParser;
 import static java.util.Arrays.asList;
 
@@ -53,7 +55,7 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 		time_ = mc.getDatabase("logistics").getCollection("time");
 		chatID_ = chatID;
 		bot_ = bot;
-		categories_ = LocalUtil.GetJSONArrayFromDatabase(mc, "logistics", "timecats");
+		categories_ = MongoUtil.GetJSONArrayFromDatabase(mc, "logistics", "timecats");
 		scheduler.schedule(String.format("*/%d * * * *",DELAYMIN), this);
 		sleepingTimes_ = mc.getDatabase("logistics").getCollection("sleepingtimes");
 	}
@@ -229,7 +231,7 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 	}
 	protected String sleepstartReply(String categoryName)
 	{
-		sleepingObj_ = Util.FindInJSONArray(categories_, "name", categoryName);
+		sleepingObj_ = LocalUtil.FindInJSONArray(categories_, "name", categoryName);
 		Document doc = new Document();
 		doc.put("startsleep", new Date());
 		doc.put("category", categoryName);

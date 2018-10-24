@@ -1,9 +1,16 @@
 package util;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,12 +20,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import com.mongodb.Block;
-import com.mongodb.MongoClient;
 
 /**
  * 
@@ -83,32 +86,6 @@ public class LocalUtil {
 	public static String GetRebootFileName() {
 		return RebootFileName_;
 	}
-	public static JSONArray GetJSONArrayFromDatabase(MongoClient mc, String databaseName, String collectionName) {
-		final JSONArray res = new JSONArray();
-		Block<Document> printBlock = new Block<Document>() {
-		       @Override
-		       public void apply(final Document doc) {
-		    	   JSONObject obj = new JSONObject(doc.toJson());
-		    	   res.put(obj);
-		       }
-		};
-		mc.getDatabase(databaseName).getCollection(collectionName).find().forEach(printBlock);
-		
-		return res;
-	}
-	public static JSONArray GetJSONArrayFromDatabase(MongoClient mc, String databaseName, String collectionName, final String key) {
-		final JSONArray res = new JSONArray();
-		Block<Document> printBlock = new Block<Document>() {
-		       @Override
-		       public void apply(final Document doc) {
-		    	   JSONObject obj = new JSONObject(doc.toJson());
-		    	   res.put(obj.getString(key));
-		       }
-		};
-		mc.getDatabase(databaseName).getCollection(collectionName).find().forEach(printBlock);
-		
-		return res;
-	}
 	public static String GetFile(String name) throws Exception
 	{
 		FileReader fr = null;
@@ -151,5 +128,49 @@ public class LocalUtil {
 		    	throw e;
 		    }
 		}
+	}
+	public static void copyFileUsingStream(File source, File dest) throws IOException {
+	    InputStream is = null;
+	    OutputStream os = null;
+	    try {
+	        is = new FileInputStream(source);
+	        os = new FileOutputStream(dest);
+	        byte[] buffer = new byte[1024];
+	        int length;
+	        while ((length = is.read(buffer)) > 0) {
+	            os.write(buffer, 0, length);
+	        }
+	    } finally {
+	        is.close();
+	        os.close();
+	    }
+	}
+	public static String runScript(String cmd) throws Exception{
+		System.out.println("going to run: "+cmd);
+		StringBuilder res = new StringBuilder();
+		try {
+		Runtime run = Runtime.getRuntime();
+	    Process pr = run.exec(cmd);
+	    pr.waitFor();
+	    BufferedReader buf = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+	    String line = "";
+	    while ((line=buf.readLine())!=null) {
+	            res.append(line+"\n");
+	    }
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		System.out.println("here with: "+res.toString());
+	    return res.toString();
+	}
+	public static JSONObject FindInJSONArray(JSONArray array,String key,String val) {
+		for(Object o: array) {
+			JSONObject obj = (JSONObject)o;
+			if(obj.getString(key).equals(val))
+				return obj;
+		}
+		return null;
 	}
 }
