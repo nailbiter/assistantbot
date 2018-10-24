@@ -11,9 +11,9 @@ import com.mongodb.MongoClient;
 
 public class MongoUtil {
 	public static JSONObject GetJsonObjectFromDatabase(MongoClient mc,String databasecollection) throws Exception {
-		String[] split = databasecollection.split(".");
+		String[] split = databasecollection.split("\\.");
 		if(split.length != 2)
-			throw new Exception(String.format("could not split %s", databasecollection));
+			throw new Exception(String.format("could not split \"%s\" got len=%d", databasecollection,split.length));
 		String database = split[0], collection = split[1];
 		System.err.format("GetJsonObjectFromDatabase: db=(%s), coll=(%s)", database,collection);
 		final ArrayList<JSONObject> list = new ArrayList<JSONObject>();

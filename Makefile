@@ -10,8 +10,8 @@ PERLKEYS=--tmpfile $(REBOOTFILE) --cmdfile $(RUNCOMMANDSFILE)
 
 #sources
 ASBOTSOURCES=MyAssistantUserData MyAssistantBot
-MANAGERSOURCES=$(addsuffix Manager,Time Money Test MiscUtil Habit German)
-UTILSOURCES=StorageManager TrelloAssistant MyBasicBot
+MANAGERSOURCES=$(addsuffix Manager,Time Money Test MiscUtil Habit German Gym)
+UTILSOURCES=StorageManager TrelloAssistant MyBasicBot MongoUtil
 HABITMANAGERSOURCES=HabitManagerBase JSONObjectCallback
 SHELLSOURCES=InteractiveShell
 TESTSOURCES=UrlTest JsonTest ParadigmTest
