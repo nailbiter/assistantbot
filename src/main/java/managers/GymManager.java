@@ -72,7 +72,7 @@ public class GymManager extends AbstractManager {
 		obj.put("dayCount",dayCount_ );
 		obj.put("weekCount", gymSingleton_.getInt("weekCount"));
 		obj.remove("exercisenum");
-		obj.put("exercise", program_.getJSONObject(exercisenum));
+		obj.put("exercise", program_.getJSONObject(exercisenum-1));
 		mongoClient_.getDatabase("logistics").getCollection("gymLog").insertOne(Document.parse(obj.toString()));
 		return String.format("added %s to %s",obj.toString() ,"logistics.gymLog");
 	}
