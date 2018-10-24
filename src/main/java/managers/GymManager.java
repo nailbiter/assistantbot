@@ -65,10 +65,12 @@ public class GymManager extends AbstractManager {
 		return tb.toString();
 	}
 	public String gymdone(JSONObject obj) throws Exception{
+		int exercisenum = obj.getInt("exercisenum");
+		if(exercisenum<=0 || program_.length()<exercisenum)
+			throw new Exception(String.format("(%d<=0 || %d<%d)", exercisenum,program_.length(),exercisenum));
 		obj.remove("name");
 		obj.put("dayCount",dayCount_ );
 		obj.put("weekCount", gymSingleton_.getInt("weekCount"));
-		int exercisenum = obj.getInt("exercisenum");
 		obj.remove("exercisenum");
 		obj.put("exercise", program_.getJSONObject(exercisenum));
 		mongoClient_.getDatabase("logistics").getCollection("gymLog").insertOne(Document.parse(obj.toString()));
