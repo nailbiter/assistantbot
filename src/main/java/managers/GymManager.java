@@ -52,10 +52,12 @@ public class GymManager extends AbstractManager {
 				.put("weekCount", gymSingleton_.getInt("weekCount"))
 				.put("dayCount", args.getInt("dayCount"))).getJSONArray("program");
 		TableBuilder tb = new TableBuilder();
-		tb.addNewlineAndTokens("name", "reps");
+		tb.addNewlineAndTokens("#","name", "reps");
+		int i = 1;
 		for(Object o:program) {
 			JSONObject obj = (JSONObject)o;
 			tb.newRow();
+			tb.addToken(i++);
 			tb.addToken(obj.getString("name"));
 			tb.addToken(obj.getString("reps"));
 		}
