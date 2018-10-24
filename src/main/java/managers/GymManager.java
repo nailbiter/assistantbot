@@ -37,5 +37,10 @@ public class GymManager extends AbstractManager {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	public String gymlist(JSONObject obj) throws Exception{
+		return String.format("stub for %s: got %s", "gymlist",obj.toString());
+	}
+	public String gymdone(JSONObject obj) throws Exception{
+		return String.format("stub for %s: got %s", "gymdone",obj.toString());
+	}
 }

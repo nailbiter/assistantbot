@@ -1,4 +1,4 @@
-.PHONY: all offline pull jar
+.PHONY: all offline pull jar gym
 
 JARNAME=assistantBot-0.0.1-SNAPSHOT-jar-with-dependencies
 RESFOLDER=src/main/resources/assistantBotFiles/
@@ -40,3 +40,5 @@ pull:
 	git pull
 jar:
 	mvn package
+gym:
+	./src/main/pl/makeGym.pl
