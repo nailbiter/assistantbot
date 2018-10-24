@@ -4,12 +4,28 @@
 		"dayCount":2,
 		"program":[
 			{
-				"name":"name1",
-				"reps":"reps1"
+				"name":"tricPull",
+				"reps":"5*10*6plates"
 			},
 			{
-				"name":"name1",
-				"reps":"reps1"
+				"name":"grud",
+				"reps":"3x5x27.5"
+			},
+			{
+				"name":"squat",
+				"reps":"72*10/5 (155)"
+			},
+			{
+				"name":"stan",
+				"reps":"3x8x50"
+			},
+			{
+				"name":"matr",
+				"reps":"?"
+			},
+			{
+				"name":"pullup",
+				"reps":"2xMax"
 			}
 		]
 	}

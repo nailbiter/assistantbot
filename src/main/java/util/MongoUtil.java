@@ -1,8 +1,5 @@
 package util;
 
-import java.util.ArrayList;
-
-import org.bson.BSON;
 import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -16,16 +13,7 @@ public class MongoUtil {
 		if(split.length != 2)
 			throw new Exception(String.format("could not split \"%s\" got len=%d", databasecollection,split.length));
 		String database = split[0], collection = split[1];
-//		System.err.format("GetJsonObjectFromDatabase: db=(%s), coll=(%s)", database,collection);
-//		final ArrayList<JSONObject> list = new ArrayList<JSONObject>();
 		return new JSONObject(mc.getDatabase(database).getCollection(collection).find().first().toJson());
-//		.forEach(new Block<Document>() {
-//			@Override
-//			public void apply(Document doc) {
-//				list.add(new JSONObject(doc.toJson()));
-//			}
-//		});
-//		return list.get(0);
 	}
 
 	public static JSONArray GetJSONArrayFromDatabase(MongoClient mc, String databaseName, String collectionName, final String key) {
@@ -61,10 +49,7 @@ public class MongoUtil {
 		if(split.length != 2)
 			throw new Exception(String.format("could not split \"%s\" got len=%d", dc,split.length));
 		String database = split[0], collection = split[1];
-//		System.err.format("GetJsonObjectFromDatabase: db=(%s), coll=(%s)", database,collection);
-//		final ArrayList<JSONObject> list = new ArrayList<JSONObject>();
-		
+		System.err.format("GetJsonObjectFromDatabase: db=(%s), coll=(%s)", database,collection);
 		return new JSONObject(mc.getDatabase(database).getCollection(collection).find(Document.parse(fo.toString())).first().toJson());
-//		return list.get(0);
 	}
 }

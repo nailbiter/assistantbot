@@ -43,12 +43,15 @@ sub loadJsonFromFile{
 	return from_json($document);
 }
 #main
-my $client = MongoDB->connect();
-my $mongoPassword = $client->ns("admin.passwords")->find_one({key=>"MONGOMLAB"})->{value};
 my $gymProgram;
 GetOptions(
 	"program=s" => \$gymProgram,
 );
 $gymProgram = loadJsonFromFile($gymProgram);
-printf(STDERR "got: %s\n",Dumper($gymProgram));
-MongoDB->connect(sprintf("mongodb://%s:%s\@ds149672.mlab.com:49672/logistics","nailbiter",$mongoPassword))->ns("logistics.gymProgram")->insert_many($gymProgram);
+#printf(STDERR "got: %s\n",Dumper($gymProgram));
+
+my $client = MongoDB->connect();
+my $mongoPassword = $client->ns("admin.passwords")->find_one({key=>"MONGOMLAB"})->{value};
+$client = MongoDB->connect(sprintf("mongodb://%s:%s\@ds149672.mlab.com:49672/logistics","nailbiter",$mongoPassword));
+$client->ns("logistics.gymProgram")->drop();
+$client->ns("logistics.gymProgram")->insert_many($gymProgram);

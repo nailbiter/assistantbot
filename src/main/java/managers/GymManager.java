@@ -19,6 +19,7 @@ public class GymManager extends AbstractManager {
 	private MongoClient mongoClient_;
 	private JSONObject gymSingleton_;
 	private Logger logger_;
+	int dayCount_ = -1;
 
 	public GymManager(MongoClient mongoClient) throws Exception {
 		mongoClient_ = mongoClient;
@@ -26,16 +27,16 @@ public class GymManager extends AbstractManager {
 		gymSingleton_ = MongoUtil.GetJsonObjectFromDatabase(mongoClient_, "logistics.gymSingleton");
 		logger_.info(String.format("gymSingleton_=%s", gymSingleton_.toString()));
 	}
-	protected MongoCollection<Document> getGymLog() {
-		return mongoClient_.getDatabase("logistics").getCollection("gymLog");
-	}
 	@Override
 	public JSONArray getCommands() {
 		return new JSONArray()
 				.put(MakeCommand("gymlist","list gym exercises",
 						asList(MakeCommandArg("dayCount",ArgTypes.integer,false))))
 				.put(MakeCommand("gymdone","done gym exercise",
-						asList(MakeCommandArg("exercisenum",ArgTypes.integer,false))))
+						asList(
+								MakeCommandArg("exercisenum",ArgTypes.integer,false),
+								MakeCommandArg("comment",ArgTypes.remainder,true)
+								)))
 				;
 	}
 	@Override
@@ -43,7 +44,9 @@ public class GymManager extends AbstractManager {
 		return null;
 	}
 	public String gymlist(JSONObject args) throws Exception{
-//		return String.format("stub for %s: got %s", "gymlist",obj.toString());
+		if(args.getInt("dayCount")<=0 || args.getInt("dayCount")>4)
+			throw new Exception(String.format("%d<=0 || %d>4", args.getInt("dayCount"),args.getInt("dayCount")));
+		dayCount_ = args.getInt("dayCount");
 		JSONArray program = MongoUtil.GetJsonObjectFromDatabase(mongoClient_, "logistics.gymProgram",
 				new JSONObject()
 				.put("weekCount", gymSingleton_.getInt("weekCount"))
@@ -59,6 +62,9 @@ public class GymManager extends AbstractManager {
 		return tb.toString();
 	}
 	public String gymdone(JSONObject obj) throws Exception{
-		return String.format("stub for %s: got %s", "gymdone",obj.toString());
+		obj.put("dayCount",dayCount_ );
+		obj.put("weekCount", gymSingleton_.getInt("weekCount"));
+		mongoClient_.getDatabase("logistics").getCollection("gymLog").insertOne(Document.parse(obj.toString()));
+		return String.format("added %s to %s",obj.toString() ,"logistics.gymLog");
 	}
 }
