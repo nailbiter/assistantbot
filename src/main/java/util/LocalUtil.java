@@ -87,7 +87,24 @@ public class LocalUtil {
 	public static String GetRebootFileName() {
 		return RebootFileName_;
 	}
-	public static String GetFile(String name) throws Exception
+	public static String GetFile(String name) throws Exception{
+		FileReader fr = null;
+		String fname = name;
+		StorageManager.logger_.info(String.format("fname=%s", fname));
+		
+		fr = new FileReader(fname);
+		StringBuilder sb = new StringBuilder();
+	    int character;
+	    while ((character = fr.read()) != -1) {
+	    		sb.append((char)character);
+	    }
+	    System.out.println("found "+sb.toString());
+		fr.close();
+		String res = sb.toString();
+		StorageManager.logger_.info(String.format("res=%s", res));
+		return res;
+	}
+	public static String GetFileFromAssistantBotFiles(String name) throws Exception
 	{
 		FileReader fr = null;
 		String fname = getJarFolder()+name;

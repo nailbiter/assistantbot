@@ -10,7 +10,7 @@ public class MailTemplate {
 	protected static Logger logger_ = Logger.getLogger(MailTemplate.class.getName());
 	public MailTemplate(String handle) throws Exception{
 		logger_.info(String.format("handle: ", handle));
-		content_ = LocalUtil.GetFile(handle);
+		content_ = LocalUtil.GetFileFromAssistantBotFiles(handle);
 	}
 	@Override
 	/** print body of the message
