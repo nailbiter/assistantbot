@@ -19,14 +19,14 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 
 import util.KeyRing;
-import util.LocalUtil;
+import util.Util;
 import util.TrelloAssistant;
 import util.parsers.StandardParser;
 import static managers.AbstractManager.MakeCommand;
 import static managers.AbstractManager.MakeCommandArg;
 import static java.util.Arrays.asList;
 import static util.parsers.StandardParser.ArgTypes;
-import static util.LocalUtil.GetRebootFileName;
+import static util.Util.GetRebootFileName;
 
 public class MiscUtilManager extends AbstractManager {
 	Random rand_ = new Random();
@@ -61,9 +61,9 @@ public class MiscUtilManager extends AbstractManager {
 	}
 	public String restart(JSONObject obj) throws Exception {
 		if(obj.getString("command").equals("help")) {
-			return LocalUtil.GetFile(LocalUtil.GetRebootCommandFileName());
+			return Util.GetFile(Util.GetRebootCommandFileName());
 		}
-		LocalUtil.SaveJSONObjectToFile(GetRebootFileName(), obj);
+		Util.SaveJSONObjectToFile(GetRebootFileName(), obj);
 		return exit(obj);
 	}
 	@Override

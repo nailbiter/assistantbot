@@ -16,7 +16,7 @@ import managers.MiscUtilManager;
 import managers.MyManager;
 import managers.OptionReplier;
 import managers.TimeManager;
-import util.LocalUtil;
+import util.Util;
 import util.MyBasicBot;
 import util.UserData;
 import util.parsers.AbstractParser;
@@ -43,7 +43,7 @@ public class MyAssistantUserData extends UserData {
 			if(!MyAssistantUserData.ISBOTMANAGER)
 			{
 				scheduler = new Scheduler();
-				scheduler.setTimeZone(LocalUtil.getTimezone());
+				scheduler.setTimeZone(Util.getTimezone());
 				managers.add(new managers.MoneyManager(this));
 				managers.add(new managers.HabitManager(chatID,bot,scheduler,this));
 				managers.add(new managers.TaskManager(chatID, bot));

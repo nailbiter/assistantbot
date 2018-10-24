@@ -24,8 +24,8 @@ import managers.habits.HabitManagerBase;
 import managers.habits.HabitRunnable;
 import managers.habits.JSONObjectCallback;
 import util.KeyRing;
-import util.LocalUtil;
-import static util.LocalUtil.FindInJSONArray;
+import util.Util;
+import static util.Util.FindInJSONArray;
 import util.MyBasicBot;
 import util.TrelloAssistant;
 //import static util.Util.FindInJSONArray;
@@ -124,17 +124,17 @@ public class HabitManager extends HabitManagerBase
 		for(int i = 0; i < habits_.length(); i++) {
 			JSONObject habit = habits_.getJSONObject(i);
 			Predictor p = new Predictor(habit.getString("cronline"));
-			p.setTimeZone(LocalUtil.getTimezone());
+			p.setTimeZone(Util.getTimezone());
 			if(!habit.optBoolean("enabled",true))
 				continue;
 			tb.newRow();
 			tb.addToken(habit.getString("name"));
-			tb.addToken(LocalUtil.DateToString(p.nextMatchingDate()));
+			tb.addToken(Util.DateToString(p.nextMatchingDate()));
 			tb.addToken(habit.optBoolean("isWaiting") ? 
 				("PEND("+ (habit.getInt("count")-habit.getInt("doneCount"))+")"):"");
 			tb.addToken(habit.optBoolean("isWaiting") ?
-				LocalUtil.milisToTimeFormat(failTimes.get(habit.get("name")).getTime()- (new Date().getTime())):
-				LocalUtil.milisToTimeFormat(habit.getInt("delaymin")*60*1000));
+				Util.milisToTimeFormat(failTimes.get(habit.get("name")).getTime()- (new Date().getTime())):
+				Util.milisToTimeFormat(habit.getInt("delaymin")*60*1000));
 			tb.addToken(this.printStreak(habit.getString("name")));
 			tb.addToken(".");
 		}
@@ -235,7 +235,7 @@ public class HabitManager extends HabitManagerBase
 	protected String getReminderMessage(String name) {
 		return String.format("don't forget to execute: %s !\n%s",
 				name,
-				LocalUtil.FindInJSONArray(habits_, "name", name).getString("info"));
+				Util.FindInJSONArray(habits_, "name", name).getString("info"));
 	}
 	@Override
 	protected String getFailureMessage(String name) {
@@ -262,7 +262,7 @@ public class HabitManager extends HabitManagerBase
 	@Override
 	protected void processFailure(JSONObject obj) {
 		String name = obj.getString("name"), id = obj.getString("id");
-		JSONObject habitObj = LocalUtil.FindInJSONArray(this.habits_,"name",name);
+		JSONObject habitObj = Util.FindInJSONArray(this.habits_,"name",name);
 		String onFailed = habitObj.getString("onFailed");
 		updateStreaks(name, StreakUpdateEnum.FAILURE);
 		try {
@@ -280,7 +280,7 @@ public class HabitManager extends HabitManagerBase
 	}
 	@Override
 	protected void processSetReminder(String name) {
-		int delaymin = LocalUtil.FindInJSONArray(habits_, "name", name).getInt("delaymin");
+		int delaymin = Util.FindInJSONArray(habits_, "name", name).getInt("delaymin");
 		try {
 			ta_.addCard(pendingListId_, new JSONObject()
 					.put("name", name)

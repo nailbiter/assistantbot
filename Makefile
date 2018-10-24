@@ -11,7 +11,7 @@ PERLKEYS=--tmpfile $(REBOOTFILE) --cmdfile $(RUNCOMMANDSFILE)
 #sources
 ASBOTSOURCES=MyAssistantUserData MyAssistantBot
 MANAGERSOURCES=$(addsuffix Manager,Time Money Test MiscUtil Habit German Gym)
-UTILSOURCES=StorageManager TrelloAssistant MyBasicBot MongoUtil
+UTILSOURCES=StorageManager TrelloAssistant MyBasicBot MongoUtil Util TelegramUtil
 HABITMANAGERSOURCES=HabitManagerBase JSONObjectCallback
 SHELLSOURCES=InteractiveShell
 TESTSOURCES=UrlTest JsonTest ParadigmTest
@@ -41,4 +41,4 @@ pull:
 jar:
 	mvn package
 gym:
-	./src/main/pl/makeGym.pl
+	./src/main/pl/makeGym.pl --program src/main/resources/gym.json

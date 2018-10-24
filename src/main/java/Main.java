@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import assistantbot.MyAssistantBot;
 import opts.Option;
 import shell.InteractiveShell;
-import util.LocalUtil;
+import util.Util;
 import static opts.Option.ArgEnum;
 
 public class Main {
@@ -26,9 +26,9 @@ public class Main {
     	System.out.println(String.format("hi!: %s\nlen=%d", commandline.toString(),
     			((String)commandline.get('p')).length()));
     	
-    	LocalUtil.SetJarFolder((String)commandline.get('r'));
-    	LocalUtil.SetRebootFileName((String)commandline.get('t'));
-    	LocalUtil.SetRebootCommandFileName((String)commandline.get('c'));
+    	Util.SetJarFolder((String)commandline.get('r'));
+    	Util.SetRebootFileName((String)commandline.get('t'));
+    	Util.SetRebootCommandFileName((String)commandline.get('c'));
     	
     	if(commandline.containsKey('o')) {
     		try {

@@ -23,7 +23,7 @@ import com.mongodb.client.model.Updates;
 
 import assistantbot.MyAssistantUserData;
 import it.sauronsoftware.cron4j.Scheduler;
-import util.LocalUtil;
+import util.Util;
 import util.MongoUtil;
 import static util.MongoUtil.GetJSONArrayFromDatabase;
 
@@ -179,7 +179,7 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 	protected String getLifetime()
 	{
 		Date currentData = new Date();
-		return "remaining time to live: " + LocalUtil.milisToTimeFormat(MYDEATHDATA_.getTime() - currentData.getTime());
+		return "remaining time to live: " + Util.milisToTimeFormat(MYDEATHDATA_.getTime() - currentData.getTime());
 	}
 	@Override
 	public JSONArray getCommands() {
@@ -231,7 +231,7 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 	}
 	protected String sleepstartReply(String categoryName)
 	{
-		sleepingObj_ = LocalUtil.FindInJSONArray(categories_, "name", categoryName);
+		sleepingObj_ = Util.FindInJSONArray(categories_, "name", categoryName);
 		Document doc = new Document();
 		doc.put("startsleep", new Date());
 		doc.put("category", categoryName);
@@ -246,7 +246,7 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 		sleepingTimes_.updateOne(Filters.eq("_id",lastRecord.getObjectId("_id")),
 				Updates.set("endsleep", now));
 		String res = String.format("you have \"%s\" for: %s", sleepingObj_.getString("name"),
-				LocalUtil.milisToTimeFormat(
+				Util.milisToTimeFormat(
 				now.getTime() - 
 				lastRecord.getDate("startsleep").getTime())); 
 		sleepingObj_ = null;

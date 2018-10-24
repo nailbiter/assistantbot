@@ -80,7 +80,7 @@ public class StorageManager {
 		JSONObject res = null;
 		try {
 			System.out.println("StorageManager got "+name);
-			String fname = LocalUtil.getJarFolder()+name+".json";
+			String fname = Util.getJarFolder()+name+".json";
 			System.out.println("storageManager gonna open: "+fname);
 			fr = new FileReader(fname);
 			StringBuilder sb = new StringBuilder();
@@ -116,7 +116,7 @@ public class StorageManager {
 			 try {
 				   str = itr.next();
 			       System.out.println("Key: "+str+" & Value: "+registeredObjects.get(str));
-			       fw = new FileWriter(LocalUtil.getJarFolder()+str+".json");
+			       fw = new FileWriter(Util.getJarFolder()+str+".json");
 			       fw.write(registeredObjects.get(str).toString(2));
 			       fw.close(); 
 			 }

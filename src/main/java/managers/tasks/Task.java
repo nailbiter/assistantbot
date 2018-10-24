@@ -8,7 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import managers.TaskManager;
-import util.LocalUtil;
+import util.Util;
 import util.MyBasicBot;
 
 public class Task
@@ -52,7 +52,7 @@ public class Task
 			Long date = history.getLong(history.length() - 2);
 			Date lastDate = new Date(date);
 			int timeInMin = history.getInt(history.length() - 1);
-			return LocalUtil.DateToString((new Date(lastDate.getTime() + timeInMin*60*1000)));
+			return Util.DateToString((new Date(lastDate.getTime() + timeInMin*60*1000)));
 		}
 		else
 		{
@@ -74,7 +74,7 @@ public class Task
 		{
 			Long date = history.getLong(history.length() - 2);
 			int timeInMin = history.getInt(history.length() - 1);
-			return util.LocalUtil.milisToTimeFormat(date+timeInMin*60*1000-curTime);
+			return util.Util.milisToTimeFormat(date+timeInMin*60*1000-curTime);
 		}
 		else
 		{

@@ -6,9 +6,9 @@ import org.json.JSONObject;
 
 import jshell.JShell;
 import util.KeyRing;
-import util.LocalUtil;
-import util.MyBasicBot;
 import util.Util;
+import util.MyBasicBot;
+import util.TelegramUtil;
 
 public class JShellManager implements managers.MyManager{
 	protected JShell shell = null;
@@ -36,10 +36,10 @@ public class JShellManager implements managers.MyManager{
 	public String getResultAndFormat(JSONObject res) throws Exception {
 		if(res.has("filename") && !isLocked)
 		{
-			File file = Util.downloadPhotoByFilePath(res.getString("filepath"),bot_);
+			File file = TelegramUtil.downloadPhotoByFilePath(res.getString("filepath"),bot_);
 			String fn = "./"+res.getString("filename");
 			File file2 = new File(fn);
-			LocalUtil.copyFileUsingStream(file, file2);
+			Util.copyFileUsingStream(file, file2);
 			return "saved "+res.getString("filename");
 		}
 		if(res.has("cmd"))

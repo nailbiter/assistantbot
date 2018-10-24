@@ -1,0 +1,16 @@
+[
+	{
+		"weekCount":1,
+		"dayCount":2,
+		"program":[
+			{
+				"name":"name1",
+				"reps":"reps1"
+			},
+			{
+				"name":"name1",
+				"reps":"reps1"
+			}
+		]
+	}
+]

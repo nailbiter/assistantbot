@@ -1,7 +1,7 @@
 package jshell.command;
 
 import jshell.Command;
-import util.LocalUtil;
+import util.Util;
 
 public class sh extends Command {
 
@@ -17,6 +17,6 @@ public class sh extends Command {
 			sb.append(" "+args[i]);
 		String line = "sh "+sb;
 		System.out.println("sh: "+line);
-		out().println(LocalUtil.runScript(line));
+		out().println(Util.runScript(line));
 	}
 }

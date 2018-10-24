@@ -10,7 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import assistantbot.MyAssistantUserData;
-import util.LocalUtil;
+import util.Util;
 import util.StorageManager;
 import util.parsers.StandardParser;
 
@@ -75,7 +75,7 @@ public class BadHabitManager extends AbstractManager implements OptionReplier {
 			if(this.pendingMessages.contains(msgID))
 			{
 				JSONArray ress = new JSONArray()
-						.put(LocalUtil.DateToString(new Date()))
+						.put(Util.DateToString(new Date()))
 						.put(option);
 				badhabits.put(ress);
 				return ress.toString();

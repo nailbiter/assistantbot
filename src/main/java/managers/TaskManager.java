@@ -16,7 +16,7 @@ import org.json.JSONObject;
 
 import managers.tasks.Task;
 import managers.tasks.TaskManagerForTask;
-import util.LocalUtil;
+import util.Util;
 import util.MyBasicBot;
 import util.StorageManager;
 import util.parsers.StandardParser;

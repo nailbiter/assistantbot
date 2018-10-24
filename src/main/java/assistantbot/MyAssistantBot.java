@@ -24,7 +24,7 @@ import managers.MyManager;
 import util.KeyRing;
 import util.MyBasicBot;
 import util.UserData;
-import util.Util;
+import util.TelegramUtil;
 
 public class MyAssistantBot extends MyBasicBot {
 	private String botUserName_;
@@ -64,9 +64,9 @@ public class MyAssistantBot extends MyBasicBot {
 		if(msg.hasDocument())
 		{
 			System.out.println("we have document " + msg.getDocument());
-			System.out.println("we got path " + Util.getFilePath(msg.getDocument(), this));
+			System.out.println("we got path " + TelegramUtil.getFilePath(msg.getDocument(), this));
 			
-			res.put("filepath",Util.getFilePath(msg.getDocument(), this));
+			res.put("filepath",TelegramUtil.getFilePath(msg.getDocument(), this));
 			res.put("filename", msg.getDocument().getFileName());
 			return res;
 		}

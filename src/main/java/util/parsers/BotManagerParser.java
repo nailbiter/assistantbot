@@ -6,7 +6,7 @@ package util.parsers;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import util.LocalUtil;
+import util.Util;
 import util.StorageManager;
 
 /**
@@ -32,7 +32,7 @@ public class BotManagerParser extends AbstractParser {
 			if(res.getString("name").compareTo("help")==0)
 				return getHelpMessage();
 			if(res.getString("name").compareTo("bash")==0)
-				return LocalUtil.runScript(res.getString("line"));
+				return Util.runScript(res.getString("line"));
 		}
 		return null;
 	}
