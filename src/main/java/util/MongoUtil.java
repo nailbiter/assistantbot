@@ -1,5 +1,7 @@
 package util;
 
+import java.util.ArrayList;
+
 import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -14,15 +16,14 @@ public class MongoUtil {
 			throw new Exception(String.format("could not split %s", databasecollection));
 		String database = split[0], collection = split[1];
 		System.err.format("GetJsonObjectFromDatabase: db=(%s), coll=(%s)", database,collection);
-		final JSONObject obj;
+		final ArrayList<JSONObject> list = new ArrayList<JSONObject>();
 		mc.getDatabase(database).getCollection(collection).find().forEach(new Block<Document>() {
 			@Override
 			public void apply(Document doc) {
-				obj = new JSONObject(doc.toJson());
+				list.add(new JSONObject(doc.toJson()));
 			}
 		});
-		return obj;
-//		return null;
+		return list.get(0);
 	}
 
 	public static JSONArray GetJSONArrayFromDatabase(MongoClient mc, String databaseName, String collectionName, final String key) {

@@ -59,7 +59,10 @@ public class MiscUtilManager extends AbstractManager {
 				.put(AbstractManager.MakeCommand("ttask", "make new task", Arrays.asList((
 						MakeCommandArg("task",StandardParser.ArgTypes.remainder,false)))));
 	}
-	public String restart(JSONObject obj) throws IOException {
+	public String restart(JSONObject obj) throws Exception {
+		if(obj.getString("command").equals("help")) {
+			return LocalUtil.GetFile(LocalUtil.GetRebootCommandFileName());
+		}
 		LocalUtil.SaveJSONObjectToFile(GetRebootFileName(), obj);
 		return exit(obj);
 	}

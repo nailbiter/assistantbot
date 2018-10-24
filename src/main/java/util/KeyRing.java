@@ -9,15 +9,8 @@ import com.mongodb.MongoClient;
 public class KeyRing {
 	static String token,passwd;
 	static JSONObject obj_ = null;
-	public static void init(String name, MongoClient mongoClient)
+	public static void init(String name, MongoClient mongoClient) throws Exception
 	{
-//		Block<Document> printBlock = new Block<Document>() {
-//		       @Override
-//		       public void apply(final Document doc) {
-//		    	   obj_ = new JSONObject(doc.toJson());
-//		       }
-//		};
-//		mongoClient.getDatabase("logistics").getCollection("keyring").find().limit(1).forEach(printBlock);
 		obj_ = MongoUtil.GetJsonObjectFromDatabase(mongoClient, "logistics.keyring");
 		token = obj_.getJSONObject("telegramtokens").getString(name);
 		passwd = obj_.getString("passwd");

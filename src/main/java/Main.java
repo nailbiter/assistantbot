@@ -19,6 +19,7 @@ public class Main {
     	opts.add(new Option('n',ArgEnum.HASARGUMENT,"bot's name: also used to get token"));
     	opts.add(new Option('p',ArgEnum.HASARGUMENT,"database password"));
     	opts.add(new Option('t',ArgEnum.HASARGUMENT,"reboot file"));
+    	opts.add(new Option('c',ArgEnum.HASARGUMENT,"reboot command file"));
     	opts.add(new Option('o',ArgEnum.HASARGUMENT,String.format("isOffline, %s=local|remote", Option.DEFARGNAME)));
     	
     	Map<Character,Object> commandline = Option.processKeyArgs(Main.class.getName(), args, opts);
@@ -27,6 +28,7 @@ public class Main {
     	
     	LocalUtil.SetJarFolder((String)commandline.get('r'));
     	LocalUtil.SetRebootFileName((String)commandline.get('t'));
+    	LocalUtil.SetRebootCommandFileName((String)commandline.get('c'));
     	
     	if(commandline.containsKey('o')) {
     		try {

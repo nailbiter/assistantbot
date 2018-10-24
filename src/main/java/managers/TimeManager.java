@@ -25,9 +25,9 @@ import assistantbot.MyAssistantUserData;
 import it.sauronsoftware.cron4j.Scheduler;
 import util.LocalUtil;
 import util.MongoUtil;
-import util.MongoUtil.GetJSONArrayFromDatabase;
+import static util.MongoUtil.GetJSONArrayFromDatabase;
 
-import static util.LocalUtil.GetJSONArrayFromDatabase;
+//import static util.LocalUtil.GetJSONArrayFromDatabase;
 import util.MyBasicBot;
 import util.parsers.StandardParser;
 import static java.util.Arrays.asList;

@@ -31,7 +31,8 @@ import org.json.JSONObject;
 public class LocalUtil {
 	protected static boolean isInit = false;
 	protected static String jarFolder;
-	private static String RebootFileName_; 
+	private static String RebootFileName_;
+	private static String rebootCommandFileName_; 
 	public static void SetJarFolder(String jf) {jarFolder = jf;}
 	protected static void init() throws Exception
 	{
@@ -97,7 +98,6 @@ public class LocalUtil {
 	    int character;
 	    while ((character = fr.read()) != -1) {
 	    		sb.append((char)character);
-	        //System.out.print((char) character);
 	    }
 	    System.out.println("found "+sb.toString());
 		fr.close();
@@ -172,5 +172,11 @@ public class LocalUtil {
 				return obj;
 		}
 		return null;
+	}
+	public static void SetRebootCommandFileName(String string) {
+		rebootCommandFileName_ = string;
+	}
+	public static String GetRebootCommandFileName() {
+		return rebootCommandFileName_ ;
 	}
 }

@@ -25,10 +25,10 @@ import managers.habits.HabitRunnable;
 import managers.habits.JSONObjectCallback;
 import util.KeyRing;
 import util.LocalUtil;
-import util.LocalUtil.FindInJSONArray;
+import static util.LocalUtil.FindInJSONArray;
 import util.MyBasicBot;
 import util.TrelloAssistant;
-import static util.Util.FindInJSONArray;
+//import static util.Util.FindInJSONArray;
 
 public class HabitManager extends HabitManagerBase
 {

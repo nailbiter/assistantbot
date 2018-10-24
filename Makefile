@@ -30,7 +30,7 @@ all: target/$(JARNAME).jar
 	mkdir -p tmp
 	rm -rf $(REBOOTFILE)
 	#java -jar $< $(KEYS) 2>&1 | tee $(LOGFILE)
-	./src/main/pl/run.pl --cmd "java -jar $< $(KEYS) -t $(REBOOTFILE)" $(PERLKEYS) 2>&1 | tee $(LOGFILE)
+	./src/main/pl/run.pl --cmd "java -jar $< $(KEYS) -t $(REBOOTFILE) -c $(RUNCOMMANDSFILE)" $(PERLKEYS) 2>&1 | tee $(LOGFILE)
 offline: target/$(JARNAME).jar
 	java -jar $< -o remote $(KEYS) 2>&1 | tee $(LOGFILE)
 
