@@ -4,8 +4,10 @@ import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Sorts;
 
 import util.MongoUtil;
 import util.TableBuilder;
@@ -13,6 +15,7 @@ import util.TableBuilder;
 import static java.util.Arrays.asList;
 import static util.parsers.StandardParser.ArgTypes;
 
+import java.util.Date;
 import java.util.logging.Logger;
 
 public class GymManager extends AbstractManager {
@@ -66,14 +69,36 @@ public class GymManager extends AbstractManager {
 	}
 	public String gymdone(JSONObject obj) throws Exception{
 		int exercisenum = obj.getInt("exercisenum");
-		if(exercisenum<=0 || program_.length()<exercisenum)
+		if(exercisenum==0 || program_.length()<exercisenum) {
 			throw new Exception(String.format("(%d<=0 || %d<%d)", exercisenum,program_.length(),exercisenum));
-		obj.remove("name");
-		obj.put("dayCount",dayCount_ );
-		obj.put("weekCount", gymSingleton_.getInt("weekCount"));
-		obj.remove("exercisenum");
-		obj.put("exercise", program_.getJSONObject(exercisenum-1));
-		mongoClient_.getDatabase("logistics").getCollection("gymLog").insertOne(Document.parse(obj.toString()));
-		return String.format("added %s to %s",obj.toString() ,"logistics.gymLog");
+		} else if(exercisenum<0) {
+//			int count = -exercisenum;
+//			
+			final TableBuilder tb = new TableBuilder();
+			tb.addNewlineAndTokens("name", "comment");
+			mongoClient_.getDatabase("logistics").getCollection("gymLog")
+			.find().sort(Sorts.descending("_id")).limit(-exercisenum).forEach(new Block<Document>() {
+				@Override
+				public void apply(Document doc) {
+					tb.newRow();
+					JSONObject obj = new JSONObject(doc.toJson());
+					tb.addToken(obj.getJSONObject("exercise").getString("name"));
+					tb.addToken(obj.optString("comment", ""));
+				}
+			});
+			return tb.toString();
+//		} else if(exercisenum==0 || program_.length()<exercisenum) {
+//			
+		} else {
+			obj.remove("name");
+			obj.put("dayCount",dayCount_ );
+			obj.put("weekCount", gymSingleton_.getInt("weekCount"));
+			obj.remove("exercisenum");
+			obj.put("exercise", program_.getJSONObject(exercisenum-1));
+			obj.put("date", new Date());
+			mongoClient_.getDatabase("logistics").getCollection("gymLog")
+				.insertOne(Document.parse(obj.toString()));
+			return String.format("added %s to %s",obj.toString() ,"logistics.gymLog");
+		}
 	}
 }

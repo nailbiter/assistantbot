@@ -28,5 +28,23 @@
 				"reps":"2xMax"
 			}
 		]
+	},
+	{
+		"weekCount":1,
+		"dayCount":4,
+		"program":[
+			{
+				"name":"bench",
+				"reps":"5(115), 5(1*)(130), 5/5(137.5)"
+			},
+			{
+				"name":"fly",
+				"reps":"3*10"
+			},
+			{
+				"name":"stand press",
+				"reps":"3*6"
+			}
+		]
 	}
 ]
