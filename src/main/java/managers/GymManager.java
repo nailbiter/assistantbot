@@ -72,8 +72,6 @@ public class GymManager extends AbstractManager {
 		if(exercisenum==0 || program_.length()<exercisenum) {
 			throw new Exception(String.format("(%d<=0 || %d<%d)", exercisenum,program_.length(),exercisenum));
 		} else if(exercisenum<0) {
-//			int count = -exercisenum;
-//			
 			final TableBuilder tb = new TableBuilder();
 			tb.addNewlineAndTokens("name", "comment");
 			mongoClient_.getDatabase("logistics").getCollection("gymLog")
@@ -82,13 +80,13 @@ public class GymManager extends AbstractManager {
 				public void apply(Document doc) {
 					tb.newRow();
 					JSONObject obj = new JSONObject(doc.toJson());
-					tb.addToken(obj.getJSONObject("exercise").getString("name"));
+					tb.addToken(String.format("%d:%s",
+							obj.getInt("weekCount"),
+							obj.getJSONObject("exercise").getString("name")));
 					tb.addToken(obj.optString("comment", ""));
 				}
 			});
 			return tb.toString();
-//		} else if(exercisenum==0 || program_.length()<exercisenum) {
-//			
 		} else {
 			obj.remove("name");
 			obj.put("dayCount",dayCount_ );

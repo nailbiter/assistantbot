@@ -1,6 +1,46 @@
 [
 	{
 		"weekCount":1,
+		"dayCount":1,
+		"program":[
+			{
+				"name":"bench",
+				"reps":"8*3*62.5(115), 8*67.5(125)"
+			},
+			{
+				"name":"fly",
+				"reps":"3*10"
+			},
+			{
+				"name":"stand press",
+				"reps":"3*6"
+			}
+		]
+	},
+	{
+		"weekCount":1,
+		"dayCount":2,
+		"program":[
+			{
+				"name":"brus",
+				"reps":"2*12, 3*25*8"
+			},
+			{
+				"name":"razg",
+				"reps":"2*15, 3*10"
+			},
+			{
+				"name":"bic",
+				"reps":"2*15, 3*10"
+			},
+			{
+				"name":"molot",
+				"reps":"2*15*15, 3*12*22.5"
+			}
+		]
+	},
+	{
+		"weekCount":1,
 		"dayCount":3,
 		"program":[
 			{
