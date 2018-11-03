@@ -80,8 +80,9 @@ public class GymManager extends AbstractManager {
 				public void apply(Document doc) {
 					tb.newRow();
 					JSONObject obj = new JSONObject(doc.toJson());
-					tb.addToken(String.format("%d:%s",
+					tb.addToken(String.format("%d:%d:%s",
 							obj.getInt("weekCount"),
+							obj.getInt("dayCount"),
 							obj.getJSONObject("exercise").getString("name")));
 					tb.addToken(obj.optString("comment", ""));
 				}
