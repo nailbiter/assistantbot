@@ -7,3 +7,4 @@ tmp/
 secret.txt
 .settings/
 .classpath
+src/main/java/com/github/nailbiter/util

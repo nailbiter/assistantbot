@@ -98,7 +98,7 @@ public abstract class HabitManagerBase implements MyManager, OptionReplier{
 	abstract protected String doneg(JSONObject res);
 	abstract protected String taskDone(String optString);
 	abstract protected String getHabitsInfo() throws Exception;
-	abstract protected String getHabitsInfoShort() throws ClientProtocolException, IOException;
+	abstract protected String getHabitsInfoShort() throws ClientProtocolException, IOException, Exception;
 	abstract protected void IfWaitingForHabit(String name,JSONObjectCallback cb);
 	abstract protected void processFailure(JSONObject obj);
 	abstract protected void processSetReminder(String name);
