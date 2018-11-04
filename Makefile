@@ -20,6 +20,7 @@ SOURCES=\
  $(addprefix managers/,$(MANAGERSOURCES))\
  $(addprefix shell/,$(SHELLSOURCES))\
  $(addprefix util/,$(UTILSOURCES))\
+ $(addprefix com/github/nailbiter/util/,TrelloAssistant Util)\
  $(addprefix managers/tests/,$(TESTSOURCES))\
  $(addprefix managers/habits/,$(HABITMANAGERSOURCES))\
  opts/Option Main
@@ -32,12 +33,13 @@ all: target/$(JARNAME).jar
 	#java -jar $< $(KEYS) 2>&1 | tee $(LOGFILE)
 	./src/main/pl/run.pl --cmd "java -jar $< $(KEYS) -t $(REBOOTFILE) -c $(RUNCOMMANDSFILE)" $(PERLKEYS) 2>&1 | tee $(LOGFILE)
 offline: target/$(JARNAME).jar
-	java -jar $< -o remote $(KEYS) 2>&1 | tee $(LOGFILE)
+	java -jar $< -o local $(KEYS) 2>&1 | tee $(LOGFILE)
 
 target/$(JARNAME).jar : $(addprefix src/main/java/,$(addsuffix .java,$(SOURCES))) pom.xml
 	mvn package
 pull:
 	git pull
+	cd src/main/java/com/github/nailbiter/util && git pull
 jar:
 	mvn package
 gym:

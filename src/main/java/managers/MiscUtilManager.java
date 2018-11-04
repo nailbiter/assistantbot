@@ -34,7 +34,7 @@ public class MiscUtilManager extends AbstractManager {
 	private final static String UPPERCASE = LOWERCASE.toUpperCase();
 	private Hashtable<String,Object> hash_ = new Hashtable<String,Object>();
 	TrelloAssistant ta_;
-	String tasklist_;
+	String tasklist_ = null;
 	private MongoClient mc_;
 	private static final String TASKLISTNAME = "todo";
 	private static final String DISTRICOLLECTIONBNAME = "randsetdistrib";
@@ -43,21 +43,29 @@ public class MiscUtilManager extends AbstractManager {
 	public MiscUtilManager(MongoClient mc) throws Exception {
 		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
 				KeyRing.getTrello().getString("token"));
-		tasklist_ = ta_.findListByName(HabitManager.HABITBOARDID, TASKLISTNAME);
+		try{
+			tasklist_ = ta_.findListByName(HabitManager.HABITBOARDID, TASKLISTNAME);
+		}
+		catch(Exception e) {
+			e.printStackTrace(System.err);
+		}
 		mc_ = mc;
 	}
 	@Override
 	public JSONArray getCommands() {
 		return new JSONArray()
-				.put(AbstractManager.MakeCommand("rand", "return random",
-						asList(MakeCommandArg("key",StandardParser.ArgTypes.string,true))))
+				.put(MakeCommand("rand", "return random",
+						asList(
+								MakeCommandArg("key",ArgTypes.integer,true),
+								MakeCommandArg("charset",ArgTypes.string,true)
+								)))
 				.put(MakeCommand("randset","return randomly generated set",
 						asList(MakeCommandArg("size",ArgTypes.integer,false))))
-				.put(AbstractManager.MakeCommand("exit", "exit the bot", new ArrayList<JSONObject>()))
+				.put(MakeCommand("exit", "exit the bot", new ArrayList<JSONObject>()))
 				.put(MakeCommand("restart", "restart the bot",
 						asList(MakeCommandArg("command",ArgTypes.remainder,true))))
-				.put(AbstractManager.MakeCommand("ttask", "make new task", Arrays.asList((
-						MakeCommandArg("task",StandardParser.ArgTypes.remainder,false)))));
+				.put(MakeCommand("ttask", "make new task", Arrays.asList((
+						MakeCommandArg("task",ArgTypes.remainder,false)))));
 	}
 	public String restart(JSONObject obj) throws Exception {
 		if(obj.getString("command").equals("help")) {
@@ -131,9 +139,13 @@ public class MiscUtilManager extends AbstractManager {
 		return "";
 	}
 	public String rand(JSONObject obj){
-		String key = obj.optString("key",(String)hash_.get("key"));
-		hash_.put("key", key);
-		int len = Integer.parseInt(key);
+//		System.err.format("rand got %s\nhash=%s\n", obj.toString(2),hash_.toString());
+		int len;
+		if(obj.has("key"))
+			len = obj.getInt("key");
+		else
+			len = (int)hash_.get("key");
+		hash_.put("key", len);
 		StringBuilder sb = new StringBuilder();
 		String alphabet = UPPERCASE+LOWERCASE;
 		
