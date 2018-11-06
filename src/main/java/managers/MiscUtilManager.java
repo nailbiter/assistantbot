@@ -1,29 +1,23 @@
 package managers;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Random;
 
-import org.apache.http.client.ClientProtocolException;
 import org.bson.Document;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.github.nailbiter.util.TrelloAssistant;
 import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 
+import managers.misc.MashaRemind;
 import util.KeyRing;
 import util.Util;
-import util.TrelloAssistant;
-import util.parsers.StandardParser;
-import static managers.AbstractManager.MakeCommand;
-import static managers.AbstractManager.MakeCommandArg;
 import static java.util.Arrays.asList;
 import static util.parsers.StandardParser.ArgTypes;
 import static util.Util.GetRebootFileName;
@@ -62,10 +56,14 @@ public class MiscUtilManager extends AbstractManager {
 				.put(MakeCommand("randset","return randomly generated set",
 						asList(MakeCommandArg("size",ArgTypes.integer,false))))
 				.put(MakeCommand("exit", "exit the bot", new ArrayList<JSONObject>()))
+				.put(MakeCommand("masharemind", "masha reminder", new ArrayList<JSONObject>()))
 				.put(MakeCommand("restart", "restart the bot",
 						asList(MakeCommandArg("command",ArgTypes.remainder,true))))
 				.put(MakeCommand("ttask", "make new task", Arrays.asList((
 						MakeCommandArg("task",ArgTypes.remainder,false)))));
+	}
+	public String masharemind(JSONObject obj) throws Exception {
+		return MashaRemind.Remind(ta_);
 	}
 	public String restart(JSONObject obj) throws Exception {
 		if(obj.getString("command").equals("help")) {
@@ -139,7 +137,6 @@ public class MiscUtilManager extends AbstractManager {
 		return "";
 	}
 	public String rand(JSONObject obj){
-//		System.err.format("rand got %s\nhash=%s\n", obj.toString(2),hash_.toString());
 		int len;
 		if(obj.has("key"))
 			len = obj.getInt("key");
@@ -154,7 +151,7 @@ public class MiscUtilManager extends AbstractManager {
 		
 		return sb.toString();
 	}
-	public String ttask(JSONObject obj) throws ClientProtocolException, JSONException, IOException {
+	public String ttask(JSONObject obj) throws Exception {
 		String task = obj.getString("task");
 		ta_.addCard(tasklist_, new JSONObject().put("name", task));
 		return String.format("task \"%s\" added", task);

@@ -23,10 +23,10 @@ public abstract class AbstractManager implements MyManager {
 	 */
 	@Override
 	public String getResultAndFormat(JSONObject res) throws Exception {
-		System.out.println(String.format("%s got: %s",this.getClass().getName(), res.toString()));
+		System.err.println(String.format("%s got: %s",this.getClass().getName(), res.toString()));
 		if(res.has("name") && hasCommand(res))
 		{
-			System.out.println("dispatcher got: "+res.toString());
+			System.err.println("dispatcher got: "+res.toString());
 			return (String)this.getClass().getMethod(res.getString("name"),JSONObject.class)
 					.invoke(this,res);
 		}

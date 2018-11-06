@@ -1,0 +1,6 @@
+{
+	"cardurl":"https://trello.com/c/6o0R7ob6",
+	"dependencies":[
+		"src/main/java/com/github/nailbiter/util/"
+	]
+}

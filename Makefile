@@ -10,13 +10,15 @@ PERLKEYS=--tmpfile $(REBOOTFILE) --cmdfile $(RUNCOMMANDSFILE)
 
 #sources
 ASBOTSOURCES=MyAssistantUserData MyAssistantBot
-MANAGERSOURCES=$(addsuffix Manager,Time Money Test MiscUtil Habit German Gym)
+MANAGERSOURCES=$(addsuffix Manager,Time Money Test MiscUtil Habit German Gym Abstract)
 UTILSOURCES=StorageManager TrelloAssistant MyBasicBot MongoUtil Util TelegramUtil
 HABITMANAGERSOURCES=HabitManagerBase JSONObjectCallback
 SHELLSOURCES=InteractiveShell
 TESTSOURCES=UrlTest JsonTest ParadigmTest
+MISCSOURCES=MashaRemind
 SOURCES=\
  $(addprefix assistantbot/,$(ASBOTSOURCES))\
+ $(addprefix managers/misc/,$(MISCSOURCES))\
  $(addprefix managers/,$(MANAGERSOURCES))\
  $(addprefix shell/,$(SHELLSOURCES))\
  $(addprefix util/,$(UTILSOURCES))\
@@ -33,7 +35,8 @@ all: target/$(JARNAME).jar
 	#java -jar $< $(KEYS) 2>&1 | tee $(LOGFILE)
 	./src/main/pl/run.pl --cmd "java -jar $< $(KEYS) -t $(REBOOTFILE) -c $(RUNCOMMANDSFILE)" $(PERLKEYS) 2>&1 | tee $(LOGFILE)
 offline: target/$(JARNAME).jar
-	java -jar $< -o local $(KEYS) 2>&1 | tee $(LOGFILE)
+	#java -jar $< -o local $(KEYS) 2>&1 | tee $(LOGFILE)
+	java -jar $< -o local $(KEYS) 2>$(LOGFILE)
 
 target/$(JARNAME).jar : $(addprefix src/main/java/,$(addsuffix .java,$(SOURCES))) pom.xml
 	mvn package
