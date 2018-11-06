@@ -1,5 +1,6 @@
 package managers;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.TimeZone;
@@ -45,9 +46,6 @@ public class HabitManager extends HabitManagerBase
 		super(chatID,bot,scheduler_in,myAssistantUserData);
 		
 		streaks_ = bot.getMongoClient().getDatabase("logistics").getCollection("habitspunch");
-//		trelloApi_ = new TrelloImpl(KeyRing.getTrello().getString("key"),
-//				KeyRing.getTrello().getString("token"),
-//				new ApacheHttpClient());
 		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
 				KeyRing.getTrello().getString("token"));
 		habits_ = FetchHabits(bot_.getMongoClient());
@@ -280,9 +278,16 @@ public class HabitManager extends HabitManagerBase
 					.put("name", name)
 					.put("due", new Date(System.currentTimeMillis()+delaymin*60*1000));
 			if(habitObj.has("checklist")) {
-				JSONArray checklist = new JSONArray(habitObj.getJSONArray("checklist").toString());
-				System.err.format("has checklist: %s\n", checklist.toString());
-				checklist.put(0,"TODO");
+				JSONArray checklistIn = habitObj.getJSONArray("checklist");
+				System.err.format("has checklist: %s\n", checklistIn.toString());
+				ArrayList<String> cl = new ArrayList<String>();
+				cl.add("TODO");
+				for(int i = 0;i < checklistIn.length();i++) {
+					cl.add(checklistIn.getString(i));
+				}
+				System.err.format("cl=%s\n", cl.toString());
+				JSONArray checklist =new JSONArray(cl);
+				System.err.format("checklist=%s\n", checklist.toString());
 				obj.put("checklist", checklist);
 			}
 			ta_.addCard(pendingListId_, obj);
