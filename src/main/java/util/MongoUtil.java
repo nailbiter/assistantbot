@@ -15,6 +15,25 @@ public class MongoUtil {
 		String database = split[0], collection = split[1];
 		return new JSONObject(mc.getDatabase(database).getCollection(collection).find().first().toJson());
 	}
+	public static JSONObject GetJsonObjectFromDatabase(MongoClient mc,String databasecollection,String keyValue) throws Exception {
+		String database, collection, keyName, valueName;
+		{
+			String[] split = databasecollection.split("\\.");
+			if(split.length != 2)
+				throw new Exception(String.format("could not split \"%s\" got len=%d", databasecollection,split.length));
+			database = split[0]; collection = split[1];
+		}
+		{
+			String[] split = keyValue.split(":");
+			if(split.length != 2)
+				throw new Exception(String.format("could not split \"%s\" got len=%d", keyValue,split.length));
+			keyName = split[0]; valueName = split[1];
+		}
+		
+		return new JSONObject(mc.getDatabase(database).getCollection(collection)
+				.find(new Document(keyName,valueName))
+				.first().toJson());
+	}
 
 	public static JSONArray GetJSONArrayFromDatabase(MongoClient mc, String databaseName, String collectionName, final String key) {
 		final JSONArray res = new JSONArray();

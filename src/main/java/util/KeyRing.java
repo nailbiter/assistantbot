@@ -27,7 +27,10 @@ public class KeyRing {
 	{
 		return obj_.getString("mailpassword");
 	}
-	public static String get(String key) {
+	public static String getString(String key) {
+		return obj_.getString(key);
+	}
+	public static String getInt(String key) {
 		return obj_.getString(key);
 	}
 	public static JSONObject getTrello() {

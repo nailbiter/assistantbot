@@ -63,7 +63,7 @@ public class MiscUtilManager extends AbstractManager {
 						MakeCommandArg("task",ArgTypes.remainder,false)))));
 	}
 	public String masharemind(JSONObject obj) throws Exception {
-		return MashaRemind.Remind(ta_);
+		return MashaRemind.Remind(ta_,mc_);
 	}
 	public String restart(JSONObject obj) throws Exception {
 		if(obj.getString("command").equals("help")) {

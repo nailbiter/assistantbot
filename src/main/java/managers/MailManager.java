@@ -43,14 +43,14 @@ public class MailManager implements MyManager, OptionReplier{
 	public static final String MAILREPLY = "mailreply";
 	public MailManager(Long chatID, MyBasicBot bot, Scheduler scheduler, MyAssistantUserData myAssistantUserData) throws Exception
 	{
-		String mail = KeyRing.get("memail");
+		String mail = KeyRing.getString("memail");
 		mymail_ = new MyMail(mail, "mail." + mail.substring(mail.indexOf("@")+1), 993,
 				KeyRing.getMailPassword(), "INBOX",scheduler);
 		this.chatID_ = chatID;
 		this.bot_ = bot;
 		this.userData_ = myAssistantUserData;
 		
-		addReplier(KeyRing.get("tmail"));
+		addReplier(KeyRing.getString("tmail"));
 		//addReplier(KeyRing.get("megmail"));
 	}
 	private void addReplier(String m)

@@ -174,7 +174,7 @@ public class MyMail implements Replier, OptionReplier{
 	}
    public void inmain(Message m, String string) throws Exception {
     		String  to, subject = null, from = mail_, 
-    			cc = KeyRing.get("memail"), bcc = null, url = null;
+    			cc = KeyRing.getString("memail"), bcc = null, url = null;
     		String mailhost = null;
     		String mailer = "msgsend";
     		String file = null;
@@ -185,7 +185,7 @@ public class MyMail implements Replier, OptionReplier{
 		if(true)
 			to = m.getFrom()[0].toString();
 		else
-			to = KeyRing.get("megmail");
+			to = KeyRing.getString("megmail");
     		logger_.info(String.format("to=%s", to));
 		
 		Random r = new Random();
