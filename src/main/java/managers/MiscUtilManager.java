@@ -16,6 +16,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 
 import managers.misc.MashaRemind;
+import managers.misc.RandomSetGenerator;
 import util.KeyRing;
 import util.Util;
 import static java.util.Arrays.asList;
@@ -78,8 +79,7 @@ public class MiscUtilManager extends AbstractManager {
 	}
 	public String randset(JSONObject obj) {
 		MongoCollection<Document> col = mc_.getDatabase("logistics").getCollection(DISTRICOLLECTIONBNAME);
-		final ArrayList<JSONObject> data = new ArrayList<JSONObject>(),
-				distribution = new ArrayList<JSONObject>();
+		final ArrayList<JSONObject> data = new ArrayList<JSONObject>();
 		col.find().forEach(new Block<Document>(){
 			@Override
 			public void apply(Document doc) {
@@ -87,51 +87,10 @@ public class MiscUtilManager extends AbstractManager {
 			}
 		});
 		
-		ArrayList<String> res = new ArrayList<String>();
-		while(res.size()<obj.getInt("size")) {
-			System.out.format("iteration #%d\n", res.size()+1);
-			GenerateDistribution(data,distribution);
-			System.out.format("dist: %s\n", distribution.toString());
-			String resS = PickElement(data,distribution);
-			System.out.format("resS: %s\n", resS);
-			res.add(resS);
-			RemoveElementByKey(data,resS);
-		}
-		
-		Collections.sort(res);
+		ArrayList<String> res = RandomSetGenerator.MakeRandomSet(data,obj.getInt("size"));
 		return String.format("%s", res.toString());
 	}
-	private void RemoveElementByKey(ArrayList<JSONObject> data, String resS) {
-		for(int i = 0; i < data.size(); i++) {
-			if(data.get(i).getString("key").equals(resS))
-			{
-				data.remove(i);
-				return;
-			}
-		}
-	}
-	private String PickElement(ArrayList<JSONObject> data, ArrayList<JSONObject> distribution) {
-		double pick = rand_.nextDouble()*distribution.get(distribution.size()-1).getDouble("upper");
-		System.out.format("pick=%g\n", pick);
-		for(int i = 0; i < distribution.size(); i++) {
-			JSONObject obj = distribution.get(i);
-			if(obj.getDouble("lower")<=pick && pick < obj.getDouble("upper"))
-				return obj.getString("key");
-		}
-		return distribution.get(distribution.size()-1).getString("key");
-	}
-	private void GenerateDistribution(ArrayList<JSONObject> data, ArrayList<JSONObject> distribution) {
-		distribution.clear();
-		double total = 0.0;
-		for(int i = 0; i < data.size(); i++) {
-			JSONObject obj = new JSONObject();
-			obj.put("lower", total);
-			total += data.get(i).getDouble("probability");
-			obj.put("upper", total);
-			obj.put("key", data.get(i).getString("key"));
-			distribution.add(obj);
-		}
-	}
+	
 	public String exit(JSONObject obj) {
 		System.exit(0);
 		return "";

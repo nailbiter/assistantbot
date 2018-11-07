@@ -15,7 +15,7 @@ UTILSOURCES=StorageManager TrelloAssistant MyBasicBot MongoUtil Util TelegramUti
 HABITMANAGERSOURCES=HabitManagerBase JSONObjectCallback
 SHELLSOURCES=InteractiveShell
 TESTSOURCES=UrlTest JsonTest ParadigmTest
-MISCSOURCES=MashaRemind
+MISCSOURCES=MashaRemind RandomSetGenerator
 SOURCES=\
  $(addprefix assistantbot/,$(ASBOTSOURCES))\
  $(addprefix managers/misc/,$(MISCSOURCES))\
