@@ -29,7 +29,7 @@ public class MongoUtil {
 				throw new Exception(String.format("could not split \"%s\" got len=%d", keyValue,split.length));
 			keyName = split[0]; valueName = split[1];
 		}
-		
+		System.err.format("db=%s, coll=%s,\nkey=%s, val=%s\n", database,collection,keyName,valueName);
 		return new JSONObject(mc.getDatabase(database).getCollection(collection)
 				.find(new Document(keyName,valueName))
 				.first().toJson());
