@@ -38,8 +38,8 @@ all: target/$(JARNAME).jar
 	./src/main/pl/run.pl --cmd "java -jar $< $(KEYS) -t $(REBOOTFILE) -c $(RUNCOMMANDSFILE)" $(PERLKEYS) 2>&1 | tee $(LOGFILE)
 offline: target/$(JARNAME).jar
 	#java -jar $< -o local $(KEYS) 2>&1 | tee $(LOGFILE)
-	#java -jar $< -o local $(KEYS) 2>$(LOGFILE)
-	mvn exec:exec -Dexec.executable="java" -Dexec.args="-classpath %classpath Main -o local $(KEYS)" 2>$(LOGFILE)
+	java -classpath $(subst HHOOMMEE,$(shell echo ~),$(shell cat cp.txt)) Main -o local $(KEYS) 2>$(LOGFILE)
+	#mvn exec:exec -Dexec.executable="echo" -Dexec.args="%classpath" 2>&1 |tee $(LOGFILE)
 
 target/$(JARNAME).jar : $(addprefix src/main/java/,$(addsuffix .java,$(SOURCES))) pom.xml
 	mvn package
