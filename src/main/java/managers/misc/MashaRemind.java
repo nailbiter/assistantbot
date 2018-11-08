@@ -21,7 +21,6 @@ public class MashaRemind {
 	private static final String MASHALISTID = "5b610f6d34d70854e769326d";
 	private static final SimpleDateFormat DF = Util.GetTrelloDateFormat();
 	private static final String BASICMESSAGE = "Маша, у тебя есть несделанные задачи:";
-	private static final String MARGINKEY = "mashaRemindMargin";
 	private MashaRemind() {
 		
 	}
@@ -56,10 +55,13 @@ public class MashaRemind {
 		for(JSONObject obj:tasks) {
 			tb.newRow();
 			tb.addToken(CutString(obj.getString("name"),parameters.getInt("margin")));
-			if(obj.getDouble("daysTill")<1) {
-				tb.addToken(String.format("%.3f", obj.getDouble("daysTill")));
+			double daysTill = obj.getDouble("daysTill"); 
+			if(daysTill<0) {
+				tb.addToken(String.format("**%.3f**", daysTill));
+			} else if(daysTill<1) {
+				tb.addToken(String.format("%.3f", daysTill));
 			} else {
-				tb.addToken(StringUtils.repeat("*",(int)obj.getDouble("daysTill")));
+				tb.addToken(StringUtils.repeat("*",(int)daysTill));
 			}
 		}
 		sb.append(tb.toString());
