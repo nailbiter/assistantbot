@@ -57,11 +57,11 @@ public class MashaRemind {
 			tb.addToken(CutString(obj.getString("name"),parameters.getInt("margin")));
 			double daysTill = obj.getDouble("daysTill"); 
 			if(daysTill<0) {
-				tb.addToken(String.format("**%.3f**", daysTill));
+				tb.addToken(String.format("** %.3f **", daysTill));
 			} else if(daysTill<1) {
 				tb.addToken(String.format("%.3f", daysTill));
 			} else {
-				tb.addToken(StringUtils.repeat("*",(int)daysTill));
+				tb.addToken(StringUtils.repeat(parameters.getString("filler"),(int)daysTill));
 			}
 		}
 		sb.append(tb.toString());
