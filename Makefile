@@ -1,12 +1,14 @@
 .PHONY: all offline pull jar gym
 
-JARNAME=assistantBot-0.0.1-SNAPSHOT-jar-with-dependencies
+#JARSUFF=-jar-with-dependencies
+JARNAME=assistantBot-0.0.1-SNAPSHOT$(JARSUFF)
 RESFOLDER=src/main/resources/assistantBotFiles/
 LOGFILE=log/log.txt
 REBOOTFILE=tmp/restart.txt
 RUNCOMMANDSFILE=src/main/resources/runcommands.json
 KEYS=-r $(RESFOLDER) -n AssistantBot -p `cat secret.txt`
 PERLKEYS=--tmpfile $(REBOOTFILE) --cmdfile $(RUNCOMMANDSFILE)
+MAINCLASS=Main
 
 #sources
 ASBOTSOURCES=MyAssistantUserData MyAssistantBot
@@ -15,7 +17,7 @@ UTILSOURCES=StorageManager TrelloAssistant MyBasicBot MongoUtil Util TelegramUti
 HABITMANAGERSOURCES=HabitManagerBase JSONObjectCallback
 SHELLSOURCES=InteractiveShell
 TESTSOURCES=UrlTest JsonTest ParadigmTest
-MISCSOURCES=MashaRemind RandomSetGenerator
+MISCSOURCES=MashaRemind RandomSetGenerator NoteMaker
 SOURCES=\
  $(addprefix assistantbot/,$(ASBOTSOURCES))\
  $(addprefix managers/misc/,$(MISCSOURCES))\
@@ -36,7 +38,8 @@ all: target/$(JARNAME).jar
 	./src/main/pl/run.pl --cmd "java -jar $< $(KEYS) -t $(REBOOTFILE) -c $(RUNCOMMANDSFILE)" $(PERLKEYS) 2>&1 | tee $(LOGFILE)
 offline: target/$(JARNAME).jar
 	#java -jar $< -o local $(KEYS) 2>&1 | tee $(LOGFILE)
-	java -jar $< -o local $(KEYS) 2>$(LOGFILE)
+	#java -jar $< -o local $(KEYS) 2>$(LOGFILE)
+	mvn exec:exec -Dexec.executable="java" -Dexec.args="-classpath %classpath Main -o local $(KEYS)" 2>$(LOGFILE)
 
 target/$(JARNAME).jar : $(addprefix src/main/java/,$(addsuffix .java,$(SOURCES))) pom.xml
 	mvn package

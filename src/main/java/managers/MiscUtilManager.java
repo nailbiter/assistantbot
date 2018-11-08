@@ -16,6 +16,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 
 import managers.misc.MashaRemind;
+import managers.misc.NoteMaker;
 import managers.misc.RandomSetGenerator;
 import util.KeyRing;
 import util.Util;
@@ -33,6 +34,7 @@ public class MiscUtilManager extends AbstractManager {
 	private MongoClient mc_;
 	private static final String TASKLISTNAME = "todo";
 	private static final String DISTRICOLLECTIONBNAME = "randsetdistrib";
+	NoteMaker nm_ = null;
 	
 	
 	public MiscUtilManager(MongoClient mc) throws Exception {
@@ -45,6 +47,7 @@ public class MiscUtilManager extends AbstractManager {
 			e.printStackTrace(System.err);
 		}
 		mc_ = mc;
+		nm_ = new NoteMaker(mc);
 	}
 	@Override
 	public JSONArray getCommands() {
@@ -56,12 +59,18 @@ public class MiscUtilManager extends AbstractManager {
 								)))
 				.put(MakeCommand("randset","return randomly generated set",
 						asList(MakeCommandArg("size",ArgTypes.integer,false))))
+				.put(MakeCommand("note","make note",asList(MakeCommandArg("notecontent",ArgTypes.remainder,false))))
 				.put(MakeCommand("exit", "exit the bot", new ArrayList<JSONObject>()))
 				.put(MakeCommand("masharemind", "masha reminder", new ArrayList<JSONObject>()))
 				.put(MakeCommand("restart", "restart the bot",
 						asList(MakeCommandArg("command",ArgTypes.remainder,true))))
 				.put(MakeCommand("ttask", "make new task", Arrays.asList((
 						MakeCommandArg("task",ArgTypes.remainder,false)))));
+	}
+	public String note(JSONObject obj) {
+		String noteContent = obj.getString("notecontent");
+		nm_.makeNote(noteContent);
+		return String.format("made note \"%s\"", noteContent);
 	}
 	public String masharemind(JSONObject obj) throws Exception {
 		return MashaRemind.Remind(ta_,mc_);
