@@ -35,11 +35,10 @@ all: target/$(JARNAME).jar
 	mkdir -p tmp
 	rm -rf $(REBOOTFILE)
 	#java -jar $< $(KEYS) 2>&1 | tee $(LOGFILE)
-	./src/main/pl/run.pl --cmd "java -classpath $(subst HHOOMMEE,$(shell echo ~),$(shell cat cp.txt)) Main $< $(KEYS) -t $(REBOOTFILE) -c $(RUNCOMMANDSFILE)" $(PERLKEYS) 2>&1 | tee $(LOGFILE)
+	./src/main/pl/run.pl --cmd "java -classpath $(subst HHOOMMEE,$(shell echo ~),$(shell cat cp.txt)) Main $(KEYS) -t $(REBOOTFILE) -c $(RUNCOMMANDSFILE)" $(PERLKEYS) 2>&1 | tee $(LOGFILE)
 offline: target/$(JARNAME).jar
 	java -classpath $(subst HHOOMMEE,$(shell echo ~),$(shell cat cp.txt)) Main -o local $(KEYS) 2>$(LOGFILE)
 	#mvn exec:exec -Dexec.executable="echo" -Dexec.args="%classpath" 2>&1 |tee $(LOGFILE)
-
 target/$(JARNAME).jar : $(addprefix src/main/java/,$(addsuffix .java,$(SOURCES))) pom.xml
 	mvn compile
 	touch $@
