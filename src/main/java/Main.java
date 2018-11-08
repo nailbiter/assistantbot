@@ -7,11 +7,10 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import assistantbot.MyAssistantBot;
-import opts.Option;
 import shell.InteractiveShell;
 import util.Util;
-import static opts.Option.ArgEnum;
-
+import com.github.nailbiter.util.opts.Option;
+import static com.github.nailbiter.util.opts.Option.ArgEnum;
 public class Main {
     public static void main(String[] args) {
     	ArrayList<Option> opts = new ArrayList<Option>();

@@ -24,10 +24,10 @@ SOURCES=\
  $(addprefix managers/,$(MANAGERSOURCES))\
  $(addprefix shell/,$(SHELLSOURCES))\
  $(addprefix util/,$(UTILSOURCES))\
- $(addprefix com/github/nailbiter/util/,TrelloAssistant Util)\
+ $(addprefix com/github/nailbiter/util/,TrelloAssistant Util opts/Option)\
  $(addprefix managers/tests/,$(TESTSOURCES))\
  $(addprefix managers/habits/,$(HABITMANAGERSOURCES))\
- opts/Option Main
+ $(MAINCLASS)
 
 
 all: target/$(JARNAME).jar
@@ -48,6 +48,6 @@ pull:
 	cd src/main/java/com/github/nailbiter/util && git pull
 jar:
 	mvn compile
-	touch $@
+	touch target/$(JARNAME).jar
 gym:
 	./src/main/pl/makeGym.pl --program src/main/resources/gym.json
