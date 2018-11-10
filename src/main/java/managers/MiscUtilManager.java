@@ -2,7 +2,6 @@ package managers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Random;
 
@@ -61,7 +60,7 @@ public class MiscUtilManager extends AbstractManager {
 						asList(MakeCommandArg("size",ArgTypes.integer,false))))
 				.put(MakeCommand("note","make note",asList(MakeCommandArg("notecontent",ArgTypes.remainder,false))))
 				.put(MakeCommand("exit", "exit the bot", new ArrayList<JSONObject>()))
-				.put(MakeCommand("masharemind", "masha reminder", new ArrayList<JSONObject>()))
+//				.put(MakeCommand("masharemind", "masha reminder", new ArrayList<JSONObject>()))
 				.put(MakeCommand("restart", "restart the bot",
 						asList(MakeCommandArg("command",ArgTypes.remainder,true))))
 				.put(MakeCommand("ttask", "make new task", Arrays.asList((

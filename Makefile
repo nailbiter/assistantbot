@@ -12,7 +12,7 @@ MAINCLASS=Main
 
 #sources
 ASBOTSOURCES=MyAssistantUserData MyAssistantBot
-MANAGERSOURCES=$(addsuffix Manager,Time Money Test MiscUtil Habit German Gym Abstract)
+MANAGERSOURCES=$(addsuffix Manager,Time Money Test MiscUtil Habit German Gym Abstract Report)
 UTILSOURCES=StorageManager TrelloAssistant MyBasicBot MongoUtil Util TelegramUtil
 HABITMANAGERSOURCES=HabitManagerBase JSONObjectCallback
 SHELLSOURCES=InteractiveShell
