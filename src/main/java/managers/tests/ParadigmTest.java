@@ -8,6 +8,7 @@ import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.github.nailbiter.util.TableBuilder;
 import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -16,7 +17,6 @@ import managers.MyManager;
 import managers.Replier;
 import managers.TestManager;
 import util.MyBasicBot;
-import util.TableBuilder;
 
 public class ParadigmTest extends JsonTest{
 	private Logger logger_ = Logger.getLogger(this.getClass().getName());
@@ -52,7 +52,7 @@ public class ParadigmTest extends JsonTest{
 		int colNum = row.length(),
 				rowNum = col.length() - 1;
 		logger_.info(String.format("colnum=%d, rownum=%d", colNum,rowNum));
-		util.TableBuilder tb = new util.TableBuilder();
+		com.github.nailbiter.util.TableBuilder tb = new com.github.nailbiter.util.TableBuilder();
 		for(int i = 0; i < rowNum ; i++)
 		{
 			tb.newRow();

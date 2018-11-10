@@ -4,13 +4,13 @@ import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.github.nailbiter.util.TableBuilder;
 import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Sorts;
 
 import util.MongoUtil;
-import util.TableBuilder;
 
 import static java.util.Arrays.asList;
 import static util.parsers.StandardParser.ArgTypes;

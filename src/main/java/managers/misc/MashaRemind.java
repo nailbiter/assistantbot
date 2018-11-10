@@ -10,12 +10,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.github.nailbiter.util.TableBuilder;
 import com.github.nailbiter.util.TrelloAssistant;
 import com.github.nailbiter.util.Util;
 import com.mongodb.MongoClient;
 
 import util.MongoUtil;
-import util.TableBuilder;
 
 public class MashaRemind {
 	private static final String MASHALISTID = "5b610f6d34d70854e769326d";

@@ -86,7 +86,7 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 					return Integer.compare(o2.getValue(),o1.getValue());
 				}
 			});
-		util.TableBuilder tb = new util.TableBuilder();
+		com.github.nailbiter.util.TableBuilder tb = new com.github.nailbiter.util.TableBuilder();
 		for(int i = 0; i < list.size(); i++){
 			tb.newRow();
 			tb.addToken(list.get(i).getKey()+":");

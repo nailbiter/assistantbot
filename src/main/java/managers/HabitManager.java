@@ -102,7 +102,7 @@ public class HabitManager extends HabitManagerBase
 	{
 		System.out.println("getHabitsInfo");
 		System.out.println("len="+habits_.length());
-		util.TableBuilder tb = new util.TableBuilder();
+		com.github.nailbiter.util.TableBuilder tb = new com.github.nailbiter.util.TableBuilder();
 		{
 			tb.newRow();
 			tb.addToken("name");
@@ -189,7 +189,7 @@ public class HabitManager extends HabitManagerBase
 		System.out.println("getHabitsInfoShort");
 		JSONArray habits = this.getPendingHabitNames();
 		System.out.println("len="+habits.length());
-		util.TableBuilder tb = new util.TableBuilder();
+		com.github.nailbiter.util.TableBuilder tb = new com.github.nailbiter.util.TableBuilder();
 		{
 			tb.newRow();
 			tb.addToken("name");

@@ -4,13 +4,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.github.nailbiter.util.TableBuilder;
 import com.github.nailbiter.util.TrelloAssistant;
 import com.mongodb.MongoClient;
 
 import managers.misc.MashaRemind;
 import util.KeyRing;
 import util.MongoUtil;
-import util.TableBuilder;
 
 import static java.util.Arrays.asList;
 import static util.parsers.StandardParser.ArgTypes;

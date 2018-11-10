@@ -22,7 +22,7 @@ public class BadHabitManager extends AbstractManager implements OptionReplier {
 	Set<Integer> pendingMessages = new HashSet<Integer>();
 	private String listBadHabits(int count) {
 		int index = this.badhabits.length() - 1;
-		util.TableBuilder tb = new util.TableBuilder();
+		com.github.nailbiter.util.TableBuilder tb = new com.github.nailbiter.util.TableBuilder();
 		tb.addNewlineAndTokens("what", "date");
 		while(index>=0 && count>0)
 		{

@@ -94,7 +94,7 @@ public class TaskManager implements MyManager, TaskManagerForTask {
 		return null;
 	}
 	private String getTasks(int tasknum) throws Exception{
-		util.TableBuilder tb = new util.TableBuilder();
+		com.github.nailbiter.util.TableBuilder tb = new com.github.nailbiter.util.TableBuilder();
 		tb.addNewlineAndTokens(new String[] {"#", "completion date","description"});
 		int index = tasks.size() - 1;
 		while(tasknum>0 && index >=0)
@@ -114,7 +114,7 @@ public class TaskManager implements MyManager, TaskManagerForTask {
 
 	String getTasks () throws Exception
 	{
-		util.TableBuilder tb = new util.TableBuilder();
+		com.github.nailbiter.util.TableBuilder tb = new com.github.nailbiter.util.TableBuilder();
 		tb.addNewlineAndTokens(new String[] {"#","duedate", "remaining time","description"});
 		
 		for(int i = 0; i < tasks.size(); i++)

@@ -13,7 +13,7 @@ MAINCLASS=Main
 #sources
 ASBOTSOURCES=MyAssistantUserData MyAssistantBot
 MANAGERSOURCES=$(addsuffix Manager,Time Money Test MiscUtil Habit German Gym Abstract Report)
-UTILSOURCES=StorageManager TrelloAssistant MyBasicBot MongoUtil Util TelegramUtil
+UTILSOURCES=StorageManager MyBasicBot MongoUtil Util TelegramUtil
 HABITMANAGERSOURCES=HabitManagerBase JSONObjectCallback
 SHELLSOURCES=InteractiveShell
 TESTSOURCES=UrlTest JsonTest ParadigmTest
@@ -24,7 +24,7 @@ SOURCES=\
  $(addprefix managers/,$(MANAGERSOURCES))\
  $(addprefix shell/,$(SHELLSOURCES))\
  $(addprefix util/,$(UTILSOURCES))\
- $(addprefix com/github/nailbiter/util/,TrelloAssistant Util opts/Option)\
+ $(addprefix com/github/nailbiter/util/,TrelloAssistant Util opts/Option TableBuilder)\
  $(addprefix managers/tests/,$(TESTSOURCES))\
  $(addprefix managers/habits/,$(HABITMANAGERSOURCES))\
  $(MAINCLASS)
@@ -45,7 +45,7 @@ target/$(JARNAME).jar : $(addprefix src/main/java/,$(addsuffix .java,$(SOURCES))
 pull:
 	git pull
 	cd src/main/java/com/github/nailbiter/util && git pull
-jar:
+jar:$(addprefix src/main/java/,$(addsuffix .java,$(SOURCES))) pom.xml
 	mvn compile
 	touch target/$(JARNAME).jar
 gym:

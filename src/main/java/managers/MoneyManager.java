@@ -78,13 +78,13 @@ public class MoneyManager implements managers.MyManager,OptionReplier{
 	}
 	public String getLastCosts(int howMuch)
 	{
-		final util.TableBuilder tb = new util.TableBuilder();
+		final com.github.nailbiter.util.TableBuilder tb = new com.github.nailbiter.util.TableBuilder();
 		tb.newRow();
 		tb.addToken("amount");
 		tb.addToken("category");
 		tb.addToken("date");
 		final Hashtable<String,Integer> totals = new Hashtable<String,Integer>();
-		final util.TableBuilder tb1 = new util.TableBuilder();
+		final com.github.nailbiter.util.TableBuilder tb1 = new com.github.nailbiter.util.TableBuilder();
 		
 		Block<Document> printBlock = new Block<Document>() {
 		       @Override
@@ -119,7 +119,7 @@ public class MoneyManager implements managers.MyManager,OptionReplier{
 	}
 	public String getMoneyCats()
 	{
-		util.TableBuilder tb = new util.TableBuilder();
+		com.github.nailbiter.util.TableBuilder tb = new com.github.nailbiter.util.TableBuilder();
 		tb.newRow();
 		tb.addToken("name");
 		for(int i = 0; i < cats.length(); i++)

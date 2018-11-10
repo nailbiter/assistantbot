@@ -18,6 +18,7 @@ import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.github.nailbiter.util.TableBuilder;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 
@@ -28,7 +29,6 @@ import managers.tests.UrlTest;
 import managers.tests.JsonTest;
 import util.MyBasicBot;
 import util.StorageManager;
-import util.TableBuilder;
 import util.parsers.StandardParser;
 import static managers.AbstractManager.MakeCommand;
 import static managers.AbstractManager.MakeCommandArg;
