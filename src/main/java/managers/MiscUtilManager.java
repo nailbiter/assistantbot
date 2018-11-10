@@ -60,7 +60,6 @@ public class MiscUtilManager extends AbstractManager {
 						asList(MakeCommandArg("size",ArgTypes.integer,false))))
 				.put(MakeCommand("note","make note",asList(MakeCommandArg("notecontent",ArgTypes.remainder,false))))
 				.put(MakeCommand("exit", "exit the bot", new ArrayList<JSONObject>()))
-//				.put(MakeCommand("masharemind", "masha reminder", new ArrayList<JSONObject>()))
 				.put(MakeCommand("restart", "restart the bot",
 						asList(MakeCommandArg("command",ArgTypes.remainder,true))))
 				.put(MakeCommand("ttask", "make new task", Arrays.asList((
@@ -70,9 +69,6 @@ public class MiscUtilManager extends AbstractManager {
 		String noteContent = obj.getString("notecontent");
 		nm_.makeNote(noteContent);
 		return String.format("made note \"%s\"", noteContent);
-	}
-	public String masharemind(JSONObject obj) throws Exception {
-		return MashaRemind.Remind(ta_,mc_);
 	}
 	public String restart(JSONObject obj) throws Exception {
 		if(obj.getString("command").equals("help")) {

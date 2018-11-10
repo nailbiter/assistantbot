@@ -4,8 +4,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.github.nailbiter.util.TrelloAssistant;
 import com.mongodb.MongoClient;
 
+import managers.misc.MashaRemind;
+import util.KeyRing;
 import util.MongoUtil;
 import util.TableBuilder;
 
@@ -18,19 +21,28 @@ import java.util.ArrayList;
 
 public class ReportManager extends AbstractManager {
 	private MongoClient mc_;
-//	private final static JSONArray MODES = new JSONArray();
+	private TrelloAssistant ta_;
 	public ReportManager(MongoClient mc) {
 		mc_ = mc;
+		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
+				KeyRing.getTrello().getString("token"));
 	}
 	@Override
 	public JSONArray getCommands() {
 		return new JSONArray()
 				.put(MakeCommand("reportshow", "masha reminder", asList(MakeCommandArg("type",ArgTypes.integer,true))));
 	}
-	public String reportshow(JSONObject obj) throws JSONException, Exception {
+	public String mashareport(JSONObject obj) throws Exception {
+		return MashaRemind.Remind(ta_,mc_);
+	}
+	public String myreport(JSONObject obj) {
+		return "myreport";
+	}
+	public String reportshow(JSONObject obj) throws Exception {
 		if(obj.has("type")) {
 			JSONObject oo = MongoUtil.GetJsonObjectFromDatabase(mc_, "logistics.reportDescriptions", new JSONObject().put("type", obj.getInt("type")));
-			return oo.toString();
+			return (String)this.getClass().getMethod(oo.getString("callback"),JSONObject.class)
+					.invoke(this,oo);
 		} else {
 			TableBuilder tb = new TableBuilder();
 			tb.addNewlineAndTokens("type", "description");
@@ -44,6 +56,7 @@ public class ReportManager extends AbstractManager {
 			return tb.toString();
 		}
 	}
+	
 	@Override
 	public String processReply(int messageID, String msg) {
 		return null;
