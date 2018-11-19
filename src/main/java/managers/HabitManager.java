@@ -6,6 +6,7 @@ import java.util.Hashtable;
 import java.util.TimeZone;
 import org.bson.Document;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.github.nailbiter.util.TrelloAssistant;
@@ -314,7 +315,7 @@ public class HabitManager extends HabitManagerBase
 	protected String donep(JSONObject res) throws Exception {
 		return donep_.donep(res);
 	}
-	public String donep(String code) {
+	public String donep(String code) throws JSONException, Exception {
 		return donep_.donep(code);
 	}
 }

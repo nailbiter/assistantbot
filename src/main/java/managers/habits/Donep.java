@@ -3,6 +3,7 @@ package managers.habits;
 import java.util.Hashtable;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.github.nailbiter.util.TrelloAssistant;
@@ -45,7 +46,7 @@ public class Donep {
 		optionMsgs_.put(id,"donep");
 		return "";
 	}
-	public String donep(String code) {
+	public String donep(String code) throws JSONException, Exception {
 		JSONObject obj = null;
 		String name = code.substring(0, code.lastIndexOf(':'));
 		for(Object o:cards_) {
@@ -54,6 +55,7 @@ public class Donep {
 				break;
 			}
 		}
-		return String.format("obj=%s", obj.toString());
+		ta_.removeCard(obj.getString("id"));
+		return String.format("removed %s", obj.toString());
 	}
 }
