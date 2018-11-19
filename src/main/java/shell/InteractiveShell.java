@@ -25,19 +25,23 @@ import it.sauronsoftware.cron4j.Scheduler;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
-public class InteractiveShell {
+public class InteractiveShell implements ResourceProvider {
 	private static String PROMPT = "assistantbot> ";
-	private static MongoClient mc_;
+	static MongoClient mc_;
 	public static void Start(JSONObject profileObj) throws Exception {
+		(new InteractiveShell(profileObj)).start(profileObj);
+	}
+	protected InteractiveShell(JSONObject profileObj) {
 		boolean uselocaldb = profileObj.getBoolean("OFFLINE"); 
 		System.out.format("USELOCALDB=%s\n", Boolean.toString(uselocaldb));
 		
-		ArrayList<MyManager> managers = new ArrayList<MyManager>();
 		DisableLogging();
 		String password = profileObj.getString("PASSWORD");
 		mc_ = uselocaldb ? new MongoClient() : MongoUtil.GetMongoClient(password);
-		ResourceProvider rp_ = GetResourceProvider();
-		PopulateManagers(managers, profileObj,rp_);
+	}
+	protected void start(JSONObject profileObj) throws Exception {
+		ArrayList<MyManager> managers = new ArrayList<MyManager>();
+		PopulateManagers(managers, profileObj,this);
 		StandardParser parser = new StandardParser(managers);
 		managers.add(parser);
 		parser.setPrefix("");
@@ -71,42 +75,38 @@ public class InteractiveShell {
             }
         }
 	}
-	private static ResourceProvider GetResourceProvider() {
-		return new ResourceProvider() {
-			@Override
-			public int sendMessageWithKeyBoard(String msg, JSONArray categories) {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-			@Override
-			public MongoClient getMongoClient() {
-				return mc_;
-			}
-			@Override
-			public void sendMessage(String msg) {
-				// TODO Auto-generated method stub
-			}
-			@Override
-			public Scheduler getScheduler() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-			@Override
-			public int sendMessage(String string, MyManager testManager) throws Exception {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-			@Override
-			public int sendMessageWithKeyBoard(String msg, List<List<InlineKeyboardButton>> makePerCatButtons) {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-			@Override
-			public int sendFile(String fn) {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-		};
+	@Override
+	public int sendMessageWithKeyBoard(String msg, JSONArray categories) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	@Override
+	public MongoClient getMongoClient() {
+		return mc_;
+	}
+	@Override
+	public void sendMessage(String msg) {
+		// TODO Auto-generated method stub
+	}
+	@Override
+	public Scheduler getScheduler() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public int sendMessage(String string, MyManager testManager) throws Exception {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	@Override
+	public int sendMessageWithKeyBoard(String msg, List<List<InlineKeyboardButton>> makePerCatButtons) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	@Override
+	public int sendFile(String fn) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 	private static void DisableLogging() {
 		LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();

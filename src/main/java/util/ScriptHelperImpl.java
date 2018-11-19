@@ -1,0 +1,231 @@
+package util;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.TimeZone;
+
+import javax.script.Invocable;
+import javax.script.ScriptException;
+
+import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.github.nailbiter.util.TableBuilder;
+import com.mongodb.Block;
+import com.mongodb.MongoClient;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Sorts;
+
+import de.vandermeer.asciitable.AsciiTable;
+
+public class ScriptHelperImpl implements ScriptHelper {
+	private static final String METHODFIELDNAME = "method";
+	private static final String DATAFIELDNAME = "data";
+	private static final String ENDDATEKEY = "$enddate";
+	private static final String STARTDATEKEY = "$startdate";
+	private static final String TOTALVALUEKEY = "$total";
+	private static String SIMPLEDATEFORMAT = "MM-dd-YYYY";
+	private static enum TableEngine{
+		ASCIITABLE, TABLEBUILDER,HTML
+	};
+	private Invocable inv_ = null;
+	private MongoClient mongoClient_;
+	public ScriptHelperImpl(MongoClient mongoClient) {
+		mongoClient_ = mongoClient;
+	}
+	public void setInvocable(Invocable inv) {
+		inv_ = inv;
+	}
+	@Override
+	public String execute(String arg) throws NoSuchMethodException, JSONException, ScriptException{
+		JSONObject incoming = new JSONObject(arg);
+		if(incoming.getString(METHODFIELDNAME).equals("printStatTableASCII")) {
+			printStatTableASCII(incoming.getJSONObject(DATAFIELDNAME));
+			return "OK";
+		} else if(incoming.getString(METHODFIELDNAME).equals("getDataFromDatabase")) {
+			return getDataFromDatabase(incoming.getJSONObject(DATAFIELDNAME));
+		} else if(incoming.getString(METHODFIELDNAME).equals("printStatTablePLAIN")) {
+			printStatTablePLAIN(incoming.getJSONObject(DATAFIELDNAME));
+			return "OK";
+		} else if(incoming.getString(METHODFIELDNAME).equals("dropCollection")) {
+				dropCollection(incoming.getJSONObject(DATAFIELDNAME));
+				return "OK";
+		} else if(incoming.getString(METHODFIELDNAME).equals("addToDatabase")) {
+			addToDatabase(incoming.getJSONObject(DATAFIELDNAME));
+			return "OK";
+		} else if(incoming.getString(METHODFIELDNAME).equals("printStatTableHTML")) {
+			printStatTableHTML(incoming.getJSONObject(DATAFIELDNAME));
+			return "OK";
+		} else
+			return String.format("no method \"%s\" found", incoming.getString(METHODFIELDNAME));
+	}
+	private void addToDatabase(JSONObject jsonObject) {
+		String[] split = jsonObject.getString("dbname").trim().split("\\.");
+		System.out.format("database name: %s\n", split[0]);
+		System.out.format("collection name: %s\n", split[1]);
+		MongoCollection<Document> col = mongoClient_.getDatabase(split[0]).getCollection(split[1]);
+		JSONArray array = jsonObject.getJSONArray("data");
+		for(Object o:array) {
+			JSONObject obj = (JSONObject)o;
+			Document doc = new Document(obj.toMap());
+			col.insertOne(doc);
+		}
+	}
+	private void dropCollection(JSONObject jsonObject) {
+		String[] split = jsonObject.getString("dbname").trim().split("\\.");
+		System.err.format("database name: %s\n", split[0]);
+		System.err.format("collection name: %s\n", split[1]);
+		mongoClient_.getDatabase(split[0]).getCollection(split[1]).drop();		
+	}
+	private void printStatTableHTML(JSONObject jsonObject) throws NoSuchMethodException, JSONException, ScriptException {
+		System.err.format("%s was called with %s\n", "printStatTableHTML",jsonObject.toString(2));
+		PrintTable(jsonObject.getJSONArray("data"),jsonObject.getString("colname"),inv_,"recordValueToString",
+				TableEngine.HTML);
+	}
+	private void printStatTablePLAIN(JSONObject jsonObject) throws NoSuchMethodException, JSONException, ScriptException {
+		System.err.format("%s was called with %s\n", "printStatTablePLAIN",jsonObject.toString(2));
+		PrintTable(jsonObject.getJSONArray("data"),jsonObject.getString("colname"),inv_,"recordValueToString",
+				TableEngine.TABLEBUILDER);
+	}
+	private String getDataFromDatabase(JSONObject jsonObject) {
+		System.err.format("%s was called with %s\n", "getDataFromDatabase",jsonObject.toString(2));
+		String[] split = jsonObject.getString("dbname").trim().split("\\.");
+		System.err.format("database name: %s\n", split[0]);
+		System.err.format("collection name: %s\n", split[1]);
+		
+		MongoCollection<Document> col = mongoClient_.getDatabase(split[0]).getCollection(split[1]);
+		
+		FindIterable<Document> queryRes = col.find();
+		if(jsonObject.has("sort")) {
+			Bson sortOrder = getSortOrder(jsonObject.getJSONObject("sort"));
+			queryRes = queryRes.sort(sortOrder);
+		}
+		
+		JSONArray res = new JSONArray();
+		queryRes.forEach(new Block<Document>() {
+			@Override
+			public void apply(Document arg0) {
+				res.put(new JSONObject(arg0.toJson()));
+			}
+		});
+		
+		return res.toString();
+	}
+	private Bson getSortOrder(JSONObject jsonObject) {
+		String key = jsonObject.keySet().iterator().next();
+		if(jsonObject.getInt(key) > 0) {
+			System.err.format("%s: return %s for key \"%s\"\n", "getSortOrder","ascending",key);
+			return Sorts.ascending(key);
+		} else {
+			System.err.format("%s: return %s for key \"%s\"\n", "getSortOrder","descending",key);
+			return Sorts.descending(key);
+		}
+	}
+	private void printStatTableASCII(JSONObject jsonObject) throws NoSuchMethodException, JSONException, ScriptException {
+		System.err.format("%s was called with %s\n", "printStatTableASCII",jsonObject.toString(2));
+		PrintTable(jsonObject.getJSONArray("data"),jsonObject.getString("colname"),inv_,"recordValueToString",
+				TableEngine.ASCIITABLE);
+	}
+	private static void PrintTable(JSONArray res, String databaseName, Invocable inv, String functionName, TableEngine te) throws NoSuchMethodException, JSONException, ScriptException {
+		JSONObject total = new JSONObject();
+		Object at = (te==TableEngine.ASCIITABLE) ? new AsciiTable():
+			(te==TableEngine.TABLEBUILDER) ? new TableBuilder():
+			(te==TableEngine.HTML) ? new StringBuilder("<table>") : null;
+		for(Object o:res) {
+			JSONObject obj = (JSONObject)o;
+			int totalValue = 0;
+			for(String key:obj.keySet())
+				if(!key.equals(ENDDATEKEY) && !key.equals(STARTDATEKEY)) {
+					totalValue += obj.getInt(key);
+					if(!total.has(key))
+						total.put(key, 0);
+					total.put(key, total.getInt(key)+obj.getInt(key));
+				}
+			obj.put(TOTALVALUEKEY, totalValue);
+		}
+		ArrayList<String> categories = new ArrayList<String>();
+		int totalValue = 0;
+		for(String key:total.keySet()) {
+			if(!key.equals(ENDDATEKEY) && !key.equals(STARTDATEKEY) && !key.equals(TOTALVALUEKEY))
+				categories.add(key);
+			totalValue += total.getInt(key);
+		}
+		total.put(TOTALVALUEKEY, totalValue);
+		total.put(STARTDATEKEY, ((JSONObject)res.get(res.length()-1)).getLong(STARTDATEKEY));
+		total.put(ENDDATEKEY, ((JSONObject)res.get(0)).getLong(ENDDATEKEY));
+			
+		Collections.sort(categories, new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				return Integer.compare(total.getInt(o1), total.getInt(o2));
+			}
+		});
+		ArrayList<String> firstRow = new ArrayList<>();
+		for(int i = 0; i < categories.size(); i++) {
+			firstRow.add(categories.get(i));
+			firstRow.add("%");
+		}
+		firstRow.add("TOTAL");
+		firstRow.add("%");
+		firstRow.add(0, "dates");
+		if(te==TableEngine.ASCIITABLE) ((AsciiTable) at).addRule();
+		AddRow(at,te,firstRow);
+		if(te==TableEngine.ASCIITABLE) ((AsciiTable) at).addRule();
+		for(int i = res.length()-1; i>=0; i--)
+			PrintRecord(at,res.getJSONObject(i),categories,databaseName,inv,functionName,total,te);
+		if(te==TableEngine.ASCIITABLE) ((AsciiTable) at).addRule();
+		PrintRecord(at,total,categories,databaseName,inv,functionName,total,te);
+		if(te==TableEngine.ASCIITABLE) ((AsciiTable) at).addRule();
+		
+		if(te==TableEngine.ASCIITABLE)
+			System.out.println(((AsciiTable) at).render());
+		else if(te==TableEngine.TABLEBUILDER)
+			System.out.println((TableBuilder)at);
+		else if(te==TableEngine.HTML) {
+			((StringBuilder)at).append("</table>");
+			System.out.println((StringBuilder)at);
+		}
+	}
+	static void AddRow(Object table,TableEngine te, ArrayList<String> row){
+		if(te==TableEngine.ASCIITABLE)
+			((AsciiTable) table).addRow(row);
+		else if(te==TableEngine.TABLEBUILDER) {
+			((TableBuilder)table).newRow();
+			for(int i = 0; i < row.size(); i++)
+				((TableBuilder)table).addToken(row.get(i));
+		} else if(te==TableEngine.HTML) {
+			((StringBuilder)table).append("<tr>");
+			for(int i = 0; i < row.size(); i++)
+				((StringBuilder)table).append(String.format("<td>%s</td	>", row.get(i)));
+			((StringBuilder)table).append("</tr>");
+		}
+	}
+	private static void PrintRecord(Object at, JSONObject obj, ArrayList<String> categories, String databaseName, Invocable inv, String functionName, JSONObject total,TableEngine te) throws NoSuchMethodException, JSONException, ScriptException {
+		ArrayList<String> row = new ArrayList<String>();
+		SimpleDateFormat df = new SimpleDateFormat(SIMPLEDATEFORMAT );
+		df.setTimeZone (TimeZone.getDefault());
+		String procentFormat = null;
+		if(te==TableEngine.HTML)
+			procentFormat = "<b>%4.2f</b>";
+		else
+			procentFormat = "%4.2f"; 
+		row.add(String.format("%s..%s", 
+				df.format(new Date(obj.getLong(STARTDATEKEY))),
+				df.format(new Date(obj.getLong(ENDDATEKEY)))));
+		for(String category:categories) {
+			System.err.format("fn=%s, obj=%s, dn=%s\n", functionName,obj.toString(),databaseName);
+			row.add((String)inv.invokeFunction(functionName,obj.optInt(category),databaseName));
+			row.add(String.format(procentFormat, (100.0*obj.optInt(category))/obj.getInt(TOTALVALUEKEY)));
+		}
+		row.add((String)inv.invokeFunction(functionName,obj.getInt(TOTALVALUEKEY),databaseName));
+		row.add(String.format(procentFormat, (100.0*obj.getInt(TOTALVALUEKEY))/total.getInt(TOTALVALUEKEY)));
+		AddRow(at,te,row);
+	}
+}
