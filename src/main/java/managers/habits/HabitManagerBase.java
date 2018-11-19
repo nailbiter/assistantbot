@@ -96,9 +96,7 @@ public abstract class HabitManagerBase implements MyManager, OptionReplier{
 		return null;
 	}
 	public String optionReply(String option, Integer msgID) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-		if(optionMsgs_.contains(msgID)) {
-//			return this.taskDone(option);
-//			HabitManager.class.
+		if(optionMsgs_.containsKey(msgID)) {
 			return (String)HabitManager.class.getMethod(optionMsgs_.get(msgID),String.class)
 					.invoke(this,option);
 		}
