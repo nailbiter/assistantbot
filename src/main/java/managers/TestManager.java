@@ -97,14 +97,13 @@ public class TestManager extends AbstractManager implements OptionReplier {
 		return String.format("put %s to scores",doc.toJson());
 	}
 	private double ScoreToDouble(String score) throws Exception{
-//		if()
 		Matcher m = null;
 		if((m = Pattern.compile("\\s*(\\d+)\\s*/\\s*(\\d+)\\s*").matcher(score)).matches()) {
-//		if(score.contains("/")) {
-			String[] scoreParts = score.split("/");
-			return Double.parseDouble(scoreParts[0].trim())/Double.parseDouble(scoreParts[1].trim());
+//			String[] scoreParts = score.split("/");
+//			return Double.parseDouble(scoreParts[0].trim())/Double.parseDouble(scoreParts[1].trim());
+			return Double.parseDouble(m.group(1))/Double.parseDouble(m.group(2));
 		} else if((m = Pattern.compile("\\s*(\\d+)\\s*%\\s*").matcher(score)).matches()) {
-			return Integer.parseInt(m.group(0))/100.0;
+			return Integer.parseInt(m.group(1))/100.0;
 		} else {
 			throw new Exception(String.format("cannot parse %s", score));
 		}
