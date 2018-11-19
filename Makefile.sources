@@ -1,4 +1,4 @@
-ASBOTSOURCES=MyAssistantUserData MyAssistantBot
+ASBOTSOURCES=MyAssistantUserData MyAssistantBot ResourceProvider
 MANAGERSOURCES=$(addsuffix Manager,Time Money Test MiscUtil Habit German Gym Abstract Report)
 UTILSOURCES=StorageManager MyBasicBot MongoUtil Util TelegramUtil JsonUtil
 HABITMANAGERSOURCES=HabitManagerBase JSONObjectCallback Donep Constants

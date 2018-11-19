@@ -19,7 +19,7 @@ import managers.MyManager;
 
 public abstract class MyBasicBot extends TelegramLongPollingBot {
 	private Logger logger_; 
-	protected MongoClient mongoClient = null;
+	protected MongoClient mongoClient_ = null;
 	public MyBasicBot()
 	{
 		logger_ = Logger.getLogger(this.getClass().getName());
@@ -191,6 +191,6 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 		}
 	}
 	public MongoClient getMongoClient() {
-		return mongoClient;
+		return mongoClient_;
 	}
 }

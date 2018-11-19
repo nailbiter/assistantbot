@@ -8,6 +8,8 @@ import com.github.nailbiter.util.TableBuilder;
 import com.github.nailbiter.util.TrelloAssistant;
 import com.mongodb.MongoClient;
 
+import assistantbot.MyAssistantUserData;
+import assistantbot.ResourceProvider;
 import managers.misc.MashaRemind;
 import util.KeyRing;
 import util.MongoUtil;
@@ -22,8 +24,8 @@ import java.util.ArrayList;
 public class ReportManager extends AbstractManager {
 	private MongoClient mc_;
 	private TrelloAssistant ta_;
-	public ReportManager(MongoClient mc) {
-		mc_ = mc;
+	public ReportManager(ResourceProvider rp) {
+		mc_ = rp.getMongoClient();
 		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
 				KeyRing.getTrello().getString("token"));
 	}

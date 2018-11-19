@@ -9,7 +9,7 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import assistantbot.MyAssistantUserData;
+import assistantbot.ResourceProvider;
 import util.Util;
 import util.StorageManager;
 import util.parsers.StandardParser;
@@ -18,7 +18,7 @@ public class BadHabitManager extends AbstractManager implements OptionReplier {
 	JSONArray badhabits = null;
 	String[] bh = {"alcohol","porn","mast","bite nails","pick nose"};
 	JSONArray bhjson = new JSONArray();
-	MyAssistantUserData ud_ = null;
+	ResourceProvider ud_ = null;
 	Set<Integer> pendingMessages = new HashSet<Integer>();
 	private String listBadHabits(int count) {
 		int index = this.badhabits.length() - 1;
@@ -41,7 +41,7 @@ public class BadHabitManager extends AbstractManager implements OptionReplier {
 	{
 		return this.listBadHabits(res.getInt("count"));
 	}
-	public BadHabitManager(MyAssistantUserData myAssistantUserData)
+	public BadHabitManager(ResourceProvider myAssistantUserData)
 	{
 		JSONObject obj = StorageManager.get("badhabits", true);
 		if(!obj.has("a"))

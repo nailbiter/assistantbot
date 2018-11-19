@@ -17,17 +17,16 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Sorts;
 
-import assistantbot.MyAssistantUserData;
-import util.MyBasicBot;
+import assistantbot.ResourceProvider;
 import util.parsers.StandardParser;
 import util.parsers.StandardParser.ArgTypes;
 
 public class MoneyManager implements managers.MyManager,OptionReplier{
 	JSONArray cats = new JSONArray();
-	MyAssistantUserData ud_ = null;
+	ResourceProvider ud_ = null;
 	MongoCollection<Document> money;
 	private static final String PATTERN = "yyyyMMddHHmm";
-	public MoneyManager(MyAssistantUserData myAssistantUserData)
+	public MoneyManager(ResourceProvider myAssistantUserData)
 	{
 		MongoClient mongoClient = myAssistantUserData.getMongoClient();
 		Block<Document> printBlock = new Block<Document>() {

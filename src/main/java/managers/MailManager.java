@@ -7,7 +7,7 @@ package managers;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import assistantbot.MyAssistantUserData;
+import assistantbot.ResourceProvider;
 import it.sauronsoftware.cron4j.Scheduler;
 import mail.KMailReplier;
 import mail.MailReplier;
@@ -38,10 +38,10 @@ import javax.mail.Flags;
 public class MailManager implements MyManager, OptionReplier{
 	protected Long chatID_ = null;
 	MyBasicBot bot_ = null;
-	MyAssistantUserData userData_ = null;
+	ResourceProvider userData_ = null;
 	MyMail mymail_ = null;
 	public static final String MAILREPLY = "mailreply";
-	public MailManager(Long chatID, MyBasicBot bot, Scheduler scheduler, MyAssistantUserData myAssistantUserData) throws Exception
+	public MailManager(Long chatID, MyBasicBot bot, Scheduler scheduler, ResourceProvider myAssistantUserData) throws Exception
 	{
 		String mail = KeyRing.getString("memail");
 		mymail_ = new MyMail(mail, "mail." + mail.substring(mail.indexOf("@")+1), 993,

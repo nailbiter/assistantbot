@@ -8,7 +8,8 @@ import org.json.JSONObject;
 
 import com.github.nailbiter.util.TrelloAssistant;
 
-import assistantbot.MyAssistantUserData;
+import assistantbot.ResourceProvider;
+
 import static managers.habits.Constants.HABITBOARDID;
 import static managers.habits.Constants.TODOLISTNAME;
 
@@ -19,11 +20,11 @@ import static managers.habits.Constants.TODOLISTNAME;
  */
 public class Donep {
 	private TrelloAssistant ta_;
-	private MyAssistantUserData ud_;
+	private ResourceProvider ud_;
 	private Hashtable<Integer, String> optionMsgs_;
 	JSONArray cards_;
 
-	public Donep(TrelloAssistant ta, MyAssistantUserData ud, Hashtable<Integer, String> optionMsgs) {
+	public Donep(TrelloAssistant ta, ResourceProvider ud, Hashtable<Integer, String> optionMsgs) {
 		ta_ = ta;
 		ud_ = ud;
 		optionMsgs_ = optionMsgs;

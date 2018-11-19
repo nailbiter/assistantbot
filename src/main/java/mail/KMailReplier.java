@@ -4,7 +4,7 @@ import java.util.Hashtable;
 
 import org.json.JSONObject;
 
-import assistantbot.MyAssistantUserData;
+import assistantbot.ResourceProvider;
 import managers.MailManager;
 import managers.OptionReplier;
 import managers.Replier;
@@ -15,9 +15,9 @@ public class KMailReplier implements MailReplier{
 	MyBasicBot bot_ = null;
 	Long chatID_;
 	MyMail mymail_ = null;
-	MyAssistantUserData userData_ = null;
+	ResourceProvider userData_ = null;
 	TemplateManager templatemanager_ = null;
-	public KMailReplier(String tmail, MyBasicBot bot, Long chatID, MyAssistantUserData userData, MyMail mymail)
+	public KMailReplier(String tmail, MyBasicBot bot, Long chatID, ResourceProvider userData, MyMail mymail)
 	{
 		bot_ = bot;
 		tmail_ = tmail;

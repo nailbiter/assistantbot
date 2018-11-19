@@ -14,6 +14,8 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 
+import assistantbot.MyAssistantUserData;
+import assistantbot.ResourceProvider;
 import util.parsers.StandardParser;
 
 public class GermanManager extends AbstractManager {
@@ -27,8 +29,8 @@ public class GermanManager extends AbstractManager {
 				.put(AbstractManager.MakeCommand("germanplural", "german plural",
 						Arrays.asList(MakeCommandArg("word",StandardParser.ArgTypes.remainder,false))));
 	}
-	public GermanManager(MongoClient mc){
-		genderCollection_ = mc.getDatabase("logistics").getCollection("gender");
+	public GermanManager(ResourceProvider rp){
+		genderCollection_ = rp.getMongoClient().getDatabase("logistics").getCollection("gender");
 	}
 	protected static String EmptyWrap(String repl) {
 		if(repl==null || repl.isEmpty())

@@ -1,5 +1,6 @@
 {
-	"name":"AssistantBot",
+	"name":"offline",
 	"resfolder":"src/main/resources/assistantBotFiles/",
-	"offline":true
+	"offline":true,
+	"tmpfolder":"tmp"
 }

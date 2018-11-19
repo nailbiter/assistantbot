@@ -12,13 +12,12 @@ import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import assistantbot.MyAssistantUserData;
+import assistantbot.ResourceProvider;
 import it.sauronsoftware.cron4j.Scheduler;
 import managers.AbstractManager;
 import managers.HabitManager;
 import managers.MyManager;
 import managers.OptionReplier;
-import util.MyBasicBot;
 import util.parsers.StandardParser;
 
 public abstract class HabitManagerBase implements MyManager, OptionReplier{
@@ -26,31 +25,31 @@ public abstract class HabitManagerBase implements MyManager, OptionReplier{
 		SENDREMINDER, SETFAILURE;
 	}
 	protected Hashtable<Integer,String> optionMsgs_ = new Hashtable<Integer,String>();
-	protected MyAssistantUserData ud_ = null;
+	protected ResourceProvider ud_ = null;
 	protected Scheduler scheduler_ = null;
-	protected MyBasicBot bot_;
+//	protected MyBasicBot bot_;
 	protected Timer timer = new Timer();
 	protected Logger logger_ = null;
-	Long chatID_;
-	protected HabitManagerBase(Long chatID,MyBasicBot bot,Scheduler scheduler_in, MyAssistantUserData myAssistantUserData){
+//	Long chatID_;
+	protected HabitManagerBase(ResourceProvider myAssistantUserData){
 		logger_ = Logger.getLogger(this.getClass().getName());
 		ud_ = myAssistantUserData;
-		bot_ = bot;
-		scheduler_ = scheduler_in;
-		chatID_ = chatID;
+//		bot_ = bot;
+		scheduler_ = myAssistantUserData.getScheduler();
+//		chatID_ = chatID;
 	}
 	void HabitRunnableDispatch(String name,HabitRunnableEnum code)
 	{
 		System.out.println(String.format("HabitRunnableDispatch(%s,%s)", name,code.toString()));
 		if(code == HabitRunnableEnum.SENDREMINDER) {
-			bot_.sendMessage(getReminderMessage(name), chatID_);
+			ud_.sendMessage(getReminderMessage(name));
 			processSetReminder(name);
 		}
 		if(code==HabitRunnableEnum.SETFAILURE){
 			IfWaitingForHabit(name,new JSONObjectCallback() {
 				@Override
 				public void run(JSONObject obj) {
-					bot_.sendMessage(getFailureMessage(obj.getString("name")), chatID_);
+					ud_.sendMessage(getFailureMessage(obj.getString("name")));
 					processFailure(obj);
 				}
 			});

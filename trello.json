@@ -1,7 +1,7 @@
 {
-   "cardurl" : "https://trello.com/c/h4SF1Omp",
+   "cardurl" : "https://trello.com/c/gNa6Dg4W",
    "pulledData" : {
-      "trelloTitle" : "telegram report skeleton"
+      "trelloTitle" : "manager init in profile"
    },
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"

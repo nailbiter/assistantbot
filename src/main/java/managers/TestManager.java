@@ -22,12 +22,11 @@ import com.github.nailbiter.util.TableBuilder;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 
-import assistantbot.MyAssistantUserData;
+import assistantbot.ResourceProvider;
 import it.sauronsoftware.cron4j.Scheduler;
 import managers.tests.ParadigmTest;
 import managers.tests.UrlTest;
 import managers.tests.JsonTest;
-import util.MyBasicBot;
 import util.parsers.StandardParser;
 
 /**
@@ -36,23 +35,23 @@ import util.parsers.StandardParser;
 public class TestManager extends AbstractManager implements OptionReplier {
 	Long chatID_ = null;
 	Scheduler scheduler_ = null;
-	MyBasicBot bot_ = null;
+//	MyBasicBot bot_ = null;
 	private Logger logger_ = null;
-	MyAssistantUserData ud_ = null;
+	ResourceProvider rp_ = null;
 	Timer timer_ = null;
 	ArrayList<JsonTest> testContainer_ = new ArrayList<JsonTest>();
 	Random rand = new Random();
 	private MongoCollection<Document> testScores_;
 	int lastUsedTestIndex = -1;
-	public TestManager(Long chatID, MyBasicBot bot, Scheduler scheduler, MyAssistantUserData myAssistantUserData) throws Exception{
-		ud_ = myAssistantUserData;
-		chatID_ = chatID;
-		bot_ = bot;
-		scheduler_ = scheduler;
+	public TestManager(ResourceProvider rp) throws Exception{
+		rp_ = rp;
+//		chatID_ = chatID;
+//		bot_ = bot;
+		scheduler_ = rp.getScheduler();
 		logger_ = Logger.getLogger(this.getClass().getName());
 		timer_ = new Timer();
-		AddTests(testContainer_,bot_.getMongoClient());
-		testScores_ = bot_.getMongoClient().getDatabase("logistics").getCollection("scoresOfTests");
+		AddTests(testContainer_,rp_.getMongoClient());
+		testScores_ = rp_.getMongoClient().getDatabase("logistics").getCollection("scoresOfTests");
 	}
 	private static void AddTests(ArrayList<JsonTest> testContainer, MongoClient mongoClient) throws Exception {
 		testContainer.clear();
@@ -118,7 +117,7 @@ public class TestManager extends AbstractManager implements OptionReplier {
 						testContainer_.get(i).toString());
 			return tb.toString();
 		} else if(obj.getInt("index")<0) {
-			AddTests(testContainer_,bot_.getMongoClient());
+			AddTests(testContainer_,rp_.getMongoClient());
 			return String.format("%d tests loaded", testContainer_.size());
 		} else {
 			lastUsedTestIndex = obj.getInt("index");
@@ -135,7 +134,7 @@ public class TestManager extends AbstractManager implements OptionReplier {
 			logger_.info("bad");
 		if(res.length == 1)
 		{
-			id = bot_.sendMessage(res[0], chatID_,this);
+			id = rp_.sendMessage(res[0], this);
 			logger_.info(String.format("index=%d", id));
 			this.waitingForReply.put(id, index);
 		}
@@ -168,6 +167,6 @@ public class TestManager extends AbstractManager implements OptionReplier {
 		JSONArray c = new JSONArray();
 		for(int i = 0; i < categories.length; i++)
 			c.put(categories[i]);
-		return ud_.sendMessageWithKeyBoard(msg, c);
+		return rp_.sendMessageWithKeyBoard(msg, c);
 	}
 }

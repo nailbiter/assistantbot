@@ -14,6 +14,8 @@ import java.util.TimerTask;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import assistantbot.MyAssistantUserData;
+import assistantbot.ResourceProvider;
 import managers.tasks.Task;
 import managers.tasks.TaskManagerForTask;
 import util.Util;
@@ -26,25 +28,28 @@ import util.parsers.StandardParser;
  *
  */
 public class TaskManager implements MyManager, TaskManagerForTask {
-	protected Long chatID_ = null;
-	protected MyBasicBot bot_ = null;
+//	protected Long chatID_ = null;
+//	protected MyBasicBot bot_ = null;
 	Timer timer = new Timer();
 	protected List<Task> tasks = null;
 	protected JSONArray jsontasks = null;
+	private ResourceProvider rp_;
 	protected static int REMINDBEFOREMIN = 10;
-	public TaskManager(Long chatID, MyBasicBot bot)
-	{
-		chatID_ = chatID;
-		bot_ = bot;
-		JSONObject obj = StorageManager.get("tasks", true);
-		if(!obj.has("tasks"))
-			obj.put("tasks", new JSONArray());
-		jsontasks = obj.getJSONArray("tasks");
-		tasks = new ArrayList<Task>();
-		for(int i = 0; i < jsontasks.length(); i++)
-		{
-			tasks.add(new Task(jsontasks.getJSONObject(i),i,this));
-		}
+//	public TaskManager(Long chatID, MyBasicBot bot)
+//	{
+////		bot_ = bot;
+//		JSONObject obj = StorageManager.get("tasks", true);
+//		if(!obj.has("tasks"))
+//			obj.put("tasks", new JSONArray());
+//		jsontasks = obj.getJSONArray("tasks");
+//		tasks = new ArrayList<Task>();
+//		for(int i = 0; i < jsontasks.length(); i++)
+//		{
+//			tasks.add(new Task(jsontasks.getJSONObject(i),i,this));
+//		}
+//	}
+	public TaskManager(ResourceProvider rp) {
+		rp_ = rp;
 	}
 	String tasknew(JSONObject res)
 	{
@@ -149,7 +154,7 @@ public class TaskManager implements MyManager, TaskManagerForTask {
 	}
 	@Override
 	public void sendMessage(String msg) {
-		bot_.sendMessage(msg, chatID_);
+		rp_.sendMessage(msg);
 	}
 	@Override
 	public void schedule(TimerTask tt, Date d) {

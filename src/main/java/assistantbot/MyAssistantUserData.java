@@ -22,15 +22,14 @@ import util.MyBasicBot;
 import util.UserData;
 import util.parsers.AbstractParser;
 
-public class MyAssistantUserData extends UserData {
-	protected Scheduler scheduler = null; //FIXME: should it be a singleton?
+public class MyAssistantUserData extends UserData implements ResourceProvider {
+	protected Scheduler scheduler_ = null; //FIXME: should it be a singleton?
 	protected static boolean ISBOTMANAGER = false;
 	protected List<MyManager> managers = new ArrayList<MyManager>();
 	List<MyManager> getManagers(){return managers;}
 	protected AbstractParser parser = null;
 	String lastCategory = null;
-//	TimeManager tm_ = null;
-	long chatID_;
+	protected long chatID_;
 	MyBasicBot bot_ = null;
 	private Logger logger_; 
 	MyAssistantUserData(Long chatID,MyBasicBot bot){
@@ -39,21 +38,20 @@ public class MyAssistantUserData extends UserData {
 			chatID_ = chatID;
 			bot_ = bot;
 			logger_ = Logger.getLogger(this.getClass().getName());
-			MongoClient mongoClient = bot.getMongoClient();
 			
 			if(!MyAssistantUserData.ISBOTMANAGER)
 			{
-				scheduler = new Scheduler();
-				scheduler.setTimeZone(Util.getTimezone());
+				scheduler_ = new Scheduler();
+				scheduler_.setTimeZone(Util.getTimezone());
 				managers.add(new managers.MoneyManager(this));
-				managers.add(new managers.HabitManager(chatID,bot,scheduler,this));
-				managers.add(new managers.TaskManager(chatID, bot));
-				managers.add(new managers.TestManager(chatID, bot,scheduler,this));
-				managers.add(/*tm_ = */new managers.TimeManager(chatID,bot,scheduler,mongoClient,this));
-				managers.add(new MiscUtilManager(mongoClient));
-				managers.add(new ReportManager(mongoClient));
-				managers.add(new GermanManager(mongoClient));
-				managers.add(new GymManager(mongoClient));
+				managers.add(new managers.HabitManager(this));
+				managers.add(new managers.TaskManager(this));
+				managers.add(new managers.TestManager(this));
+				managers.add(new managers.TimeManager(this));
+				managers.add(new MiscUtilManager(this));
+				managers.add(new ReportManager(this));
+				managers.add(new GermanManager(this));
+				managers.add(new GymManager(this));
 			}
 			managers.add(util.StorageManager.getMyManager());
 			managers.add(new managers.JShellManager(bot));
@@ -69,7 +67,8 @@ public class MyAssistantUserData extends UserData {
 		{
 			e.printStackTrace(System.out);
 		}
-		if(scheduler!=null) scheduler.start();
+		if(scheduler_!=null) 
+			scheduler_.start();
 	}
 //	public boolean isSleeping() {return (tm_ != null) && tm_.isSleeping();}
 	public AbstractParser getParser() {return parser;}
@@ -108,12 +107,7 @@ public class MyAssistantUserData extends UserData {
 		}
 		return res;
 	}
-	/**
-	 * 
-	 * @param msg
-	 * @param categories
-	 * @return message id
-	 */
+	@Override
 	public int sendMessageWithKeyBoard(String msg, JSONArray categories)
 	{
 		final int ROWNUM = 2;
@@ -134,5 +128,22 @@ public class MyAssistantUserData extends UserData {
 		
 		return bot_.sendMessageWithKeyBoard(msg, chatID_, buttons);
 	}
+	@Override
 	public MongoClient getMongoClient() { return bot_.getMongoClient(); }
+	@Override
+	public void sendMessage(String msg) {
+		bot_.sendMessage(msg, chatID_);
+	}
+	@Override
+	public Scheduler getScheduler() {
+		return scheduler_;
+	}
+	@Override
+	public int sendMessage(String msg, MyManager whom) throws Exception {
+		return bot_.sendMessage(msg, chatID_, whom);
+	}
+	@Override
+	public int sendMessageWithKeyBoard(String msg, List<List<InlineKeyboardButton>> buttons) {
+		return bot_.sendMessageWithKeyBoard(msg, chatID_, buttons);
+	}
 }

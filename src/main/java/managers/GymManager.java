@@ -10,6 +10,8 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Sorts;
 
+import assistantbot.MyAssistantUserData;
+import assistantbot.ResourceProvider;
 import util.MongoUtil;
 
 import static java.util.Arrays.asList;
@@ -25,8 +27,8 @@ public class GymManager extends AbstractManager {
 	int dayCount_ = -1;
 	private JSONArray program_;
 
-	public GymManager(MongoClient mongoClient) throws Exception {
-		mongoClient_ = mongoClient;
+	public GymManager(ResourceProvider rp) throws Exception {
+		mongoClient_ = rp.getMongoClient();
 		logger_ = Logger.getLogger(this.getClass().getName());
 		gymSingleton_ = MongoUtil.GetJsonObjectFromDatabase(mongoClient_, "logistics.gymSingleton");
 		logger_.info(String.format("gymSingleton_=%s", gymSingleton_.toString()));

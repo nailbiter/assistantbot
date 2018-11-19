@@ -21,7 +21,7 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.Updates;
 
-import assistantbot.MyAssistantUserData;
+import assistantbot.ResourceProvider;
 import it.sauronsoftware.cron4j.Scheduler;
 import util.Util;
 import util.JsonUtil;
@@ -44,20 +44,23 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 	protected static final String WHEREAREYOUNOW = "北鼻，你在幹什麼？";
 	private static final Date MYDEATHDATA_ = new Date(1991 + 80, 12, 24);
 	protected JSONObject sleepingObj_ = null;
-	Long chatID_;
-	MyBasicBot bot_;
+//	Long chatID_;
+//	MyBasicBot bot_;
 	JSONArray categories_;
 	boolean isWaitingForAnswer_ = false;
 	MongoCollection<Document> time_, sleepingTimes_;
 	int waitingForTimeReportMessageId_ = -1;
 	int waitingForPersistentCategoryChoiceMessageId_ = -1;
+	private ResourceProvider rp_;
 	
-	public TimeManager(Long chatID,MyBasicBot bot,Scheduler scheduler, MongoClient mc, MyAssistantUserData maud) {
+	public TimeManager(ResourceProvider rp) {
+		MongoClient mc = rp.getMongoClient();
+		rp_ = rp;
 		time_ = mc.getDatabase("logistics").getCollection("time");
-		chatID_ = chatID;
-		bot_ = bot;
+//		chatID_ = chatID;
+//		bot_ = bot;
 		categories_ = MongoUtil.GetJSONArrayFromDatabase(mc, "logistics", "timecats");
-		scheduler.schedule(String.format("*/%d * * * *",DELAYMIN), this);
+		rp.getScheduler().schedule(String.format("*/%d * * * *",DELAYMIN), this);
 		sleepingTimes_ = mc.getDatabase("logistics").getCollection("sleepingtimes");
 	}
 	public String timestat(JSONObject res) {
@@ -150,16 +153,16 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 			if(isWaitingForAnswer_) {
 				writeTimeEntry(NOWORKCATNAME);
 				waitingForTimeReportMessageId_ = 
-						bot_.sendMessageWithKeyBoard(WHEREAREYOUNOW, chatID_, MakeButtons(categories_));
+						rp_.sendMessageWithKeyBoard(WHEREAREYOUNOW, MakeButtons(categories_));
 			} else if(isSleeping) {
 				gotUpdate(sleepingObj_.getString("name"));
 				if(sleepingObj_.getString("canBePersistent").equals("message")) {
 					waitingForTimeReportMessageId_ = 
-							bot_.sendMessageWithKeyBoard(WHEREAREYOUNOW, chatID_, MakeButtons(categories_));
+							rp_.sendMessageWithKeyBoard(WHEREAREYOUNOW, MakeButtons(categories_));
 				}
 			} else {
 				waitingForTimeReportMessageId_ = 
-						bot_.sendMessageWithKeyBoard(WHEREAREYOUNOW, chatID_, MakeButtons(categories_));
+						rp_.sendMessageWithKeyBoard(WHEREAREYOUNOW, MakeButtons(categories_));
 				isWaitingForAnswer_ = true;
 			}
 		}
@@ -223,7 +226,7 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 		System.err.format("TimeManager.sleepstart\n");
 		if(!isWaitingForAnswer_) {
 			waitingForPersistentCategoryChoiceMessageId_ = 
-					bot_.sendMessageWithKeyBoard("choose the cat", chatID_, MakePerCatButtons(categories_));
+					rp_.sendMessageWithKeyBoard("choose the cat", MakePerCatButtons(categories_));
 			return "choose the category";
 		} else {
 			return String.format("cannot /sleepstart because isWaitingForAnswer_=%s", 

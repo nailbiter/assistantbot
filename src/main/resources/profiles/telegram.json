@@ -1,4 +1,5 @@
 {
 	"name":"AssistantBot",
-	"resfolder":"src/main/resources/assistantBotFiles/"
+	"resfolder":"src/main/resources/assistantBotFiles/",
+	"tmpfolder":"tmp"
 }

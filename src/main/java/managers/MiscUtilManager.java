@@ -14,6 +14,8 @@ import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 
+import assistantbot.MyAssistantUserData;
+import assistantbot.ResourceProvider;
 import managers.misc.NoteMaker;
 import managers.misc.RandomSetGenerator;
 import util.KeyRing;
@@ -35,7 +37,7 @@ public class MiscUtilManager extends AbstractManager {
 	NoteMaker nm_ = null;
 	
 	
-	public MiscUtilManager(MongoClient mc) throws Exception {
+	public MiscUtilManager(ResourceProvider rp) throws Exception {
 		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
 				KeyRing.getTrello().getString("token"));
 		try{
@@ -44,8 +46,8 @@ public class MiscUtilManager extends AbstractManager {
 		catch(Exception e) {
 			e.printStackTrace(System.err);
 		}
-		mc_ = mc;
-		nm_ = new NoteMaker(mc);
+		mc_ = rp.getMongoClient();
+		nm_ = new NoteMaker(mc_);
 	}
 	@Override
 	public JSONArray getCommands() {

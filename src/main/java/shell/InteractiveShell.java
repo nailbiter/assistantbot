@@ -1,6 +1,7 @@
 package shell;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.jline.reader.Completer;
 import org.jline.reader.LineReader;
@@ -11,6 +12,7 @@ import org.json.JSONObject;
 
 import com.mongodb.MongoClient;
 
+import assistantbot.ResourceProvider;
 import managers.GermanManager;
 import managers.MiscUtilManager;
 import managers.MyManager;
@@ -19,26 +21,24 @@ import util.MongoUtil;
 import util.parsers.StandardParser;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
+import it.sauronsoftware.cron4j.Scheduler;
+
 import org.slf4j.LoggerFactory;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 public class InteractiveShell {
-	private static final String OFFLINEBOTNAME = "offline";
-	private static boolean USELOCALDB;
 	private static String PROMPT = "assistantbot> ";
+	private static MongoClient mc_;
 	public static void Start(JSONObject profileObj) throws Exception {
-		USELOCALDB = profileObj.getBoolean("OFFLINE"); 
-//		if()
-//			USELOCALDB = true;
-//		else if(useLocalDB.toUpperCase().equals("REMOTE"))
-//		else
-//			USELOCALDB = false;
-//		else
-//			throw new Exception(String.format("unknown parameter for -o: \"%s\"", useLocalDB));
-		System.out.format("USELOCALDB=%s\n", Boolean.toString(USELOCALDB));
+		boolean uselocaldb = profileObj.getBoolean("OFFLINE"); 
+		System.out.format("USELOCALDB=%s\n", Boolean.toString(uselocaldb));
 		
 		ArrayList<MyManager> managers = new ArrayList<MyManager>();
 		DisableLogging();
-		PopulateManagers(managers, profileObj.getString("PASSWORD"));
+		String password = profileObj.getString("PASSWORD");
+		mc_ = uselocaldb ? new MongoClient() : MongoUtil.GetMongoClient(password);
+		ResourceProvider rp_ = GetResourceProvider();
+		PopulateManagers(managers, profileObj,rp_);
 		StandardParser parser = new StandardParser(managers);
 		managers.add(parser);
 		parser.setPrefix("");
@@ -72,6 +72,38 @@ public class InteractiveShell {
             }
         }
 	}
+	private static ResourceProvider GetResourceProvider() {
+		return new ResourceProvider() {
+			@Override
+			public int sendMessageWithKeyBoard(String msg, JSONArray categories) {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+			@Override
+			public MongoClient getMongoClient() {
+				return mc_;
+			}
+			@Override
+			public void sendMessage(String msg) {
+				// TODO Auto-generated method stub
+			}
+			@Override
+			public Scheduler getScheduler() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			@Override
+			public int sendMessage(String string, MyManager testManager) throws Exception {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+			@Override
+			public int sendMessageWithKeyBoard(String msg, List<List<InlineKeyboardButton>> makePerCatButtons) {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+		};
+	}
 	private static void DisableLogging() {
 		LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
 		ch.qos.logback.classic.Logger rootLogger = loggerContext.getLogger("org.mongodb.driver");
@@ -85,18 +117,16 @@ public class InteractiveShell {
 					commands.add(((JSONObject)o).getString("name"));
 			}
 		}
-		commands.add("exit");
+//		commands.add("exit");
 	}
-	private static void PopulateManagers(ArrayList<MyManager> managers, String password) throws Exception {
-		MongoClient mc = USELOCALDB ? new MongoClient() : MongoUtil.GetMongoClient(password);
-		
+	private static void PopulateManagers(ArrayList<MyManager> managers, JSONObject profileObj, ResourceProvider rp) throws Exception {
 		System.setProperty("DEBUG.MONGO", "false");
 		System.setProperty("DB.TRACE", "false");
 		
-		KeyRing.init(OFFLINEBOTNAME,mc);
+		KeyRing.init(profileObj.getString("NAME"),mc_);
 
-		managers.add(new GermanManager(mc));
-		managers.add(new MiscUtilManager(mc));
+		managers.add(new GermanManager(rp));
+		managers.add(new MiscUtilManager(rp));
 		managers.add(new MyManager() {
 			@Override
 			public String processReply(int messageID, String msg) {

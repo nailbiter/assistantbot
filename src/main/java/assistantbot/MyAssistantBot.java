@@ -1,20 +1,6 @@
 package assistantbot;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-
-import org.apache.commons.io.IOUtils;
-import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 import managers.MyManager;
@@ -32,8 +18,8 @@ public class MyAssistantBot extends MyBasicBot {
 		{
 			util.StorageManager.init();
 			botUserName_ = (String)profileObj.getString("NAME");
-			mongoClient = MongoUtil.GetMongoClient(profileObj.getString("PASSWORD"));
-			KeyRing.init(botUserName_,mongoClient);
+			mongoClient_ = MongoUtil.GetMongoClient(profileObj.getString("PASSWORD"));
+			KeyRing.init(botUserName_,mongoClient_);
 		}
 		catch(Exception e)
 		{

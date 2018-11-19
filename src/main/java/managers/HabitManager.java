@@ -14,7 +14,8 @@ import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
-import assistantbot.MyAssistantUserData;
+
+import assistantbot.ResourceProvider;
 import it.sauronsoftware.cron4j.Predictor;
 import it.sauronsoftware.cron4j.Scheduler;
 import managers.habits.Donep;
@@ -43,14 +44,15 @@ public class HabitManager extends HabitManagerBase
 	private String failedListId_;
 	Donep donep_;
 
-	public HabitManager(Long chatID,MyBasicBot bot,Scheduler scheduler_in, MyAssistantUserData myAssistantUserData) throws Exception
+	public HabitManager(ResourceProvider rp) throws Exception
 	{
-		super(chatID,bot,scheduler_in,myAssistantUserData);
+//		super(bot,scheduler_in,myAssistantUserData);
+		super(rp);
 		
-		streaks_ = bot.getMongoClient().getDatabase("logistics").getCollection("habitspunch");
+		streaks_ = rp.getMongoClient().getDatabase("logistics").getCollection("habitspunch");
 		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
 				KeyRing.getTrello().getString("token"));
-		habits_ = FetchHabits(bot_.getMongoClient());
+		habits_ = FetchHabits(rp.getMongoClient());
 		failTimes = new Hashtable<String,Date>(habits_.length());
 		pendingListId_ = ta_.findListByName(HABITBOARDID, PENDINGLISTNAME);
 		failedListId_ = ta_.findListByName(HABITBOARDID, "FAILED");
@@ -175,9 +177,7 @@ public class HabitManager extends HabitManagerBase
 			if(habits.length() > 1)
 			{
 				int id = ud_.sendMessageWithKeyBoard("which habbit?", habits);
-//				optionMsgs_.add(id);
 				optionMsgs_.put(id, "taskDone");
-//				return "hi";
 				return "";
 			}
 			else
