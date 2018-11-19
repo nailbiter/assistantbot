@@ -13,11 +13,10 @@ import org.json.JSONObject;
 import com.mongodb.MongoClient;
 
 import assistantbot.ResourceProvider;
-import managers.GermanManager;
-import managers.MiscUtilManager;
 import managers.MyManager;
 import util.KeyRing;
 import util.MongoUtil;
+import util.Util;
 import util.parsers.StandardParser;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
@@ -125,8 +124,9 @@ public class InteractiveShell {
 		
 		KeyRing.init(profileObj.getString("NAME"),mc_);
 
-		managers.add(new GermanManager(rp));
-		managers.add(new MiscUtilManager(rp));
+//		managers.add(new GermanManager(rp));
+//		managers.add(new MiscUtilManager(rp));
+		Util.PopulateManagers(managers, profileObj.getJSONArray("MANAGERS"), rp);
 		managers.add(new MyManager() {
 			@Override
 			public String processReply(int messageID, String msg) {

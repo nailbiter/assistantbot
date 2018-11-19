@@ -2,5 +2,6 @@
 	"name":"offline",
 	"resfolder":"src/main/resources/assistantBotFiles/",
 	"offline":true,
-	"tmpfolder":"tmp"
+	"tmpfolder":"tmp",
+	"managers":["GermanManager","MiscUtilManager"]
 }

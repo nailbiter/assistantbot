@@ -1,5 +1,16 @@
 {
 	"name":"AssistantBot",
 	"resfolder":"src/main/resources/assistantBotFiles/",
-	"tmpfolder":"tmp"
+	"tmpfolder":"tmp",
+	"managers":[
+		"MoneyManager",
+		"HabitManager",
+		"TaskManager",
+		"TestManager",
+		"TimeManager",
+		"MiscUtilManager",
+		"ReportManager",
+		"GermanManager",
+		"GymManager"
+	]
 }

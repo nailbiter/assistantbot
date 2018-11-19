@@ -1,9 +1,9 @@
 {
-   "cardurl" : "https://trello.com/c/gNa6Dg4W",
    "pulledData" : {
       "trelloTitle" : "manager init in profile"
    },
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
-   ]
+   ],
+   "cardurl" : "https://trello.com/c/gNa6Dg4W"
 }

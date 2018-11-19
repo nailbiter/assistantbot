@@ -25,14 +25,14 @@ import util.parsers.AbstractParser;
 public class MyAssistantUserData extends UserData implements ResourceProvider {
 	protected Scheduler scheduler_ = null; //FIXME: should it be a singleton?
 	protected static boolean ISBOTMANAGER = false;
-	protected List<MyManager> managers = new ArrayList<MyManager>();
-	List<MyManager> getManagers(){return managers;}
+	protected List<MyManager> managers_ = new ArrayList<MyManager>();
+	List<MyManager> getManagers(){return managers_;}
 	protected AbstractParser parser = null;
 	String lastCategory = null;
 	protected long chatID_;
 	MyBasicBot bot_ = null;
 	private Logger logger_; 
-	MyAssistantUserData(Long chatID,MyBasicBot bot){
+	MyAssistantUserData(Long chatID,MyBasicBot bot, JSONArray names){
 		try 
 		{
 			chatID_ = chatID;
@@ -43,25 +43,17 @@ public class MyAssistantUserData extends UserData implements ResourceProvider {
 			{
 				scheduler_ = new Scheduler();
 				scheduler_.setTimeZone(Util.getTimezone());
-				managers.add(new managers.MoneyManager(this));
-				managers.add(new managers.HabitManager(this));
-				managers.add(new managers.TaskManager(this));
-				managers.add(new managers.TestManager(this));
-				managers.add(new managers.TimeManager(this));
-				managers.add(new MiscUtilManager(this));
-				managers.add(new ReportManager(this));
-				managers.add(new GermanManager(this));
-				managers.add(new GymManager(this));
+				Util.PopulateManagers(managers_, names, this);
 			}
-			managers.add(util.StorageManager.getMyManager());
-			managers.add(new managers.JShellManager(bot));
+			managers_.add(util.StorageManager.getMyManager());
+			managers_.add(new managers.JShellManager(bot));
 			
 			if(MyAssistantUserData.ISBOTMANAGER)
 				parser = new util.parsers.BotManagerParser();
 			else
-				parser = new util.parsers.StandardParser(managers);
+				parser = new util.parsers.StandardParser(managers_);
 			
-			managers.add(parser);
+			managers_.add(parser);
 		}
 		catch(Exception e)
 		{
@@ -97,12 +89,12 @@ public class MyAssistantUserData extends UserData implements ResourceProvider {
 	private List<OptionReplier> getOptionRepliers()
 	{
 		ArrayList<OptionReplier> res = new ArrayList<OptionReplier>();
-		for(int i = 0; i < managers.size(); i++)
+		for(int i = 0; i < managers_.size(); i++)
 		{
-			if(OptionReplier.class.isAssignableFrom(managers.get(i).getClass()))
+			if(OptionReplier.class.isAssignableFrom(managers_.get(i).getClass()))
 			{
-				res.add((OptionReplier)managers.get(i));
-				System.out.format("adding %s\n", managers.get(i).getClass().getName());
+				res.add((OptionReplier)managers_.get(i));
+				System.out.format("adding %s\n", managers_.get(i).getClass().getName());
 			}
 		}
 		return res;

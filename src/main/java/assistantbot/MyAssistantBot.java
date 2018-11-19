@@ -12,10 +12,12 @@ import util.TelegramUtil;
 
 public class MyAssistantBot extends MyBasicBot {
 	private String botUserName_;
+	private JSONObject profileObj_;
 	public MyAssistantBot(JSONObject profileObj)
 	{
 		try
 		{
+			profileObj_ = profileObj;
 			util.StorageManager.init();
 			botUserName_ = (String)profileObj.getString("NAME");
 			mongoClient_ = MongoUtil.GetMongoClient(profileObj.getString("PASSWORD"));
@@ -48,7 +50,7 @@ public class MyAssistantBot extends MyBasicBot {
 
 	@Override
 	protected UserData createUserData(Long chatId) {
-		return new MyAssistantUserData(chatId,this);
+		return new MyAssistantUserData(chatId,this,profileObj_.getJSONArray("MANAGERS"));
 	}
 
 	@Override

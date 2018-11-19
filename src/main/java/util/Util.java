@@ -11,12 +11,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.lang.reflect.Constructor;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
+import managers.MyManager;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
+
+import assistantbot.ResourceProvider;
 
 /**
  * 
@@ -157,5 +163,25 @@ public class Util{
 	}
 	public static String GetRebootCommandFileName() {
 		return rebootCommandFileName_ ;
+	}
+	public static void PopulateManagers(List<MyManager> managers,JSONArray names,ResourceProvider rp) throws Exception {
+		for(Object o:names) {
+			String name = (String)o;
+			if(name==null)
+				continue;
+			String cn = String.format("%s.%s","managers", name);
+			try {
+				Class<?> clazz = Class.forName(cn);
+				Constructor<?> constructor = clazz.getConstructor(ResourceProvider.class);
+				Object instance = constructor.newInstance(rp);
+				managers.add((MyManager) instance);
+			}
+			catch(Exception e) {
+				e.printStackTrace();
+				System.err.format("cannot instantiate %s\n", cn);
+				throw e;
+			}
+			System.err.format("added %s\n", cn);
+		}
 	}
 }
