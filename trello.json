@@ -1,9 +1,9 @@
 {
+   "dependencies" : [
+      "src/main/java/com/github/nailbiter/util/"
+   ],
    "cardurl" : "https://trello.com/c/L29D8yDH",
    "pulledData" : {
       "trelloTitle" : "testsetscore procent"
-   },
-   "dependencies" : [
-      "src/main/java/com/github/nailbiter/util/"
-   ]
+   }
 }

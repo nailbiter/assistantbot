@@ -143,7 +143,8 @@ public class TestManager extends AbstractManager implements OptionReplier {
 			sendMessageWithKeyBoard(res[0], Arrays.copyOfRange(res, 1, res.length));
 		}
 			
-		return res.toString();
+//		return res.toString();
+		return "";
 	}
 
 	@Override
