@@ -66,6 +66,7 @@ public abstract class HabitManagerBase implements MyManager, OptionReplier{
 		res.put(AbstractManager.MakeCommand("done", "done habit",
 				Arrays.asList(AbstractManager.MakeCommandArg("habit", StandardParser.ArgTypes.remainder, true))));
 		res.put(AbstractManager.MakeCommand("doneg", "done habit graphically",new ArrayList<JSONObject>()));
+		res.put(AbstractManager.MakeCommand("donep", "done habit graphically",new ArrayList<JSONObject>()));
 		
 		return res;
 	}
@@ -86,6 +87,8 @@ public abstract class HabitManagerBase implements MyManager, OptionReplier{
 				return taskDone(res.optString("habit"));
 			if(res.getString("name").compareTo("doneg")==0)
 				return doneg(res);
+			if(res.getString("name").equals("donep"))
+				return donep(res);
 		}
 		return null;
 	}
@@ -95,6 +98,8 @@ public abstract class HabitManagerBase implements MyManager, OptionReplier{
 		else
 			return null;
 	}
+	
+	abstract protected String donep(JSONObject res);
 	abstract protected String doneg(JSONObject res);
 	abstract protected String taskDone(String optString);
 	abstract protected String getHabitsInfo() throws Exception;

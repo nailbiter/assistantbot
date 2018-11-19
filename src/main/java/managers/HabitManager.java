@@ -306,4 +306,12 @@ public class HabitManager extends HabitManagerBase
 		timer.schedule(new HabitRunnable(name,HabitRunnableEnum.SETFAILURE,this),
 				(long)min*60*1000);
 	}
+	@Override
+	protected String donep(JSONObject res) {
+		int id = ud_.sendMessageWithKeyBoard("which habbit?", new JSONArray()
+				.put("A")
+				.put("B")
+				.put("C"));
+		return "";
+	}
 }

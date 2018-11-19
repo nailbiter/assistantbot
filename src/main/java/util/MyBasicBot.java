@@ -54,7 +54,8 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 				message.setChatId(update.getMessage().getChatId());								
 				message.setParseMode("HTML");
 				
-				execute(message); // Call method to send the message
+				if(reply.length()>0)
+					execute(message);
 			}
 			else if(update.hasCallbackQuery())
 				this.processUpdateWithCallbackQuery(update);

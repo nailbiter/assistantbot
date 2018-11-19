@@ -29,10 +29,8 @@ import util.TelegramUtil;
 public class MyAssistantBot extends MyBasicBot {
 	private String botUserName_;
 	public static MongoClient GetMongoClient(String password) {
-//		System.out.println("GetMongoClient");
 		String url = String.format("mongodb://%s:%s@ds149672.mlab.com:49672/logistics", 
                 "nailbiter",password);
-//		System.out.format("GetMongoClient, url=\"%s\"\n",url);
 		MongoClientURI uri = null;
 		try {
 			uri = new MongoClientURI(url);
@@ -40,8 +38,6 @@ public class MyAssistantBot extends MyBasicBot {
 		catch(Exception e) {
 			System.out.format("EXCEPTION!\n");
 		}
-//		System.out.format("GetMongoClient, url=\"%s\"\n",url);
-//		System.out.format("uri=\"%s\"\n", uri);
 		return new MongoClient(uri);
 	}
 	public MyAssistantBot(Map<Character, Object> commandline)
@@ -73,8 +69,6 @@ public class MyAssistantBot extends MyBasicBot {
 		else
 		{
 			res = ((MyAssistantUserData)ud).getParser().parse(msg.getText());
-			/*if(msg.isReply())
-				res.put("replyID", msg.getReplyToMessage().getMessageId());*/
 			return res;
 		}
 			
