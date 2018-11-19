@@ -319,7 +319,7 @@ public class HabitManager extends HabitManagerBase
 		String listid = ta_.findListByName(HABITBOARDID, TODOLISTNAME);
 		return "";
 	}
-	protected String donep(String code) {
+	public String donep(String code) {
 		return String.format("code=%s", code);
 	}
 }
