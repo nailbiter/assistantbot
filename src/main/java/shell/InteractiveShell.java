@@ -11,11 +11,11 @@ import org.json.JSONObject;
 
 import com.mongodb.MongoClient;
 
-import assistantbot.MyAssistantBot;
 import managers.GermanManager;
 import managers.MiscUtilManager;
 import managers.MyManager;
 import util.KeyRing;
+import util.MongoUtil;
 import util.parsers.StandardParser;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
@@ -25,18 +25,20 @@ public class InteractiveShell {
 	private static final String OFFLINEBOTNAME = "offline";
 	private static boolean USELOCALDB;
 	private static String PROMPT = "assistantbot> ";
-	public static void Start(String password, String useLocalDB) throws Exception {
-		if(useLocalDB.toUpperCase().equals("LOCAL"))
-			USELOCALDB = true;
-		else if(useLocalDB.toUpperCase().equals("REMOTE"))
-			USELOCALDB = false;
-		else
-			throw new Exception(String.format("unknown parameter for -o: \"%s\"", useLocalDB));
+	public static void Start(JSONObject profileObj) throws Exception {
+		USELOCALDB = profileObj.getBoolean("OFFLINE"); 
+//		if()
+//			USELOCALDB = true;
+//		else if(useLocalDB.toUpperCase().equals("REMOTE"))
+//		else
+//			USELOCALDB = false;
+//		else
+//			throw new Exception(String.format("unknown parameter for -o: \"%s\"", useLocalDB));
 		System.out.format("USELOCALDB=%s\n", Boolean.toString(USELOCALDB));
 		
 		ArrayList<MyManager> managers = new ArrayList<MyManager>();
 		DisableLogging();
-		PopulateManagers(managers, password);
+		PopulateManagers(managers, profileObj.getString("PASSWORD"));
 		StandardParser parser = new StandardParser(managers);
 		managers.add(parser);
 		parser.setPrefix("");
@@ -86,7 +88,7 @@ public class InteractiveShell {
 		commands.add("exit");
 	}
 	private static void PopulateManagers(ArrayList<MyManager> managers, String password) throws Exception {
-		MongoClient mc = USELOCALDB ? new MongoClient() : MyAssistantBot.GetMongoClient(password);
+		MongoClient mc = USELOCALDB ? new MongoClient() : MongoUtil.GetMongoClient(password);
 		
 		System.setProperty("DEBUG.MONGO", "false");
 		System.setProperty("DB.TRACE", "false");

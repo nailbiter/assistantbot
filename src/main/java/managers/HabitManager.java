@@ -21,6 +21,7 @@ import managers.habits.Donep;
 import managers.habits.HabitManagerBase;
 import managers.habits.HabitRunnable;
 import managers.habits.JSONObjectCallback;
+import util.JsonUtil;
 import util.KeyRing;
 import util.Util;
 import util.MyBasicBot;
@@ -230,7 +231,7 @@ public class HabitManager extends HabitManagerBase
 	protected String getReminderMessage(String name) {
 		return String.format("don't forget to execute: %s !\n%s",
 				name,
-				Util.FindInJSONArray(habits_, "name", name).getString("info"));
+				JsonUtil.FindInJSONArray(habits_, "name", name).getString("info"));
 	}
 	@Override
 	protected String getFailureMessage(String name) {
@@ -257,7 +258,7 @@ public class HabitManager extends HabitManagerBase
 	@Override
 	protected void processFailure(JSONObject obj) {
 		String name = obj.getString("name"), id = obj.getString("id");
-		JSONObject habitObj = Util.FindInJSONArray(this.habits_,"name",name);
+		JSONObject habitObj = JsonUtil.FindInJSONArray(this.habits_,"name",name);
 		String onFailed = habitObj.getString("onFailed");
 		updateStreaks(name, StreakUpdateEnum.FAILURE);
 		try {
@@ -275,7 +276,7 @@ public class HabitManager extends HabitManagerBase
 	}
 	@Override
 	protected void processSetReminder(String name) {
-		JSONObject habitObj = Util.FindInJSONArray(habits_, "name", name); 
+		JSONObject habitObj = JsonUtil.FindInJSONArray(habits_, "name", name); 
 		int delaymin = habitObj.getInt("delaymin");
 		try {
 			JSONObject obj = new JSONObject()

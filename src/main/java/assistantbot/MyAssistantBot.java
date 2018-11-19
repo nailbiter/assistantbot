@@ -17,36 +17,22 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientURI;
-
 import managers.MyManager;
 import util.KeyRing;
+import util.MongoUtil;
 import util.MyBasicBot;
 import util.UserData;
 import util.TelegramUtil;
 
 public class MyAssistantBot extends MyBasicBot {
 	private String botUserName_;
-	public static MongoClient GetMongoClient(String password) {
-		String url = String.format("mongodb://%s:%s@ds149672.mlab.com:49672/logistics", 
-                "nailbiter",password);
-		MongoClientURI uri = null;
-		try {
-			uri = new MongoClientURI(url);
-		}
-		catch(Exception e) {
-			System.out.format("EXCEPTION!\n");
-		}
-		return new MongoClient(uri);
-	}
-	public MyAssistantBot(Map<Character, Object> commandline)
+	public MyAssistantBot(JSONObject profileObj)
 	{
 		try
 		{
 			util.StorageManager.init();
-			botUserName_ = (String)commandline.get('n');
-			mongoClient = GetMongoClient((String)commandline.get('p'));
+			botUserName_ = (String)profileObj.getString("NAME");
+			mongoClient = MongoUtil.GetMongoClient(profileObj.getString("PASSWORD"));
 			KeyRing.init(botUserName_,mongoClient);
 		}
 		catch(Exception e)
@@ -92,7 +78,6 @@ public class MyAssistantBot extends MyBasicBot {
 
 	@Override
 	public String getBotUsername() {
-//		return "AssistantBot";
 		return botUserName_;
 	}
 

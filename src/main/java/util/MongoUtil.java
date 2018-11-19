@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import com.mongodb.Block;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 
 public class MongoUtil {
 	public static JSONObject GetJsonObjectFromDatabase(MongoClient mc,String databasecollection) throws Exception {
@@ -70,5 +71,17 @@ public class MongoUtil {
 		String database = split[0], collection = split[1];
 		System.err.format("GetJsonObjectFromDatabase: db=(%s), coll=(%s)", database,collection);
 		return new JSONObject(mc.getDatabase(database).getCollection(collection).find(Document.parse(fo.toString())).first().toJson());
+	}
+	public static MongoClient GetMongoClient(String password) {
+		String url = String.format("mongodb://%s:%s@ds149672.mlab.com:49672/logistics", 
+	            "nailbiter",password);
+		MongoClientURI uri = null;
+		try {
+			uri = new MongoClientURI(url);
+		}
+		catch(Exception e) {
+			System.out.format("EXCEPTION!\n");
+		}
+		return new MongoClient(uri);
 	}
 }

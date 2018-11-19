@@ -6,7 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import managers.MyManager;
-import util.Util;
+import util.JsonUtil;
 
 public class StandardParser extends AbstractParser{
 	JSONArray cmds_;
@@ -17,7 +17,7 @@ public class StandardParser extends AbstractParser{
 	{
 		cmds_ = cmds;
 		
-		Util.SortJSONArray(cmds_,"name");
+		JsonUtil.SortJSONArray(cmds_,"name");
 		this.defaultName_ = this.getNameOfDefault();
 	}
 	public void setPrefix(String prefix) {

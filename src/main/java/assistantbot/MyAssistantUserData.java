@@ -52,7 +52,7 @@ public class MyAssistantUserData extends UserData {
 				managers.add(/*tm_ = */new managers.TimeManager(chatID,bot,scheduler,mongoClient,this));
 				managers.add(new MiscUtilManager(mongoClient));
 				managers.add(new ReportManager(mongoClient));
-				managers.add(new BadHabitManager(this));
+//				managers.add(new BadHabitManager(this));
 				managers.add(new GermanManager(mongoClient));
 				managers.add(new GymManager(mongoClient));
 			}

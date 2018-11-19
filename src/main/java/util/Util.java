@@ -13,14 +13,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
 import java.util.TimeZone;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -56,31 +51,6 @@ public class Util{
 		df.setTimeZone(Util.getTimezone());
 		return df.format(d);
 	}
-	public static void SortJSONArray(JSONArray arr,String key)
-	{
-		List<JSONObject> list = new ArrayList<JSONObject>();
-		final String keyFinal = key;
-		for(int idx = 0; idx < arr.length(); )
-		{
-			JSONObject obj = arr.optJSONObject(idx);
-			if(obj==null)
-				idx++;
-			else
-			{
-				arr.remove(idx);
-				list.add(obj);
-			}
-		}
-		Collections.sort(list,new Comparator<JSONObject>()
-				{
-					@Override
-					public int compare(JSONObject o1, JSONObject o2) {
-						return o1.getString(keyFinal).compareTo(o2.getString(keyFinal));
-					}
-				});
-		for(int i = 0; i < list.size(); i++)
-			arr.put(list.get(i));
-	}
 	public static void SetRebootFileName(String string) {
 		RebootFileName_ = string;
 	}
@@ -98,7 +68,7 @@ public class Util{
 	    while ((character = fr.read()) != -1) {
 	    		sb.append((char)character);
 	    }
-	    System.out.println("found "+sb.toString());
+	    System.err.println("found "+sb.toString());
 		fr.close();
 		String res = sb.toString();
 		StorageManager.logger_.info(String.format("res=%s", res));
@@ -181,14 +151,6 @@ public class Util{
 		}
 		System.out.println("here with: "+res.toString());
 	    return res.toString();
-	}
-	public static JSONObject FindInJSONArray(JSONArray array,String key,String val) {
-		for(Object o: array) {
-			JSONObject obj = (JSONObject)o;
-			if(obj.getString(key).equals(val))
-				return obj;
-		}
-		return null;
 	}
 	public static void SetRebootCommandFileName(String string) {
 		rebootCommandFileName_ = string;

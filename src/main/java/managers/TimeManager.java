@@ -24,6 +24,7 @@ import com.mongodb.client.model.Updates;
 import assistantbot.MyAssistantUserData;
 import it.sauronsoftware.cron4j.Scheduler;
 import util.Util;
+import util.JsonUtil;
 import util.MongoUtil;
 import static util.MongoUtil.GetJSONArrayFromDatabase;
 
@@ -231,7 +232,7 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 	}
 	protected String sleepstartReply(String categoryName)
 	{
-		sleepingObj_ = Util.FindInJSONArray(categories_, "name", categoryName);
+		sleepingObj_ = JsonUtil.FindInJSONArray(categories_, "name", categoryName);
 		Document doc = new Document();
 		doc.put("startsleep", new Date());
 		doc.put("category", categoryName);

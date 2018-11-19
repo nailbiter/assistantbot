@@ -1,3 +1,4 @@
 {
-	"name":"AssistantBot"
+	"name":"AssistantBot",
+	"resfolder":"src/main/resources/assistantBotFiles/"
 }
