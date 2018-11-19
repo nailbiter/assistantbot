@@ -16,6 +16,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.TimeZone;
 import managers.MyManager;
 
@@ -33,11 +34,16 @@ public class Util{
 	protected static boolean isInit = false;
 	protected static String jarFolder;
 	private static String RebootFileName_;
-	private static String rebootCommandFileName_; 
-	public static void SetJarFolder(String jf) {jarFolder = jf;}
+	private static String rebootCommandFileName_;
+	private static String tmpFolder_; 
+	private final static String ALPH = "abcdefghijklmnopqrstuvwxyz" +
+			"abcdefghijklmnopqrstuvwxyz".toUpperCase() + "01234567890";
+	
+	private static Random rand_ = new Random();
 	protected static void init() throws Exception
 	{
 	}
+	public static void SetJarFolder(String jf) {jarFolder = jf;}
 	public static String getJarFolder() throws Exception { init(); return jarFolder;}
 	public static String milisToTimeFormat(long millis)
 	{
@@ -183,5 +189,37 @@ public class Util{
 			}
 			System.err.format("added %s\n", cn);
 		}
+	}
+	public static void SetTmpFolderName(String tmpf) {
+		tmpFolder_ = tmpf;
+	}
+	public static String saveToTmpFile(String content) throws IOException {
+		StringBuilder sb = new StringBuilder();
+		for(int i = 0 ; i < 10;i++)
+			sb.append(ALPH.charAt(rand_.nextInt(ALPH.length())));
+		String filePath = String.format("%s/%s.%h", tmpFolder_,sb.toString(),"html");
+		BufferedWriter writer = null;
+		try
+		{
+		    writer = new BufferedWriter(new FileWriter(filePath));
+		    writer.write(content);
+		}
+		catch ( IOException e)
+		{
+			throw e;
+		}
+		finally
+		{
+		    try
+		    {
+		        if ( writer != null)
+		        writer.close( );
+		    }
+		    catch ( IOException e)
+		    {
+		    	throw e;
+		    }
+		}
+		return filePath;
 	}
 }

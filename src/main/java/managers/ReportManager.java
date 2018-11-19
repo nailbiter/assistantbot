@@ -13,21 +13,25 @@ import assistantbot.ResourceProvider;
 import managers.misc.MashaRemind;
 import util.KeyRing;
 import util.MongoUtil;
+import util.Util;
 
 import static java.util.Arrays.asList;
 import static util.parsers.StandardParser.ArgTypes;
 import static managers.AbstractManager.MakeCommand;
 import static managers.AbstractManager.MakeCommandArg;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class ReportManager extends AbstractManager {
 	private MongoClient mc_;
 	private TrelloAssistant ta_;
+	private ResourceProvider rp_;
 	public ReportManager(ResourceProvider rp) {
 		mc_ = rp.getMongoClient();
 		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
 				KeyRing.getTrello().getString("token"));
+		rp_ = rp;
 	}
 	@Override
 	public JSONArray getCommands() {
@@ -37,8 +41,9 @@ public class ReportManager extends AbstractManager {
 	public String mashareport(JSONObject obj) throws Exception {
 		return MashaRemind.Remind(ta_,mc_);
 	}
-	public String myreport(JSONObject obj) {
-		return "myreport";
+	public String myreport(JSONObject obj) throws IOException {
+		rp_.sendFile(Util.saveToTmpFile("<html>hi there!</html>"));
+		return "";
 	}
 	public String reportshow(JSONObject obj) throws Exception {
 		if(obj.has("type")) {

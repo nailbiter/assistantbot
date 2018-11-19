@@ -16,14 +16,6 @@ import static com.github.nailbiter.util.opts.Option.ArgEnum;
 import util.JsonUtil;
 public class Main {
     public static void main(String[] args) {
-//    	ArrayList<Option> opts = new ArrayList<Option>();
-//    	opts.add(new Option('r',ArgEnum.HASARGUMENT,"res folder"));
-//    	opts.add(new Option('n',ArgEnum.HASARGUMENT,"bot's name: also used to get token"));
-//    	opts.add(new Option('p',ArgEnum.HASARGUMENT,"database password"));
-//    	opts.add(new Option('t',ArgEnum.HASARGUMENT,"reboot file"));
-//    	opts.add(new Option('c',ArgEnum.HASARGUMENT,"reboot command file"));
-//    	opts.add(new Option('o',ArgEnum.HASARGUMENT,String.format("isOffline, %s=local|remote", Option.DEFARGNAME)));
-    	
     	JSONObject description = new JSONObject(), result = null;
     	try {
 			result = new JSONObject(com.github.nailbiter.util.Util.ParseCommandLine(description.toString(), args));
@@ -44,16 +36,11 @@ public class Main {
     	JSONObject profileObj =  result.getJSONObject("keys");
     	JsonUtil.CapitalizeJsonKeys(profileObj);
     	System.err.format("profile: %s\n",profileObj.toString(2));
-//    	System.exit(0);
-    	
-//    	Map<Character,Object> commandline = Option.processKeyArgs(Main.class.getName(), args, opts);
-//    	Map<Character,Object> commandline = new HashMap<Character,Object>(); 
-//    	System.out.println(String.format("hi!: %s\nlen=%d", commandline.toString(),
-//    			((String)commandline.get('p')).length()));
     	
     	Util.SetJarFolder(profileObj.getString("RESFOLDER"));
     	Util.SetRebootFileName(profileObj.getString("TMPFILE"));
     	Util.SetRebootCommandFileName(profileObj.getString("CMDFILE"));
+    	Util.SetTmpFolderName(profileObj.getString("TMPFOLDER"));
     	
     	if(profileObj.has("OFFLINE")) {
     		try {

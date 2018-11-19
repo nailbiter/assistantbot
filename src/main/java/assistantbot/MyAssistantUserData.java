@@ -138,4 +138,9 @@ public class MyAssistantUserData extends UserData implements ResourceProvider {
 	public int sendMessageWithKeyBoard(String msg, List<List<InlineKeyboardButton>> buttons) {
 		return bot_.sendMessageWithKeyBoard(msg, chatID_, buttons);
 	}
+	@Override
+	public int sendMessageAsFile(String string) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

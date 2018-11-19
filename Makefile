@@ -9,7 +9,7 @@ RUNCOMMANDSFILE=src/main/resources/runcommands.json
 KEYS=--password `cat secret.txt`
 PERLKEYS=--tmpfile $(REBOOTFILE) --cmdfile $(RUNCOMMANDSFILE)
 MAINCLASS=Main
-RUN=java -classpath $(subst HHOOMMEE,$(shell echo ~),$(shell cat cp.txt)) Main $(KEYS) $(PERLKEYS)
+RUN=java -classpath $(subst HHOOMMEE,$(shell echo ~),$(shell cat cp.txt)) $(MAINCLASS) $(KEYS) $(PERLKEYS)
 
 #sources
 

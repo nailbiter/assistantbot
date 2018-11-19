@@ -23,5 +23,6 @@ public interface ResourceProvider {
 	void sendMessage(String msg);
 	Scheduler getScheduler();
 	public abstract int sendMessage(String string, MyManager testManager) throws Exception;
+	public abstract int sendFile(String fn);
 	public abstract int sendMessageWithKeyBoard(String msg, List<List<InlineKeyboardButton>> makePerCatButtons);
 }

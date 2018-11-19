@@ -1,10 +1,12 @@
 package util;
+import java.io.File;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.json.JSONObject;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -79,12 +81,6 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 				.setText(reply)
 				.setParseMode("HTML");
 		execute(emt);
-		/*SendMessage message = new SendMessage()
-				.setChatId(chat_id)
-				.setText();
-		message.setParseMode("HTML");
-		sendMessage(message); // Call method to send the message
-		*/
 	}
 	private String processReply(Update update) throws Exception {
 		int replyID = update.getMessage().getReplyToMessage().getMessageId();
@@ -144,6 +140,13 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 			this.waitingForReply_.put(chatID_, new Hashtable<Integer,MyManager>());
 		this.waitingForReply_.get(chatID_).put(res.getMessageId(), whom);
 		return res.getMessageId();
+	}
+	public int sendFile(String fn,Long chatId) {
+		SendDocument message = new SendDocument()
+				.setChatId(chatId)
+				.setDocument(new File(fn));
+		return execute(message).getMessageId();
+		return 0;
 	}
 	public int sendMessage(String msg,Long chatID_)
 	{
