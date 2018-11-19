@@ -36,7 +36,6 @@ public class HabitManager extends HabitManagerBase
 	public static final String HABITBOARDID = "kDCITi9O";
 	private static final String PENDINGLISTNAME = "PENDING";
 	private static final String FAILLABELCOLOR = "green";
-//	private TrelloImpl trelloApi_;
 	String pendingListId_;
 	private TrelloAssistant ta_;
 	private String failedListId_;

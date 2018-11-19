@@ -9,35 +9,18 @@ RUNCOMMANDSFILE=src/main/resources/runcommands.json
 KEYS=-r $(RESFOLDER) -n AssistantBot -p `cat secret.txt`
 PERLKEYS=--tmpfile $(REBOOTFILE) --cmdfile $(RUNCOMMANDSFILE)
 MAINCLASS=Main
+RUN=java -classpath $(subst HHOOMMEE,$(shell echo ~),$(shell cat cp.txt)) Main
 
 #sources
-ASBOTSOURCES=MyAssistantUserData MyAssistantBot
-MANAGERSOURCES=$(addsuffix Manager,Time Money Test MiscUtil Habit German Gym Abstract Report)
-UTILSOURCES=StorageManager MyBasicBot MongoUtil Util TelegramUtil
-HABITMANAGERSOURCES=HabitManagerBase JSONObjectCallback
-SHELLSOURCES=InteractiveShell
-TESTSOURCES=UrlTest JsonTest ParadigmTest
-MISCSOURCES=MashaRemind RandomSetGenerator NoteMaker
-SOURCES=\
- $(addprefix assistantbot/,$(ASBOTSOURCES))\
- $(addprefix managers/misc/,$(MISCSOURCES))\
- $(addprefix managers/,$(MANAGERSOURCES))\
- $(addprefix shell/,$(SHELLSOURCES))\
- $(addprefix util/,$(UTILSOURCES))\
- $(addprefix com/github/nailbiter/util/,TrelloAssistant Util opts/Option TableBuilder)\
- $(addprefix managers/tests/,$(TESTSOURCES))\
- $(addprefix managers/habits/,$(HABITMANAGERSOURCES))\
- $(MAINCLASS)
-
+include Makefile.sources
 
 all: target/$(JARNAME).jar
 	make -C src/main/resources/assistantBotFiles files
 	mkdir -p tmp
 	rm -rf $(REBOOTFILE)
-	#java -jar $< $(KEYS) 2>&1 | tee $(LOGFILE)
-	./src/main/pl/run.pl --cmd "java -classpath $(subst HHOOMMEE,$(shell echo ~),$(shell cat cp.txt)) Main $(KEYS) -t $(REBOOTFILE) -c $(RUNCOMMANDSFILE)" $(PERLKEYS) 2>&1 | tee $(LOGFILE)
+	./src/main/pl/run.pl --cmd "$(RUN) $(KEYS) -t $(REBOOTFILE) -c $(RUNCOMMANDSFILE)" $(PERLKEYS) 2>&1 | tee $(LOGFILE)
 offline: target/$(JARNAME).jar
-	java -classpath $(subst HHOOMMEE,$(shell echo ~),$(shell cat cp.txt)) Main -o local $(KEYS) 2>$(LOGFILE)
+	$(RUN) -o local $(KEYS) 2>$(LOGFILE)
 	#mvn exec:exec -Dexec.executable="echo" -Dexec.args="%classpath" 2>&1 |tee $(LOGFILE)
 target/$(JARNAME).jar : $(addprefix src/main/java/,$(addsuffix .java,$(SOURCES))) pom.xml
 	mvn compile

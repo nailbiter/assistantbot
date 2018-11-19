@@ -1,0 +1,17 @@
+ASBOTSOURCES=MyAssistantUserData MyAssistantBot
+MANAGERSOURCES=$(addsuffix Manager,Time Money Test MiscUtil Habit German Gym Abstract Report)
+UTILSOURCES=StorageManager MyBasicBot MongoUtil Util TelegramUtil
+HABITMANAGERSOURCES=HabitManagerBase JSONObjectCallback
+SHELLSOURCES=InteractiveShell
+TESTSOURCES=UrlTest JsonTest ParadigmTest
+MISCSOURCES=MashaRemind RandomSetGenerator NoteMaker
+SOURCES=\
+ $(addprefix assistantbot/,$(ASBOTSOURCES))\
+ $(addprefix managers/misc/,$(MISCSOURCES))\
+ $(addprefix managers/,$(MANAGERSOURCES))\
+ $(addprefix shell/,$(SHELLSOURCES))\
+ $(addprefix util/,$(UTILSOURCES))\
+ $(addprefix com/github/nailbiter/util/,TrelloAssistant Util opts/Option TableBuilder)\
+ $(addprefix managers/tests/,$(TESTSOURCES))\
+ $(addprefix managers/habits/,$(HABITMANAGERSOURCES))\
+ $(MAINCLASS)

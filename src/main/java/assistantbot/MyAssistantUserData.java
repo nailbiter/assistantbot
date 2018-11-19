@@ -29,7 +29,7 @@ public class MyAssistantUserData extends UserData {
 	List<MyManager> getManagers(){return managers;}
 	protected AbstractParser parser = null;
 	String lastCategory = null;
-	TimeManager tm_ = null;
+//	TimeManager tm_ = null;
 	long chatID_;
 	MyBasicBot bot_ = null;
 	private Logger logger_; 
@@ -49,7 +49,7 @@ public class MyAssistantUserData extends UserData {
 				managers.add(new managers.HabitManager(chatID,bot,scheduler,this));
 				managers.add(new managers.TaskManager(chatID, bot));
 				managers.add(new managers.TestManager(chatID, bot,scheduler,this));
-				managers.add(tm_ = new managers.TimeManager(chatID,bot,scheduler,mongoClient,this));
+				managers.add(/*tm_ = */new managers.TimeManager(chatID,bot,scheduler,mongoClient,this));
 				managers.add(new MiscUtilManager(mongoClient));
 				managers.add(new ReportManager(mongoClient));
 				managers.add(new BadHabitManager(this));
@@ -72,7 +72,7 @@ public class MyAssistantUserData extends UserData {
 		}
 		if(scheduler!=null) scheduler.start();
 	}
-	public boolean isSleeping() {return (tm_ != null) && tm_.isSleeping();}
+//	public boolean isSleeping() {return (tm_ != null) && tm_.isSleeping();}
 	public AbstractParser getParser() {return parser;}
 	public void Update(JSONObject res)  {
 		if(res.has("name"))

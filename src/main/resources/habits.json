@@ -1,6 +1,0 @@
-{"obj":[{"name":"one cup coffee","count":1,"cronline":"0 15 * * 1,2,3,4","delaymin":60,"enabled":true}
-,{"name":"practice 5 flashcards","count":4,"cronline":"0 8 * * *","delaymin":1080,"enabled":true}
-,{"name":"do 5 flashcards","count":3,"cronline":"0 8 * * *","delaymin":1080,"enabled":true}
-,{"name":"read german grammar book","count":1,"cronline":"0 8 * * *","delaymin":60,"enabled":true}
-,{"name":"listen to jojo","count":1,"cronline":"0 8 * * *","delaymin":60,"enabled":true}
-]}
