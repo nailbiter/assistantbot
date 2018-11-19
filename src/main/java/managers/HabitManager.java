@@ -35,6 +35,7 @@ public class HabitManager extends HabitManagerBase
 	MongoCollection<Document> streaks_ = null;
 	public static final String HABITBOARDID = "kDCITi9O";
 	private static final String PENDINGLISTNAME = "PENDING";
+	private static final String TODOLISTNAME = "TODO";
 	private static final String FAILLABELCOLOR = "green";
 	String pendingListId_;
 	private TrelloAssistant ta_;
@@ -171,11 +172,13 @@ public class HabitManager extends HabitManagerBase
 			if(habits.length() > 1)
 			{
 				int id = ud_.sendMessageWithKeyBoard("which habbit?", habits);
-				optionMsgs_.add(id);
-				return "hi";
+//				optionMsgs_.add(id);
+				optionMsgs_.put(id, "taskDone");
+//				return "hi";
+				return "";
 			}
 			else
-				return this.taskDone(habits.getString(0)); 
+				return this.taskDone(habits.getString(0));
 		}
 		catch(Exception e)
 		{
@@ -307,11 +310,16 @@ public class HabitManager extends HabitManagerBase
 				(long)min*60*1000);
 	}
 	@Override
-	protected String donep(JSONObject res) {
+	protected String donep(JSONObject res) throws Exception {
 		int id = ud_.sendMessageWithKeyBoard("which habbit?", new JSONArray()
 				.put("A")
 				.put("B")
 				.put("C"));
+		optionMsgs_.put(id,"donep");
+		String listid = ta_.findListByName(TODOLISTNAME, "TODO");
 		return "";
+	}
+	protected String donep(String code) {
+		return String.format("code=%s", code);
 	}
 }

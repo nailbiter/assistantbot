@@ -1,10 +1,12 @@
 package managers.habits;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Set;
 import java.util.Timer;
 import java.util.logging.Logger;
@@ -16,6 +18,7 @@ import org.json.JSONObject;
 import assistantbot.MyAssistantUserData;
 import it.sauronsoftware.cron4j.Scheduler;
 import managers.AbstractManager;
+import managers.HabitManager;
 import managers.MyManager;
 import managers.OptionReplier;
 import managers.habits.HabitManagerBase.HabitRunnableEnum;
@@ -26,7 +29,7 @@ public abstract class HabitManagerBase implements MyManager, OptionReplier{
 	public enum HabitRunnableEnum{
 		SENDREMINDER, SETFAILURE;
 	}
-	protected Set<Integer> optionMsgs_ = new HashSet<Integer>();
+	protected Hashtable<Integer,String> optionMsgs_ = new Hashtable<Integer,String>();
 	protected MyAssistantUserData ud_ = null;
 	protected Scheduler scheduler_ = null;
 	protected MyBasicBot bot_;
@@ -92,14 +95,18 @@ public abstract class HabitManagerBase implements MyManager, OptionReplier{
 		}
 		return null;
 	}
-	public String optionReply(String option, Integer msgID) {
-		if(this.optionMsgs_.contains(msgID))
-			return this.taskDone(option);
+	public String optionReply(String option, Integer msgID) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+		if(optionMsgs_.contains(msgID)) {
+//			return this.taskDone(option);
+//			HabitManager.class.
+			return (String)HabitManager.class.getMethod(optionMsgs_.get(msgID),String.class)
+					.invoke(this,option);
+		}
 		else
 			return null;
 	}
 	
-	abstract protected String donep(JSONObject res);
+	abstract protected String donep(JSONObject res) throws Exception;
 	abstract protected String doneg(JSONObject res);
 	abstract protected String taskDone(String optString);
 	abstract protected String getHabitsInfo() throws Exception;
