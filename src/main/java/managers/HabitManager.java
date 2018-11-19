@@ -316,7 +316,7 @@ public class HabitManager extends HabitManagerBase
 				.put("B")
 				.put("C"));
 		optionMsgs_.put(id,"donep");
-		String listid = ta_.findListByName(TODOLISTNAME, "TODO");
+		String listid = ta_.findListByName(HABITBOARDID, TODOLISTNAME);
 		return "";
 	}
 	protected String donep(String code) {
