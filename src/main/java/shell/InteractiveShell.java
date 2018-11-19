@@ -101,6 +101,11 @@ public class InteractiveShell {
 				// TODO Auto-generated method stub
 				return 0;
 			}
+			@Override
+			public int sendFile(String fn) {
+				// TODO Auto-generated method stub
+				return 0;
+			}
 		};
 	}
 	private static void DisableLogging() {
@@ -116,7 +121,6 @@ public class InteractiveShell {
 					commands.add(((JSONObject)o).getString("name"));
 			}
 		}
-//		commands.add("exit");
 	}
 	private static void PopulateManagers(ArrayList<MyManager> managers, JSONObject profileObj, ResourceProvider rp) throws Exception {
 		System.setProperty("DEBUG.MONGO", "false");
@@ -124,8 +128,6 @@ public class InteractiveShell {
 		
 		KeyRing.init(profileObj.getString("NAME"),mc_);
 
-//		managers.add(new GermanManager(rp));
-//		managers.add(new MiscUtilManager(rp));
 		Util.PopulateManagers(managers, profileObj.getJSONArray("MANAGERS"), rp);
 		managers.add(new MyManager() {
 			@Override
