@@ -311,12 +311,21 @@ public class HabitManager extends HabitManagerBase
 	}
 	@Override
 	protected String donep(JSONObject res) throws Exception {
-		int id = ud_.sendMessageWithKeyBoard("which habbit?", new JSONArray()
-				.put("A")
-				.put("B")
-				.put("C"));
-		optionMsgs_.put(id,"donep");
 		String listid = ta_.findListByName(HABITBOARDID, TODOLISTNAME);
+		JSONArray cards = ta_.getCardsInList(listid);
+		Hashtable<String,Integer> names = new Hashtable<String,Integer>();
+		for(Object o:cards) {
+			String name = ((JSONObject)o).getString("name");
+			if(!names.containsKey(name))
+				names.put(name, 0);
+			names.put(name, 1+names.get(name));
+		}
+		
+		JSONArray opts = new JSONArray();
+		for(String name:names.keySet())
+			opts.put(String.format("%s:%d", name,names.get(name)));
+		int id = ud_.sendMessageWithKeyBoard("which habbit?", opts);
+		optionMsgs_.put(id,"donep");
 		return "";
 	}
 	public String donep(String code) {
