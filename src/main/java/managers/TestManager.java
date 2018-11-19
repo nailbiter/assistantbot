@@ -8,11 +8,11 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Random;
-import java.util.RandomAccess;
 import java.util.Timer;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bson.Document;
 import org.json.JSONArray;
@@ -28,10 +28,7 @@ import managers.tests.ParadigmTest;
 import managers.tests.UrlTest;
 import managers.tests.JsonTest;
 import util.MyBasicBot;
-import util.StorageManager;
 import util.parsers.StandardParser;
-import static managers.AbstractManager.MakeCommand;
-import static managers.AbstractManager.MakeCommandArg;
 
 /**
  * @author nailbiter
@@ -90,8 +87,7 @@ public class TestManager extends AbstractManager implements OptionReplier {
 		if(!obj.has("score"))
 			obj.put("score", "1/1");
 		
-		String[] scoreParts = obj.getString("score").split("/");
-		obj.put("score", Double.parseDouble(scoreParts[0].trim())/Double.parseDouble(scoreParts[1].trim()));
+		obj.put("score", ScoreToDouble(obj.getString("score")));
 		
 		Document doc = new Document();
 		doc.put("date", new Date());
@@ -99,6 +95,19 @@ public class TestManager extends AbstractManager implements OptionReplier {
 		doc.put("score", obj.getDouble("score"));
 		testScores_.insertOne(doc);
 		return String.format("put %s to scores",doc.toJson());
+	}
+	private double ScoreToDouble(String score) throws Exception{
+//		if()
+		Matcher m = null;
+		if((m = Pattern.compile("\\s*(\\d+)\\s*/\\s*(\\d+)\\s*").matcher(score)).matches()) {
+//		if(score.contains("/")) {
+			String[] scoreParts = score.split("/");
+			return Double.parseDouble(scoreParts[0].trim())/Double.parseDouble(scoreParts[1].trim());
+		} else if((m = Pattern.compile("\\s*(\\d+)\\s*%\\s*").matcher(score)).matches()) {
+			return Integer.parseInt(m.group(0))/100.0;
+		} else {
+			throw new Exception(String.format("cannot parse %s", score));
+		}
 	}
 	public String tests(JSONObject obj) throws Exception
 	{
