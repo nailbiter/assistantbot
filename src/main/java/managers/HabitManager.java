@@ -16,13 +16,16 @@ import com.mongodb.client.model.Filters;
 import assistantbot.MyAssistantUserData;
 import it.sauronsoftware.cron4j.Predictor;
 import it.sauronsoftware.cron4j.Scheduler;
+import managers.habits.Donep;
 import managers.habits.HabitManagerBase;
 import managers.habits.HabitRunnable;
 import managers.habits.JSONObjectCallback;
 import util.KeyRing;
 import util.Util;
 import util.MyBasicBot;
-//import util.TrelloAssistant;
+import static managers.habits.Constants.FAILLABELCOLOR;
+import static managers.habits.Constants.HABITBOARDID;
+import static managers.habits.Constants.PENDINGLISTNAME;
 
 public class HabitManager extends HabitManagerBase
 {
@@ -33,13 +36,10 @@ public class HabitManager extends HabitManagerBase
 	Hashtable<String,Date> failTimes = null;
 	private Hashtable<String,Object> hash_ = new Hashtable<String,Object>();
 	MongoCollection<Document> streaks_ = null;
-	public static final String HABITBOARDID = "kDCITi9O";
-	private static final String PENDINGLISTNAME = "PENDING";
-	private static final String TODOLISTNAME = "TODO";
-	private static final String FAILLABELCOLOR = "green";
 	String pendingListId_;
 	private TrelloAssistant ta_;
 	private String failedListId_;
+	Donep donep_;
 
 	public HabitManager(Long chatID,MyBasicBot bot,Scheduler scheduler_in, MyAssistantUserData myAssistantUserData) throws Exception
 	{
@@ -66,6 +66,7 @@ public class HabitManager extends HabitManagerBase
 				this.setUpReminder(obj.getString("name"), due);
 			}
 		}
+		donep_ = new Donep(ta_,ud_,optionMsgs_);
 	}
 	JSONArray FetchHabits(MongoClient mongoClient) {
 		final JSONArray habits = new JSONArray();
@@ -311,24 +312,9 @@ public class HabitManager extends HabitManagerBase
 	}
 	@Override
 	protected String donep(JSONObject res) throws Exception {
-		String listid = ta_.findListByName(HABITBOARDID, TODOLISTNAME);
-		JSONArray cards = ta_.getCardsInList(listid);
-		Hashtable<String,Integer> names = new Hashtable<String,Integer>();
-		for(Object o:cards) {
-			String name = ((JSONObject)o).getString("name");
-			if(!names.containsKey(name))
-				names.put(name, 0);
-			names.put(name, 1+names.get(name));
-		}
-		
-		JSONArray opts = new JSONArray();
-		for(String name:names.keySet())
-			opts.put(String.format("%s:%d", name,names.get(name)));
-		int id = ud_.sendMessageWithKeyBoard("which habbit?", opts);
-		optionMsgs_.put(id,"donep");
-		return "";
+		return donep_.donep(res);
 	}
 	public String donep(String code) {
-		return String.format("code=%s", code);
+		return donep_.donep(code);
 	}
 }

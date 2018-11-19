@@ -39,7 +39,7 @@ public class MiscUtilManager extends AbstractManager {
 		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
 				KeyRing.getTrello().getString("token"));
 		try{
-			tasklist_ = ta_.findListByName(HabitManager.HABITBOARDID, TASKLISTNAME);
+			tasklist_ = ta_.findListByName(managers.habits.Constants.HABITBOARDID, TASKLISTNAME);
 		}
 		catch(Exception e) {
 			e.printStackTrace(System.err);

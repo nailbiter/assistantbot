@@ -1,9 +1,9 @@
 {
-   "pulledData" : {
-      "trelloTitle" : "gf: make report (me and masha)"
-   },
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
    ],
+   "pulledData" : {
+      "trelloTitle" : "gf: make report (me and masha)"
+   },
    "cardurl" : "gf donep"
 }

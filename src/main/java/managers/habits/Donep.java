@@ -1,0 +1,59 @@
+package managers.habits;
+
+import java.util.Hashtable;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import com.github.nailbiter.util.TrelloAssistant;
+
+import assistantbot.MyAssistantUserData;
+import static managers.habits.Constants.HABITBOARDID;
+import static managers.habits.Constants.TODOLISTNAME;
+
+/**
+ * 
+ * @author oleksiileontiev
+ * class implementing the /donep functionality
+ */
+public class Donep {
+	private TrelloAssistant ta_;
+	private MyAssistantUserData ud_;
+	private Hashtable<Integer, String> optionMsgs_;
+	JSONArray cards_;
+
+	public Donep(TrelloAssistant ta, MyAssistantUserData ud, Hashtable<Integer, String> optionMsgs) {
+		ta_ = ta;
+		ud_ = ud;
+		optionMsgs_ = optionMsgs;
+	}
+	public String donep(JSONObject res) throws Exception {
+		String listid = ta_.findListByName(HABITBOARDID, TODOLISTNAME);
+		cards_ = ta_.getCardsInList(listid);
+		Hashtable<String,Integer> names = new Hashtable<String,Integer>();
+		for(Object o:cards_) {
+			String name = ((JSONObject)o).getString("name");
+			if(!names.containsKey(name))
+				names.put(name, 0);
+			names.put(name, 1+names.get(name));
+		}
+		
+		JSONArray opts = new JSONArray();
+		for(String name:names.keySet())
+			opts.put(String.format("%s: %d", name,names.get(name)));
+		int id = ud_.sendMessageWithKeyBoard("which habbit?", opts);
+		optionMsgs_.put(id,"donep");
+		return "";
+	}
+	public String donep(String code) {
+		JSONObject obj = null;
+		String name = code.substring(0, code.lastIndexOf(':'));
+		for(Object o:cards_) {
+			if(((JSONObject)o).getString("name").equals(name)) {
+				obj = (JSONObject)o;
+				break;
+			}
+		}
+		return String.format("obj=%s", obj.toString());
+	}
+}

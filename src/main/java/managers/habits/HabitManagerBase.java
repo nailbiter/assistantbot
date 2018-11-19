@@ -4,10 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Set;
 import java.util.Timer;
 import java.util.logging.Logger;
 
@@ -21,7 +18,6 @@ import managers.AbstractManager;
 import managers.HabitManager;
 import managers.MyManager;
 import managers.OptionReplier;
-import managers.habits.HabitManagerBase.HabitRunnableEnum;
 import util.MyBasicBot;
 import util.parsers.StandardParser;
 

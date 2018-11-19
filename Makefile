@@ -1,4 +1,4 @@
-.PHONY: all offline pull jar gym
+.PHONY: all offline pull jar gym add
 
 #JARSUFF=-jar-with-dependencies
 JARNAME=assistantBot-0.0.1-SNAPSHOT$(JARSUFF)

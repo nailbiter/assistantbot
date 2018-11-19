@@ -1,7 +1,7 @@
 ASBOTSOURCES=MyAssistantUserData MyAssistantBot
 MANAGERSOURCES=$(addsuffix Manager,Time Money Test MiscUtil Habit German Gym Abstract Report)
 UTILSOURCES=StorageManager MyBasicBot MongoUtil Util TelegramUtil
-HABITMANAGERSOURCES=HabitManagerBase JSONObjectCallback
+HABITMANAGERSOURCES=HabitManagerBase JSONObjectCallback Donep Constants
 SHELLSOURCES=InteractiveShell
 TESTSOURCES=UrlTest JsonTest ParadigmTest
 MISCSOURCES=MashaRemind RandomSetGenerator NoteMaker
@@ -15,3 +15,5 @@ SOURCES=\
  $(addprefix managers/tests/,$(TESTSOURCES))\
  $(addprefix managers/habits/,$(HABITMANAGERSOURCES))\
  $(MAINCLASS)
+add:
+	git add $(addprefix src/main/java/,$(addsuffix .java,$(SOURCES)))
