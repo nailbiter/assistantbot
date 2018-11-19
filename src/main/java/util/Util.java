@@ -197,7 +197,7 @@ public class Util{
 		StringBuilder sb = new StringBuilder();
 		for(int i = 0 ; i < 10;i++)
 			sb.append(ALPH.charAt(rand_.nextInt(ALPH.length())));
-		String filePath = String.format("%s/%s.%h", tmpFolder_,sb.toString(),"html");
+		String filePath = String.format("%s/%s.%s", tmpFolder_,sb.toString(),"html");
 		BufferedWriter writer = null;
 		try
 		{

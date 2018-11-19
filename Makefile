@@ -9,7 +9,8 @@ RUNCOMMANDSFILE=src/main/resources/runcommands.json
 KEYS=--password `cat secret.txt`
 PERLKEYS=--tmpfile $(REBOOTFILE) --cmdfile $(RUNCOMMANDSFILE)
 MAINCLASS=Main
-RUN=java -classpath $(subst HHOOMMEE,$(shell echo ~),$(shell cat cp.txt)) $(MAINCLASS) $(KEYS) $(PERLKEYS)
+BOGUS=HHOOMMEE
+RUN=java -classpath $(subst $(BOGUS),$(shell echo ~),$(shell cat cp.txt)) $(MAINCLASS) $(KEYS) $(PERLKEYS)
 
 #sources
 
@@ -21,15 +22,16 @@ all: src/main/resources/profiles/telegram.json target/$(JARNAME).jar
 include Makefile.sources
 offline: src/main/resources/profiles/offline.json target/$(JARNAME).jar
 	$(RUN) $< 2>$(LOGFILE)
-	#mvn exec:exec -Dexec.executable="echo" -Dexec.args="%classpath" 2>&1 |tee $(LOGFILE)
-target/$(JARNAME).jar : $(addprefix src/main/java/,$(addsuffix .java,$(SOURCES))) pom.xml
+target/$(JARNAME).jar : $(addprefix src/main/java/,$(addsuffix .java,$(SOURCES))) pom.xml cp.txt
 	mvn compile
 	touch $@
 pull:
 	git pull
 	cd src/main/java/com/github/nailbiter/util && git pull
-jar:$(addprefix src/main/java/,$(addsuffix .java,$(SOURCES))) pom.xml
+jar:$(addprefix src/main/java/,$(addsuffix .java,$(SOURCES))) pom.xml cp.txt
 	mvn compile
 	touch target/$(JARNAME).jar
 gym:
 	./src/main/pl/makeGym.pl --program src/main/resources/gym.json
+cp.txt: src/main/pl/parseCp.pl pom.xml
+	mvn exec:exec -Dexec.executable="echo" -Dexec.args="%classpath" | perl  $< --bogus $(BOGUS) > $@

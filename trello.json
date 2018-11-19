@@ -1,9 +1,9 @@
 {
+   "pulledData" : {
+      "trelloTitle" : "file sending from GF"
+   },
    "cardurl" : "https://trello.com/c/ZNvhGS5O",
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
-   ],
-   "pulledData" : {
-      "trelloTitle" : "file sending from GF"
-   }
+   ]
 }

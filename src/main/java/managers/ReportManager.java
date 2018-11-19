@@ -41,7 +41,7 @@ public class ReportManager extends AbstractManager {
 	public String mashareport(JSONObject obj) throws Exception {
 		return MashaRemind.Remind(ta_,mc_);
 	}
-	public String myreport(JSONObject obj) throws IOException {
+	public String myreport(JSONObject obj) throws Exception {
 		rp_.sendFile(Util.saveToTmpFile("<html>hi there!</html>"));
 		return "";
 	}

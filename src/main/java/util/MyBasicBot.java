@@ -13,6 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.logging.BotLogger;
 
 import com.mongodb.MongoClient;
@@ -141,12 +142,12 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 		this.waitingForReply_.get(chatID_).put(res.getMessageId(), whom);
 		return res.getMessageId();
 	}
-	public int sendFile(String fn,Long chatId) {
+	public int sendFile(String fn,Long chatId) throws TelegramApiException {
+		logger_.info(String.format("fn=%s", fn));
 		SendDocument message = new SendDocument()
 				.setChatId(chatId)
 				.setDocument(new File(fn));
 		return execute(message).getMessageId();
-		return 0;
 	}
 	public int sendMessage(String msg,Long chatID_)
 	{

@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import com.mongodb.MongoClient;
 import it.sauronsoftware.cron4j.Scheduler;
@@ -139,8 +140,7 @@ public class MyAssistantUserData extends UserData implements ResourceProvider {
 		return bot_.sendMessageWithKeyBoard(msg, chatID_, buttons);
 	}
 	@Override
-	public int sendMessageAsFile(String string) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int sendFile(String fn) throws TelegramApiException {
+		return bot_.sendFile(fn, chatID_);
 	}
 }
