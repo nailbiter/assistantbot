@@ -39,12 +39,13 @@ public class ReportManager extends AbstractManager {
 		return MashaRemind.Remind(ta_,mc_);
 	}
 	public String myreport(JSONObject obj) throws Exception {
-		rp_.sendFile(Util.saveToTmpFile("<html>hi there!</html>"));
+//		rp_.sendFile(Util.saveToTmpFile("<html>hi there!</html>"));
 		String res = sa_.runCommand("timestat -e 4 -u WEEK"),
 				res2 = sa_.runCommand("timestat -d money -e 4 -u WEEK");
 //		System.err.format("res in myreport: %s\n", res);
 		rp_.sendFile(Util.saveToTmpFile("<html>"+res+"<br></br>"+res2+"</html>"));
-		return sa_.getCommands().toString();
+//		return sa_.getCommands().toString();
+		return "";
 	}
 	public String reportshow(JSONObject obj) throws Exception {
 		if(obj.has("type")) {
