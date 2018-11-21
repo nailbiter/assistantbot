@@ -3,5 +3,6 @@
 	"resfolder":"src/main/resources/assistantBotFiles/",
 	"offline":true,
 	"tmpfolder":"tmp",
+    	"scriptFolder":"src/main/js/",
 	"managers":["GermanManager","MiscUtilManager"]
 }

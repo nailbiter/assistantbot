@@ -1,37 +1,34 @@
 package managers;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.github.nailbiter.util.TableBuilder;
 import com.github.nailbiter.util.TrelloAssistant;
 import com.mongodb.MongoClient;
 
-import assistantbot.MyAssistantUserData;
 import assistantbot.ResourceProvider;
 import managers.misc.MashaRemind;
 import util.KeyRing;
 import util.MongoUtil;
+import util.ScriptApp;
+import util.ScriptHelperImpl;
 import util.Util;
 
 import static java.util.Arrays.asList;
 import static util.parsers.StandardParser.ArgTypes;
-import static managers.AbstractManager.MakeCommand;
-import static managers.AbstractManager.MakeCommandArg;
-
-import java.io.IOException;
-import java.util.ArrayList;
 
 public class ReportManager extends AbstractManager {
 	private MongoClient mc_;
 	private TrelloAssistant ta_;
 	private ResourceProvider rp_;
+	private ScriptApp sa_;
 	public ReportManager(ResourceProvider rp) {
 		mc_ = rp.getMongoClient();
 		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
 				KeyRing.getTrello().getString("token"));
 		rp_ = rp;
+		sa_ = new ScriptApp(Util.getScriptFolder(), new ScriptHelperImpl(rp));
 	}
 	@Override
 	public JSONArray getCommands() {
@@ -43,7 +40,11 @@ public class ReportManager extends AbstractManager {
 	}
 	public String myreport(JSONObject obj) throws Exception {
 		rp_.sendFile(Util.saveToTmpFile("<html>hi there!</html>"));
-		return "";
+		String res = sa_.runCommand("timestat -e 4 -u WEEK"),
+				res2 = sa_.runCommand("timestat -d money -e 4 -u WEEK");
+//		System.err.format("res in myreport: %s\n", res);
+		rp_.sendFile(Util.saveToTmpFile("<html>"+res+"<br></br>"+res2+"</html>"));
+		return sa_.getCommands().toString();
 	}
 	public String reportshow(JSONObject obj) throws Exception {
 		if(obj.has("type")) {

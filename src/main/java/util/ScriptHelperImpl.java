@@ -1,5 +1,7 @@
 package util;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,6 +25,7 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Sorts;
 
+import assistantbot.ResourceProvider;
 import de.vandermeer.asciitable.AsciiTable;
 
 public class ScriptHelperImpl implements ScriptHelper {
@@ -37,36 +40,26 @@ public class ScriptHelperImpl implements ScriptHelper {
 	};
 	private Invocable inv_ = null;
 	private MongoClient mongoClient_;
-	public ScriptHelperImpl(MongoClient mongoClient) {
-		mongoClient_ = mongoClient;
+	private ResourceProvider rp_;
+	public ScriptHelperImpl(ResourceProvider rp) {
+		mongoClient_ = rp.getMongoClient();
+		rp_ = rp;
 	}
 	public void setInvocable(Invocable inv) {
 		inv_ = inv;
 	}
 	@Override
-	public String execute(String arg) throws NoSuchMethodException, JSONException, ScriptException{
+	public String execute(String arg) throws NoSuchMethodException, JSONException, ScriptException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, SecurityException{
 		JSONObject incoming = new JSONObject(arg);
-		if(incoming.getString(METHODFIELDNAME).equals("printStatTableASCII")) {
-			printStatTableASCII(incoming.getJSONObject(DATAFIELDNAME));
-			return "OK";
-		} else if(incoming.getString(METHODFIELDNAME).equals("getDataFromDatabase")) {
-			return getDataFromDatabase(incoming.getJSONObject(DATAFIELDNAME));
-		} else if(incoming.getString(METHODFIELDNAME).equals("printStatTablePLAIN")) {
-			printStatTablePLAIN(incoming.getJSONObject(DATAFIELDNAME));
-			return "OK";
-		} else if(incoming.getString(METHODFIELDNAME).equals("dropCollection")) {
-				dropCollection(incoming.getJSONObject(DATAFIELDNAME));
-				return "OK";
-		} else if(incoming.getString(METHODFIELDNAME).equals("addToDatabase")) {
-			addToDatabase(incoming.getJSONObject(DATAFIELDNAME));
-			return "OK";
-		} else if(incoming.getString(METHODFIELDNAME).equals("printStatTableHTML")) {
-			printStatTableHTML(incoming.getJSONObject(DATAFIELDNAME));
-			return "OK";
-		} else
-			return String.format("no method \"%s\" found", incoming.getString(METHODFIELDNAME));
+		System.err.format("trying to dispatch for method \"%s\", object:%s\n", incoming.getString(METHODFIELDNAME),
+				incoming.getJSONObject(DATAFIELDNAME).toString(2));
+		return (String)this.getClass().getMethod(incoming.getString(METHODFIELDNAME), JSONObject.class)
+				.invoke(this, incoming.getJSONObject(DATAFIELDNAME));
 	}
-	private void addToDatabase(JSONObject jsonObject) {
+	public void sendAsFile(JSONObject obj) throws JSONException, IOException, Exception {
+		rp_.sendFile(Util.saveToTmpFile(obj.getString("content")));
+	}
+	public void addToDatabase(JSONObject jsonObject) {
 		String[] split = jsonObject.getString("dbname").trim().split("\\.");
 		System.out.format("database name: %s\n", split[0]);
 		System.out.format("collection name: %s\n", split[1]);
@@ -78,23 +71,23 @@ public class ScriptHelperImpl implements ScriptHelper {
 			col.insertOne(doc);
 		}
 	}
-	private void dropCollection(JSONObject jsonObject) {
+	public void dropCollection(JSONObject jsonObject) {
 		String[] split = jsonObject.getString("dbname").trim().split("\\.");
 		System.err.format("database name: %s\n", split[0]);
 		System.err.format("collection name: %s\n", split[1]);
 		mongoClient_.getDatabase(split[0]).getCollection(split[1]).drop();		
 	}
-	private void printStatTableHTML(JSONObject jsonObject) throws NoSuchMethodException, JSONException, ScriptException {
+	public String printStatTableHTML(JSONObject jsonObject) throws Exception {
 		System.err.format("%s was called with %s\n", "printStatTableHTML",jsonObject.toString(2));
-		PrintTable(jsonObject.getJSONArray("data"),jsonObject.getString("colname"),inv_,"recordValueToString",
+		return PrintTable(jsonObject.getJSONArray("data"),jsonObject.getString("colname"),inv_,"recordValueToString",
 				TableEngine.HTML);
 	}
-	private void printStatTablePLAIN(JSONObject jsonObject) throws NoSuchMethodException, JSONException, ScriptException {
+	public String printStatTablePLAIN(JSONObject jsonObject) throws Exception {
 		System.err.format("%s was called with %s\n", "printStatTablePLAIN",jsonObject.toString(2));
-		PrintTable(jsonObject.getJSONArray("data"),jsonObject.getString("colname"),inv_,"recordValueToString",
+		return PrintTable(jsonObject.getJSONArray("data"),jsonObject.getString("colname"),inv_,"recordValueToString",
 				TableEngine.TABLEBUILDER);
 	}
-	private String getDataFromDatabase(JSONObject jsonObject) {
+	public String getDataFromDatabase(JSONObject jsonObject) {
 		System.err.format("%s was called with %s\n", "getDataFromDatabase",jsonObject.toString(2));
 		String[] split = jsonObject.getString("dbname").trim().split("\\.");
 		System.err.format("database name: %s\n", split[0]);
@@ -108,7 +101,7 @@ public class ScriptHelperImpl implements ScriptHelper {
 			queryRes = queryRes.sort(sortOrder);
 		}
 		
-		JSONArray res = new JSONArray();
+		final JSONArray res = new JSONArray();
 		queryRes.forEach(new Block<Document>() {
 			@Override
 			public void apply(Document arg0) {
@@ -128,16 +121,16 @@ public class ScriptHelperImpl implements ScriptHelper {
 			return Sorts.descending(key);
 		}
 	}
-	private void printStatTableASCII(JSONObject jsonObject) throws NoSuchMethodException, JSONException, ScriptException {
+	public String printStatTableASCII(JSONObject jsonObject) throws Exception {
 		System.err.format("%s was called with %s\n", "printStatTableASCII",jsonObject.toString(2));
-		PrintTable(jsonObject.getJSONArray("data"),jsonObject.getString("colname"),inv_,"recordValueToString",
+		return PrintTable(jsonObject.getJSONArray("data"),jsonObject.getString("colname"),inv_,"recordValueToString",
 				TableEngine.ASCIITABLE);
 	}
-	private static void PrintTable(JSONArray res, String databaseName, Invocable inv, String functionName, TableEngine te) throws NoSuchMethodException, JSONException, ScriptException {
-		JSONObject total = new JSONObject();
+	private static String PrintTable(JSONArray res, String databaseName, Invocable inv, String functionName, TableEngine te) throws Exception {
+		final JSONObject total = new JSONObject();
 		Object at = (te==TableEngine.ASCIITABLE) ? new AsciiTable():
 			(te==TableEngine.TABLEBUILDER) ? new TableBuilder():
-			(te==TableEngine.HTML) ? new StringBuilder("<table>") : null;
+			(te==TableEngine.HTML) ? new StringBuilder("<table border=\"1\">") : null;
 		for(Object o:res) {
 			JSONObject obj = (JSONObject)o;
 			int totalValue = 0;
@@ -185,13 +178,17 @@ public class ScriptHelperImpl implements ScriptHelper {
 		if(te==TableEngine.ASCIITABLE) ((AsciiTable) at).addRule();
 		
 		if(te==TableEngine.ASCIITABLE)
-			System.out.println(((AsciiTable) at).render());
+//			System.out.println(((AsciiTable) at).render());
+			return ((AsciiTable) at).render();
 		else if(te==TableEngine.TABLEBUILDER)
-			System.out.println((TableBuilder)at);
+//			System.out.println((TableBuilder)at);
+			return ((TableBuilder)at).toString();
 		else if(te==TableEngine.HTML) {
 			((StringBuilder)at).append("</table>");
-			System.out.println((StringBuilder)at);
-		}
+//			System.out.println((StringBuilder)at);
+			return ((StringBuilder)at).toString();
+		} else 
+			throw new Exception("Unknown type of TableEngine");
 	}
 	static void AddRow(Object table,TableEngine te, ArrayList<String> row){
 		if(te==TableEngine.ASCIITABLE)

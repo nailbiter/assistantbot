@@ -58,4 +58,12 @@ public class JsonUtil {
 			obj.put(key.toUpperCase(), val);
 		}
 	}
+	public static void FilterJsonKeys(JSONObject obj, JSONArray keys) {
+		List<Object> listOfKeys = keys.toList();
+		List<String> objKeys = new ArrayList<String>(obj.keySet());
+		for(String key: objKeys) {
+			if( !listOfKeys.contains(key) )
+				obj.remove(key);
+		}
+	}
 }

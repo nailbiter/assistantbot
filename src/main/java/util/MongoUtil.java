@@ -80,7 +80,7 @@ public class MongoUtil {
 			uri = new MongoClientURI(url);
 		}
 		catch(Exception e) {
-			System.out.format("EXCEPTION!\n");
+			System.err.format("EXCEPTION!\n");
 		}
 		return new MongoClient(uri);
 	}

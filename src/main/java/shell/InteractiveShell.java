@@ -1,5 +1,11 @@
 package shell;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,17 +33,18 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 
 public class InteractiveShell implements ResourceProvider {
 	private static String PROMPT = "assistantbot> ";
+	private static String HOME = "/Users/oleksiileontiev";
+	private static String FILETOOUTPUTTO = HOME+"/Downloads/test.html";
 	static MongoClient mc_;
 	public static void Start(JSONObject profileObj) throws Exception {
 		(new InteractiveShell(profileObj)).start(profileObj);
 	}
-	protected InteractiveShell(JSONObject profileObj) {
+	protected InteractiveShell(JSONObject profileObj) throws Exception {
 		boolean uselocaldb = profileObj.getBoolean("OFFLINE"); 
 		System.out.format("USELOCALDB=%s\n", Boolean.toString(uselocaldb));
-		
+		Util.setProfileObj(profileObj.toString());
 		DisableLogging();
-		String password = profileObj.getString("PASSWORD");
-		mc_ = uselocaldb ? new MongoClient() : MongoUtil.GetMongoClient(password);
+		mc_ = uselocaldb ? new MongoClient() : MongoUtil.GetMongoClient( profileObj.getString("PASSWORD") );
 	}
 	protected void start(JSONObject profileObj) throws Exception {
 		ArrayList<MyManager> managers = new ArrayList<MyManager>();
@@ -52,7 +59,7 @@ public class InteractiveShell implements ResourceProvider {
 		
 		Completer completer = new StringsCompleter(commands);
         LineReader reader = LineReaderBuilder.builder().completer(completer).build();
-        String line = null,str = null;
+        String line = null, str = null;
         
         while (true) {
             line = null;
@@ -86,7 +93,7 @@ public class InteractiveShell implements ResourceProvider {
 	}
 	@Override
 	public void sendMessage(String msg) {
-		// TODO Auto-generated method stub
+		System.out.println(msg);
 	}
 	@Override
 	public Scheduler getScheduler() {
@@ -104,8 +111,12 @@ public class InteractiveShell implements ResourceProvider {
 		return 0;
 	}
 	@Override
-	public int sendFile(String fn) {
-		// TODO Auto-generated method stub
+	public int sendFile(String fn) throws IOException {
+		File in = new File(fn);
+		File out = new File(FILETOOUTPUTTO);
+		System.err.format("in=%s, out=%s\n", in.toString(),out.toString());
+		Util.copyFileUsingStream(in, out);
+		sendMessage(String.format("sent new file to %s", FILETOOUTPUTTO));
 		return 0;
 	}
 	private static void DisableLogging() {

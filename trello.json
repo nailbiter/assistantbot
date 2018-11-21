@@ -1,9 +1,9 @@
 {
-   "cardurl" : "https://trello.com/c/MtfLPbz7",
    "pulledData" : {
       "trelloTitle" : "scriptutil"
    },
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
-   ]
+   ],
+   "cardurl" : "https://trello.com/c/MtfLPbz7"
 }

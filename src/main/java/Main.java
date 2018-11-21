@@ -15,7 +15,7 @@ import com.github.nailbiter.util.opts.Option;
 import static com.github.nailbiter.util.opts.Option.ArgEnum;
 import util.JsonUtil;
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
     	JSONObject description = new JSONObject(), result = null;
     	try {
 			result = new JSONObject(com.github.nailbiter.util.Util.ParseCommandLine(description.toString(), args));
@@ -36,11 +36,11 @@ public class Main {
     	JSONObject profileObj =  result.getJSONObject("keys");
     	JsonUtil.CapitalizeJsonKeys(profileObj);
     	System.err.format("profile: %s\n",profileObj.toString(2));
-    	
-    	Util.SetJarFolder(profileObj.getString("RESFOLDER"));
-    	Util.SetRebootFileName(profileObj.getString("TMPFILE"));
-    	Util.SetRebootCommandFileName(profileObj.getString("CMDFILE"));
-    	Util.SetTmpFolderName(profileObj.getString("TMPFOLDER"));
+    	Util.setProfileObj(profileObj.toString());
+//    	Util.SetJarFolder(profileObj.getString("RESFOLDER"));
+//    	Util.SetRebootFileName(profileObj.getString("TMPFILE"));
+//    	Util.SetRebootCommandFileName(profileObj.getString("CMDFILE"));
+//    	Util.SetTmpFolderName(profileObj.getString("TMPFOLDER"));
     	
     	if(profileObj.has("OFFLINE")) {
     		try {

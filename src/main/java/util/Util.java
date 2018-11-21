@@ -32,19 +32,36 @@ import assistantbot.ResourceProvider;
  */
 public class Util{
 	protected static boolean isInit = false;
-	protected static String jarFolder;
-	private static String RebootFileName_;
-	private static String rebootCommandFileName_;
-	private static String tmpFolder_; 
+//	protected static String jarFolder;
+//	private static String RebootFileName_;
+//	private static String rebootCommandFileName_;
+//	private static String tmpFolder_;
 	private final static String ALPH = "abcdefghijklmnopqrstuvwxyz" +
 			"abcdefghijklmnopqrstuvwxyz".toUpperCase() + "01234567890";
 	
 	private static Random rand_ = new Random();
+	private static JSONObject profileObj_;
 	protected static void init() throws Exception
 	{
 	}
-	public static void SetJarFolder(String jf) {jarFolder = jf;}
-	public static String getJarFolder() throws Exception { init(); return jarFolder;}
+	public static void setProfileObj(String string) throws Exception {
+		profileObj_ = new JSONObject(string);
+		JSONArray keys = new JSONArray()
+				.put("RESFOLDER")
+				.put("TMPFOLDER")
+				.put("CMDFILE")
+				.put("TMPFILE")
+				.put("SCRIPTFOLDER");
+		JsonUtil.FilterJsonKeys(profileObj_,keys);
+		for(Object key:keys) {
+			if(null==profileObj_.getString((String)key))
+				throw new Exception();
+		}
+	}
+	public static String getScriptFolder() {
+		return profileObj_.getString("SCRIPTFOLDER");
+	}
+	public static String getJarFolder() throws Exception { return profileObj_.getString("RESFOLDER"); }
 	public static String milisToTimeFormat(long millis)
 	{
 		return Integer.toString((int)(millis/1000.0/60.0/60.0)) + "h:"+
@@ -63,11 +80,11 @@ public class Util{
 		df.setTimeZone(Util.getTimezone());
 		return df.format(d);
 	}
-	public static void SetRebootFileName(String string) {
-		RebootFileName_ = string;
-	}
+//	public static void SetRebootFileName(String string) {
+//		RebootFileName_ = string;
+//	}
 	public static String GetRebootFileName() {
-		return RebootFileName_;
+		return profileObj_.getString("TMPFILE");
 	}
 	public static String GetFile(String name) throws Exception{
 		FileReader fr = null;
@@ -164,11 +181,12 @@ public class Util{
 		System.out.println("here with: "+res.toString());
 	    return res.toString();
 	}
-	public static void SetRebootCommandFileName(String string) {
-		rebootCommandFileName_ = string;
-	}
+//	public static void SetRebootCommandFileName(String string) {
+//		rebootCommandFileName_ = string;
+//	}
 	public static String GetRebootCommandFileName() {
-		return rebootCommandFileName_ ;
+//		return rebootCommandFileName_ ;
+		return profileObj_.getString("CMDFILE");
 	}
 	public static void PopulateManagers(List<MyManager> managers,JSONArray names,ResourceProvider rp) throws Exception {
 		for(Object o:names) {
@@ -190,14 +208,14 @@ public class Util{
 			System.err.format("added %s\n", cn);
 		}
 	}
-	public static void SetTmpFolderName(String tmpf) {
-		tmpFolder_ = tmpf;
-	}
+//	public static void SetTmpFolderName(String tmpf) {
+//		tmpFolder_ = tmpf;
+//	}
 	public static String saveToTmpFile(String content) throws IOException {
 		StringBuilder sb = new StringBuilder();
 		for(int i = 0 ; i < 10;i++)
 			sb.append(ALPH.charAt(rand_.nextInt(ALPH.length())));
-		String filePath = String.format("%s/%s.%s", tmpFolder_,sb.toString(),"html");
+		String filePath = String.format("%s/%s.%s", profileObj_.getString("TMPFOLDER"),sb.toString(),"html");
 		BufferedWriter writer = null;
 		try
 		{
@@ -221,5 +239,21 @@ public class Util{
 		    }
 		}
 		return filePath;
+	}
+	private static void CopyFileUsingStream(File source, File dest) throws IOException {
+	    InputStream is = null;
+	    OutputStream os = null;
+	    try {
+	        is = new FileInputStream(source);
+	        os = new FileOutputStream(dest);
+	        byte[] buffer = new byte[1024];
+	        int length;
+	        while ((length = is.read(buffer)) > 0) {
+	            os.write(buffer, 0, length);
+	        }
+	    } finally {
+	        is.close();
+	        os.close();
+	    }
 	}
 }

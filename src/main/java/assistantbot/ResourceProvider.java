@@ -1,5 +1,6 @@
 package assistantbot;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,13 @@ public interface ResourceProvider {
 	void sendMessage(String msg);
 	Scheduler getScheduler();
 	public abstract int sendMessage(String string, MyManager testManager) throws Exception;
-	public abstract int sendFile(String fn) throws TelegramApiException;
+	public abstract int sendFile(String fn) throws Exception;
+	/**
+	 * 
+	 * @param msg
+	 * @param makePerCatButtons
+	 * @return
+	 * @deprecated use {@link #sendMessageWithKeyBoard(String, JSONArray)} instead
+	 */
 	public abstract int sendMessageWithKeyBoard(String msg, List<List<InlineKeyboardButton>> makePerCatButtons);
 }

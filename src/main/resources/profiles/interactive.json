@@ -1,0 +1,8 @@
+{
+	"name":"offline",
+	"resfolder":"src/main/resources/assistantBotFiles/",
+	"offline":false,
+	"tmpfolder":"tmp",
+    "scriptFolder":"src/main/js/",
+	"managers":["GermanManager","MiscUtilManager","ReportManager"]
+}

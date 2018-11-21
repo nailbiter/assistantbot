@@ -28,7 +28,7 @@ public class StandardParser extends AbstractParser{
 		for(int i = 0; i < cmds_.length(); i++)
 			if(cmds_.get(i) instanceof String)
 			{
-				System.out.println(String.format("defName=%s, idx=%d/%d", this.defaultName_,i,
+				System.err.println(String.format("defName=%s, idx=%d/%d", this.defaultName_,i,
 						cmds_.length()));
 				return (String)cmds_.get(i);
 			}
@@ -43,7 +43,7 @@ public class StandardParser extends AbstractParser{
 			for(int j = 0; j < cmds_.length(); j++)
 				cmds.put(cmds_.get(j));
 		}
-		System.out.println("parser got: "+cmds.toString());
+		System.err.println("parser got: "+cmds.toString());
 		return cmds;
 	}
 	public StandardParser(List<MyManager> managers) throws Exception {
@@ -163,7 +163,7 @@ public class StandardParser extends AbstractParser{
 	public String getResultAndFormat(JSONObject res) throws Exception {
 		if(res.has("name"))
 		{
-			System.out.println(this.getClass().getName()+" got comd: "+prefix_+res.getString("name"));
+			System.err.println(this.getClass().getName()+" got comd: "+prefix_+res.getString("name"));
 			if(res.getString("name").compareTo("help")==0)
 				return getHelpMessage();
 		}
