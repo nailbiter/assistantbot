@@ -46,7 +46,10 @@ public class ReportManager extends AbstractManager {
 		sih_.setParamObject(settings);
 		String res = sa_.runCommand("timestat -e 4 -u WEEK"),
 				res2 = sa_.runCommand("timestat -d money -e 4 -u WEEK");
-		rp_.sendFile(Util.saveToTmpFile("<html>"+res+"<br></br>"+res2+"</html>"));
+		rp_.sendFile(Util.saveToTmpFile(
+				String.format("<html>\n<head><style type=\"text/css\">\n%s\n</style></head>\n%s\n<br><br>\n%s\n</html>",
+						settings.getString("cssstyle"),
+						res,res2)));
 		return "";
 	}
 	public String reportshow(JSONObject obj) throws Exception {

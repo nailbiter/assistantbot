@@ -33,8 +33,8 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 
 public class InteractiveShell implements ResourceProvider {
 	private static String PROMPT = "assistantbot> ";
-	private static String HOME = "/Users/oleksiileontiev";
-	private static String FILETOOUTPUTTO = HOME+"/Downloads/test.html";
+//	private static String HOME = "/Users/oleksiileontiev";
+	private String fileToOutputTo_;
 	static MongoClient mc_;
 	public static void Start(JSONObject profileObj) throws Exception {
 		(new InteractiveShell(profileObj)).start(profileObj);
@@ -45,6 +45,7 @@ public class InteractiveShell implements ResourceProvider {
 		Util.setProfileObj(profileObj.toString());
 		DisableLogging();
 		mc_ = uselocaldb ? new MongoClient() : MongoUtil.GetMongoClient( profileObj.getString("PASSWORD") );
+		fileToOutputTo_ = Util.AddTerminalSlash(profileObj.getString("TMPFOLDER")) + profileObj.getString("FILETOSENDTO");
 	}
 	protected void start(JSONObject profileObj) throws Exception {
 		ArrayList<MyManager> managers = new ArrayList<MyManager>();
@@ -113,10 +114,10 @@ public class InteractiveShell implements ResourceProvider {
 	@Override
 	public int sendFile(String fn) throws IOException {
 		File in = new File(fn);
-		File out = new File(FILETOOUTPUTTO);
+		File out = new File(fileToOutputTo_);
 		System.err.format("in=%s, out=%s\n", in.toString(),out.toString());
 		Util.copyFileUsingStream(in, out);
-		sendMessage(String.format("sent new file to %s", FILETOOUTPUTTO));
+		sendMessage(String.format("sent new file to %s", fileToOutputTo_));
 		return 0;
 	}
 	private static void DisableLogging() {

@@ -1,9 +1,9 @@
 {
-   "cardurl" : "https://trello.com/c/h4SF1Omp",
+   "pulledData" : {
+      "trelloTitle" : "telegram report skeleton"
+   },
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
    ],
-   "pulledData" : {
-      "trelloTitle" : "telegram report skeleton"
-   }
+   "cardurl" : "https://trello.com/c/h4SF1Omp"
 }

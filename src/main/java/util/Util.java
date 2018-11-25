@@ -32,10 +32,6 @@ import assistantbot.ResourceProvider;
  */
 public class Util{
 	protected static boolean isInit = false;
-//	protected static String jarFolder;
-//	private static String RebootFileName_;
-//	private static String rebootCommandFileName_;
-//	private static String tmpFolder_;
 	private final static String ALPH = "abcdefghijklmnopqrstuvwxyz" +
 			"abcdefghijklmnopqrstuvwxyz".toUpperCase() + "01234567890";
 	
@@ -181,12 +177,14 @@ public class Util{
 		System.out.println("here with: "+res.toString());
 	    return res.toString();
 	}
-//	public static void SetRebootCommandFileName(String string) {
-//		rebootCommandFileName_ = string;
-//	}
 	public static String GetRebootCommandFileName() {
-//		return rebootCommandFileName_ ;
 		return profileObj_.getString("CMDFILE");
+	}
+	public static String AddTerminalSlash(String dirname) {
+		if(dirname.endsWith("/"))
+			return dirname;
+		else
+			return dirname+"/";
 	}
 	public static void PopulateManagers(List<MyManager> managers,JSONArray names,ResourceProvider rp) throws Exception {
 		for(Object o:names) {
@@ -208,9 +206,6 @@ public class Util{
 			System.err.format("added %s\n", cn);
 		}
 	}
-//	public static void SetTmpFolderName(String tmpf) {
-//		tmpFolder_ = tmpf;
-//	}
 	public static String saveToTmpFile(String content) throws IOException {
 		StringBuilder sb = new StringBuilder();
 		for(int i = 0 ; i < 10;i++)
