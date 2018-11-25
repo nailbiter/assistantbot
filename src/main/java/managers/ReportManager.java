@@ -23,12 +23,14 @@ public class ReportManager extends AbstractManager {
 	private TrelloAssistant ta_;
 	private ResourceProvider rp_;
 	private ScriptApp sa_;
+	private ScriptHelperImpl sih_;
 	public ReportManager(ResourceProvider rp) {
 		mc_ = rp.getMongoClient();
 		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
 				KeyRing.getTrello().getString("token"));
 		rp_ = rp;
-		sa_ = new ScriptApp(Util.getScriptFolder(), new ScriptHelperImpl(rp));
+		sih_ = new ScriptHelperImpl(rp);
+		sa_ = new ScriptApp(Util.getScriptFolder(), sih_);
 	}
 	@Override
 	public JSONArray getCommands() {
@@ -39,12 +41,12 @@ public class ReportManager extends AbstractManager {
 		return MashaRemind.Remind(ta_,mc_);
 	}
 	public String myreport(JSONObject obj) throws Exception {
-//		rp_.sendFile(Util.saveToTmpFile("<html>hi there!</html>"));
+		JSONObject settings = getParamObject(mc_);
+		System.err.format("got object %s\n", settings.toString(2));
+		sih_.setParamObject(settings);
 		String res = sa_.runCommand("timestat -e 4 -u WEEK"),
 				res2 = sa_.runCommand("timestat -d money -e 4 -u WEEK");
-//		System.err.format("res in myreport: %s\n", res);
 		rp_.sendFile(Util.saveToTmpFile("<html>"+res+"<br></br>"+res2+"</html>"));
-//		return sa_.getCommands().toString();
 		return "";
 	}
 	public String reportshow(JSONObject obj) throws Exception {

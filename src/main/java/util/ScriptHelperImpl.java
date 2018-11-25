@@ -41,6 +41,7 @@ public class ScriptHelperImpl implements ScriptHelper {
 	private Invocable inv_ = null;
 	private MongoClient mongoClient_;
 	private ResourceProvider rp_;
+	private static JSONObject settings_;
 	public ScriptHelperImpl(ResourceProvider rp) {
 		mongoClient_ = rp.getMongoClient();
 		rp_ = rp;
@@ -130,7 +131,8 @@ public class ScriptHelperImpl implements ScriptHelper {
 		final JSONObject total = new JSONObject();
 		Object at = (te==TableEngine.ASCIITABLE) ? new AsciiTable():
 			(te==TableEngine.TABLEBUILDER) ? new TableBuilder():
-			(te==TableEngine.HTML) ? new StringBuilder("<table border=\"1\">") : null;
+			(te==TableEngine.HTML) ? new StringBuilder(String.format("<table%s>",settings_.has("border")?
+				String.format(" border=\"%s\"", settings_.getString("border")):"")) : null;
 		for(Object o:res) {
 			JSONObject obj = (JSONObject)o;
 			int totalValue = 0;
@@ -224,5 +226,8 @@ public class ScriptHelperImpl implements ScriptHelper {
 		row.add((String)inv.invokeFunction(functionName,obj.getInt(TOTALVALUEKEY),databaseName));
 		row.add(String.format(procentFormat, (100.0*obj.getInt(TOTALVALUEKEY))/total.getInt(TOTALVALUEKEY)));
 		AddRow(at,te,row);
+	}
+	public void setParamObject(JSONObject settings) {
+		settings_ = settings;
 	}
 }

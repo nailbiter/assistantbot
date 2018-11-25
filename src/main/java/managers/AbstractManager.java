@@ -7,8 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.mongodb.MongoClient;
+
+import managers.misc.MashaRemind;
+import util.MongoUtil;
 import util.StorageManager;
 import util.parsers.StandardParser;
 
@@ -60,5 +65,13 @@ public abstract class AbstractManager implements MyManager {
 		arg.put("type", type.toString());
 		
 		return arg;
+	}
+	protected JSONObject getParamObject(MongoClient mc) throws JSONException, Exception {
+		String classname = this.getClass().getName();
+		System.err.format("getting param object for %s\n", classname);
+		JSONObject parameters = MongoUtil.GetJsonObjectFromDatabase(mc, 
+				"logistics.params",
+				"name:"+classname).getJSONObject("parameter");
+		return parameters;
 	}
 }
