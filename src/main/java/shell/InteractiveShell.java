@@ -23,7 +23,7 @@ import managers.MyManager;
 import util.KeyRing;
 import util.MongoUtil;
 import util.Util;
-import util.parsers.StandardParser;
+import util.parsers.StandardParserInterpreter;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import it.sauronsoftware.cron4j.Scheduler;
@@ -50,8 +50,8 @@ public class InteractiveShell implements ResourceProvider {
 	protected void start(JSONObject profileObj) throws Exception {
 		ArrayList<MyManager> managers = new ArrayList<MyManager>();
 		PopulateManagers(managers, profileObj,this);
-		StandardParser parser = new StandardParser(managers);
-		managers.add(parser);
+		StandardParserInterpreter parser = 
+				StandardParserInterpreter.Create(managers, profileObj.getJSONArray("managers"));
 		parser.setPrefix("");
 		
 		ArrayList<String> commands = new ArrayList<String>();

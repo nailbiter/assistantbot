@@ -10,29 +10,24 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import com.mongodb.MongoClient;
 import it.sauronsoftware.cron4j.Scheduler;
-import managers.BadHabitManager;
-import managers.GermanManager;
-import managers.GymManager;
-import managers.MiscUtilManager;
 import managers.MyManager;
 import managers.OptionReplier;
-import managers.ReportManager;
-import managers.TimeManager;
 import util.Util;
 import util.MyBasicBot;
 import util.UserData;
 import util.parsers.AbstractParser;
+import util.parsers.StandardParserInterpreter;
 
 public class MyAssistantUserData extends UserData implements ResourceProvider {
 	protected Scheduler scheduler_ = null; //FIXME: should it be a singleton?
 	protected static boolean ISBOTMANAGER = false;
 	protected List<MyManager> managers_ = new ArrayList<MyManager>();
-	List<MyManager> getManagers(){return managers_;}
-	protected AbstractParser parser = null;
-	String lastCategory = null;
+	protected AbstractParser parser_ = null;
+//	String lastCategory = null;
 	protected long chatID_;
 	MyBasicBot bot_ = null;
-	private Logger logger_; 
+	private Logger logger_;
+	List<MyManager> getManagers(){return managers_;}
 	MyAssistantUserData(Long chatID,MyBasicBot bot, JSONArray names){
 		try 
 		{
@@ -46,15 +41,14 @@ public class MyAssistantUserData extends UserData implements ResourceProvider {
 				scheduler_.setTimeZone(Util.getTimezone());
 				Util.PopulateManagers(managers_, names, this);
 			}
-			managers_.add(util.StorageManager.getMyManager());
-			managers_.add(new managers.JShellManager(bot));
+//			managers_.add(util.StorageManager.getMyManager());
+//			managers_.add(new managers.JShellManager(bot));
 			
-			if(MyAssistantUserData.ISBOTMANAGER)
-				parser = new util.parsers.BotManagerParser();
-			else
-				parser = new util.parsers.StandardParser(managers_);
-			
-			managers_.add(parser);
+//			if(MyAssistantUserData.ISBOTMANAGER)
+//				parser_ = new util.parsers.BotManagerParser();
+//			else
+//				parser_ = new util.parsers.StandardParserInterpreter(managers_,Util.GetDefSettingsObject(names));
+			parser_ = StandardParserInterpreter.Create(managers_, names);
 		}
 		catch(Exception e)
 		{
@@ -63,8 +57,7 @@ public class MyAssistantUserData extends UserData implements ResourceProvider {
 		if(scheduler_!=null) 
 			scheduler_.start();
 	}
-//	public boolean isSleeping() {return (tm_ != null) && tm_.isSleeping();}
-	public AbstractParser getParser() {return parser;}
+	public AbstractParser getParser() {return parser_;}
 	public void Update(JSONObject res)  {
 		if(res.has("name"))
 		{

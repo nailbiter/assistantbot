@@ -12,6 +12,10 @@
 		"MiscUtilManager",
 		"ReportManager",
 		"GermanManager",
-		"GymManager"
+		"GymManager",
+		{
+			"name":"JShellManager",
+			"DEFMESSAGEHANDLER":"true"
+		}
 	]
 }

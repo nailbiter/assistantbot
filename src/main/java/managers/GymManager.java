@@ -13,9 +13,10 @@ import com.mongodb.client.model.Sorts;
 import assistantbot.MyAssistantUserData;
 import assistantbot.ResourceProvider;
 import util.MongoUtil;
+import util.parsers.ParseOrdered;
 
 import static java.util.Arrays.asList;
-import static util.parsers.StandardParser.ArgTypes;
+import static util.parsers.StandardParserInterpreter.ArgTypes;
 
 import java.util.Date;
 import java.util.logging.Logger;
@@ -36,12 +37,12 @@ public class GymManager extends AbstractManager {
 	@Override
 	public JSONArray getCommands() {
 		return new JSONArray()
-				.put(MakeCommand("gymlist","list gym exercises",
-						asList(MakeCommandArg("dayCount",ArgTypes.integer,false))))
-				.put(MakeCommand("gymdone","done gym exercise",
+				.put(ParseOrdered.MakeCommand("gymlist","list gym exercises",
+						asList(ParseOrdered.MakeCommandArg("dayCount",ArgTypes.integer,false))))
+				.put(ParseOrdered.MakeCommand("gymdone","done gym exercise",
 						asList(
-								MakeCommandArg("exercisenum",ArgTypes.integer,false),
-								MakeCommandArg("comment",ArgTypes.remainder,true)
+								ParseOrdered.MakeCommandArg("exercisenum",ArgTypes.integer,false),
+								ParseOrdered.MakeCommandArg("comment",ArgTypes.remainder,true)
 								)))
 				;
 	}

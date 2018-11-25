@@ -20,8 +20,10 @@ import managers.misc.NoteMaker;
 import managers.misc.RandomSetGenerator;
 import util.KeyRing;
 import util.Util;
+import util.parsers.ParseOrdered;
+
 import static java.util.Arrays.asList;
-import static util.parsers.StandardParser.ArgTypes;
+import static util.parsers.StandardParserInterpreter.ArgTypes;
 import static util.Util.GetRebootFileName;
 
 public class MiscUtilManager extends AbstractManager {
@@ -52,19 +54,19 @@ public class MiscUtilManager extends AbstractManager {
 	@Override
 	public JSONArray getCommands() {
 		return new JSONArray()
-				.put(MakeCommand("rand", "return random",
+				.put(ParseOrdered.MakeCommand("rand", "return random",
 						asList(
-								MakeCommandArg("key",ArgTypes.integer,true),
-								MakeCommandArg("charset",ArgTypes.string,true)
+								ParseOrdered.MakeCommandArg("key",ArgTypes.integer,true),
+								ParseOrdered.MakeCommandArg("charset",ArgTypes.string,true)
 								)))
-				.put(MakeCommand("randset","return randomly generated set",
-						asList(MakeCommandArg("size",ArgTypes.integer,false))))
-				.put(MakeCommand("note","make note",asList(MakeCommandArg("notecontent",ArgTypes.remainder,false))))
-				.put(MakeCommand("exit", "exit the bot", new ArrayList<JSONObject>()))
-				.put(MakeCommand("restart", "restart the bot",
-						asList(MakeCommandArg("command",ArgTypes.remainder,true))))
-				.put(MakeCommand("ttask", "make new task", Arrays.asList((
-						MakeCommandArg("task",ArgTypes.remainder,false)))));
+				.put(ParseOrdered.MakeCommand("randset","return randomly generated set",
+						asList(ParseOrdered.MakeCommandArg("size",ArgTypes.integer,false))))
+				.put(ParseOrdered.MakeCommand("note","make note",asList(ParseOrdered.MakeCommandArg("notecontent",ArgTypes.remainder,false))))
+				.put(ParseOrdered.MakeCommand("exit", "exit the bot", new ArrayList<JSONObject>()))
+				.put(ParseOrdered.MakeCommand("restart", "restart the bot",
+						asList(ParseOrdered.MakeCommandArg("command",ArgTypes.remainder,true))))
+				.put(ParseOrdered.MakeCommand("ttask", "make new task", Arrays.asList((
+						ParseOrdered.MakeCommandArg("task",ArgTypes.remainder,false)))));
 	}
 	public String note(JSONObject obj) {
 		String noteContent = obj.getString("notecontent");

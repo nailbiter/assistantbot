@@ -15,6 +15,7 @@ import java.lang.reflect.Constructor;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.TimeZone;
@@ -188,9 +189,14 @@ public class Util{
 	}
 	public static void PopulateManagers(List<MyManager> managers,JSONArray names,ResourceProvider rp) throws Exception {
 		for(Object o:names) {
-			String name = (String)o;
-			if(name==null)
-				continue;
+			String name = null;
+			if(o instanceof String) {
+				name = (String)o;
+//				if(name==null)
+//					continue;
+			} else if(o instanceof JSONObject) {
+				name = ((JSONObject)o).getString("name");
+			}
 			String cn = String.format("%s.%s","managers", name);
 			try {
 				Class<?> clazz = Class.forName(cn);
@@ -205,6 +211,20 @@ public class Util{
 			}
 			System.err.format("added %s\n", cn);
 		}
+	}
+	public static JSONObject GetDefSettingsObject(JSONArray names) {
+		JSONObject res = new JSONObject();
+		for(Object o:names) {
+			if(o instanceof JSONObject) {
+				JSONObject obj = (JSONObject)o;
+				for(Iterator<String> it = obj.keys();it.hasNext();) {
+					String key = it.next();
+					if(key.startsWith("DEF") && obj.getBoolean(key))
+						res.put(key, obj.getString("name"));
+				}
+			}
+		}
+		return res;
 	}
 	public static String saveToTmpFile(String content) throws IOException {
 		StringBuilder sb = new StringBuilder();

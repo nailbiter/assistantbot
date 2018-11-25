@@ -16,7 +16,8 @@ import com.mongodb.client.model.Updates;
 
 import assistantbot.MyAssistantUserData;
 import assistantbot.ResourceProvider;
-import util.parsers.StandardParser;
+import util.parsers.ParseOrdered;
+import util.parsers.StandardParserInterpreter;
 
 public class GermanManager extends AbstractManager {
 	enum DudenConst{ GENDER, PLURAL}
@@ -24,10 +25,10 @@ public class GermanManager extends AbstractManager {
 	@Override
 	public JSONArray getCommands() {
 		return new JSONArray()
-				.put(AbstractManager.MakeCommand("germangender", "german gender",
-				Arrays.asList(MakeCommandArg("word",StandardParser.ArgTypes.remainder,false))))
-				.put(AbstractManager.MakeCommand("germanplural", "german plural",
-						Arrays.asList(MakeCommandArg("word",StandardParser.ArgTypes.remainder,false))));
+				.put(ParseOrdered.MakeCommand("germangender", "german gender",
+				Arrays.asList(ParseOrdered.MakeCommandArg("word",StandardParserInterpreter.ArgTypes.remainder,false))))
+				.put(ParseOrdered.MakeCommand("germanplural", "german plural",
+						Arrays.asList(ParseOrdered.MakeCommandArg("word",StandardParserInterpreter.ArgTypes.remainder,false))));
 	}
 	public GermanManager(ResourceProvider rp){
 		genderCollection_ = rp.getMongoClient().getDatabase("logistics").getCollection("gender");

@@ -18,8 +18,9 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Sorts;
 
 import assistantbot.ResourceProvider;
-import util.parsers.StandardParser;
-import util.parsers.StandardParser.ArgTypes;
+import util.parsers.ParseOrdered;
+import util.parsers.StandardParserInterpreter;
+import util.parsers.StandardParserInterpreter.ArgTypes;
 
 public class MoneyManager implements managers.MyManager,OptionReplier{
 	JSONArray cats = new JSONArray();
@@ -149,9 +150,9 @@ public class MoneyManager implements managers.MyManager,OptionReplier{
 		JSONArray res = new JSONArray(
 				"["+ 
 				"{\"name\":\"costs\",\"args\":[{\"name\":\"num\",\"type\":\"int\",\"isOpt\":true}]}]");
-		res.put(AbstractManager.MakeCommand("money", "spent money", 
-				Arrays.asList(AbstractManager.MakeCommandArg("amount",StandardParser.ArgTypes.integer, false),
-						AbstractManager.MakeCommandArg("comment", ArgTypes.remainder, true))));
+		res.put(ParseOrdered.MakeCommand("money", "spent money", 
+				Arrays.asList(ParseOrdered.MakeCommandArg("amount",StandardParserInterpreter.ArgTypes.integer, false),
+						ParseOrdered.MakeCommandArg("comment", ArgTypes.remainder, true))));
 		return res;
 	}
 	@Override

@@ -14,7 +14,8 @@ import mail.MailReplier;
 import mail.MyMail;
 import util.KeyRing;
 import util.MyBasicBot;
-import util.parsers.StandardParser;
+import util.parsers.ParseOrdered;
+import util.parsers.StandardParserInterpreter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -75,8 +76,8 @@ public class MailManager implements MyManager, OptionReplier{
 	@Override
 	public JSONArray getCommands() {
 		JSONArray res = new JSONArray();
-		res.put(AbstractManager.MakeCommand("mailfreq", "set mailbox check freq to MIN", 
-				Arrays.asList(AbstractManager.MakeCommandArg("freq", StandardParser.ArgTypes.integer, 
+		res.put(ParseOrdered.MakeCommand("mailfreq", "set mailbox check freq to MIN", 
+				Arrays.asList(ParseOrdered.MakeCommandArg("freq", StandardParserInterpreter.ArgTypes.integer, 
 						true))));
 		//res.put(AbstractManager.makeCommand(MAILREPLY, "reply to mail",new ArrayList<JSONObject>()));
 		return res;

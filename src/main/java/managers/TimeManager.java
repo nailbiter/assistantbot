@@ -30,7 +30,8 @@ import static util.MongoUtil.GetJSONArrayFromDatabase;
 
 //import static util.LocalUtil.GetJSONArrayFromDatabase;
 import util.MyBasicBot;
-import util.parsers.StandardParser;
+import util.parsers.ParseOrdered;
+import util.parsers.StandardParserInterpreter;
 import static java.util.Arrays.asList;
 
 /**
@@ -146,6 +147,7 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 			System.err.println("run this");
 			
 			boolean isSleeping = isSleeping();
+			System.err.format("isSleeping=%s, wfa_=%s\n", isSleeping,isWaitingForAnswer_);
 			if(isWaitingForAnswer_) {
 				writeTimeEntry(NOWORKCATNAME);
 				waitingForTimeReportMessageId_ = 
@@ -185,12 +187,12 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 	@Override
 	public JSONArray getCommands() {
 		JSONArray res = new JSONArray();
-		res.put(MakeCommand("timestat", "statistics about time used", 
+		res.put(ParseOrdered.MakeCommand("timestat", "statistics about time used", 
 				asList(
-						MakeCommandArg("num", StandardParser.ArgTypes.integer, true),
-						MakeCommandArg("key", StandardParser.ArgTypes.string, true))));
-		res.put(MakeCommand("sleepstart","start sleeping", new ArrayList<JSONObject>()));
-		res.put(MakeCommand("sleepend","end sleeping", new ArrayList<JSONObject>()));
+						ParseOrdered.MakeCommandArg("num", StandardParserInterpreter.ArgTypes.integer, true),
+						ParseOrdered.MakeCommandArg("key", StandardParserInterpreter.ArgTypes.string, true))));
+		res.put(ParseOrdered.MakeCommand("sleepstart","start sleeping", new ArrayList<JSONObject>()));
+		res.put(ParseOrdered.MakeCommand("sleepend","end sleeping", new ArrayList<JSONObject>()));
 		return res;
 	}
 	@Override

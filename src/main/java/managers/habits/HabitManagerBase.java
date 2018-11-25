@@ -18,25 +18,23 @@ import managers.AbstractManager;
 import managers.HabitManager;
 import managers.MyManager;
 import managers.OptionReplier;
-import util.parsers.StandardParser;
+import util.parsers.ParseOrdered;
+import util.parsers.StandardParserInterpreter;
 
-public abstract class HabitManagerBase implements MyManager, OptionReplier{
+public abstract class HabitManagerBase extends AbstractManager implements OptionReplier{
 	public enum HabitRunnableEnum{
 		SENDREMINDER, SETFAILURE;
 	}
 	protected Hashtable<Integer,String> optionMsgs_ = new Hashtable<Integer,String>();
 	protected ResourceProvider ud_ = null;
 	protected Scheduler scheduler_ = null;
-//	protected MyBasicBot bot_;
 	protected Timer timer = new Timer();
 	protected Logger logger_ = null;
-//	Long chatID_;
 	protected HabitManagerBase(ResourceProvider myAssistantUserData){
+		super(GetCommands());
 		logger_ = Logger.getLogger(this.getClass().getName());
 		ud_ = myAssistantUserData;
-//		bot_ = bot;
 		scheduler_ = myAssistantUserData.getScheduler();
-//		chatID_ = chatID;
 	}
 	void HabitRunnableDispatch(String name,HabitRunnableEnum code)
 	{
@@ -55,16 +53,15 @@ public abstract class HabitManagerBase implements MyManager, OptionReplier{
 			});
 		}
 	}
-	@Override
-	public JSONArray getCommands() {
+	public static JSONArray GetCommands() {
 		JSONArray res = new JSONArray();
 		
-		res.put(AbstractManager.MakeCommand("habits", "list all habits and info",
-				Arrays.asList(AbstractManager.MakeCommandArg("key", StandardParser.ArgTypes.string, true))));
-		res.put(AbstractManager.MakeCommand("done", "done habit",
-				Arrays.asList(AbstractManager.MakeCommandArg("habit", StandardParser.ArgTypes.remainder, true))));
-		res.put(AbstractManager.MakeCommand("doneg", "done habit graphically",new ArrayList<JSONObject>()));
-		res.put(AbstractManager.MakeCommand("donep", "done habit graphically",new ArrayList<JSONObject>()));
+		res.put(ParseOrdered.MakeCommand("habits", "list all habits and info",
+				Arrays.asList(ParseOrdered.MakeCommandArg("key", StandardParserInterpreter.ArgTypes.string, true))));
+		res.put(ParseOrdered.MakeCommand("done", "done habit",
+				Arrays.asList(ParseOrdered.MakeCommandArg("habit", StandardParserInterpreter.ArgTypes.remainder, true))));
+		res.put(ParseOrdered.MakeCommand("doneg", "done habit graphically",new ArrayList<JSONObject>()));
+		res.put(ParseOrdered.MakeCommand("donep", "done habit graphically",new ArrayList<JSONObject>()));
 		
 		return res;
 	}

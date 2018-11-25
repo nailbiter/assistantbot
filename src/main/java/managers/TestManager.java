@@ -27,7 +27,8 @@ import it.sauronsoftware.cron4j.Scheduler;
 import managers.tests.ParadigmTest;
 import managers.tests.UrlTest;
 import managers.tests.JsonTest;
-import util.parsers.StandardParser;
+import util.parsers.ParseOrdered;
+import util.parsers.StandardParserInterpreter;
 
 /**
  * @author nailbiter
@@ -70,14 +71,14 @@ public class TestManager extends AbstractManager implements OptionReplier {
 	@Override
 	public JSONArray getCommands() {
 		JSONArray res = new JSONArray();
-		res.put(MakeCommand("tests","show tests, -1 reloads",
-				Arrays.asList(MakeCommandArg("index", StandardParser.ArgTypes.integer, true))));
-		res.put(MakeCommand("testsetscore","set test score, MODE=s|u, score=15/19",
+		res.put(ParseOrdered.MakeCommand("tests","show tests, -1 reloads",
+				Arrays.asList(ParseOrdered.MakeCommandArg("index", StandardParserInterpreter.ArgTypes.integer, true))));
+		res.put(ParseOrdered.MakeCommand("testsetscore","set test score, MODE=s|u, score=15/19",
 				Arrays.asList(
-						MakeCommandArg("score",StandardParser.ArgTypes.string,true),
-						MakeCommandArg("testnum",StandardParser.ArgTypes.integer,true))));
-		res.put(MakeCommand("testdo","paradigm test done",
-				Arrays.asList(MakeCommandArg("index", StandardParser.ArgTypes.integer, false))));
+						ParseOrdered.MakeCommandArg("score",StandardParserInterpreter.ArgTypes.string,true),
+						ParseOrdered.MakeCommandArg("testnum",StandardParserInterpreter.ArgTypes.integer,true))));
+		res.put(ParseOrdered.MakeCommand("testdo","paradigm test done",
+				Arrays.asList(ParseOrdered.MakeCommandArg("index", StandardParserInterpreter.ArgTypes.integer, false))));
 		return res;
 	}
 	public String testsetscore(JSONObject obj) throws Exception{

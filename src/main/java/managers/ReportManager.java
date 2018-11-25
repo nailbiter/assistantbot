@@ -14,9 +14,10 @@ import util.MongoUtil;
 import util.ScriptApp;
 import util.ScriptHelperImpl;
 import util.Util;
+import util.parsers.ParseOrdered;
 
 import static java.util.Arrays.asList;
-import static util.parsers.StandardParser.ArgTypes;
+import static util.parsers.StandardParserInterpreter.ArgTypes;
 
 public class ReportManager extends AbstractManager {
 	private MongoClient mc_;
@@ -35,7 +36,7 @@ public class ReportManager extends AbstractManager {
 	@Override
 	public JSONArray getCommands() {
 		return new JSONArray()
-				.put(MakeCommand("reportshow", "masha reminder", asList(MakeCommandArg("type",ArgTypes.integer,true))));
+				.put(ParseOrdered.MakeCommand("reportshow", "masha reminder", asList(ParseOrdered.MakeCommandArg("type",ArgTypes.integer,true))));
 	}
 	public String mashareport(JSONObject obj) throws Exception {
 		return MashaRemind.Remind(ta_,mc_);

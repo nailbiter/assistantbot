@@ -2,8 +2,12 @@
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
    ],
-   "cardurl" : "https://trello.com/c/FMIlCbXE",
+   "cardurl" : "",
    "pulledData" : {
       "trelloTitle" : "gf indicator"
+   },
+   "url" : {
+      "parser" : "https://trello.com/c/hkuY0OBL",
+      "indicator" : "https://trello.com/c/FMIlCbXE"
    }
 }
