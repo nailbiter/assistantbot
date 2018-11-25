@@ -124,8 +124,8 @@ public class MyAssistantUserData extends UserData implements ResourceProvider {
 	@Override
 	public MongoClient getMongoClient() { return bot_.getMongoClient(); }
 	@Override
-	public void sendMessage(String msg) {
-		bot_.sendMessage(msg, chatID_);
+	public int sendMessage(String msg) {
+		return bot_.sendMessage(msg, chatID_);
 	}
 	@Override
 	public Scheduler getScheduler() {

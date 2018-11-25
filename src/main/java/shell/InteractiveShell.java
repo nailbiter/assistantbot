@@ -93,8 +93,9 @@ public class InteractiveShell implements ResourceProvider {
 		return mc_;
 	}
 	@Override
-	public void sendMessage(String msg) {
+	public int sendMessage(String msg) {
 		System.out.println(msg);
+		return -1;
 	}
 	@Override
 	public Scheduler getScheduler() {

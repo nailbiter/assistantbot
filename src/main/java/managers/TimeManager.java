@@ -44,8 +44,6 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 	protected static final String WHEREAREYOUNOW = "北鼻，你在幹什麼？";
 	private static final Date MYDEATHDATA_ = new Date(1991 + 80, 12, 24);
 	protected JSONObject sleepingObj_ = null;
-//	Long chatID_;
-//	MyBasicBot bot_;
 	JSONArray categories_;
 	boolean isWaitingForAnswer_ = false;
 	MongoCollection<Document> time_, sleepingTimes_;
@@ -57,8 +55,6 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 		MongoClient mc = rp.getMongoClient();
 		rp_ = rp;
 		time_ = mc.getDatabase("logistics").getCollection("time");
-//		chatID_ = chatID;
-//		bot_ = bot;
 		categories_ = MongoUtil.GetJSONArrayFromDatabase(mc, "logistics", "timecats");
 		rp.getScheduler().schedule(String.format("*/%d * * * *",DELAYMIN), this);
 		sleepingTimes_ = mc.getDatabase("logistics").getCollection("sleepingtimes");
@@ -155,10 +151,11 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 				waitingForTimeReportMessageId_ = 
 						rp_.sendMessageWithKeyBoard(WHEREAREYOUNOW, MakeButtons(categories_));
 			} else if(isSleeping) {
-				gotUpdate(sleepingObj_.getString("name"));
+				String msg = gotUpdate(sleepingObj_.getString("name"));
 				if(sleepingObj_.getString("canBePersistent").equals("message")) {
 					waitingForTimeReportMessageId_ = 
-							rp_.sendMessageWithKeyBoard(WHEREAREYOUNOW, MakeButtons(categories_));
+//							rp_.sendMessageWithKeyBoard(WHEREAREYOUNOW, MakeButtons(categories_));
+							rp_.sendMessage(msg);
 				}
 			} else {
 				waitingForTimeReportMessageId_ = 

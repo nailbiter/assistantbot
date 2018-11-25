@@ -22,7 +22,7 @@ public interface ResourceProvider {
 	 */
 	abstract public int sendMessageWithKeyBoard(String msg, JSONArray categories);
 	MongoClient getMongoClient();
-	void sendMessage(String msg);
+	int sendMessage(String msg);
 	Scheduler getScheduler();
 	public abstract int sendMessage(String string, MyManager testManager) throws Exception;
 	public abstract int sendFile(String fn) throws Exception;
