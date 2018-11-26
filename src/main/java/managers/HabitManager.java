@@ -17,7 +17,6 @@ import com.mongodb.client.model.Filters;
 
 import assistantbot.ResourceProvider;
 import it.sauronsoftware.cron4j.Predictor;
-import it.sauronsoftware.cron4j.Scheduler;
 import managers.habits.Donep;
 import managers.habits.HabitManagerBase;
 import managers.habits.HabitRunnable;
@@ -25,7 +24,6 @@ import managers.habits.JSONObjectCallback;
 import util.JsonUtil;
 import util.KeyRing;
 import util.Util;
-import util.MyBasicBot;
 import static managers.habits.Constants.FAILLABELCOLOR;
 import static managers.habits.Constants.HABITBOARDID;
 import static managers.habits.Constants.PENDINGLISTNAME;
@@ -46,7 +44,6 @@ public class HabitManager extends HabitManagerBase
 
 	public HabitManager(ResourceProvider rp) throws Exception
 	{
-//		super(bot,scheduler_in,myAssistantUserData);
 		super(rp);
 		
 		streaks_ = rp.getMongoClient().getDatabase("logistics").getCollection("habitspunch");
@@ -169,7 +166,7 @@ public class HabitManager extends HabitManagerBase
 	static boolean IsHabitPending(JSONObject habit) {
 		return !habit.optBoolean("dueComplete",false);
 	}
-	protected String doneg(JSONObject res) {
+	public String doneg(JSONObject res) {
 		logger_.info("in doneg!");
 		
 		try {
@@ -313,10 +310,23 @@ public class HabitManager extends HabitManagerBase
 				(long)min*60*1000);
 	}
 	@Override
-	protected String donep(JSONObject res) throws Exception {
-		return donep_.donep(res);
+	public String donep(JSONObject res) throws Exception {
+		return donep_.donep();
 	}
 	public String donep(String code) throws JSONException, Exception {
 		return donep_.donep(code);
+	}
+	@Override
+	public String done(JSONObject res) {
+		return done(res.getString("habit"));
+	}
+	@Override
+	public String habits(JSONObject res) throws Exception {
+		if(!res.has("key"))
+			return getHabitsInfo();
+		else if(res.getString("key").equals("s"))
+			return getHabitsInfoShort();
+		else
+			return "uknnown key";
 	}
 }

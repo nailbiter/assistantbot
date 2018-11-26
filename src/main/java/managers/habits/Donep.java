@@ -29,7 +29,7 @@ public class Donep {
 		ud_ = ud;
 		optionMsgs_ = optionMsgs;
 	}
-	public String donep(JSONObject res) throws Exception {
+	public String donep() throws Exception {
 		String listid = ta_.findListByName(HABITBOARDID, TODOLISTNAME);
 		cards_ = ta_.getCardsInList(listid);
 		Hashtable<String,Integer> names = new Hashtable<String,Integer>();
