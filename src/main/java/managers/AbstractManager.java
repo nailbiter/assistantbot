@@ -3,68 +3,41 @@
  */
 package managers;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.mongodb.MongoClient;
 
-import managers.misc.MashaRemind;
 import util.MongoUtil;
-import util.StorageManager;
-import util.parsers.StandardParser;
+import util.parsers.ParseOrdered;
+import static util.parsers.StandardParserInterpreter.CMD;
 
 /**
  * @author nailbiter
  *
  */
 public abstract class AbstractManager implements MyManager {
-
+	ParseOrdered po_ = null;
+	protected AbstractManager(JSONArray commands) {
+		po_ = new ParseOrdered(commands,this.getClass().getName());
+	}
 	/* (non-Javadoc)
 	 * @see util.MyManager#getResultAndFormat(org.json.JSONObject)
 	 */
 	@Override
 	public String getResultAndFormat(JSONObject res) throws Exception {
 		System.err.println(String.format("%s got: %s",this.getClass().getName(), res.toString()));
-		if(res.has("name") && hasCommand(res))
+		if(res.has(CMD) && hasCommand(res))
 		{
 			System.err.println("dispatcher got: "+res.toString());
-			return (String)this.getClass().getMethod(res.getString("name"),JSONObject.class)
-					.invoke(this,res);
+			return (String)this.getClass().getMethod(res.getString(CMD),JSONObject.class)
+					.invoke(this,po_.parse(res));
 		}
 		return null;
 	}
 	protected boolean hasCommand(JSONObject res) {
-		JSONArray cmds = this.getCommands();
-		for(int i = 0; i < cmds.length(); i++)
-			if(cmds.getJSONObject(i).getString("name").equals(res.getString("name")))
-				return true;
-		return false;
-	}
-	protected JSONArray jsonarray = null;
-	public static JSONObject MakeCommand(String name,String help,List<JSONObject> args)
-	{
-		JSONObject cmd = new JSONObject();
-		cmd.put("name", name);
-		cmd.put("help", (help==null)?"(null)":help);
-		JSONArray array = new JSONArray();
-		for(int i = 0; i < args.size(); i++)
-			array.put(args.get(i));
-		cmd.put("args", array);
-		return cmd;
-	}
-	public static JSONObject MakeCommandArg(String name,StandardParser.ArgTypes type,boolean isOpt)
-	{
-		JSONObject arg = new JSONObject();
-		
-		arg.put("name", name);
-		if(isOpt) arg.put("isOpt", isOpt);
-		arg.put("type", type.toString());
-		
-		return arg;
+		return getCommands().keySet().contains(res.getString(CMD));
 	}
 	protected JSONObject getParamObject(MongoClient mc) throws JSONException, Exception {
 		String classname = this.getClass().getName();
@@ -73,5 +46,10 @@ public abstract class AbstractManager implements MyManager {
 				"logistics.params",
 				"name:"+classname).getJSONObject("parameter");
 		return parameters;
+	}
+	public JSONObject getCommands() {
+		JSONObject res = po_.getCommands();
+		System.err.format("getCommands for %s got %s\n", this.getClass().getName(),res);
+		return res;
 	}
 }

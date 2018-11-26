@@ -15,6 +15,7 @@ import java.lang.reflect.Constructor;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.TimeZone;
@@ -47,6 +48,7 @@ public class Util{
 				.put("TMPFOLDER")
 				.put("CMDFILE")
 				.put("TMPFILE")
+				.put("PARSERPREFIX")
 				.put("SCRIPTFOLDER");
 		JsonUtil.FilterJsonKeys(profileObj_,keys);
 		for(Object key:keys) {
@@ -54,10 +56,18 @@ public class Util{
 				throw new Exception();
 		}
 	}
-	public static String getScriptFolder() {
-		return profileObj_.getString("SCRIPTFOLDER");
+	protected static String Gss(String name) {
+		return profileObj_.getString(name.toUpperCase());
 	}
-	public static String getJarFolder() throws Exception { return profileObj_.getString("RESFOLDER"); }
+	public static String getScriptFolder() {
+		return Gss("SCRIPTFOLDER");
+	}
+	public static String getParsePrefix() {
+		return Gss("PARSERPREFIX");
+	}
+	public static String getJarFolder(){ 
+		return Gss("RESFOLDER");
+	}
 	public static String milisToTimeFormat(long millis)
 	{
 		return Integer.toString((int)(millis/1000.0/60.0/60.0)) + "h:"+
@@ -76,11 +86,8 @@ public class Util{
 		df.setTimeZone(Util.getTimezone());
 		return df.format(d);
 	}
-//	public static void SetRebootFileName(String string) {
-//		RebootFileName_ = string;
-//	}
 	public static String GetRebootFileName() {
-		return profileObj_.getString("TMPFILE");
+		return Gss("TMPFILE");
 	}
 	public static String GetFile(String name) throws Exception{
 		FileReader fr = null;
@@ -188,9 +195,12 @@ public class Util{
 	}
 	public static void PopulateManagers(List<MyManager> managers,JSONArray names,ResourceProvider rp) throws Exception {
 		for(Object o:names) {
-			String name = (String)o;
-			if(name==null)
-				continue;
+			String name = null;
+			if(o instanceof String) {
+				name = (String)o;
+			} else if(o instanceof JSONObject) {
+				name = ((JSONObject)o).getString("name");
+			}
 			String cn = String.format("%s.%s","managers", name);
 			try {
 				Class<?> clazz = Class.forName(cn);
@@ -205,6 +215,20 @@ public class Util{
 			}
 			System.err.format("added %s\n", cn);
 		}
+	}
+	public static JSONObject GetDefSettingsObject(JSONArray names) {
+		JSONObject res = new JSONObject();
+		for(Object o:names) {
+			if(o instanceof JSONObject) {
+				JSONObject obj = (JSONObject)o;
+				for(Iterator<String> it = obj.keys();it.hasNext();) {
+					String key = it.next();
+					if(key.startsWith("DEF"))
+						res.put(key, obj.getString(key));
+				}
+			}
+		}
+		return res;
 	}
 	public static String saveToTmpFile(String content) throws IOException {
 		StringBuilder sb = new StringBuilder();
@@ -250,5 +274,24 @@ public class Util{
 	        is.close();
 	        os.close();
 	    }
+	}
+	public static String ExecuteCommand(String command) throws IOException{
+		Runtime rt = Runtime.getRuntime();
+		Process proc = rt.exec(command);
+	
+		BufferedReader stdInput = new BufferedReader(new 
+		     InputStreamReader(proc.getInputStream()));
+	
+		BufferedReader stdError = new BufferedReader(new 
+		     InputStreamReader(proc.getErrorStream()));
+	
+		// read the output from the command
+		System.out.println(String.format("Here is the standard output of the command \"%s\":\n",command));
+		String s = null;
+		StringBuilder sb = new StringBuilder();
+		while ((s = stdInput.readLine()) != null) {
+			sb.append(s+"\n");
+		}
+		return sb.toString().trim();
 	}
 }

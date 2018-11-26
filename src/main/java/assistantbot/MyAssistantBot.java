@@ -11,7 +11,7 @@ import util.UserData;
 import util.TelegramUtil;
 
 public class MyAssistantBot extends MyBasicBot {
-	private String botUserName_;
+//	private String botUserName_;
 	private JSONObject profileObj_;
 	public MyAssistantBot(JSONObject profileObj)
 	{
@@ -19,9 +19,8 @@ public class MyAssistantBot extends MyBasicBot {
 		{
 			profileObj_ = profileObj;
 			util.StorageManager.init();
-			botUserName_ = (String)profileObj.getString("NAME");
 			mongoClient_ = MongoUtil.GetMongoClient(profileObj.getString("PASSWORD"));
-			KeyRing.init(botUserName_,mongoClient_);
+			KeyRing.init(getBotUsername(),mongoClient_);
 		}
 		catch(Exception e)
 		{
@@ -29,7 +28,7 @@ public class MyAssistantBot extends MyBasicBot {
 		}
 	}
 	@Override
-	protected JSONObject parse(Message msg, UserData ud) throws Exception {
+	protected JSONObject interpret(Message msg, UserData ud) throws Exception {
 		JSONObject res = new JSONObject();
 		if(msg.hasDocument())
 		{
@@ -55,18 +54,12 @@ public class MyAssistantBot extends MyBasicBot {
 
 	@Override
 	protected String getResultAndFormat(JSONObject res,UserData ud) throws Exception {
-		MyAssistantUserData md = (MyAssistantUserData)ud;
-		String str= null;
-		List<MyManager> managers = md.getManagers();
-		for(int i = 0; i < managers.size(); i++)
-			if((str = managers.get(i).getResultAndFormat(res))!=null)
-				return str;
-		throw new Exception("unrecognized command");
+		return ((MyAssistantUserData)ud).interpret(res);
 	}
 
 	@Override
 	public String getBotUsername() {
-		return botUserName_;
+		return (String)profileObj_.getString("NAME");
 	}
 
 	@Override

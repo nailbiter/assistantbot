@@ -3,6 +3,7 @@
 	"resfolder":"src/main/resources/assistantBotFiles/",
     	"scriptFolder":"src/main/js/",
 	"tmpfolder":"tmp",
+	"parserPrefix":"/",
 	"managers":[
 		"MoneyManager",
 		"HabitManager",
@@ -12,6 +13,10 @@
 		"MiscUtilManager",
 		"ReportManager",
 		"GermanManager",
-		"GymManager"
+		"GymManager",
+		{
+			"name":"JShellManager",
+			"DEFMESSAGEHANDLER":""
+		}
 	]
 }

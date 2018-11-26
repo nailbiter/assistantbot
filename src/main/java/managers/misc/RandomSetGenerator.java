@@ -15,11 +15,11 @@ public class RandomSetGenerator {
 		ArrayList<String> res = new ArrayList<String>();
 		ArrayList<JSONObject> distribution = new ArrayList<JSONObject>();
 		while(res.size() < size) {
-			System.out.format("iteration #%d\n", res.size()+1);
+			System.err.format("iteration #%d\n", res.size()+1);
 			GenerateDistribution(data,distribution);
-			System.out.format("dist: %s\n", distribution.toString());
+			System.err.format("dist: %s\n", distribution.toString());
 			String resS = pickElement(data,distribution);
-			System.out.format("resS: %s\n", resS);
+			System.err.format("resS: %s\n", resS);
 			res.add(resS);
 			RemoveElementByKey(data,resS);
 		}
@@ -38,7 +38,7 @@ public class RandomSetGenerator {
 	}
 	private String pickElement(ArrayList<JSONObject> data, ArrayList<JSONObject> distribution) {
 		double pick = rand_.nextDouble()*distribution.get(distribution.size()-1).getDouble("upper");
-		System.out.format("pick=%g\n", pick);
+		System.err.format("pick=%g\n", pick);
 		for(int i = 0; i < distribution.size(); i++) {
 			JSONObject obj = distribution.get(i);
 			if(obj.getDouble("lower")<=pick && pick < obj.getDouble("upper"))

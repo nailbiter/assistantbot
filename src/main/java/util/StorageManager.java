@@ -18,53 +18,53 @@ import managers.MyManager;
 public class StorageManager {
 	protected static Hashtable<String,JSONObject> registeredObjects = new Hashtable<String,JSONObject>();
 	protected static Logger logger_ = Logger.getLogger(StorageManager.class.getName());
-	protected static MyManager myManager = null;
-	public static MyManager getMyManager() {return myManager;}
+//	protected static MyManager myManager = null;
+//	public static MyManager getMyManager() {return myManager;}
 	protected static Scheduler scheduler_ = null;
 	public static void init() throws Exception
 	{
-		myManager = new MyManager()
-		{
-			@Override
-			public String getResultAndFormat(JSONObject res) throws Exception {
-				if(res.has("name"))
-				{
-					System.out.println(this.getClass().getName()+" got comd: /"+res.getString("name"));
-					if(res.getString("name").compareTo("dump")==0)
-					{
-						dumpAllObjects();
-						StringBuilder sb = new StringBuilder();
-						sb.append("dumped:\n");
-						Iterator<String> itr = registeredObjects.keySet().iterator();
-				    		String str;
-				    		while (itr.hasNext()) {
-			    			 try {
-			    				   str = itr.next();
-			    				   sb.append("\t"+str+"\n");
-			    			 }
-			    			 catch(Exception e)
-			    			 {
-			    				 e.printStackTrace(System.out);
-			    			 }
-			    		    }
-				    		return sb.toString();
-					}
-				}
-				return null;
-			}
-			
-			@Override
-			public JSONArray getCommands() {
-//				return new JSONArray("[{\"name\":\"dump\",\"args\":[],\"help\":\"dump all text files\"}]");
-				return new JSONArray();
-			}
-
-			@Override
-			public String processReply(int messageID,String msg) {
-				return null;
-			}
-	
-		};
+//		myManager = new MyManager()
+//		{
+//			@Override
+//			public String getResultAndFormat(JSONObject res) throws Exception {
+//				if(res.has("name"))
+//				{
+//					System.out.println(this.getClass().getName()+" got comd: /"+res.getString("name"));
+//					if(res.getString("name").compareTo("dump")==0)
+//					{
+//						dumpAllObjects();
+//						StringBuilder sb = new StringBuilder();
+//						sb.append("dumped:\n");
+//						Iterator<String> itr = registeredObjects.keySet().iterator();
+//				    		String str;
+//				    		while (itr.hasNext()) {
+//			    			 try {
+//			    				   str = itr.next();
+//			    				   sb.append("\t"+str+"\n");
+//			    			 }
+//			    			 catch(Exception e)
+//			    			 {
+//			    				 e.printStackTrace(System.out);
+//			    			 }
+//			    		    }
+//				    		return sb.toString();
+//					}
+//				}
+//				return null;
+//			}
+//			
+//			@Override
+//			public JSONArray getCommands() {
+////				return new JSONArray("[{\"name\":\"dump\",\"args\":[],\"help\":\"dump all text files\"}]");
+//				return new JSONArray();
+//			}
+//
+//			@Override
+//			public String processReply(int messageID,String msg) {
+//				return null;
+//			}
+//	
+//		};
 		Runtime.getRuntime().addShutdownHook(new Thread()
 	    {
 	        @Override

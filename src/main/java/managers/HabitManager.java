@@ -136,7 +136,7 @@ public class HabitManager extends HabitManagerBase
 		}
 		return tb.toString();
 	}
-	public String taskDone(String name){
+	public String done(String name){
 		{
 			final String key = "done/habit";
 			if( name.isEmpty() )
@@ -181,7 +181,7 @@ public class HabitManager extends HabitManagerBase
 				return "";
 			}
 			else
-				return this.taskDone(habits.getString(0));
+				return this.done(habits.getString(0));
 		}
 		catch(Exception e)
 		{

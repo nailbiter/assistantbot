@@ -18,25 +18,22 @@ import managers.AbstractManager;
 import managers.HabitManager;
 import managers.MyManager;
 import managers.OptionReplier;
-import util.parsers.StandardParser;
+import util.parsers.ParseOrdered;
 
-public abstract class HabitManagerBase implements MyManager, OptionReplier{
+public abstract class HabitManagerBase extends AbstractManager implements OptionReplier{
 	public enum HabitRunnableEnum{
 		SENDREMINDER, SETFAILURE;
 	}
 	protected Hashtable<Integer,String> optionMsgs_ = new Hashtable<Integer,String>();
 	protected ResourceProvider ud_ = null;
 	protected Scheduler scheduler_ = null;
-//	protected MyBasicBot bot_;
 	protected Timer timer = new Timer();
 	protected Logger logger_ = null;
-//	Long chatID_;
 	protected HabitManagerBase(ResourceProvider myAssistantUserData){
+		super(GetCommands());
 		logger_ = Logger.getLogger(this.getClass().getName());
 		ud_ = myAssistantUserData;
-//		bot_ = bot;
 		scheduler_ = myAssistantUserData.getScheduler();
-//		chatID_ = chatID;
 	}
 	void HabitRunnableDispatch(String name,HabitRunnableEnum code)
 	{
@@ -55,41 +52,38 @@ public abstract class HabitManagerBase implements MyManager, OptionReplier{
 			});
 		}
 	}
-	@Override
-	public JSONArray getCommands() {
+	public static JSONArray GetCommands() {
 		JSONArray res = new JSONArray();
-		
-		res.put(AbstractManager.MakeCommand("habits", "list all habits and info",
-				Arrays.asList(AbstractManager.MakeCommandArg("key", StandardParser.ArgTypes.string, true))));
-		res.put(AbstractManager.MakeCommand("done", "done habit",
-				Arrays.asList(AbstractManager.MakeCommandArg("habit", StandardParser.ArgTypes.remainder, true))));
-		res.put(AbstractManager.MakeCommand("doneg", "done habit graphically",new ArrayList<JSONObject>()));
-		res.put(AbstractManager.MakeCommand("donep", "done habit graphically",new ArrayList<JSONObject>()));
-		
+		res.put(ParseOrdered.MakeCommand("habits", "list all habits and info",
+				Arrays.asList(ParseOrdered.MakeCommandArg("key", ParseOrdered.ArgTypes.string, true))));
+		res.put(ParseOrdered.MakeCommand("done", "done habit",
+				Arrays.asList(ParseOrdered.MakeCommandArg("habit", ParseOrdered.ArgTypes.remainder, true))));
+		res.put(ParseOrdered.MakeCommand("doneg", "done habit graphically",new ArrayList<JSONObject>()));
+		res.put(ParseOrdered.MakeCommand("donep", "done habit graphically",new ArrayList<JSONObject>()));
 		return res;
 	}
 
-	@Override
-	public String getResultAndFormat(JSONObject res) throws Exception {
-		if(res.has("name"))
-		{
-			System.out.println(this.getClass().getName()+" got comd: /"+res.getString("name"));
-			if(res.getString("name").compareTo("habits")==0)
-			{
-				if(res.optString("key").contains("s"))
-					return getHabitsInfoShort();
-				else
-					return getHabitsInfo();
-			}
-			if(res.getString("name").compareTo("done")==0) 
-				return taskDone(res.optString("habit"));
-			if(res.getString("name").compareTo("doneg")==0)
-				return doneg(res);
-			if(res.getString("name").equals("donep"))
-				return donep(res);
-		}
-		return null;
-	}
+//	@Override
+//	public String getResultAndFormat(JSONObject res) throws Exception {
+//		if(res.has("name"))
+//		{
+//			System.out.println(this.getClass().getName()+" got comd: /"+res.getString("name"));
+//			if(res.getString("name").compareTo("habits")==0)
+//			{
+//				if(res.optString("key").contains("s"))
+//					return getHabitsInfoShort();
+//				else
+//					return getHabitsInfo();
+//			}
+//			if(res.getString("name").compareTo("done")==0) 
+//				return taskDone(res.optString("habit"));
+//			if(res.getString("name").compareTo("doneg")==0)
+//				return doneg(res);
+//			if(res.getString("name").equals("donep"))
+//				return donep(res);
+//		}
+//		return null;
+//	}
 	public String optionReply(String option, Integer msgID) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		if(optionMsgs_.containsKey(msgID)) {
 			return (String)HabitManager.class.getMethod(optionMsgs_.get(msgID),String.class)
@@ -101,7 +95,7 @@ public abstract class HabitManagerBase implements MyManager, OptionReplier{
 	
 	abstract protected String donep(JSONObject res) throws Exception;
 	abstract protected String doneg(JSONObject res);
-	abstract protected String taskDone(String optString);
+	abstract protected String done(String optString);
 	abstract protected String getHabitsInfo() throws Exception;
 	abstract protected String getHabitsInfoShort() throws ClientProtocolException, IOException, Exception;
 	abstract protected void IfWaitingForHabit(String name,JSONObjectCallback cb);

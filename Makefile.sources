@@ -5,7 +5,9 @@ HABITMANAGERSOURCES=HabitManagerBase JSONObjectCallback Donep Constants
 SHELLSOURCES=InteractiveShell
 TESTSOURCES=UrlTest JsonTest ParadigmTest
 MISCSOURCES=MashaRemind RandomSetGenerator NoteMaker
+PARSERSOURCES=AbstractParser ParseOrdered StandardParserInterpreter
 SOURCES=\
+ $(addprefix util/parsers/,$(PARSERSOURCES))\
  $(addprefix assistantbot/,$(ASBOTSOURCES))\
  $(addprefix managers/misc/,$(MISCSOURCES))\
  $(addprefix managers/,$(MANAGERSOURCES))\

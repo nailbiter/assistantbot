@@ -22,22 +22,18 @@ import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.Updates;
 
 import assistantbot.ResourceProvider;
-import it.sauronsoftware.cron4j.Scheduler;
 import util.Util;
 import util.JsonUtil;
 import util.MongoUtil;
-import static util.MongoUtil.GetJSONArrayFromDatabase;
+import util.parsers.ParseOrdered;
 
-//import static util.LocalUtil.GetJSONArrayFromDatabase;
-import util.MyBasicBot;
-import util.parsers.StandardParser;
 import static java.util.Arrays.asList;
 
 /**
  * @author nailbiter
  *
  */
-public class TimeManager extends AbstractManager implements MyManager,Runnable, OptionReplier {
+public class TimeManager extends AbstractManager implements Runnable, OptionReplier {
 	private static final int DELAYMIN = 30;
 	protected static int ROWNUM = 2;
 	protected static final String NOWORKCATNAME = "useless";
@@ -52,6 +48,7 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 	private ResourceProvider rp_;
 	
 	public TimeManager(ResourceProvider rp) {
+		super(GetCommands());
 		MongoClient mc = rp.getMongoClient();
 		rp_ = rp;
 		time_ = mc.getDatabase("logistics").getCollection("time");
@@ -146,6 +143,7 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 			System.err.println("run this");
 			
 			boolean isSleeping = isSleeping();
+			System.err.format("isSleeping=%s, wfa_=%s\n", isSleeping,isWaitingForAnswer_);
 			if(isWaitingForAnswer_) {
 				writeTimeEntry(NOWORKCATNAME);
 				waitingForTimeReportMessageId_ = 
@@ -182,15 +180,14 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 		Date currentData = new Date();
 		return "remaining time to live: " + Util.milisToTimeFormat(MYDEATHDATA_.getTime() - currentData.getTime());
 	}
-	@Override
-	public JSONArray getCommands() {
+	private static JSONArray GetCommands() {
 		JSONArray res = new JSONArray();
-		res.put(MakeCommand("timestat", "statistics about time used", 
+		res.put(ParseOrdered.MakeCommand("timestat", "statistics about time used", 
 				asList(
-						MakeCommandArg("num", StandardParser.ArgTypes.integer, true),
-						MakeCommandArg("key", StandardParser.ArgTypes.string, true))));
-		res.put(MakeCommand("sleepstart","start sleeping", new ArrayList<JSONObject>()));
-		res.put(MakeCommand("sleepend","end sleeping", new ArrayList<JSONObject>()));
+						ParseOrdered.MakeCommandArg("num", ParseOrdered.ArgTypes.integer, true),
+						ParseOrdered.MakeCommandArg("key", ParseOrdered.ArgTypes.string, true))));
+		res.put(ParseOrdered.MakeCommand("sleepstart","start sleeping", new ArrayList<JSONObject>()));
+		res.put(ParseOrdered.MakeCommand("sleepend","end sleeping", new ArrayList<JSONObject>()));
 		return res;
 	}
 	@Override

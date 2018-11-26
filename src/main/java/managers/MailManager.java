@@ -14,7 +14,7 @@ import mail.MailReplier;
 import mail.MyMail;
 import util.KeyRing;
 import util.MyBasicBot;
-import util.parsers.StandardParser;
+import util.parsers.ParseOrdered;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ import javax.mail.Flags;
  * @author nailbiter
  *
  */
-public class MailManager implements MyManager, OptionReplier{
+public class MailManager extends AbstractManager implements OptionReplier{
 	protected Long chatID_ = null;
 	MyBasicBot bot_ = null;
 	ResourceProvider userData_ = null;
@@ -43,6 +43,7 @@ public class MailManager implements MyManager, OptionReplier{
 	public static final String MAILREPLY = "mailreply";
 	public MailManager(Long chatID, MyBasicBot bot, Scheduler scheduler, ResourceProvider myAssistantUserData) throws Exception
 	{
+		super(GetCommands());
 		String mail = KeyRing.getString("memail");
 		mymail_ = new MyMail(mail, "mail." + mail.substring(mail.indexOf("@")+1), 993,
 				KeyRing.getMailPassword(), "INBOX",scheduler);
@@ -51,7 +52,6 @@ public class MailManager implements MyManager, OptionReplier{
 		this.userData_ = myAssistantUserData;
 		
 		addReplier(KeyRing.getString("tmail"));
-		//addReplier(KeyRing.get("megmail"));
 	}
 	private void addReplier(String m)
 	{
@@ -72,13 +72,11 @@ public class MailManager implements MyManager, OptionReplier{
 		}
 		return null;
 	}
-	@Override
-	public JSONArray getCommands() {
+	public static JSONArray GetCommands() {
 		JSONArray res = new JSONArray();
-		res.put(AbstractManager.MakeCommand("mailfreq", "set mailbox check freq to MIN", 
-				Arrays.asList(AbstractManager.MakeCommandArg("freq", StandardParser.ArgTypes.integer, 
+		res.put(ParseOrdered.MakeCommand("mailfreq", "set mailbox check freq to MIN", 
+				Arrays.asList(ParseOrdered.MakeCommandArg("freq", ParseOrdered.ArgTypes.integer, 
 						true))));
-		//res.put(AbstractManager.makeCommand(MAILREPLY, "reply to mail",new ArrayList<JSONObject>()));
 		return res;
 	}
 	@Override

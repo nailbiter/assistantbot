@@ -93,7 +93,7 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 		this.waitingForReply_.get(update.getMessage().getChatId()).remove(replyID);
 		return reply;
 	}
-	abstract protected JSONObject parse(Message msg,UserData ud) throws Exception;
+	abstract protected JSONObject interpret(Message msg,UserData ud) throws Exception;
 	abstract protected UserData createUserData(Long chatId); 
 	java.util.Hashtable<Long, UserData> userData = new Hashtable<Long,UserData>();
 	protected String reply(Message msg){
@@ -102,7 +102,7 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 			{
 				if(!this.userData.containsKey(msg.getChatId()))
 					userData.put(msg.getChatId(), this.createUserData(msg.getChatId())); 
-				JSONObject res = parse(msg,userData.get(msg.getChatId()));
+				JSONObject res = interpret(msg,userData.get(msg.getChatId()));
 				userData.get(msg.getChatId()).Update(res);
 				return this.getResultAndFormat(res,userData.get(msg.getChatId()));
 			}

@@ -47,6 +47,7 @@ public class JsonUtil {
 			arr.put(list.get(i));
 	}
 	public static void CopyIntoJson(JSONObject dest,JSONObject src) {
+		System.err.format("CopyIntoJson, dest=%s, src=%s\n", dest,src);
 		for(String key:src.keySet())
 			dest.put(key, src.get(key));
 	}

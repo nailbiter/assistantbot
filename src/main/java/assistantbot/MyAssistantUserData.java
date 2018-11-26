@@ -1,38 +1,33 @@
 package assistantbot;
+import static util.parsers.StandardParserInterpreter.CMD;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import com.mongodb.MongoClient;
 import it.sauronsoftware.cron4j.Scheduler;
-import managers.BadHabitManager;
-import managers.GermanManager;
-import managers.GymManager;
-import managers.MiscUtilManager;
 import managers.MyManager;
 import managers.OptionReplier;
-import managers.ReportManager;
-import managers.TimeManager;
 import util.Util;
 import util.MyBasicBot;
 import util.UserData;
 import util.parsers.AbstractParser;
+import util.parsers.StandardParserInterpreter;
 
 public class MyAssistantUserData extends UserData implements ResourceProvider {
 	protected Scheduler scheduler_ = null; //FIXME: should it be a singleton?
-	protected static boolean ISBOTMANAGER = false;
-	protected List<MyManager> managers_ = new ArrayList<MyManager>();
-	List<MyManager> getManagers(){return managers_;}
-	protected AbstractParser parser = null;
-	String lastCategory = null;
+	protected StandardParserInterpreter parser_ = null;
 	protected long chatID_;
 	MyBasicBot bot_ = null;
-	private Logger logger_; 
+	private Logger logger_;
+	private List<MyManager> managers_ = new ArrayList<MyManager>();
 	MyAssistantUserData(Long chatID,MyBasicBot bot, JSONArray names){
 		try 
 		{
@@ -40,21 +35,10 @@ public class MyAssistantUserData extends UserData implements ResourceProvider {
 			bot_ = bot;
 			logger_ = Logger.getLogger(this.getClass().getName());
 			
-			if(!MyAssistantUserData.ISBOTMANAGER)
-			{
-				scheduler_ = new Scheduler();
-				scheduler_.setTimeZone(Util.getTimezone());
-				Util.PopulateManagers(managers_, names, this);
-			}
-			managers_.add(util.StorageManager.getMyManager());
-			managers_.add(new managers.JShellManager(bot));
-			
-			if(MyAssistantUserData.ISBOTMANAGER)
-				parser = new util.parsers.BotManagerParser();
-			else
-				parser = new util.parsers.StandardParser(managers_);
-			
-			managers_.add(parser);
+
+			scheduler_ = new Scheduler();
+			scheduler_.setTimeZone(Util.getTimezone());
+			parser_ = StandardParserInterpreter.Create(managers_, names,this);
 		}
 		catch(Exception e)
 		{
@@ -63,8 +47,7 @@ public class MyAssistantUserData extends UserData implements ResourceProvider {
 		if(scheduler_!=null) 
 			scheduler_.start();
 	}
-//	public boolean isSleeping() {return (tm_ != null) && tm_.isSleeping();}
-	public AbstractParser getParser() {return parser;}
+	public AbstractParser getParser() {return parser_;}
 	public void Update(JSONObject res)  {
 		if(res.has("name"))
 		{
@@ -142,5 +125,8 @@ public class MyAssistantUserData extends UserData implements ResourceProvider {
 	@Override
 	public int sendFile(String fn) throws TelegramApiException {
 		return bot_.sendFile(fn, chatID_);
+	}
+	public String interpret(JSONObject res) throws JSONException, Exception {
+		return parser_.getDispatchTable().get(res.getString(CMD)).getResultAndFormat(res);
 	}
 }
