@@ -211,7 +211,7 @@ public class Util{
 			catch(Exception e) {
 				e.printStackTrace();
 				System.err.format("cannot instantiate %s\n", cn);
-				throw e;
+//				throw e;
 			}
 			System.err.format("added %s\n", cn);
 		}

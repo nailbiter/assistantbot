@@ -112,9 +112,10 @@ public class ParseOrdered {
 
 	public JSONObject parse(JSONObject obj) throws Exception {
 		System.err.format("parse of %s got %s", name_,obj.toString(2));
-		String prefix = Util.getParsePrefix();
 
-		String[] tokens = obj.getString(REM).split(" ");
+		String[] tokens = new String[0];
+		if(obj.has(REM))
+			tokens = obj.getString(REM).split(" ");
 		JSONArray args = JsonUtil.FindInJSONArray(cmds_, "name", obj.getString(CMD)).getJSONArray("args");
 		JSONObject res = new JSONObject().put("name", obj.getString(CMD));
 		for(int j = 0; j < args.length();j++)
