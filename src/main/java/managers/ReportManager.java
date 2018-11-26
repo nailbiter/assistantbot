@@ -18,7 +18,6 @@ import util.parsers.ParseOrdered;
 import util.parsers.ParseOrdered.ArgTypes;
 
 import static java.util.Arrays.asList;
-import static util.parsers.StandardParserInterpreter.ArgTypes;
 
 public class ReportManager extends AbstractManager {
 	private MongoClient mc_;

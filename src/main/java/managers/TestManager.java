@@ -34,8 +34,7 @@ import util.parsers.ParseOrdered;
  */
 public class TestManager extends AbstractManager implements OptionReplier {
 	Long chatID_ = null;
-	Scheduler scheduler_ = null;
-//	MyBasicBot bot_ = null;
+//	Scheduler scheduler_ = null;
 	private Logger logger_ = null;
 	ResourceProvider rp_ = null;
 	Timer timer_ = null;
@@ -44,10 +43,9 @@ public class TestManager extends AbstractManager implements OptionReplier {
 	private MongoCollection<Document> testScores_;
 	int lastUsedTestIndex = -1;
 	public TestManager(ResourceProvider rp) throws Exception{
+		super(GetCommands());
 		rp_ = rp;
-//		chatID_ = chatID;
-//		bot_ = bot;
-		scheduler_ = rp.getScheduler();
+//		scheduler_ = rp.getScheduler();
 		logger_ = Logger.getLogger(this.getClass().getName());
 		timer_ = new Timer();
 		AddTests(testContainer_,rp_.getMongoClient());
@@ -64,11 +62,7 @@ public class TestManager extends AbstractManager implements OptionReplier {
 		if(names.size()!=testContainer.size())
 			throw new Exception(String.format("testmanager size: %d<%d", names.size(),testContainer.size()));
 	}
-	/* (non-Javadoc)
-	 * @see util.MyManager#getCommands()
-	 */
-	@Override
-	public JSONArray getCommands() {
+	public static JSONArray GetCommands() {
 		JSONArray res = new JSONArray();
 		res.put(ParseOrdered.MakeCommand("tests","show tests, -1 reloads",
 				Arrays.asList(ParseOrdered.MakeCommandArg("index", ParseOrdered.ArgTypes.integer, true))));
@@ -98,8 +92,6 @@ public class TestManager extends AbstractManager implements OptionReplier {
 	private double ScoreToDouble(String score) throws Exception{
 		Matcher m = null;
 		if((m = Pattern.compile("\\s*(\\d+)\\s*/\\s*(\\d+)\\s*").matcher(score)).matches()) {
-//			String[] scoreParts = score.split("/");
-//			return Double.parseDouble(scoreParts[0].trim())/Double.parseDouble(scoreParts[1].trim());
 			return Double.parseDouble(m.group(1))/Double.parseDouble(m.group(2));
 		} else if((m = Pattern.compile("\\s*(\\d+)\\s*%\\s*").matcher(score)).matches()) {
 			return Integer.parseInt(m.group(1))/100.0;
@@ -142,7 +134,6 @@ public class TestManager extends AbstractManager implements OptionReplier {
 			sendMessageWithKeyBoard(res[0], Arrays.copyOfRange(res, 1, res.length));
 		}
 			
-//		return res.toString();
 		return "";
 	}
 

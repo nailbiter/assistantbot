@@ -1,4 +1,6 @@
 package assistantbot;
+import static util.parsers.StandardParserInterpreter.CMD;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -21,7 +23,6 @@ import util.parsers.StandardParserInterpreter;
 
 public class MyAssistantUserData extends UserData implements ResourceProvider {
 	protected Scheduler scheduler_ = null; //FIXME: should it be a singleton?
-	protected static boolean ISBOTMANAGER = false;
 	protected StandardParserInterpreter parser_ = null;
 	protected long chatID_;
 	MyBasicBot bot_ = null;
@@ -35,13 +36,9 @@ public class MyAssistantUserData extends UserData implements ResourceProvider {
 			logger_ = Logger.getLogger(this.getClass().getName());
 			
 
-			if(!MyAssistantUserData.ISBOTMANAGER)
-			{
-				scheduler_ = new Scheduler();
-				scheduler_.setTimeZone(Util.getTimezone());
-				Util.PopulateManagers(managers_ , names, this);
-			}
-			parser_ = StandardParserInterpreter.Create(managers_, names);
+			scheduler_ = new Scheduler();
+			scheduler_.setTimeZone(Util.getTimezone());
+			parser_ = StandardParserInterpreter.Create(managers_, names,this);
 		}
 		catch(Exception e)
 		{
@@ -130,6 +127,6 @@ public class MyAssistantUserData extends UserData implements ResourceProvider {
 		return bot_.sendFile(fn, chatID_);
 	}
 	public String interpret(JSONObject res) throws JSONException, Exception {
-		return parser_.interpret(res);
+		return parser_.getDispatchTable().get(res.getString(CMD)).getResultAndFormat(res);
 	}
 }

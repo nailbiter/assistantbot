@@ -1,6 +1,7 @@
 {
 	"name":"offline",
 	"resfolder":"src/main/resources/assistantBotFiles/",
+	"parserPrefix":"",
 	"offline":true,
 	"tmpfolder":"tmp",
 	"filetosendto":"test.html",

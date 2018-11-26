@@ -5,14 +5,21 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import util.parsers.ParseOrdered.ArgTypes;
+import util.JsonUtil;
+import util.Util;
+import static util.parsers.StandardParserInterpreter.CMD;
+import static util.parsers.StandardParserInterpreter.REM;
 
 public class ParseOrdered {
 
-	public enum ArgTypes{remainder, string, integer}
+	public static enum ArgTypes{remainder, string, integer}
 
-	public ParseOrdered(JSONArray commands) {
-		// TODO Auto-generated constructor stub
+	private JSONArray cmds_;
+	private String name_;
+
+	public ParseOrdered(JSONArray commands,String name) {
+		cmds_ = commands;
+		name_ = name;
 	}
 
 	protected static String PrintArgs(JSONObject cmd)
@@ -70,65 +77,81 @@ public class ParseOrdered {
 	}
 
 	public JSONObject getCommands() {
-		// TODO Auto-generated method stub
-		return null;
+		JSONObject res = new JSONObject();
+		for(Object o:cmds_) {
+			JSONObject cmd = (JSONObject)o;
+			res.put(cmd.getString("name"), String.format("%s%s", printArgs(cmd),cmd.optString("help","(none)")));
+		}
+		return res;
+	}
+	protected static String printArgs(JSONObject cmd)
+	{
+		StringBuilder sb = new StringBuilder();
+		int index = 0;
+		JSONArray args = cmd.getJSONArray("args");
+		
+		if(args.length()==0)
+			return sb.toString();
+		
+		sb.append(printArg(args.getJSONObject(index)));
+		for(index++;index<args.length(); index++)
+			sb.append(" "+printArg(args.getJSONObject(index)));
+		
+		sb.append(": ");
+		return sb.toString();
+	}
+	protected static String printArg(JSONObject arg)
+	{
+		if(IsArgOpt(arg))
+			return String.format("[%s%s]", arg.getString("name").toUpperCase(),
+					arg.getString("type").substring(0, 1));
+		else
+			return String.format("%s%s", arg.getString("name").toUpperCase(),
+					arg.getString("type").substring(0, 1));
 	}
 
-	public Object parse(JSONObject res) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public JSONObject parse(JSONObject obj) throws Exception {
+		System.err.format("parse of %s got %s", name_,obj.toString(2));
+		String prefix = Util.getParsePrefix();
 
-//	String cmd = tokens[0],
-//			rem = (tokens.length>1)?tokens[1]:"";
-	
-//	String[] tokens = line.split(" ");
-//	for(int i = 0; i < cmds_.length(); i++)
-//	{
-//		if(cmds_.optJSONObject(i)==null)
-//			continue;
-//		if(tokens[0].compareTo(prefix_+cmds_.getJSONObject(i).getString("name"))==0)
-//		{
-//			JSONArray args = cmds_.getJSONObject(i).getJSONArray("args");
-//			JSONObject res = new JSONObject().put("name", cmds_.getJSONObject(i).getString("name"));
-//			for(int j = 0; j < args.length();j++)
-//			{
-//				/**
-//				 *FIXME: use StandardParser.ArgTypes here in place of string literals
-//				 */
-//				JSONObject arg = args.getJSONObject(j);
-//				if(arg.getString("type").compareTo("string")==0)
-//				{
-//					if(!isArgOpt(arg) || (tokens.length>=(j+2)))
-//						res.put(arg.getString("name"),tokens[j+1]);
-//					continue;
-//				}
-//				//FIXME: next line is bad
-//				if(arg.getString("type").compareTo("int")==0 || arg.getString("type").compareTo("integer")==0)
-//				{
-//					if(!isArgOpt(arg) || (tokens.length>=(j+2)))
-//						res.put(arg.getString("name"),Integer.parseInt(tokens[j+1]));
-//					continue;
-//				}
-//				if(arg.getString("type").compareTo("remainder")==0)
-//				{
-//					if( isArgOpt(arg) && !( ( j + 1 ) < tokens.length ) ) 
-//						continue;
-//					StringBuilder sb = new StringBuilder(tokens[j+1]);
-//					/*FIXME: the next snippet may cause troubles if
-//					 *  tokens are separated by several whitespace chars
-//					 *  and this needed to be preserved
-//					 */ 
-//					for(int k = j+2; k < tokens.length; k++)
-//						sb.append(" "+tokens[k]);
-//					res.put(arg.getString("name"),sb.toString());
-//					break;
-//				}
-//				throw new Exception("unknown type: "+arg.optString("type"));
-//			}
-//			return res;
-//		}
-//	}
-//	
-//	return new JSONObject().put(this.defaultName_, line);
+		String[] tokens = obj.getString(REM).split(" ");
+		JSONArray args = JsonUtil.FindInJSONArray(cmds_, "name", obj.getString(CMD)).getJSONArray("args");
+		JSONObject res = new JSONObject().put("name", obj.getString(CMD));
+		for(int j = 0; j < args.length();j++)
+		{
+			/**
+			 *FIXME: use StandardParser.ArgTypes here in place of string literals
+			 */
+			JSONObject arg = args.getJSONObject(j);
+			if(arg.getString("type").compareTo("string")==0)
+			{
+				if(!IsArgOpt(arg) || (tokens.length>j))
+					res.put(arg.getString("name"),tokens[j]);
+				continue;
+			}
+			//FIXME: next line is bad
+			if(arg.getString("type").compareTo("int")==0 || arg.getString("type").compareTo("integer")==0)
+			{
+				if(!IsArgOpt(arg) || (tokens.length>j))
+					res.put(arg.getString("name"),Integer.parseInt(tokens[j]));
+				continue;
+			}
+			if(arg.getString("type").compareTo("remainder")==0)
+			{
+				if( IsArgOpt(arg) && !( ( j ) < tokens.length ) ) 
+					continue;
+				StringBuilder sb = new StringBuilder(tokens[j]);
+				/*FIXME: the next snippet may cause troubles if
+				 *  tokens are separated by several whitespace chars
+				 *  and this needed to be preserved
+				 */ 
+				for(int k = j+1; k < tokens.length; k++)
+					sb.append(" "+tokens[k]);
+				res.put(arg.getString("name"),sb.toString());
+				break;
+			}
+			throw new Exception("unknown type: "+arg.optString("type"));
+		}
+		return res;
+	}
 }

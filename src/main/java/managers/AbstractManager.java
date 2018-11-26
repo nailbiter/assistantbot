@@ -20,7 +20,7 @@ import static util.parsers.StandardParserInterpreter.CMD;
 public abstract class AbstractManager implements MyManager {
 	ParseOrdered po_ = null;
 	protected AbstractManager(JSONArray commands) {
-		po_ = new ParseOrdered(commands);
+		po_ = new ParseOrdered(commands,this.getClass().getName());
 	}
 	/* (non-Javadoc)
 	 * @see util.MyManager#getResultAndFormat(org.json.JSONObject)
@@ -48,6 +48,8 @@ public abstract class AbstractManager implements MyManager {
 		return parameters;
 	}
 	public JSONObject getCommands() {
-		return po_.getCommands();
+		JSONObject res = po_.getCommands();
+		System.err.format("getCommands for %s got %s\n", this.getClass().getName(),res);
+		return res;
 	}
 }

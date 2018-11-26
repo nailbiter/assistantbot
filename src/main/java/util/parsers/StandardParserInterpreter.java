@@ -10,52 +10,27 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import assistantbot.ResourceProvider;
 import managers.MyManager;
 import util.JsonUtil;
 import util.Util;
+import static util.Util.PopulateManagers;
 
 public class StandardParserInterpreter extends AbstractParser{
 	public static final String DEFMESSAGEHANDLER = "DEFMESSAGEHANDLER";
 	public static final String CMD = "cmd";
-	private String prefix_ = "/";
-	
+	public static final String REM = "rem";
 	private List<MyManager> managers_ = null;
-	HashMap<String,MyManager> dispatchTable_ = new HashMap<String,MyManager>();
+	private HashMap<String,MyManager> dispatchTable_ = new HashMap<String,MyManager>();
 	private JSONObject defSettings_;
-	public void setPrefix(String prefix) {
-		prefix_ = prefix;
-	}
-//	protected String getNameOfDefault() throws Exception
-//	{
-//		for(int i = 0; i < cmds_.length(); i++)
-//			if(cmds_.get(i) instanceof String)
-//			{
-//				System.err.println(String.format("defName=%s, idx=%d/%d", this.defaultName_,i,
-//						cmds_.length()));
-//				return (String)cmds_.get(i);
-//			}
-//		throw new Exception("getNameOfDefault");
-//	}
-//	protected static JSONArray getCommands(List<MyManager> managers) throws Exception
-//	{
-//		JSONArray cmds = StandardParserInterpreter.getCommandsStatic();
-//		for(int i = 0; i < managers.size(); i++)
-//		{
-//			JSONArray cmds_ = managers.get(i).getCommands();
-//			for(int j = 0; j < cmds_.length(); j++)
-//				cmds.put(cmds_.get(j));
-//		}
-//		System.err.println("parser got: "+cmds.toString());
-//		return cmds;
-//	}
-	public StandardParserInterpreter(List<MyManager> managers, JSONObject defSettings) throws Exception {
-//		this(StandardParser.getCommands(managers));
+	
+	protected StandardParserInterpreter(List<MyManager> managers, JSONObject defSettings) throws Exception {
 		managers_ = managers;
 		defSettings_ = defSettings;
 	}
 	@Override
 	public String getHelpMessage() {
-		JSONObject cmds = GetCommands(managers_,dispatchTable_);
+		JSONObject cmds = GetCommands(managers_,getDispatchTable());
 		System.err.format("got cmds: %s\n", cmds.toString(2));
 		return getTelegramHelpMessage(cmds);
 	}
@@ -89,18 +64,19 @@ public class StandardParserInterpreter extends AbstractParser{
 	@Override
 	public JSONObject parse(String line) throws Exception
 	{
-		if(line.startsWith(prefix_)) {
+		String prefix = Util.getParsePrefix();
+		if(line.startsWith(prefix)) {
 			String[] tokens = line.split(" ",2);
 			JSONObject res = new JSONObject();
-			res.put(CMD, tokens[0].substring(prefix_.length()));
+			res.put(CMD, tokens[0].substring(prefix.length()));
 			if(tokens.length==2)
-				res.put("rem", tokens[1]);
+				res.put(REM, tokens[1]);
 			return res;
 		} else {
 			if(defSettings_.has(DEFMESSAGEHANDLER))
 				return new JSONObject()
 						.put(CMD, defSettings_.getString(DEFMESSAGEHANDLER))
-						.put("rem", line);
+						.put(REM, line);
 			throw new Exception(String.format("no default handler given and we got %s", line));
 		}
 	}
@@ -108,20 +84,24 @@ public class StandardParserInterpreter extends AbstractParser{
 	public String getResultAndFormat(JSONObject res) throws Exception {
 		if(res.has(CMD))
 		{
-			System.err.println(this.getClass().getName()+" got comd: "+prefix_+res.getString(CMD));
+			System.err.println(this.getClass().getName()+" got comd: "+res.getString(CMD));
 			if(res.getString(CMD).compareTo("help")==0)
 				return getHelpMessage();
 		}
 		throw new Exception(String.format("for res=%s", res.toString()));
 	}
-	public static StandardParserInterpreter Create(List<MyManager> managers,JSONArray names) throws JSONException, Exception {
+	public static StandardParserInterpreter Create(List<MyManager> managers,JSONArray names,ResourceProvider rp) throws JSONException, Exception {
+		PopulateManagers(managers, names, rp);
 		StandardParserInterpreter parser = 
 				new StandardParserInterpreter(managers,Util.GetDefSettingsObject(names));
 		managers.add(parser);
 		parser.getHelpMessage();
 		return parser;
 	}
-	public String interpret(JSONObject res) throws JSONException, Exception {
-		return dispatchTable_.get(res.getString("name")).getResultAndFormat(res);
+	/**
+	 * @return the dispatchTable_
+	 */
+	public HashMap<String,MyManager> getDispatchTable() {
+		return dispatchTable_;
 	}
 }

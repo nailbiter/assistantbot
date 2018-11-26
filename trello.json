@@ -1,13 +1,13 @@
 {
+   "pulledData" : {
+      "trelloTitle" : "perl script to control git and compilation"
+   },
+   "url" : {
+      "parser" : "https://trello.com/c/hkuY0OBL",
+      "indicator" : "https://trello.com/c/FMIlCbXE"
+   },
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
    ],
-   "pulledData" : {
-      "trelloTitle" : "gf parser"
-   },
-   "cardurl" : "https://trello.com/c/hkuY0OBL",
-   "url" : {
-      "indicator" : "https://trello.com/c/FMIlCbXE",
-      "parser" : "https://trello.com/c/hkuY0OBL"
-   }
+   "cardurl" : "https://trello.com/c/hkuY0OBL"
 }

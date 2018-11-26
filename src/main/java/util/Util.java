@@ -48,6 +48,7 @@ public class Util{
 				.put("TMPFOLDER")
 				.put("CMDFILE")
 				.put("TMPFILE")
+				.put("PARSERPREFIX")
 				.put("SCRIPTFOLDER");
 		JsonUtil.FilterJsonKeys(profileObj_,keys);
 		for(Object key:keys) {
@@ -55,10 +56,18 @@ public class Util{
 				throw new Exception();
 		}
 	}
-	public static String getScriptFolder() {
-		return profileObj_.getString("SCRIPTFOLDER");
+	protected static String Gss(String name) {
+		return profileObj_.getString(name.toUpperCase());
 	}
-	public static String getJarFolder() throws Exception { return profileObj_.getString("RESFOLDER"); }
+	public static String getScriptFolder() {
+		return Gss("SCRIPTFOLDER");
+	}
+	public static String getParsePrefix() {
+		return Gss("PARSERPREFIX");
+	}
+	public static String getJarFolder(){ 
+		return Gss("RESFOLDER");
+	}
 	public static String milisToTimeFormat(long millis)
 	{
 		return Integer.toString((int)(millis/1000.0/60.0/60.0)) + "h:"+
@@ -77,11 +86,8 @@ public class Util{
 		df.setTimeZone(Util.getTimezone());
 		return df.format(d);
 	}
-//	public static void SetRebootFileName(String string) {
-//		RebootFileName_ = string;
-//	}
 	public static String GetRebootFileName() {
-		return profileObj_.getString("TMPFILE");
+		return Gss("TMPFILE");
 	}
 	public static String GetFile(String name) throws Exception{
 		FileReader fr = null;

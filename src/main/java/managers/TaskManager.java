@@ -139,15 +139,14 @@ public class TaskManager extends AbstractManager implements TaskManagerForTask {
 	}
 
 	public static JSONArray GetCommands() {
-		JSONArray res = new JSONArray();
-//		new JSONArray( 
-//				"[{\"name\":\"taskdone\",\"args\":[{\"name\":\"taskid\",\"type\":\"int\"}],\"help\":\"mark task as done\"}\n" + 
-//				",{\"name\":\"tasks\",\"args\":[{\"name\":\"tasknum\",\"type\":\"int\",\"isOpt\":true}],\"help\":\"show list of tasks\"}\n" + 
-//				",{\"name\":\"taskpostpone\",\"args\":[{\"name\":\"taskid\",\"type\":\"int\"},{\"name\":\"estimate\",\"type\":\"int\"}],\"help\":\"postpone a task\"}]");
-		res.put(value)
-		res.put(ParseOrdered.MakeCommand("tasknew", "create new task",
-				Arrays.asList(ParseOrdered.MakeCommandArg("estimate",ParseOrdered.ArgTypes.integer, false),
-				ParseOrdered.MakeCommandArg("description",ParseOrdered.ArgTypes.remainder, true))));
+		JSONArray res = new JSONArray()
+		.put(MakeCommand("taskdone","mark task as done",Arrays.asList(MakeCommandArg("taskid",ArgTypes.integer,false))))
+		.put(MakeCommand("taskpostpone","postpone a task",
+				Arrays.asList(MakeCommandArg("taskid",ArgTypes.integer,false),MakeCommandArg("estimate",ArgTypes.integer,false))))
+		.put(MakeCommand("tasks","show list of tasks",Arrays.asList(MakeCommandArg("tasknum",ArgTypes.integer,true))))
+		.put(MakeCommand("tasknew", "create new task",
+				Arrays.asList(MakeCommandArg("estimate",ArgTypes.integer, false),
+				MakeCommandArg("description",ArgTypes.remainder, true))));
 		return res;
 	}
 
