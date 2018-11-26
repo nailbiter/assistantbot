@@ -44,8 +44,8 @@ public class ReportManager extends AbstractManager {
 		JSONObject settings = getParamObject(mc_);
 		System.err.format("got object %s\n", settings.toString(2));
 		sih_.setParamObject(settings);
-		String res = sa_.runCommand("timestat -e 4 -u WEEK"),
-				res2 = sa_.runCommand("timestat -d money -e 4 -u WEEK");
+		String res = sa_.runCommand(String.format("timestat -e %d -u %s", settings.getInt("timecount"),settings.getString("timeunit"))),
+				res2 = sa_.runCommand(String.format("timestat -d money -e %s -u %s", settings.getInt("moneycount"),settings.getString("moneyunit")));
 		rp_.sendFile(Util.saveToTmpFile(
 				String.format("<html>\n<head><style type=\"text/css\">\n%s\n</style></head>\n%s\n<br><br>\n%s\n</html>",
 						settings.getString("cssstyle"),
