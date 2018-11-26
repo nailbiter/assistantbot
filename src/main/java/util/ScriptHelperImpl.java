@@ -171,13 +171,12 @@ public class ScriptHelperImpl implements ScriptHelper {
 		firstRow.add("%");
 		firstRow.add(0, "dates");
 		if(te==TableEngine.ASCIITABLE) ((AsciiTable) at).addRule();
-		int rowIndex = 0;
-		AddRow(at,te,firstRow,rowIndex++);
+		AddRow(at,te,firstRow,true);
 		if(te==TableEngine.ASCIITABLE) ((AsciiTable) at).addRule();
 		for(int i = res.length()-1; i>=0; i--)
-			PrintRecord(at,res.getJSONObject(i),categories,databaseName,inv,functionName,total,te,rowIndex++);
+			PrintRecord(at,res.getJSONObject(i),categories,databaseName,inv,functionName,total,te,false);
 		if(te==TableEngine.ASCIITABLE) ((AsciiTable) at).addRule();
-			PrintRecord(at,total,categories,databaseName,inv,functionName,total,te,rowIndex++);
+		PrintRecord(at,total,categories,databaseName,inv,functionName,total,te,true);
 		if(te==TableEngine.ASCIITABLE) ((AsciiTable) at).addRule();
 		
 		if(te==TableEngine.ASCIITABLE)
@@ -193,7 +192,7 @@ public class ScriptHelperImpl implements ScriptHelper {
 		} else 
 			throw new Exception("Unknown type of TableEngine");
 	}
-	static void AddRow(Object table,TableEngine te, ArrayList<String> row, int j){
+	static void AddRow(Object table,TableEngine te, ArrayList<String> row, boolean isHeader){
 		if(te==TableEngine.ASCIITABLE)
 			((AsciiTable) table).addRow(row);
 		else if(te==TableEngine.TABLEBUILDER) {
@@ -203,7 +202,7 @@ public class ScriptHelperImpl implements ScriptHelper {
 		} else if(te==TableEngine.HTML) {
 			((StringBuilder)table).append("<tr>\n");
 			for(int i = 0; i < row.size(); i++) {
-				if((i%2==0) || (j%2==0))
+				if((i%2==0) || isHeader)
 					((StringBuilder)table).append(String.format("\t<th>%s</th>\n", row.get(i)));
 				else
 					((StringBuilder)table).append(String.format("\t<td>%s</td>\n", row.get(i)));
@@ -211,7 +210,7 @@ public class ScriptHelperImpl implements ScriptHelper {
 			((StringBuilder)table).append("</tr>\n");
 		}
 	}
-	private static void PrintRecord(Object at, JSONObject obj, ArrayList<String> categories, String databaseName, Invocable inv, String functionName, JSONObject total,TableEngine te, int rowIndex) throws NoSuchMethodException, JSONException, ScriptException {
+	private static void PrintRecord(Object at, JSONObject obj, ArrayList<String> categories, String databaseName, Invocable inv, String functionName, JSONObject total,TableEngine te, boolean isHeader) throws NoSuchMethodException, JSONException, ScriptException {
 		ArrayList<String> row = new ArrayList<String>();
 		SimpleDateFormat df = new SimpleDateFormat(SIMPLEDATEFORMAT );
 		df.setTimeZone (TimeZone.getDefault());
@@ -230,7 +229,7 @@ public class ScriptHelperImpl implements ScriptHelper {
 		}
 		row.add((String)inv.invokeFunction(functionName,obj.getInt(TOTALVALUEKEY),databaseName));
 		row.add(String.format(procentFormat, (100.0*obj.getInt(TOTALVALUEKEY))/total.getInt(TOTALVALUEKEY)));
-		AddRow(at,te,row,rowIndex);
+		AddRow(at,te,row,isHeader);
 	}
 	public void setParamObject(JSONObject settings) {
 		settings_ = settings;
