@@ -15,6 +15,7 @@ import util.ScriptApp;
 import util.ScriptHelperImpl;
 import util.Util;
 import util.parsers.ParseOrdered;
+import util.parsers.ParseOrdered.ArgTypes;
 
 import static java.util.Arrays.asList;
 import static util.parsers.StandardParserInterpreter.ArgTypes;
@@ -26,6 +27,7 @@ public class ReportManager extends AbstractManager {
 	private ScriptApp sa_;
 	private ScriptHelperImpl sih_;
 	public ReportManager(ResourceProvider rp) {
+		super(GetCommands());
 		mc_ = rp.getMongoClient();
 		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
 				KeyRing.getTrello().getString("token"));
@@ -33,10 +35,9 @@ public class ReportManager extends AbstractManager {
 		sih_ = new ScriptHelperImpl(rp);
 		sa_ = new ScriptApp(Util.getScriptFolder(), sih_);
 	}
-	@Override
-	public JSONArray getCommands() {
+	public static JSONArray GetCommands() {
 		return new JSONArray()
-				.put(ParseOrdered.MakeCommand("reportshow", "masha reminder", asList(ParseOrdered.MakeCommandArg("type",ArgTypes.integer,true))));
+				.put(ParseOrdered.MakeCommand("reportshow", "masha reminder", asList(ParseOrdered.MakeCommandArg("type",ParseOrdered.ArgTypes.integer,true))));
 	}
 	public String mashareport(JSONObject obj) throws Exception {
 		return MashaRemind.Remind(ta_,mc_);

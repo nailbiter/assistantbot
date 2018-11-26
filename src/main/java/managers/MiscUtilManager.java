@@ -1,5 +1,8 @@
 package managers;
 
+import static java.util.Arrays.asList;
+import static util.Util.GetRebootFileName;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
@@ -14,17 +17,12 @@ import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 
-import assistantbot.MyAssistantUserData;
 import assistantbot.ResourceProvider;
 import managers.misc.NoteMaker;
 import managers.misc.RandomSetGenerator;
 import util.KeyRing;
 import util.Util;
 import util.parsers.ParseOrdered;
-
-import static java.util.Arrays.asList;
-import static util.parsers.StandardParserInterpreter.ArgTypes;
-import static util.Util.GetRebootFileName;
 
 public class MiscUtilManager extends AbstractManager {
 	Random rand_ = new Random();
@@ -40,6 +38,7 @@ public class MiscUtilManager extends AbstractManager {
 	
 	
 	public MiscUtilManager(ResourceProvider rp) throws Exception {
+		super(GetCommands());
 		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
 				KeyRing.getTrello().getString("token"));
 		try{
@@ -51,22 +50,21 @@ public class MiscUtilManager extends AbstractManager {
 		mc_ = rp.getMongoClient();
 		nm_ = new NoteMaker(mc_);
 	}
-	@Override
-	public JSONArray getCommands() {
+	public static JSONArray GetCommands() {
 		return new JSONArray()
 				.put(ParseOrdered.MakeCommand("rand", "return random",
 						asList(
-								ParseOrdered.MakeCommandArg("key",ArgTypes.integer,true),
-								ParseOrdered.MakeCommandArg("charset",ArgTypes.string,true)
+								ParseOrdered.MakeCommandArg("key",ParseOrdered.ArgTypes.integer,true),
+								ParseOrdered.MakeCommandArg("charset",ParseOrdered.ArgTypes.string,true)
 								)))
 				.put(ParseOrdered.MakeCommand("randset","return randomly generated set",
-						asList(ParseOrdered.MakeCommandArg("size",ArgTypes.integer,false))))
-				.put(ParseOrdered.MakeCommand("note","make note",asList(ParseOrdered.MakeCommandArg("notecontent",ArgTypes.remainder,false))))
+						asList(ParseOrdered.MakeCommandArg("size",ParseOrdered.ArgTypes.integer,false))))
+				.put(ParseOrdered.MakeCommand("note","make note",asList(ParseOrdered.MakeCommandArg("notecontent",ParseOrdered.ArgTypes.remainder,false))))
 				.put(ParseOrdered.MakeCommand("exit", "exit the bot", new ArrayList<JSONObject>()))
 				.put(ParseOrdered.MakeCommand("restart", "restart the bot",
-						asList(ParseOrdered.MakeCommandArg("command",ArgTypes.remainder,true))))
+						asList(ParseOrdered.MakeCommandArg("command",ParseOrdered.ArgTypes.remainder,true))))
 				.put(ParseOrdered.MakeCommand("ttask", "make new task", Arrays.asList((
-						ParseOrdered.MakeCommandArg("task",ArgTypes.remainder,false)))));
+						ParseOrdered.MakeCommandArg("task",ParseOrdered.ArgTypes.remainder,false)))));
 	}
 	public String note(JSONObject obj) {
 		String noteContent = obj.getString("notecontent");

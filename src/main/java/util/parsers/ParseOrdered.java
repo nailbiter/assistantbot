@@ -5,9 +5,11 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import util.parsers.StandardParserInterpreter.ArgTypes;
+import util.parsers.ParseOrdered.ArgTypes;
 
 public class ParseOrdered {
+
+	public enum ArgTypes{remainder, string, integer}
 
 	public ParseOrdered(JSONArray commands) {
 		// TODO Auto-generated constructor stub
@@ -56,7 +58,7 @@ public class ParseOrdered {
 		return cmd;
 	}
 
-	public static JSONObject MakeCommandArg(String name,StandardParserInterpreter.ArgTypes type,boolean isOpt)
+	public static JSONObject MakeCommandArg(String name,ParseOrdered.ArgTypes type,boolean isOpt)
 	{
 		JSONObject arg = new JSONObject();
 		

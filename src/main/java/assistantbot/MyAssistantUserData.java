@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -21,13 +22,11 @@ import util.parsers.StandardParserInterpreter;
 public class MyAssistantUserData extends UserData implements ResourceProvider {
 	protected Scheduler scheduler_ = null; //FIXME: should it be a singleton?
 	protected static boolean ISBOTMANAGER = false;
-	protected List<MyManager> managers_ = new ArrayList<MyManager>();
-	protected AbstractParser parser_ = null;
-//	String lastCategory = null;
+	protected StandardParserInterpreter parser_ = null;
 	protected long chatID_;
 	MyBasicBot bot_ = null;
 	private Logger logger_;
-	List<MyManager> getManagers(){return managers_;}
+	private List<MyManager> managers_ = new ArrayList<MyManager>();
 	MyAssistantUserData(Long chatID,MyBasicBot bot, JSONArray names){
 		try 
 		{
@@ -35,19 +34,13 @@ public class MyAssistantUserData extends UserData implements ResourceProvider {
 			bot_ = bot;
 			logger_ = Logger.getLogger(this.getClass().getName());
 			
+
 			if(!MyAssistantUserData.ISBOTMANAGER)
 			{
 				scheduler_ = new Scheduler();
 				scheduler_.setTimeZone(Util.getTimezone());
-				Util.PopulateManagers(managers_, names, this);
+				Util.PopulateManagers(managers_ , names, this);
 			}
-//			managers_.add(util.StorageManager.getMyManager());
-//			managers_.add(new managers.JShellManager(bot));
-			
-//			if(MyAssistantUserData.ISBOTMANAGER)
-//				parser_ = new util.parsers.BotManagerParser();
-//			else
-//				parser_ = new util.parsers.StandardParserInterpreter(managers_,Util.GetDefSettingsObject(names));
 			parser_ = StandardParserInterpreter.Create(managers_, names);
 		}
 		catch(Exception e)
@@ -135,5 +128,8 @@ public class MyAssistantUserData extends UserData implements ResourceProvider {
 	@Override
 	public int sendFile(String fn) throws TelegramApiException {
 		return bot_.sendFile(fn, chatID_);
+	}
+	public String interpret(JSONObject res) throws JSONException, Exception {
+		return parser_.interpret(res);
 	}
 }

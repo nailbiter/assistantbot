@@ -1,36 +1,31 @@
 package managers;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Arrays;
 
 import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 
-import assistantbot.MyAssistantUserData;
 import assistantbot.ResourceProvider;
+import util.Util;
 import util.parsers.ParseOrdered;
-import util.parsers.StandardParserInterpreter;
 
 public class GermanManager extends AbstractManager {
 	enum DudenConst{ GENDER, PLURAL}
 	private MongoCollection<Document> genderCollection_;
-	@Override
-	public JSONArray getCommands() {
+	public static JSONArray GetCommands() {
 		return new JSONArray()
 				.put(ParseOrdered.MakeCommand("germangender", "german gender",
-				Arrays.asList(ParseOrdered.MakeCommandArg("word",StandardParserInterpreter.ArgTypes.remainder,false))))
+				Arrays.asList(ParseOrdered.MakeCommandArg("word",ParseOrdered.ArgTypes.remainder,false))))
 				.put(ParseOrdered.MakeCommand("germanplural", "german plural",
-						Arrays.asList(ParseOrdered.MakeCommandArg("word",StandardParserInterpreter.ArgTypes.remainder,false))));
+						Arrays.asList(ParseOrdered.MakeCommandArg("word",ParseOrdered.ArgTypes.remainder,false))));
 	}
 	public GermanManager(ResourceProvider rp){
+		super(GetCommands());
 		genderCollection_ = rp.getMongoClient().getDatabase("logistics").getCollection("gender");
 	}
 	protected static String EmptyWrap(String repl) {
@@ -56,11 +51,11 @@ public class GermanManager extends AbstractManager {
     		doc = new Document("key", key);
     		doc.put("usageCount", 1);
     		try {
-    			doc.put("plural",ExecuteCommand(String.format("duden -g Plural %s",key)).split("\n")[0].split("\\|")[1].trim());
+    			doc.put("plural",Util.ExecuteCommand(String.format("duden -g Plural %s",key)).split("\n")[0].split("\\|")[1].trim());
     		}
     		catch(Exception e) {}
     		try {
-    			doc.put("value",ExecuteCommand(String.format("duden --title %s", key)));
+    			doc.put("value",Util.ExecuteCommand(String.format("duden --title %s", key)));
     		}
     		catch(Exception e) {}
     		genderCollection_.insertOne(doc);
@@ -75,23 +70,4 @@ public class GermanManager extends AbstractManager {
     	else
     		throw new Exception("command not found");
 	}
-	static String ExecuteCommand(String command) throws IOException{
-    	Runtime rt = Runtime.getRuntime();
-    	Process proc = rt.exec(command);
-
-    	BufferedReader stdInput = new BufferedReader(new 
-    	     InputStreamReader(proc.getInputStream()));
-
-    	BufferedReader stdError = new BufferedReader(new 
-    	     InputStreamReader(proc.getErrorStream()));
-
-    	// read the output from the command
-    	System.out.println(String.format("Here is the standard output of the command \"%s\":\n",command));
-    	String s = null;
-    	StringBuilder sb = new StringBuilder();
-    	while ((s = stdInput.readLine()) != null) {
-    		sb.append(s+"\n");
-    	}
-    	return sb.toString().trim();
-    }
 }

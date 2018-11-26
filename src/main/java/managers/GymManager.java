@@ -7,16 +7,12 @@ import org.json.JSONObject;
 import com.github.nailbiter.util.TableBuilder;
 import com.mongodb.Block;
 import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Sorts;
 
-import assistantbot.MyAssistantUserData;
 import assistantbot.ResourceProvider;
 import util.MongoUtil;
 import util.parsers.ParseOrdered;
-
 import static java.util.Arrays.asList;
-import static util.parsers.StandardParserInterpreter.ArgTypes;
 
 import java.util.Date;
 import java.util.logging.Logger;
@@ -29,20 +25,20 @@ public class GymManager extends AbstractManager {
 	private JSONArray program_;
 
 	public GymManager(ResourceProvider rp) throws Exception {
+		super(GetCommands());
 		mongoClient_ = rp.getMongoClient();
 		logger_ = Logger.getLogger(this.getClass().getName());
 		gymSingleton_ = MongoUtil.GetJsonObjectFromDatabase(mongoClient_, "logistics.gymSingleton");
 		logger_.info(String.format("gymSingleton_=%s", gymSingleton_.toString()));
 	}
-	@Override
-	public JSONArray getCommands() {
+	public static JSONArray GetCommands() {
 		return new JSONArray()
 				.put(ParseOrdered.MakeCommand("gymlist","list gym exercises",
-						asList(ParseOrdered.MakeCommandArg("dayCount",ArgTypes.integer,false))))
+						asList(ParseOrdered.MakeCommandArg("dayCount",ParseOrdered.ArgTypes.integer,false))))
 				.put(ParseOrdered.MakeCommand("gymdone","done gym exercise",
 						asList(
-								ParseOrdered.MakeCommandArg("exercisenum",ArgTypes.integer,false),
-								ParseOrdered.MakeCommandArg("comment",ArgTypes.remainder,true)
+								ParseOrdered.MakeCommandArg("exercisenum",ParseOrdered.ArgTypes.integer,false),
+								ParseOrdered.MakeCommandArg("comment",ParseOrdered.ArgTypes.remainder,true)
 								)))
 				;
 	}

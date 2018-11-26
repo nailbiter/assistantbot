@@ -15,16 +15,13 @@ import util.JsonUtil;
 import util.Util;
 
 public class StandardParserInterpreter extends AbstractParser{
-	private static final String DEFMESSAGEHANDLER = "DEFMESSAGEHANDLER";
+	public static final String DEFMESSAGEHANDLER = "DEFMESSAGEHANDLER";
 	public static final String CMD = "cmd";
-//	JSONArray cmds_;
-//	String defaultName_ = null;
 	private String prefix_ = "/";
 	
 	private List<MyManager> managers_ = null;
 	HashMap<String,MyManager> dispatchTable_ = new HashMap<String,MyManager>();
 	private JSONObject defSettings_;
-	public enum ArgTypes{remainder, string, integer};
 	public void setPrefix(String prefix) {
 		prefix_ = prefix;
 	}
@@ -123,5 +120,8 @@ public class StandardParserInterpreter extends AbstractParser{
 		managers.add(parser);
 		parser.getHelpMessage();
 		return parser;
+	}
+	public String interpret(JSONObject res) throws JSONException, Exception {
+		return dispatchTable_.get(res.getString("name")).getResultAndFormat(res);
 	}
 }

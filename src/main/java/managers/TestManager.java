@@ -28,7 +28,6 @@ import managers.tests.ParadigmTest;
 import managers.tests.UrlTest;
 import managers.tests.JsonTest;
 import util.parsers.ParseOrdered;
-import util.parsers.StandardParserInterpreter;
 
 /**
  * @author nailbiter
@@ -72,13 +71,13 @@ public class TestManager extends AbstractManager implements OptionReplier {
 	public JSONArray getCommands() {
 		JSONArray res = new JSONArray();
 		res.put(ParseOrdered.MakeCommand("tests","show tests, -1 reloads",
-				Arrays.asList(ParseOrdered.MakeCommandArg("index", StandardParserInterpreter.ArgTypes.integer, true))));
+				Arrays.asList(ParseOrdered.MakeCommandArg("index", ParseOrdered.ArgTypes.integer, true))));
 		res.put(ParseOrdered.MakeCommand("testsetscore","set test score, MODE=s|u, score=15/19",
 				Arrays.asList(
-						ParseOrdered.MakeCommandArg("score",StandardParserInterpreter.ArgTypes.string,true),
-						ParseOrdered.MakeCommandArg("testnum",StandardParserInterpreter.ArgTypes.integer,true))));
+						ParseOrdered.MakeCommandArg("score",ParseOrdered.ArgTypes.string,true),
+						ParseOrdered.MakeCommandArg("testnum",ParseOrdered.ArgTypes.integer,true))));
 		res.put(ParseOrdered.MakeCommand("testdo","paradigm test done",
-				Arrays.asList(ParseOrdered.MakeCommandArg("index", StandardParserInterpreter.ArgTypes.integer, false))));
+				Arrays.asList(ParseOrdered.MakeCommandArg("index", ParseOrdered.ArgTypes.integer, false))));
 		return res;
 	}
 	public String testsetscore(JSONObject obj) throws Exception{

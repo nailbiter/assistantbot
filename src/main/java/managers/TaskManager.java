@@ -22,13 +22,15 @@ import util.Util;
 import util.MyBasicBot;
 import util.StorageManager;
 import util.parsers.ParseOrdered;
-import util.parsers.StandardParserInterpreter;
+import static util.parsers.ParseOrdered.ArgTypes;
+import static util.parsers.ParseOrdered.MakeCommand;
+import static util.parsers.ParseOrdered.MakeCommandArg;
 
 /**
  * @author nailbiter
  *
  */
-public class TaskManager implements MyManager, TaskManagerForTask {
+public class TaskManager extends AbstractManager implements TaskManagerForTask {
 //	protected Long chatID_ = null;
 //	protected MyBasicBot bot_ = null;
 	Timer timer = new Timer();
@@ -50,6 +52,7 @@ public class TaskManager implements MyManager, TaskManagerForTask {
 //		}
 //	}
 	public TaskManager(ResourceProvider rp) {
+		super(GetCommands());
 		rp_ = rp;
 	}
 	String tasknew(JSONObject res)
@@ -66,39 +69,39 @@ public class TaskManager implements MyManager, TaskManagerForTask {
 				tasks.size()-1,
 				( res.getInt("estimate") > 0 ) ? Integer.toString(res.getInt("estimate")) : "∞");
 	}
-	@Override
-	public String getResultAndFormat(JSONObject res) throws Exception {
-		if(res.has("name"))
-		{
-			System.out.println(this.getClass().getName()+" got comd: /"+res.getString("name"));
-			if(res.getString("name").compareTo("tasknew")==0)
-				//,{"name":"tasknew","args":[{"name":"estimate","type":"int"}]
-				return tasknew(res);
-			if(res.getString("name").compareTo("taskdone")==0)
-			{
-				//,{"name":"taskdone","args":[{"name":"taskid","type":"int"}]
-				tasks.get(res.getInt("taskid")).markDone();
-				return String.format("marked task #%d as done", res.getInt("taskid"));
-			}
-			if(res.getString("name").compareTo("tasks")==0)
-			{
-				//,{"name":"tasksshow","args":[],
-				if(res.has("tasknum"))
-					return this.getTasks(res.getInt("tasknum"));
-				else
-					return this.getTasks();
-				
-			}
-			if(res.getString("name").compareTo("taskpostpone")==0)
-			{
-				//,{"name":"taskpostpone",
-				//"args":[{"name":"taskid","type":"int"},{"name":"estimate","type":"int"}]
-				tasks.get(res.getInt("taskid")).postpone(res.getInt("estimate"));
-				return "postponed task #"+res.getInt("taskid")+" by "+res.getInt("estimate");
-			}
-		}
-		return null;
-	}
+//	@Override
+//	public String getResultAndFormat(JSONObject res) throws Exception {
+//		if(res.has("name"))
+//		{
+//			System.out.println(this.getClass().getName()+" got comd: /"+res.getString("name"));
+//			if(res.getString("name").compareTo("tasknew")==0)
+//				//,{"name":"tasknew","args":[{"name":"estimate","type":"int"}]
+//				return tasknew(res);
+//			if(res.getString("name").compareTo("taskdone")==0)
+//			{
+//				//,{"name":"taskdone","args":[{"name":"taskid","type":"int"}]
+//				tasks.get(res.getInt("taskid")).markDone();
+//				return String.format("marked task #%d as done", res.getInt("taskid"));
+//			}
+//			if(res.getString("name").compareTo("tasks")==0)
+//			{
+//				//,{"name":"tasksshow","args":[],
+//				if(res.has("tasknum"))
+//					return this.getTasks(res.getInt("tasknum"));
+//				else
+//					return this.getTasks();
+//				
+//			}
+//			if(res.getString("name").compareTo("taskpostpone")==0)
+//			{
+//				//,{"name":"taskpostpone",
+//				//"args":[{"name":"taskid","type":"int"},{"name":"estimate","type":"int"}]
+//				tasks.get(res.getInt("taskid")).postpone(res.getInt("estimate"));
+//				return "postponed task #"+res.getInt("taskid")+" by "+res.getInt("estimate");
+//			}
+//		}
+//		return null;
+//	}
 	private String getTasks(int tasknum) throws Exception{
 		com.github.nailbiter.util.TableBuilder tb = new com.github.nailbiter.util.TableBuilder();
 		tb.addNewlineAndTokens(new String[] {"#", "completion date","description"});
@@ -135,17 +138,16 @@ public class TaskManager implements MyManager, TaskManagerForTask {
 		return tb.toString();
 	}
 
-	@Override
-	public JSONArray getCommands() {
-		JSONArray res = 
-		new JSONArray(/*
-				"[{\"name\":\"tasknew\",\"args\":[{\"name\":\"estimate\",\"type\":\"int\"}],\"help\":\"create new task\"}\n" +*/ 
-				"[{\"name\":\"taskdone\",\"args\":[{\"name\":\"taskid\",\"type\":\"int\"}],\"help\":\"mark task as done\"}\n" + 
-				",{\"name\":\"tasks\",\"args\":[{\"name\":\"tasknum\",\"type\":\"int\",\"isOpt\":true}],\"help\":\"show list of tasks\"}\n" + 
-				",{\"name\":\"taskpostpone\",\"args\":[{\"name\":\"taskid\",\"type\":\"int\"},{\"name\":\"estimate\",\"type\":\"int\"}],\"help\":\"postpone a task\"}]");
+	public static JSONArray GetCommands() {
+		JSONArray res = new JSONArray();
+//		new JSONArray( 
+//				"[{\"name\":\"taskdone\",\"args\":[{\"name\":\"taskid\",\"type\":\"int\"}],\"help\":\"mark task as done\"}\n" + 
+//				",{\"name\":\"tasks\",\"args\":[{\"name\":\"tasknum\",\"type\":\"int\",\"isOpt\":true}],\"help\":\"show list of tasks\"}\n" + 
+//				",{\"name\":\"taskpostpone\",\"args\":[{\"name\":\"taskid\",\"type\":\"int\"},{\"name\":\"estimate\",\"type\":\"int\"}],\"help\":\"postpone a task\"}]");
+		res.put(value)
 		res.put(ParseOrdered.MakeCommand("tasknew", "create new task",
-				Arrays.asList(ParseOrdered.MakeCommandArg("estimate",StandardParserInterpreter.ArgTypes.integer, false),
-				ParseOrdered.MakeCommandArg("description",StandardParserInterpreter.ArgTypes.remainder, true))));
+				Arrays.asList(ParseOrdered.MakeCommandArg("estimate",ParseOrdered.ArgTypes.integer, false),
+				ParseOrdered.MakeCommandArg("description",ParseOrdered.ArgTypes.remainder, true))));
 		return res;
 	}
 

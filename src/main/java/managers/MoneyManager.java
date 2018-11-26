@@ -19,16 +19,20 @@ import com.mongodb.client.model.Sorts;
 
 import assistantbot.ResourceProvider;
 import util.parsers.ParseOrdered;
-import util.parsers.StandardParserInterpreter;
-import util.parsers.StandardParserInterpreter.ArgTypes;
+import util.parsers.ParseOrdered.ArgTypes;
 
-public class MoneyManager implements managers.MyManager,OptionReplier{
+import static util.parsers.ParseOrdered.MakeCommand;
+import static util.parsers.ParseOrdered.MakeCommandArg;
+import static util.parsers.ParseOrdered.ArgTypes;
+
+public class MoneyManager extends AbstractManager implements OptionReplier{
 	JSONArray cats = new JSONArray();
 	ResourceProvider ud_ = null;
 	MongoCollection<Document> money;
 	private static final String PATTERN = "yyyyMMddHHmm";
 	public MoneyManager(ResourceProvider myAssistantUserData)
 	{
+		super(GetCommands());
 		MongoClient mongoClient = myAssistantUserData.getMongoClient();
 		Block<Document> printBlock = new Block<Document>() {
 		       @Override
@@ -43,7 +47,7 @@ public class MoneyManager implements managers.MyManager,OptionReplier{
 		ud_ = myAssistantUserData;
 	}
 	Hashtable<Integer,JSONObject> pendingOperations = new Hashtable<Integer,JSONObject>();
-	public String putMoney(JSONObject obj) throws ParseException
+	public String money(JSONObject obj) throws ParseException
 	{
 		int msgid = ud_.sendMessageWithKeyBoard("which category?", cats);
 		
@@ -76,8 +80,8 @@ public class MoneyManager implements managers.MyManager,OptionReplier{
 		res.put("comment", obj.optString("comment"));
 		money.insertOne(res);
 	}
-	public String getLastCosts(int howMuch)
-	{
+	public String costs(JSONObject obj) {
+		int howMuch = obj.getInt("num");
 		final com.github.nailbiter.util.TableBuilder tb = new com.github.nailbiter.util.TableBuilder();
 		tb.newRow();
 		tb.addToken("amount");
@@ -117,42 +121,12 @@ public class MoneyManager implements managers.MyManager,OptionReplier{
 		
 		return tb.toString()+"\n------------------\n"+tb1.toString();
 	}
-	public String getMoneyCats()
-	{
-		com.github.nailbiter.util.TableBuilder tb = new com.github.nailbiter.util.TableBuilder();
-		tb.newRow();
-		tb.addToken("name");
-		for(int i = 0; i < cats.length(); i++)
-		{
-			tb.newRow();
-			tb.addToken(cats.getString(i));
-		}
-		
-		return tb.toString();
-	}
-	@Override
-	public String getResultAndFormat(JSONObject res) throws Exception {
-		if(res.has("name"))
-		{
-			System.out.println(this.getClass().getName()+" got comd: /"+res.getString("name"));
-			if(res.getString("name").compareTo("moneycats")==0) 
-				return getMoneyCats();
-			if(res.getString("name").equals("money")) {
-				return putMoney(res);
-			}
-			if(res.getString("name").equals("costs"))
-				return getLastCosts(res.getInt("num"));
-		}
-		return null;
-	}
-	@Override
-	public JSONArray getCommands() {
-		JSONArray res = new JSONArray(
-				"["+ 
-				"{\"name\":\"costs\",\"args\":[{\"name\":\"num\",\"type\":\"int\",\"isOpt\":true}]}]");
+	public static JSONArray GetCommands() {
+		JSONArray res = new JSONArray();
+		res.put(MakeCommand("costs","show last NUM costs",Arrays.asList(ParseOrdered.MakeCommandArg("num", ArgTypes.integer, true))));
 		res.put(ParseOrdered.MakeCommand("money", "spent money", 
-				Arrays.asList(ParseOrdered.MakeCommandArg("amount",StandardParserInterpreter.ArgTypes.integer, false),
-						ParseOrdered.MakeCommandArg("comment", ArgTypes.remainder, true))));
+				Arrays.asList(ParseOrdered.MakeCommandArg("amount",ParseOrdered.ArgTypes.integer, false),
+						MakeCommandArg("comment", ParseOrdered.ArgTypes.remainder, true))));
 		return res;
 	}
 	@Override

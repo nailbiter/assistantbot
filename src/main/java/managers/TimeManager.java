@@ -31,7 +31,7 @@ import static util.MongoUtil.GetJSONArrayFromDatabase;
 //import static util.LocalUtil.GetJSONArrayFromDatabase;
 import util.MyBasicBot;
 import util.parsers.ParseOrdered;
-import util.parsers.StandardParserInterpreter;
+
 import static java.util.Arrays.asList;
 
 /**
@@ -189,8 +189,8 @@ public class TimeManager extends AbstractManager implements MyManager,Runnable, 
 		JSONArray res = new JSONArray();
 		res.put(ParseOrdered.MakeCommand("timestat", "statistics about time used", 
 				asList(
-						ParseOrdered.MakeCommandArg("num", StandardParserInterpreter.ArgTypes.integer, true),
-						ParseOrdered.MakeCommandArg("key", StandardParserInterpreter.ArgTypes.string, true))));
+						ParseOrdered.MakeCommandArg("num", ParseOrdered.ArgTypes.integer, true),
+						ParseOrdered.MakeCommandArg("key", ParseOrdered.ArgTypes.string, true))));
 		res.put(ParseOrdered.MakeCommand("sleepstart","start sleeping", new ArrayList<JSONObject>()));
 		res.put(ParseOrdered.MakeCommand("sleepend","end sleeping", new ArrayList<JSONObject>()));
 		return res;

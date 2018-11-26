@@ -15,7 +15,7 @@
 		"GymManager",
 		{
 			"name":"JShellManager",
-			"DEFMESSAGEHANDLER":"true"
+			"DEFMESSAGEHANDLER":""
 		}
 	]
 }

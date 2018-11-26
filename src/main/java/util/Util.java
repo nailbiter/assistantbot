@@ -192,8 +192,6 @@ public class Util{
 			String name = null;
 			if(o instanceof String) {
 				name = (String)o;
-//				if(name==null)
-//					continue;
 			} else if(o instanceof JSONObject) {
 				name = ((JSONObject)o).getString("name");
 			}
@@ -219,8 +217,8 @@ public class Util{
 				JSONObject obj = (JSONObject)o;
 				for(Iterator<String> it = obj.keys();it.hasNext();) {
 					String key = it.next();
-					if(key.startsWith("DEF") && obj.getBoolean(key))
-						res.put(key, obj.getString("name"));
+					if(key.startsWith("DEF"))
+						res.put(key, obj.getString(key));
 				}
 			}
 		}
@@ -270,5 +268,24 @@ public class Util{
 	        is.close();
 	        os.close();
 	    }
+	}
+	public static String ExecuteCommand(String command) throws IOException{
+		Runtime rt = Runtime.getRuntime();
+		Process proc = rt.exec(command);
+	
+		BufferedReader stdInput = new BufferedReader(new 
+		     InputStreamReader(proc.getInputStream()));
+	
+		BufferedReader stdError = new BufferedReader(new 
+		     InputStreamReader(proc.getErrorStream()));
+	
+		// read the output from the command
+		System.out.println(String.format("Here is the standard output of the command \"%s\":\n",command));
+		String s = null;
+		StringBuilder sb = new StringBuilder();
+		while ((s = stdInput.readLine()) != null) {
+			sb.append(s+"\n");
+		}
+		return sb.toString().trim();
 	}
 }
