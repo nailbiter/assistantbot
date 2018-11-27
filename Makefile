@@ -18,7 +18,7 @@ all: src/main/resources/profiles/telegram.json target/$(JARNAME).jar
 	#make -C src/main/resources/assistantBotFiles files
 	mkdir -p tmp
 	rm -rf $(REBOOTFILE)
-	./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>&1 | tee $(LOGFILE)
+	./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>&1 | tee log/log.telegram.txt
 include Makefile.sources
 interactive: src/main/resources/profiles/interactive.json target/$(JARNAME).jar
 	./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>log/log.interactive.txt

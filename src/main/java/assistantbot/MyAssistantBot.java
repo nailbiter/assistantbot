@@ -3,6 +3,8 @@ import java.util.List;
 import org.json.JSONObject;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
+import com.mongodb.MongoClient;
+
 import managers.MyManager;
 import util.KeyRing;
 import util.MongoUtil;
@@ -11,8 +13,8 @@ import util.UserData;
 import util.TelegramUtil;
 
 public class MyAssistantBot extends MyBasicBot {
-//	private String botUserName_;
 	private JSONObject profileObj_;
+	protected MongoClient mongoClient_ = null;
 	public MyAssistantBot(JSONObject profileObj)
 	{
 		try
@@ -65,5 +67,8 @@ public class MyAssistantBot extends MyBasicBot {
 	@Override
 	public String getBotToken() {
 		return util.KeyRing.getToken();
+	}
+	public MongoClient getMongoClient() {
+		return mongoClient_;
 	}
 }

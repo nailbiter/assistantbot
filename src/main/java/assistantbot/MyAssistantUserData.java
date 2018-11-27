@@ -25,10 +25,10 @@ public class MyAssistantUserData extends UserData implements ResourceProvider {
 	protected Scheduler scheduler_ = null; //FIXME: should it be a singleton?
 	protected StandardParserInterpreter parser_ = null;
 	protected long chatID_;
-	MyBasicBot bot_ = null;
+	MyAssistantBot bot_ = null;
 	private Logger logger_;
 	private List<MyManager> managers_ = new ArrayList<MyManager>();
-	MyAssistantUserData(Long chatID,MyBasicBot bot, JSONArray names){
+	MyAssistantUserData(Long chatID,MyAssistantBot bot, JSONArray names){
 		try 
 		{
 			chatID_ = chatID;

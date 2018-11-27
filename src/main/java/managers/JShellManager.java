@@ -6,9 +6,7 @@ import org.json.JSONObject;
 import assistantbot.ResourceProvider;
 import jshell.JShell;
 import util.KeyRing;
-import util.parsers.ParseOrdered;
-import util.parsers.StandardParserInterpreter;
-import util.MyBasicBot;
+import util.parsers.ParseOrderedCmd;
 import static util.parsers.ParseOrdered.MakeCommand;
 import static util.parsers.ParseOrdered.MakeCommandArg;
 import static util.parsers.ParseOrdered.ArgTypes;
@@ -50,9 +48,9 @@ public class JShellManager extends AbstractManager{
 								MakeCommandArg("passwd",ArgTypes.string,false)
 								)))
 				.put(
-						MakeCommand("cmd","execute command",asList(MakeCommandArg("command",ArgTypes.remainder,false)))
-						.put(StandardParserInterpreter.DEFMESSAGEHANDLERKEY, true)
-						);
+				new ParseOrderedCmd("cmd","execute command",asList(
+						MakeCommandArg("command",ArgTypes.remainder,false)))
+				.makeDefaultHandler());
 	}
 	@Override
 	public String processReply(int messageID,String msg) {

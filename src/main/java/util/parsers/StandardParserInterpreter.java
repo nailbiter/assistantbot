@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,14 +25,15 @@ public class StandardParserInterpreter extends AbstractParser{
 	private List<MyManager> managers_ = null;
 	private HashMap<String,MyManager> dispatchTable_ = new HashMap<String,MyManager>();
 	private JSONObject defHandlers_ = new JSONObject();
+	private Logger logger_;
 	
 	protected StandardParserInterpreter(List<MyManager> managers, JSONObject defSettings) throws Exception {
 		managers_ = managers;
+		logger_ = Logger.getLogger(this.getClass().getName());
 	}
 	@Override
 	public String getHelpMessage() {
 		JSONObject cmds = GetCommands(managers_,getDispatchTable(),defHandlers_);
-//		SetDefaultHandlers(defHandlers_,cmds);
 		System.err.format("got cmds: %s\n", cmds.toString(2));
 		return getTelegramHelpMessage(cmds);
 	}
@@ -77,21 +79,26 @@ public class StandardParserInterpreter extends AbstractParser{
 	public JSONObject parse(String line) throws Exception
 	{
 		String prefix = Util.getParsePrefix();
+		logger_.info(String.format("line=\"%s\"\nprefix=\"%s\"\n", line,prefix));
+		JSONObject res = null;
 		if(line.startsWith(prefix)) {
 			String[] tokens = line.split(" ",2);
 			String cmd = tokens[0].substring(prefix.length());
 			if(!getDispatchTable().containsKey(cmd))
 				return defaultHandle(line.substring(prefix.length()));
-			JSONObject res = new JSONObject();
+			res = new JSONObject();
 			res.put(CMD, cmd);
 			if(tokens.length==2)
 				res.put(REM, tokens[1]);
 			return res;
 		} else {
 			if(defHandlers_.has(DEFMESSAGEHANDLERKEY))
-				return defaultHandle(line);
-			throw new Exception(String.format("no default handler given and we got %s", line));
+				res = defaultHandle(line);
+			else
+				throw new Exception(String.format("no default handler given and we got %s", line));
 		}
+		logger_.info(String.format("returning %s\n", res.toString(2)));
+		return res;
 	}
 	private JSONObject defaultHandle(String line) {
 		return new JSONObject()

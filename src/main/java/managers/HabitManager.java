@@ -35,7 +35,6 @@ public class HabitManager extends HabitManagerBase
 	}
 	JSONArray habits_ = null;
 	Hashtable<String,Date> failTimes = null;
-	private Hashtable<String,Object> hash_ = new Hashtable<String,Object>();
 	MongoCollection<Document> streaks_ = null;
 	String pendingListId_;
 	private TrelloAssistant ta_;
@@ -136,13 +135,6 @@ public class HabitManager extends HabitManagerBase
 		return tb.toString();
 	}
 	public String done(String name){
-		{
-			final String key = "done/habit";
-			if( name.isEmpty() )
-				name = (String) this.hash_.get(key);
-			this.hash_.put(key, name);
-		}
-		
 		JSONArray cards = new JSONArray();
 		try {
 			cards = ta_.getCardsInList(pendingListId_);

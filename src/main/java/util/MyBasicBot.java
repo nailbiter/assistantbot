@@ -17,13 +17,10 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.logging.BotLogger;
 
-import com.mongodb.MongoClient;
-
 import managers.MyManager;
 
 public abstract class MyBasicBot extends TelegramLongPollingBot {
 	private Logger logger_; 
-	protected MongoClient mongoClient_ = null;
 	public MyBasicBot()
 	{
 		logger_ = Logger.getLogger(this.getClass().getName());
@@ -187,8 +184,5 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 			e.printStackTrace(System.out);
 			return -1;
 		}
-	}
-	public MongoClient getMongoClient() {
-		return mongoClient_;
 	}
 }

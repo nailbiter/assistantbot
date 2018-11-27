@@ -6,7 +6,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import util.JsonUtil;
-import util.Util;
 import static util.parsers.StandardParserInterpreter.CMD;
 import static util.parsers.StandardParserInterpreter.REM;
 
@@ -16,15 +15,20 @@ public class ParseOrdered {
 
 	private JSONArray cmds_;
 	private String name_;
+	private JSONObject memoTable_;
 
 	public ParseOrdered(JSONArray commands,String name) {
 		cmds_ = commands;
 		name_ = name;
+		memoTable_ = new JSONObject();
 	}
-	protected static boolean IsArgOpt(JSONObject arg) {
-		return arg.optBoolean("isOpt",false);
-	}
-
+	/**
+	 * @deprecated use {@link #util.parsers.ParseOrderedCmd} instead 
+	 * @param name
+	 * @param help
+	 * @param args
+	 * @return
+	 */
 	public static JSONObject MakeCommand(String name,String help,List<JSONObject> args)
 	{
 		JSONObject cmd = new JSONObject();
@@ -36,7 +40,14 @@ public class ParseOrdered {
 		cmd.put("args", array);
 		return cmd;
 	}
-
+	
+	/**
+	 * @deprecated use {@link #util.parsers.ParseOrderedArg} instead
+	 * @param name
+	 * @param type
+	 * @param isOpt
+	 * @return
+	 */
 	public static JSONObject MakeCommandArg(String name,ParseOrdered.ArgTypes type,boolean isOpt)
 	{
 		JSONObject arg = new JSONObject();
@@ -68,23 +79,13 @@ public class ParseOrdered {
 		if(args.length()==0)
 			return sb.toString();
 		
-		sb.append(PrintArg(args.getJSONObject(index)));
+		sb.append(ParseOrderedArg.PrintArg(args.getJSONObject(index)));
 		for(index++;index<args.length(); index++)
-			sb.append(" "+PrintArg(args.getJSONObject(index)));
+			sb.append(" "+ParseOrderedArg.PrintArg(args.getJSONObject(index)));
 		
 		sb.append(": ");
 		return sb.toString();
 	}
-	protected static String PrintArg(JSONObject arg)
-	{
-		if(IsArgOpt(arg))
-			return String.format("[%s%s]", arg.getString("name").toUpperCase(),
-					arg.getString("type").substring(0, 1));
-		else
-			return String.format("%s%s", arg.getString("name").toUpperCase(),
-					arg.getString("type").substring(0, 1));
-	}
-
 	public JSONObject parse(JSONObject obj) throws Exception {
 		System.err.format("parse of %s got %s\n", name_,obj.toString(2));
 
@@ -102,21 +103,39 @@ public class ParseOrdered {
 			 *FIXME: use StandardParser.ArgTypes here in place of string literals
 			 */
 			JSONObject arg = args.getJSONObject(j);
+			Object lastArg = null;
 			if(arg.getString("type").equals("string")) {
-				res.put(arg.getString("name"),split[0]);
+				lastArg = split[0];
 			} else if(arg.getString("type").equals("int") || arg.getString("type").equals("integer")) {
 				//FIXME: previous line was bad
-				res.put(arg.getString("name"),Integer.parseInt(split[0]));
+				lastArg = Integer.parseInt(split[0]);
 			} else if(arg.getString("type").equals("remainder")) {
-				res.put(arg.getString("name"),line);
+				lastArg = line;
 			} else
 				throw new Exception("unknown type: "+arg.optString("type"));
 			
+			System.err.format("arg %s of type %s\n", lastArg.toString(),arg.getString("type"));
+			res.put(arg.getString("name"), lastArg);
+			memorize(obj.getString(CMD),arg.getString("name"),lastArg);
 			line = (split.length==2) ? split[1] : null;
 		}
-		for( ; j < args.length(); j++ )
-			if( !IsArgOpt(args.getJSONObject(j)) )
+		for( ; j < args.length(); j++ ) {
+			JSONObject arg = args.getJSONObject(j); 
+			if( !ParseOrderedArg.IsArgOpt(arg) ) {
 				throw new Exception("not enough arguments");
+			} else if(ParseOrderedArg.IsUsingMemory(arg)){
+				Object def = getMemorized(obj.getString(CMD),arg.getString("name"));
+				System.err.format("getting memorized argument %s for %s.%s\n", def.toString(),obj.getString(CMD),arg.getString("name"));
+				res.put(arg.getString("name"), def);
+			}
+		}
+			
 		return res;
+	}
+	private void memorize(String cmd, String arg, Object lastArg) {
+		memoTable_.put(cmd+"."+arg, lastArg);
+	}
+	private Object getMemorized(String cmd, String arg){
+		return memoTable_.get(cmd+"."+arg); 
 	}
 }

@@ -16,6 +16,8 @@ import managers.AbstractManager;
 import managers.HabitManager;
 import managers.OptionReplier;
 import util.parsers.ParseOrdered;
+import util.parsers.ParseOrderedArg;
+import util.parsers.ParseOrderedCmd;
 
 public abstract class HabitManagerBase extends AbstractManager implements OptionReplier{
 	public enum HabitRunnableEnum{
@@ -53,8 +55,10 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 		JSONArray res = new JSONArray();
 		res.put(ParseOrdered.MakeCommand("habits", "list all habits and info",
 				Arrays.asList(ParseOrdered.MakeCommandArg("key", ParseOrdered.ArgTypes.string, true))));
-		res.put(ParseOrdered.MakeCommand("done", "done habit",
-				Arrays.asList(ParseOrdered.MakeCommandArg("habit", ParseOrdered.ArgTypes.remainder, true))));
+		res.put(new ParseOrderedCmd("done", "done habit",
+				Arrays.asList(
+						(JSONObject)new ParseOrderedArg("habit", ParseOrdered.ArgTypes.remainder, true).useMemory()
+						)));
 		res.put(ParseOrdered.MakeCommand("doneg", "done habit graphically",new ArrayList<JSONObject>()));
 		res.put(ParseOrdered.MakeCommand("donep", "done habit graphically",new ArrayList<JSONObject>()));
 		return res;
