@@ -174,7 +174,7 @@ public class HabitManager extends HabitManagerBase
 			if(habits.length() > 1)
 			{
 				int id = ud_.sendMessageWithKeyBoard("which habbit?", habits);
-				optionMsgs_.put(id, "taskDone");
+				optionMsgs_.put(id, "done");
 				return "";
 			}
 			else

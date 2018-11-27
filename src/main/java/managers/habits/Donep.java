@@ -23,6 +23,7 @@ public class Donep {
 	private ResourceProvider ud_;
 	private Hashtable<Integer, String> optionMsgs_;
 	JSONArray cards_;
+	private Hashtable<String, Integer> names_ = new Hashtable<String,Integer>();
 
 	public Donep(TrelloAssistant ta, ResourceProvider ud, Hashtable<Integer, String> optionMsgs) {
 		ta_ = ta;
@@ -32,17 +33,17 @@ public class Donep {
 	public String donep() throws Exception {
 		String listid = ta_.findListByName(HABITBOARDID, TODOLISTNAME);
 		cards_ = ta_.getCardsInList(listid);
-		Hashtable<String,Integer> names = new Hashtable<String,Integer>();
+		names_.clear();
 		for(Object o:cards_) {
 			String name = ((JSONObject)o).getString("name");
-			if(!names.containsKey(name))
-				names.put(name, 0);
-			names.put(name, 1+names.get(name));
+			if(!names_.containsKey(name))
+				names_.put(name, 0);
+			names_.put(name, 1+names_.get(name));
 		}
 		
 		JSONArray opts = new JSONArray();
-		for(String name:names.keySet())
-			opts.put(String.format("%s: %d", name,names.get(name)));
+		for(String name:names_.keySet())
+			opts.put(String.format("%s: %d", name,names_.get(name)));
 		int id = ud_.sendMessageWithKeyBoard("which habbit?", opts);
 		optionMsgs_.put(id,"donep");
 		return "";
@@ -57,6 +58,6 @@ public class Donep {
 			}
 		}
 		ta_.removeCard(obj.getString("id"));
-		return String.format("removed %s", obj.toString());
+		return String.format("removed \"%s\", %d remains", obj.getString("name"),names_.get(obj.getString("name"))-1);
 	}
 }

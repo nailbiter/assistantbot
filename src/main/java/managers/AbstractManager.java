@@ -18,7 +18,7 @@ import static util.parsers.StandardParserInterpreter.CMD;
  *
  */
 public abstract class AbstractManager implements MyManager {
-	ParseOrdered po_ = null;
+	private ParseOrdered po_ = null;
 	protected AbstractManager(JSONArray commands) {
 		po_ = new ParseOrdered(commands,this.getClass().getName());
 	}

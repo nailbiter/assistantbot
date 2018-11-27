@@ -1,6 +1,5 @@
 package managers.habits;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,7 +7,6 @@ import java.util.Hashtable;
 import java.util.Timer;
 import java.util.logging.Logger;
 
-import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -16,7 +14,6 @@ import assistantbot.ResourceProvider;
 import it.sauronsoftware.cron4j.Scheduler;
 import managers.AbstractManager;
 import managers.HabitManager;
-import managers.MyManager;
 import managers.OptionReplier;
 import util.parsers.ParseOrdered;
 

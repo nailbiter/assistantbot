@@ -16,18 +16,14 @@ import static util.parsers.ParseOrdered.ArgTypes;
 public class JShellManager extends AbstractManager{
 	protected JShell shell = null;
 	protected boolean isLocked = true;
-//	MyBasicBot bot_;
 	java.io.ByteArrayOutputStream myByteStream = new java.io.ByteArrayOutputStream();
 	public JShellManager (ResourceProvider rp) throws Exception
 	{
 		super(GetCommands());
 		shell = JShell.Create();
 		jshell.Command.setCustomOut(myByteStream);
-//		bot_ = rp.;
 	}
 	protected boolean unLock(String pwd) {
-//		System.err.println("got passwd: "+pwd+"-"+pwd.length());
-//		System.err.println("should be "+KeyRing.getPasswd()+"-"+KeyRing.getPasswd().length());
 		System.err.format("got passwd: \"%s\",\nshould be: \"%s\"", pwd,KeyRing.getPasswd());
 		isLocked = !(KeyRing.getPasswd().compareTo(pwd)==0);
 		return isLocked;

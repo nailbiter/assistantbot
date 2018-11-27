@@ -98,24 +98,16 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 	java.util.Hashtable<Long, UserData> userData = new Hashtable<Long,UserData>();
 	protected String reply(Message msg){
 		try{
-			if(true)
-			{
-				if(!this.userData.containsKey(msg.getChatId()))
-					userData.put(msg.getChatId(), this.createUserData(msg.getChatId())); 
-				JSONObject res = interpret(msg,userData.get(msg.getChatId()));
-				userData.get(msg.getChatId()).Update(res);
-				return this.getResultAndFormat(res,userData.get(msg.getChatId()));
-			}
-			else
-			{
-				return msg.getText() + " " + msg.getChatId();
-			}
+			if(!this.userData.containsKey(msg.getChatId()))
+				userData.put(msg.getChatId(), this.createUserData(msg.getChatId())); 
+			JSONObject res = interpret(msg,userData.get(msg.getChatId()));
+			userData.get(msg.getChatId()).Update(res);
+			return this.getResultAndFormat(res,userData.get(msg.getChatId()));
 		}
 		catch (Exception e) {
 	            BotLogger.error(this.getLogString(), e);
 	            e.printStackTrace(System.out);
-	            return "exception: "+e.getMessage();
-	            //responseToUser = LocalisationService.getInstance().getString("errorFetchingWeather", language);
+	            return String.format("e: %s", e.getMessage());
 	    }
 	}
 	abstract protected String getResultAndFormat(JSONObject res,UserData ud) throws Exception;	

@@ -21,9 +21,9 @@ all: src/main/resources/profiles/telegram.json target/$(JARNAME).jar
 	./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>&1 | tee $(LOGFILE)
 include Makefile.sources
 interactive: src/main/resources/profiles/interactive.json target/$(JARNAME).jar
-	./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>$(LOGFILE)
+	./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>log/log.interactive.txt
 offline: src/main/resources/profiles/offline.json target/$(JARNAME).jar
-	./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>$(LOGFILE)
+	./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>log/log.offline.txt
 target/$(JARNAME).jar : $(addprefix src/main/java/,$(addsuffix .java,$(SOURCES))) pom.xml cp.txt
 	mvn compile
 	touch $@

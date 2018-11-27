@@ -64,14 +64,11 @@ public class InteractiveShell implements ResourceProvider {
             line = null;
             try {
                 line = reader.readLine(PROMPT);
-//                if(line.equals("exit")) {
-//                	return;
-//                }else {
-                	JSONObject res = parser_.parse(line);
-                	sendMessage(parser_.getDispatchTable().get(res.getString(CMD)).getResultAndFormat(res));
-//                }
+            	JSONObject res = parser_.parse(line);
+            	sendMessage(parser_.getDispatchTable().get(res.getString(CMD)).getResultAndFormat(res));
             }
             catch(Exception e) {
+            	sendMessage(String.format("%s: %s",e.getClass().getName() ,e.getMessage()));
             	e.printStackTrace();
             }
         }
