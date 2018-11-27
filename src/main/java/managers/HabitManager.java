@@ -41,6 +41,7 @@ public class HabitManager extends HabitManagerBase
 	private TrelloAssistant ta_;
 	private String failedListId_;
 	Donep donep_;
+	private String failedListId2_;
 
 	public HabitManager(ResourceProvider rp) throws Exception
 	{
@@ -53,6 +54,7 @@ public class HabitManager extends HabitManagerBase
 		failTimes = new Hashtable<String,Date>(habits_.length());
 		pendingListId_ = ta_.findListByName(HABITBOARDID, PENDINGLISTNAME);
 		failedListId_ = ta_.findListByName(HABITBOARDID, "FAILED");
+		failedListId2_ = ta_.findListByName(HABITBOARDID, "FAILED2");
 		
 		JSONArray cards = ta_.getCardsInList(pendingListId_);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -264,6 +266,8 @@ public class HabitManager extends HabitManagerBase
 				ta_.setLabel(id, FAILLABELCOLOR);
 			}else if(onFailed.equals("move")) {
 				ta_.moveCard(id, failedListId_);
+			}else if(onFailed.equals("move2")) {
+				ta_.moveCard(id, failedListId2_);
 			}else if(onFailed.equals("remove")) {
 				ta_.removeCard(id);
 			}
