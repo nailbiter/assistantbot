@@ -1,11 +1,11 @@
 {
    "pulledData" : {
-      "trelloTitle" : "perl script to control git and compilation"
+      "trelloTitle" : "parser fix default, debug java shell, try in terminal"
    },
-   "cardurl" : "https://trello.com/c/hkuY0OBL",
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
    ],
+   "cardurl" : "https://trello.com/c/wRHczZZN",
    "url" : {
       "indicator" : "https://trello.com/c/FMIlCbXE",
       "parser" : "https://trello.com/c/hkuY0OBL"

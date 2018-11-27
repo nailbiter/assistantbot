@@ -14,7 +14,9 @@ public class MongoUtil {
 		if(split.length != 2)
 			throw new Exception(String.format("could not split \"%s\" got len=%d", databasecollection,split.length));
 		String database = split[0], collection = split[1];
-		return new JSONObject(mc.getDatabase(database).getCollection(collection).find().first().toJson());
+		JSONObject res = new JSONObject(mc.getDatabase(database).getCollection(collection).find().first().toJson()); 
+		System.err.format("%s with databasecollection=\"%s\" got %s\n", "GetJsonObjectFromDatabase",databasecollection,res.toString(2));
+		return res;
 	}
 	public static JSONObject GetJsonObjectFromDatabase(MongoClient mc,String databasecollection,String keyValue) throws Exception {
 		String database, collection, keyName, valueName;

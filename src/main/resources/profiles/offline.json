@@ -6,5 +6,5 @@
 	"tmpfolder":"tmp",
 	"filetosendto":"test.html",
     	"scriptFolder":"src/main/js/",
-	"managers":["GermanManager","MiscUtilManager"]
+	"managers":["GermanManager","MiscUtilManager","JShellManager"]
 }

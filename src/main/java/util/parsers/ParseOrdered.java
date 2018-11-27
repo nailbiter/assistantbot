@@ -22,32 +22,32 @@ public class ParseOrdered {
 		name_ = name;
 	}
 
-	protected static String PrintArgs(JSONObject cmd)
-	{
-		StringBuilder sb = new StringBuilder();
-		int index = 0;
-		JSONArray args = cmd.getJSONArray("args");
-		
-		if(args.length()==0)
-			return sb.toString();
-		
-		sb.append(ParseOrdered.PrintArg(args.getJSONObject(index)));
-		for(index++;index<args.length(); index++)
-			sb.append(" "+ParseOrdered.PrintArg(args.getJSONObject(index)));
-		
-		sb.append(": ");
-		return sb.toString();
-	}
+//	protected static String PrintArgs(JSONObject cmd)
+//	{
+//		StringBuilder sb = new StringBuilder();
+//		int index = 0;
+//		JSONArray args = cmd.getJSONArray("args");
+//		
+//		if(args.length()==0)
+//			return sb.toString();
+//		
+//		sb.append(ParseOrdered.PrintArg(args.getJSONObject(index)));
+//		for(index++;index<args.length(); index++)
+//			sb.append(" "+ParseOrdered.PrintArg(args.getJSONObject(index)));
+//		
+//		sb.append(": ");
+//		return sb.toString();
+//	}
 
-	protected static String PrintArg(JSONObject arg)
-	{
-		if(IsArgOpt(arg))
-			return String.format("[%s%s]", arg.getString("name").toUpperCase(),
-					arg.getString("type").substring(0, 1));
-		else
-			return String.format("%s%s", arg.getString("name").toUpperCase(),
-					arg.getString("type").substring(0, 1));
-	}
+//	protected static String PrintArg(JSONObject arg)
+//	{
+//		if(IsArgOpt(arg))
+//			return String.format("[%s%s]", arg.getString("name").toUpperCase(),
+//					arg.getString("type").substring(0, 1));
+//		else
+//			return String.format("%s%s", arg.getString("name").toUpperCase(),
+//					arg.getString("type").substring(0, 1));
+//	}
 
 	protected static boolean IsArgOpt(JSONObject arg) {
 		return arg.optBoolean("isOpt",false);
@@ -80,11 +80,14 @@ public class ParseOrdered {
 		JSONObject res = new JSONObject();
 		for(Object o:cmds_) {
 			JSONObject cmd = (JSONObject)o;
-			res.put(cmd.getString("name"), String.format("%s%s", printArgs(cmd),cmd.optString("help","(none)")));
+			String pref = "";
+			if(cmd.optBoolean(StandardParserInterpreter.DEFMESSAGEHANDLERKEY, false))
+				pref = StandardParserInterpreter.DEFMESSAGEHANDLERPREF;
+			res.put(pref+cmd.getString("name"), String.format("%s%s", PrintArgs(cmd),cmd.optString("help","(none)")));
 		}
 		return res;
 	}
-	protected static String printArgs(JSONObject cmd)
+	protected static String PrintArgs(JSONObject cmd)
 	{
 		StringBuilder sb = new StringBuilder();
 		int index = 0;
@@ -93,14 +96,14 @@ public class ParseOrdered {
 		if(args.length()==0)
 			return sb.toString();
 		
-		sb.append(printArg(args.getJSONObject(index)));
+		sb.append(PrintArg(args.getJSONObject(index)));
 		for(index++;index<args.length(); index++)
-			sb.append(" "+printArg(args.getJSONObject(index)));
+			sb.append(" "+PrintArg(args.getJSONObject(index)));
 		
 		sb.append(": ");
 		return sb.toString();
 	}
-	protected static String printArg(JSONObject arg)
+	protected static String PrintArg(JSONObject arg)
 	{
 		if(IsArgOpt(arg))
 			return String.format("[%s%s]", arg.getString("name").toUpperCase(),

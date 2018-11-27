@@ -50,7 +50,7 @@ public class JShell
 
     // Interface for programmatic usage
 
-    public static JShell create()
+    public static JShell Create()
         throws Exception
     {
         return new JShell(false /* not interactive */);

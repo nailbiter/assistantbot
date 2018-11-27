@@ -2,39 +2,46 @@ package managers;
 import static java.util.Arrays.asList;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import assistantbot.ResourceProvider;
 import jshell.JShell;
 import util.KeyRing;
 import util.parsers.ParseOrdered;
+import util.parsers.StandardParserInterpreter;
 import util.MyBasicBot;
+import static util.parsers.ParseOrdered.MakeCommand;
+import static util.parsers.ParseOrdered.MakeCommandArg;
+import static util.parsers.ParseOrdered.ArgTypes;
 
 public class JShellManager extends AbstractManager{
 	protected JShell shell = null;
 	protected boolean isLocked = true;
-	MyBasicBot bot_;
+//	MyBasicBot bot_;
 	java.io.ByteArrayOutputStream myByteStream = new java.io.ByteArrayOutputStream();
-	public JShellManager (MyBasicBot bot) throws Exception
+	public JShellManager (ResourceProvider rp) throws Exception
 	{
 		super(GetCommands());
-		shell = JShell.create();
+		shell = JShell.Create();
 		jshell.Command.setCustomOut(myByteStream);
-		bot_ = bot;
+//		bot_ = rp.;
 	}
 	protected boolean unLock(String pwd) {
-		System.out.println("got passwd: "+pwd+"-"+pwd.length());
-		System.out.println("should be "+KeyRing.getPasswd()+"-"+KeyRing.getPasswd().length());
+//		System.err.println("got passwd: "+pwd+"-"+pwd.length());
+//		System.err.println("should be "+KeyRing.getPasswd()+"-"+KeyRing.getPasswd().length());
+		System.err.format("got passwd: \"%s\",\nshould be: \"%s\"", pwd,KeyRing.getPasswd());
 		isLocked = !(KeyRing.getPasswd().compareTo(pwd)==0);
 		return isLocked;
 	}
 	public String cmd(JSONObject res) throws Exception{
 		if(isLocked)
 			return "log in first";
-		System.out.println("got cmd: "+res.getString("command"));
+		System.err.println("got cmd: "+res.getString("command"));
 		shell.runCommand(res.getString("command"));
 		String out = this.myByteStream.toString();
 		this.myByteStream.reset();
 		if(out==null||out.length()==0)
 			out = "null";
-		System.out.println("out="+out+", len="+out.length());
+		System.err.println("out="+out+", len="+out.length());
 		return out;
 	}
 	public String login(JSONObject res) throws Exception{
@@ -42,11 +49,14 @@ public class JShellManager extends AbstractManager{
 	}
 	public static JSONArray GetCommands() {
 		return new JSONArray()
-				.put(ParseOrdered.MakeCommand("login", "login into shell",
+				.put(MakeCommand("login", "login into shell",
 						asList(
-								ParseOrdered.MakeCommandArg("passwd",ParseOrdered.ArgTypes.string,false)
+								MakeCommandArg("passwd",ArgTypes.string,false)
 								)))
-				.put(ParseOrdered.MakeCommand("cmd","execute command",asList(ParseOrdered.MakeCommandArg("command",ParseOrdered.ArgTypes.remainder,false))));
+				.put(
+						MakeCommand("cmd","execute command",asList(MakeCommandArg("command",ArgTypes.remainder,false)))
+						.put(StandardParserInterpreter.DEFMESSAGEHANDLERKEY, true)
+						);
 	}
 	@Override
 	public String processReply(int messageID,String msg) {

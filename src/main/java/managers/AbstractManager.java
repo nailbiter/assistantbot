@@ -28,7 +28,7 @@ public abstract class AbstractManager implements MyManager {
 	@Override
 	public String getResultAndFormat(JSONObject res) throws Exception {
 		System.err.println(String.format("%s got: %s",this.getClass().getName(), res.toString()));
-		if(res.has(CMD) && hasCommand(res))
+		if(res.has(CMD))
 		{
 			System.err.println("dispatcher got: "+res.toString());
 			return (String)this.getClass().getMethod(res.getString(CMD),JSONObject.class)
@@ -36,9 +36,9 @@ public abstract class AbstractManager implements MyManager {
 		}
 		return null;
 	}
-	protected boolean hasCommand(JSONObject res) {
-		return getCommands().keySet().contains(res.getString(CMD));
-	}
+//	protected boolean hasCommand(JSONObject res) {
+//		return getCommands().keySet().contains(res.getString(CMD));
+//	}
 	protected JSONObject getParamObject(MongoClient mc) throws JSONException, Exception {
 		String classname = this.getClass().getName();
 		System.err.format("getting param object for %s\n", classname);

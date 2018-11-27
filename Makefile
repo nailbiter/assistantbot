@@ -23,7 +23,7 @@ include Makefile.sources
 interactive: src/main/resources/profiles/interactive.json target/$(JARNAME).jar
 	./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>$(LOGFILE)
 offline: src/main/resources/profiles/offline.json target/$(JARNAME).jar
-	$(RUN) $< 2>$(LOGFILE)
+	./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>$(LOGFILE)
 target/$(JARNAME).jar : $(addprefix src/main/java/,$(addsuffix .java,$(SOURCES))) pom.xml cp.txt
 	mvn compile
 	touch $@

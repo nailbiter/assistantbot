@@ -17,28 +17,40 @@ import util.Util;
 import static util.Util.PopulateManagers;
 
 public class StandardParserInterpreter extends AbstractParser{
-	public static final String DEFMESSAGEHANDLER = "DEFMESSAGEHANDLER";
 	public static final String CMD = "cmd";
 	public static final String REM = "rem";
+	public static final String DEFMESSAGEHANDLERKEY =  "DEFMESSAGEHANDLER";
+	public static final String DEFMESSAGEHANDLERPREF =  "_";
 	private List<MyManager> managers_ = null;
 	private HashMap<String,MyManager> dispatchTable_ = new HashMap<String,MyManager>();
-	private JSONObject defSettings_;
+	private JSONObject defHandlers_ = new JSONObject();
 	
 	protected StandardParserInterpreter(List<MyManager> managers, JSONObject defSettings) throws Exception {
 		managers_ = managers;
-		defSettings_ = defSettings;
 	}
 	@Override
 	public String getHelpMessage() {
-		JSONObject cmds = GetCommands(managers_,getDispatchTable());
+		JSONObject cmds = GetCommands(managers_,getDispatchTable(),defHandlers_);
+//		SetDefaultHandlers(defHandlers_,cmds);
 		System.err.format("got cmds: %s\n", cmds.toString(2));
 		return getTelegramHelpMessage(cmds);
 	}
-	protected static JSONObject GetCommands(List<MyManager> managers, HashMap<String, MyManager> dt) {
+	private static void SetDefaultHandlers(JSONObject dh, JSONObject cmds) {
+		ArrayList<String> keys = new ArrayList<String>(cmds.keySet());
+		for(String cmdname:keys) {
+			if(cmdname.startsWith(DEFMESSAGEHANDLERPREF)) {
+				cmds.put(cmdname.substring(DEFMESSAGEHANDLERPREF.length()), cmds.getString(cmdname));
+				cmds.remove(cmdname);
+				dh.put(DEFMESSAGEHANDLERKEY, cmdname.substring(DEFMESSAGEHANDLERPREF.length()));
+			}
+		}
+	}
+	protected static JSONObject GetCommands(List<MyManager> managers, HashMap<String, MyManager> dt, JSONObject dh) {
 		dt.clear();
 		JSONObject cmds = new JSONObject();
 		for(MyManager m:managers) {
 			JSONObject cmds_i = m.getCommands();
+			SetDefaultHandlers(dh,cmds_i);
 			JsonUtil.CopyIntoJson(cmds, cmds_i);
 			for(Iterator<String> it = cmds_i.keys(); it.hasNext();) {
 				dt.put(it.next(), m);
@@ -67,18 +79,24 @@ public class StandardParserInterpreter extends AbstractParser{
 		String prefix = Util.getParsePrefix();
 		if(line.startsWith(prefix)) {
 			String[] tokens = line.split(" ",2);
+			String cmd = tokens[0].substring(prefix.length());
+			if(!getDispatchTable().containsKey(cmd))
+				return defaultHandle(line.substring(prefix.length()));
 			JSONObject res = new JSONObject();
-			res.put(CMD, tokens[0].substring(prefix.length()));
+			res.put(CMD, cmd);
 			if(tokens.length==2)
 				res.put(REM, tokens[1]);
 			return res;
 		} else {
-			if(defSettings_.has(DEFMESSAGEHANDLER))
-				return new JSONObject()
-						.put(CMD, defSettings_.getString(DEFMESSAGEHANDLER))
-						.put(REM, line);
+			if(defHandlers_.has(DEFMESSAGEHANDLERKEY))
+				return defaultHandle(line);
 			throw new Exception(String.format("no default handler given and we got %s", line));
 		}
+	}
+	private JSONObject defaultHandle(String line) {
+		return new JSONObject()
+				.put(CMD, defHandlers_.getString(DEFMESSAGEHANDLERKEY))
+				.put(REM, line);
 	}
 	@Override
 	public String getResultAndFormat(JSONObject res) throws Exception {
@@ -98,9 +116,6 @@ public class StandardParserInterpreter extends AbstractParser{
 		parser.getHelpMessage();
 		return parser;
 	}
-	/**
-	 * @return the dispatchTable_
-	 */
 	public HashMap<String,MyManager> getDispatchTable() {
 		return dispatchTable_;
 	}

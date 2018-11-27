@@ -203,14 +203,14 @@ public class ls extends Command
     private void print_files(File[] files)
          throws InterruptedException
     {
-    		System.out.println("was even here");
+    		System.err.println("was even here");
         for (int i = 0; i < files.length; i++)
         {
         		try {
-        		System.out.print("i="+i);
+        		System.err.print("i="+i);
             checkForInterruption();
             File file = files[i];
-            System.out.println("/"+files.length+" "+files[i].getName());
+            System.err.println("/"+files.length+" "+files[i].getName());
             if (files[i].exists())
                 if (_detailed)
                     print_detailed(file);
@@ -222,9 +222,9 @@ public class ls extends Command
         			e.printStackTrace(System.out);
         		}
         }
-        System.out.println("was still here");
+        System.err.println("was still here");
         print_remainder();
-        System.out.println("and even here");
+        System.err.println("and even here");
     }
 
     private void print_brief(File file)
@@ -232,7 +232,7 @@ public class ls extends Command
         String file_name = file.getPath();
         if (file.isDirectory())
             file_name += '/';
-        System.out.println(_buffer.length() +"/"+ file_name.length());
+        System.err.println(_buffer.length() +"/"+ file_name.length());
         if (_buffer.length() + file_name.length() >
             _console_width)
         {
