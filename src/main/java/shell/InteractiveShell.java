@@ -116,4 +116,9 @@ public class InteractiveShell implements ResourceProvider {
 		ch.qos.logback.classic.Logger rootLogger = loggerContext.getLogger("org.mongodb.driver");
 		rootLogger.setLevel(Level.OFF);
 	}
+	@Override
+	public long getChatId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

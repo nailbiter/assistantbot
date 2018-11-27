@@ -1,13 +1,9 @@
 package assistantbot;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
 import com.mongodb.MongoClient;
 
 import it.sauronsoftware.cron4j.Scheduler;
@@ -34,4 +30,9 @@ public interface ResourceProvider {
 	 * @deprecated use {@link #sendMessageWithKeyBoard(String, JSONArray)} instead
 	 */
 	public abstract int sendMessageWithKeyBoard(String msg, List<List<InlineKeyboardButton>> makePerCatButtons);
+	/**
+	 * @deprecated
+	 * @return
+	 */
+	public abstract long getChatId();
 }

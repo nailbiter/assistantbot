@@ -4,6 +4,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.JSONObject;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
@@ -106,8 +107,9 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 		}
 		catch (Exception e) {
 	            BotLogger.error(this.getLogString(), e);
-	            e.printStackTrace(System.out);
-	            return String.format("e: %s", e.getMessage());
+	            e.printStackTrace(System.err);
+	            return String.format("e: %s", ExceptionUtils.getStackTrace(e));
+	            
 	    }
 	}
 	abstract protected String getResultAndFormat(JSONObject res,UserData ud) throws Exception;	

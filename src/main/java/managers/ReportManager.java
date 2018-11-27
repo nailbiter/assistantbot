@@ -36,6 +36,9 @@ public class ReportManager extends AbstractManager {
 		return new JSONArray()
 				.put(ParseOrdered.MakeCommand("reportshow", "masha reminder", asList(ParseOrdered.MakeCommandArg("type",ParseOrdered.ArgTypes.integer,true))));
 	}
+	public String telegramreport(JSONObject obj) throws Exception {
+		return String.format("chatid: %d", rp_.getChatId());
+	}
 	public String mashareport(JSONObject obj) throws Exception {
 		return MashaRemind.Remind(ta_,mc_);
 	}

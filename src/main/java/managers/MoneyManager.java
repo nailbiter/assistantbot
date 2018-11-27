@@ -81,22 +81,26 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		money.insertOne(res);
 	}
 	public String costs(JSONObject obj) {
-		int howMuch = obj.getInt("num");
+		int howMuch = obj.optInt("num",10);
 		final com.github.nailbiter.util.TableBuilder tb = new com.github.nailbiter.util.TableBuilder();
 		tb.newRow();
+		tb.addToken("#");
 		tb.addToken("amount");
 		tb.addToken("category");
 		tb.addToken("date");
 		final Hashtable<String,Integer> totals = new Hashtable<String,Integer>();
 		final com.github.nailbiter.util.TableBuilder tb1 = new com.github.nailbiter.util.TableBuilder();
 		
-		Block<Document> printBlock = new Block<Document>() {
+		final JSONObject container = new JSONObject().put("i", 1);
+		money.find().sort(Sorts.descending("date")).limit(howMuch).forEach(new Block<Document>() {
 		       @Override
 		       public void apply(final Document doc) {
 		    	   	JSONObject obj = new JSONObject(doc.toJson());
 		    	   	String category = obj.getString("category");
 					int amount = obj.getInt("amount");
 					tb.newRow();
+					tb.addToken(container.getInt("i"));
+					container.put("i", container.getInt("i")+1);
 					tb.addToken(amount);
 					if(!totals.containsKey(category))
 						totals.put(category, 0);
@@ -104,8 +108,7 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 					tb.addToken(category);
 					tb.addToken(doc.getDate("date").toString());
 		       }
-		};
-		money.find().sort(Sorts.descending("date")).limit(howMuch).forEach(printBlock);
+		});
 		
 		tb1.newRow();
 		tb1.addToken("category");

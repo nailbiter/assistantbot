@@ -129,4 +129,8 @@ public class MyAssistantUserData extends UserData implements ResourceProvider {
 	public String interpret(JSONObject res) throws JSONException, Exception {
 		return parser_.getDispatchTable().get(res.getString(CMD)).getResultAndFormat(res);
 	}
+	@Override
+	public long getChatId() {
+		return chatID_;
+	}
 }
