@@ -107,7 +107,7 @@ public class TaskManager extends AbstractManager implements TaskManagerForTask {
 		return tb.toString();
 	}
 
-	String getTasks () throws Exception
+	String getTasks() throws Exception
 	{
 		com.github.nailbiter.util.TableBuilder tb = new com.github.nailbiter.util.TableBuilder();
 		tb.addNewlineAndTokens(new String[] {"#","duedate", "remaining time","description"});

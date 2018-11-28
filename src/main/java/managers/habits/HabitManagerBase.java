@@ -28,7 +28,7 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 	protected Scheduler scheduler_ = null;
 	protected Timer timer = new Timer();
 	protected Logger logger_ = null;
-	protected HabitManagerBase(ResourceProvider myAssistantUserData){
+	protected HabitManagerBase(ResourceProvider myAssistantUserData) throws Exception{
 		super(GetCommands());
 		logger_ = Logger.getLogger(this.getClass().getName());
 		ud_ = myAssistantUserData;
@@ -51,13 +51,13 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 			});
 		}
 	}
-	public static JSONArray GetCommands() {
+	public static JSONArray GetCommands() throws Exception {
 		JSONArray res = new JSONArray();
 		res.put(ParseOrdered.MakeCommand("habits", "list all habits and info",
 				Arrays.asList(ParseOrdered.MakeCommandArg("key", ParseOrdered.ArgTypes.string, true))));
 		res.put(new ParseOrderedCmd("done", "done habit",
 				Arrays.asList(
-						(JSONObject)new ParseOrderedArg("habit", ParseOrdered.ArgTypes.remainder, true).useMemory()
+						(JSONObject)new ParseOrderedArg("habit", ParseOrdered.ArgTypes.remainder).makeOpt().useMemory()
 						)));
 		res.put(ParseOrdered.MakeCommand("doneg", "done habit graphically",new ArrayList<JSONObject>()));
 		res.put(ParseOrdered.MakeCommand("donep", "done habit graphically",new ArrayList<JSONObject>()));

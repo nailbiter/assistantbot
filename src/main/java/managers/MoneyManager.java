@@ -20,6 +20,8 @@ import com.mongodb.client.model.Sorts;
 import assistantbot.ResourceProvider;
 import util.parsers.ParseOrdered;
 import util.parsers.ParseOrdered.ArgTypes;
+import util.parsers.ParseOrderedArg;
+import util.parsers.ParseOrderedCmd;
 
 import static util.parsers.ParseOrdered.MakeCommand;
 import static util.parsers.ParseOrdered.MakeCommandArg;
@@ -30,7 +32,7 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 	ResourceProvider ud_ = null;
 	MongoCollection<Document> money;
 	private static final String PATTERN = "yyyyMMddHHmm";
-	public MoneyManager(ResourceProvider myAssistantUserData)
+	public MoneyManager(ResourceProvider myAssistantUserData) throws Exception
 	{
 		super(GetCommands());
 		MongoClient mongoClient = myAssistantUserData.getMongoClient();
@@ -81,7 +83,7 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		money.insertOne(res);
 	}
 	public String costs(JSONObject obj) {
-		int howMuch = obj.optInt("num",10);
+		int howMuch = obj.getInt("num");
 		final com.github.nailbiter.util.TableBuilder tb = new com.github.nailbiter.util.TableBuilder();
 		tb.newRow();
 		tb.addToken("#");
@@ -124,12 +126,14 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		
 		return tb.toString()+"\n------------------\n"+tb1.toString();
 	}
-	public static JSONArray GetCommands() {
-		JSONArray res = new JSONArray();
-		res.put(MakeCommand("costs","show last NUM costs",Arrays.asList(ParseOrdered.MakeCommandArg("num", ArgTypes.integer, true))));
-		res.put(ParseOrdered.MakeCommand("money", "spent money", 
-				Arrays.asList(ParseOrdered.MakeCommandArg("amount",ParseOrdered.ArgTypes.integer, false),
-						MakeCommandArg("comment", ParseOrdered.ArgTypes.remainder, true))));
+	public static JSONArray GetCommands() throws Exception {
+		JSONArray res = new JSONArray()
+				.put(new ParseOrderedCmd("costs","show last NUM costs",
+						Arrays.asList((JSONObject) new ParseOrderedArg("num", ArgTypes.integer).makeOpt().useDefault(5))))
+				.put(new ParseOrderedCmd("money", "spent money",
+						Arrays.asList((JSONObject)new ParseOrderedArg("amount",ParseOrdered.ArgTypes.integer),
+								(JSONObject)new ParseOrderedArg("comment", ParseOrdered.ArgTypes.remainder).makeOpt())))
+				;
 		return res;
 	}
 	@Override

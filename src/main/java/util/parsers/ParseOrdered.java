@@ -97,7 +97,7 @@ public class ParseOrdered {
 		for( ; j < args.length() && line != null; j++ )
 		{
 			System.err.format("line: %s\n", line);
-			String[] split = line.split(" ",2);
+			String[] split = line.split(" +",2);
 			System.err.format("split[0]=%s\nsplit[1]=%s\n",(split.length>=1)?split[0]:"null",(split.length>=2)?split[1]:"null");
 			/**
 			 *FIXME: use StandardParser.ArgTypes here in place of string literals
@@ -123,10 +123,15 @@ public class ParseOrdered {
 			JSONObject arg = args.getJSONObject(j); 
 			if( !ParseOrderedArg.IsArgOpt(arg) ) {
 				throw new Exception("not enough arguments");
+			} else if(ParseOrderedArg.GetDefault(arg)!=null) {
+				Object defValue = ParseOrderedArg.GetDefault(arg);
+				System.err.format("getting default argument %s for %s.%s\n", 
+						defValue.toString(),obj.getString(CMD),arg.getString("name"));
+				res.put(arg.getString("name"), defValue);
 			} else if(ParseOrderedArg.IsUsingMemory(arg)){
-				Object def = getMemorized(obj.getString(CMD),arg.getString("name"));
-				System.err.format("getting memorized argument %s for %s.%s\n", def.toString(),obj.getString(CMD),arg.getString("name"));
-				res.put(arg.getString("name"), def);
+				Object prevValue = getMemorized(obj.getString(CMD),arg.getString("name"));
+				System.err.format("getting memorized argument %s for %s.%s\n", prevValue.toString(),obj.getString(CMD),arg.getString("name"));
+				res.put(arg.getString("name"), prevValue);
 			}
 		}
 			

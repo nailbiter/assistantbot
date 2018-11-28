@@ -3,22 +3,37 @@ package util.parsers;
 import org.json.JSONObject;
 
 public class ParseOrderedArg extends JSONObject {
-	private static final String USINGMEMORY = "USINGMEMORY";
+	private static final String USINGMEMORY = "_USINGMEMORY";
+	private static final String USINGDEFAULT = "_USINGDEFAULT";
 	public ParseOrderedArg(String name,ParseOrdered.ArgTypes type) {
 		put("name", name);
 		put("type", type.toString());
 	}
+	/**
+	 * @deprecated
+	 * @param name
+	 * @param type
+	 * @param isOpt
+	 */
 	public ParseOrderedArg(String name,ParseOrdered.ArgTypes type,boolean isOpt) {
 		put("name", name);
 		if(isOpt) put("isOpt", isOpt);
 		put("type", type.toString());
 	}
-	public ParseOrderedArg useMemory() {
+	public ParseOrderedArg useMemory() throws Exception{
+		if(!IsArgOpt(this))
+			throw new Exception(String.format("cannot %s on non-opt argument!", "useMemory"));
 		put(USINGMEMORY ,true);
 		return this;
 	}
 	public ParseOrderedArg makeOpt() {
 		put("isOpt",true);
+		return this;
+	}
+	public ParseOrderedArg useDefault(Object defValue)  throws Exception{
+		if(!IsArgOpt(this))
+			throw new Exception(String.format("cannot %s on non-opt argument!", "useDefault"));
+		put(USINGDEFAULT,defValue);
 		return this;
 	}
 	protected static String PrintArg(JSONObject arg)
@@ -35,5 +50,8 @@ public class ParseOrderedArg extends JSONObject {
 	}
 	public static boolean IsUsingMemory(JSONObject arg) {
 		return arg.optBoolean(USINGMEMORY,false);
+	}
+	public static Object GetDefault(JSONObject arg) {
+		return arg.opt(USINGDEFAULT);
 	}
 }
