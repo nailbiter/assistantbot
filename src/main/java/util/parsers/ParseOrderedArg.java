@@ -4,6 +4,10 @@ import org.json.JSONObject;
 
 public class ParseOrderedArg extends JSONObject {
 	private static final String USINGMEMORY = "USINGMEMORY";
+	public ParseOrderedArg(String name,ParseOrdered.ArgTypes type) {
+		put("name", name);
+		put("type", type.toString());
+	}
 	public ParseOrderedArg(String name,ParseOrdered.ArgTypes type,boolean isOpt) {
 		put("name", name);
 		if(isOpt) put("isOpt", isOpt);
@@ -11,6 +15,10 @@ public class ParseOrderedArg extends JSONObject {
 	}
 	public ParseOrderedArg useMemory() {
 		put(USINGMEMORY ,true);
+		return this;
+	}
+	public ParseOrderedArg makeOpt() {
+		put("isOpt",true);
 		return this;
 	}
 	protected static String PrintArg(JSONObject arg)

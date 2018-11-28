@@ -7,7 +7,6 @@ import managers.habits.HabitManagerBase.HabitRunnableEnum;
 
 public class HabitRunnable extends TimerTask
 {
-//	int index_;
 	String name_;
 	HabitRunnableEnum code_;
 	HabitManagerBase hm_;

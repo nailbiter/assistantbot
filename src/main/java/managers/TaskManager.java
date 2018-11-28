@@ -3,8 +3,6 @@
  */
 package managers;
 
-import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -14,48 +12,69 @@ import java.util.TimerTask;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import assistantbot.MyAssistantUserData;
+import com.github.nailbiter.util.TableBuilder;
+import com.github.nailbiter.util.TrelloAssistant;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IterableUtils;
+import org.apache.commons.collections4.Predicate;
+
 import assistantbot.ResourceProvider;
 import managers.tasks.Task;
 import managers.tasks.TaskManagerForTask;
-import util.Util;
-import util.MyBasicBot;
-import util.StorageManager;
-import util.parsers.ParseOrdered;
+import util.KeyRing;
+import util.parsers.ParseOrderedArg;
+import util.parsers.ParseOrderedCmd;
+
 import static util.parsers.ParseOrdered.ArgTypes;
-import static util.parsers.ParseOrdered.MakeCommand;
-import static util.parsers.ParseOrdered.MakeCommandArg;
+import static java.util.Arrays.asList;
 
 /**
  * @author nailbiter
  *
  */
 public class TaskManager extends AbstractManager implements TaskManagerForTask {
-//	protected Long chatID_ = null;
-//	protected MyBasicBot bot_ = null;
 	Timer timer = new Timer();
 	protected List<Task> tasks = null;
 	protected JSONArray jsontasks = null;
 	private ResourceProvider rp_;
+	private TrelloAssistant ta_;
+	private String listid_;
 	protected static int REMINDBEFOREMIN = 10;
-//	public TaskManager(Long chatID, MyBasicBot bot)
-//	{
-////		bot_ = bot;
-//		JSONObject obj = StorageManager.get("tasks", true);
-//		if(!obj.has("tasks"))
-//			obj.put("tasks", new JSONArray());
-//		jsontasks = obj.getJSONArray("tasks");
-//		tasks = new ArrayList<Task>();
-//		for(int i = 0; i < jsontasks.length(); i++)
-//		{
-//			tasks.add(new Task(jsontasks.getJSONObject(i),i,this));
-//		}
-//	}
-	public TaskManager(ResourceProvider rp) {
+	public TaskManager(ResourceProvider rp) throws Exception {
 		super(GetCommands());
+		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
+				KeyRing.getTrello().getString("token"));
 		rp_ = rp;
+		listid_ = 
+				ta_.findListByName(managers.habits.Constants.INBOXBOARDID, managers.habits.Constants.INBOXLISTNAME);
 	}
-	String tasknew(JSONObject res)
+	protected int getSeparatorIndex(JSONArray cards) throws Exception{
+		int res = IterableUtils.indexOf(cards, new Predicate<Object>() {
+			@Override
+			public boolean evaluate(Object arg0) {
+				System.err.format("check: %s\n", arg0.toString());
+				JSONObject obj = (JSONObject)arg0;
+				return ((JSONObject)obj).getString("name").equals(managers.habits.Constants.SEPARATOR);
+			}
+		});
+		if(res<0)
+			throw new Exception("no separator");
+		return res;
+	}
+	public String tasks(JSONObject res) throws Exception {
+		JSONArray arr = ta_.getCardsInList(listid_);
+		int sepIndex = getSeparatorIndex(arr);
+		System.err.format("sepIndex = %d\n", sepIndex);
+		TableBuilder tb = new TableBuilder();
+		tb.newRow();
+		tb.addToken("name_");
+		for(int i = sepIndex+1;i < arr.length(); i++) {
+			tb.newRow();
+			tb.addToken(arr.getJSONObject(i).getString("name"));
+		}
+		return tb.toString();
+	}
+	public String tasknew(JSONObject res)
 	{
 		Task task = new Task(jsontasks.length(),this);
 		
@@ -69,39 +88,6 @@ public class TaskManager extends AbstractManager implements TaskManagerForTask {
 				tasks.size()-1,
 				( res.getInt("estimate") > 0 ) ? Integer.toString(res.getInt("estimate")) : "∞");
 	}
-//	@Override
-//	public String getResultAndFormat(JSONObject res) throws Exception {
-//		if(res.has("name"))
-//		{
-//			System.out.println(this.getClass().getName()+" got comd: /"+res.getString("name"));
-//			if(res.getString("name").compareTo("tasknew")==0)
-//				//,{"name":"tasknew","args":[{"name":"estimate","type":"int"}]
-//				return tasknew(res);
-//			if(res.getString("name").compareTo("taskdone")==0)
-//			{
-//				//,{"name":"taskdone","args":[{"name":"taskid","type":"int"}]
-//				tasks.get(res.getInt("taskid")).markDone();
-//				return String.format("marked task #%d as done", res.getInt("taskid"));
-//			}
-//			if(res.getString("name").compareTo("tasks")==0)
-//			{
-//				//,{"name":"tasksshow","args":[],
-//				if(res.has("tasknum"))
-//					return this.getTasks(res.getInt("tasknum"));
-//				else
-//					return this.getTasks();
-//				
-//			}
-//			if(res.getString("name").compareTo("taskpostpone")==0)
-//			{
-//				//,{"name":"taskpostpone",
-//				//"args":[{"name":"taskid","type":"int"},{"name":"estimate","type":"int"}]
-//				tasks.get(res.getInt("taskid")).postpone(res.getInt("estimate"));
-//				return "postponed task #"+res.getInt("taskid")+" by "+res.getInt("estimate");
-//			}
-//		}
-//		return null;
-//	}
 	private String getTasks(int tasknum) throws Exception{
 		com.github.nailbiter.util.TableBuilder tb = new com.github.nailbiter.util.TableBuilder();
 		tb.addNewlineAndTokens(new String[] {"#", "completion date","description"});
@@ -140,13 +126,16 @@ public class TaskManager extends AbstractManager implements TaskManagerForTask {
 
 	public static JSONArray GetCommands() {
 		JSONArray res = new JSONArray()
-		.put(MakeCommand("taskdone","mark task as done",Arrays.asList(MakeCommandArg("taskid",ArgTypes.integer,false))))
-		.put(MakeCommand("taskpostpone","postpone a task",
-				Arrays.asList(MakeCommandArg("taskid",ArgTypes.integer,false),MakeCommandArg("estimate",ArgTypes.integer,false))))
-		.put(MakeCommand("tasks","show list of tasks",Arrays.asList(MakeCommandArg("tasknum",ArgTypes.integer,true))))
-		.put(MakeCommand("tasknew", "create new task",
-				Arrays.asList(MakeCommandArg("estimate",ArgTypes.integer, false),
-				MakeCommandArg("description",ArgTypes.remainder, true))));
+				.put(new ParseOrderedCmd("taskdone", "mark as done", 
+						Arrays.asList((JSONObject)new ParseOrderedArg("taskid",ArgTypes.integer))))
+				.put(new ParseOrderedCmd("taskpostpone","postpone a task",
+						asList((JSONObject)new ParseOrderedArg("estimate",ArgTypes.integer))))
+				.put(new ParseOrderedCmd("tasks","show list of tasks",
+						asList((JSONObject) new ParseOrderedArg("tasknum",ArgTypes.integer).makeOpt())))
+				.put(new ParseOrderedCmd("tasknew","create new task",
+						asList((JSONObject) new ParseOrderedArg("estimate",ArgTypes.integer),
+								(JSONObject) new ParseOrderedArg("description",ArgTypes.remainder).makeOpt()
+								)));
 		return res;
 	}
 
