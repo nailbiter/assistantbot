@@ -59,7 +59,7 @@ public class ParseOrderedArg extends JSONObject {
 		return arg.optBoolean(USINGMEMORY,false);
 	}
 	public static Transformer<Object,Object> GetMemoryTransformer(JSONObject arg) {
-		Object res = arg.get(USINGMEMORY);
+		Object res = arg.opt(USINGMEMORY);
 		if(res != null && res instanceof Transformer<?,?>)
 			return (Transformer<Object,Object>)res;
 		else
