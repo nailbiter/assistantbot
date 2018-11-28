@@ -59,13 +59,17 @@ public class HabitManager extends HabitManagerBase
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
 		for(Object o:cards) {
-			JSONObject obj = (JSONObject)o;
-			if(IsHabitPending(obj)) {
-                System.out.println(String.format("setting up reminder for %s",obj.toString()));
-                Date due = dateFormat.parse(obj.getString("due"));
-				System.out.println(String.format("setting up reminder for the card %s at %s", 
-						obj.getString("name"),due.toString()));
-				this.setUpReminder(obj.getString("name"), due);
+			try {
+				JSONObject obj = (JSONObject)o;
+				if(IsHabitPending(obj)) {
+	                System.out.println(String.format("setting up reminder for %s",obj.toString()));
+	                Date due = dateFormat.parse(obj.getString("due"));
+					System.out.println(String.format("setting up reminder for the card %s at %s", 
+							obj.getString("name"),due.toString()));
+					this.setUpReminder(obj.getString("name"), due);
+				}
+			} catch(Exception e) {
+				e.printStackTrace(System.err);
 			}
 		}
 		donep_ = new Donep(ta_,ud_,optionMsgs_);
