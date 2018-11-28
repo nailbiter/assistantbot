@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.collections4.Transformer;
 import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -23,18 +24,20 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 
 import assistantbot.ResourceProvider;
-import it.sauronsoftware.cron4j.Scheduler;
+import managers.tests.JsonTest;
 import managers.tests.ParadigmTest;
 import managers.tests.UrlTest;
-import managers.tests.JsonTest;
 import util.parsers.ParseOrdered;
+import util.parsers.ParseOrderedArg;
+import util.parsers.ParseOrderedCmd;
+import static util.parsers.ParseOrdered.ArgTypes;
+import static java.util.Arrays.asList;
 
 /**
  * @author nailbiter
  */
 public class TestManager extends AbstractManager implements OptionReplier {
 	Long chatID_ = null;
-//	Scheduler scheduler_ = null;
 	private Logger logger_ = null;
 	ResourceProvider rp_ = null;
 	Timer timer_ = null;
@@ -45,7 +48,6 @@ public class TestManager extends AbstractManager implements OptionReplier {
 	public TestManager(ResourceProvider rp) throws Exception{
 		super(GetCommands());
 		rp_ = rp;
-//		scheduler_ = rp.getScheduler();
 		logger_ = Logger.getLogger(this.getClass().getName());
 		timer_ = new Timer();
 		AddTests(testContainer_,rp_.getMongoClient());
@@ -62,16 +64,23 @@ public class TestManager extends AbstractManager implements OptionReplier {
 		if(names.size()!=testContainer.size())
 			throw new Exception(String.format("testmanager size: %d<%d", names.size(),testContainer.size()));
 	}
-	public static JSONArray GetCommands() {
-		JSONArray res = new JSONArray();
-		res.put(ParseOrdered.MakeCommand("tests","show tests, -1 reloads",
-				Arrays.asList(ParseOrdered.MakeCommandArg("index", ParseOrdered.ArgTypes.integer, true))));
-		res.put(ParseOrdered.MakeCommand("testsetscore","set test score, MODE=s|u, score=15/19",
-				Arrays.asList(
-						ParseOrdered.MakeCommandArg("score",ParseOrdered.ArgTypes.string,true),
-						ParseOrdered.MakeCommandArg("testnum",ParseOrdered.ArgTypes.integer,true))));
-		res.put(ParseOrdered.MakeCommand("testdo","paradigm test done",
-				Arrays.asList(ParseOrdered.MakeCommandArg("index", ParseOrdered.ArgTypes.integer, false))));
+	public static JSONArray GetCommands() throws Exception {
+		JSONArray res = new JSONArray()
+				.put(new ParseOrderedCmd("tests","show tests, -1 reloads",
+						asList(new ParseOrderedArg("index", ArgTypes.integer).makeOpt().j())))
+				.put(new ParseOrderedCmd("testsetscore","set test score, MODE=s|u, score=15/19",
+						asList(new ParseOrderedArg("score",ArgTypes.string).makeOpt().j(),
+								new ParseOrderedArg("testnum",ArgTypes.integer).makeOpt().j())))
+				.put(new ParseOrderedCmd("testdo","paradigm test done",
+						asList(new ParseOrderedArg("index", ArgTypes.integer)
+								.makeOpt()
+								.useMemory(new Transformer<Object,Object>(){
+									@Override
+									public Object transform(Object arg0) {
+										return ((int)arg0)+1;
+									}
+								})
+								.j())));
 		return res;
 	}
 	public String testsetscore(JSONObject obj) throws Exception{

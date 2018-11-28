@@ -1,5 +1,6 @@
 package util.parsers;
 
+import org.apache.commons.collections4.Transformer;
 import org.json.JSONObject;
 
 public class ParseOrderedArg extends JSONObject {
@@ -24,6 +25,12 @@ public class ParseOrderedArg extends JSONObject {
 		if(!IsArgOpt(this))
 			throw new Exception(String.format("cannot %s on non-opt argument!", "useMemory"));
 		put(USINGMEMORY ,true);
+		return this;
+	}
+	public ParseOrderedArg useMemory(Transformer<Object,Object> t) throws Exception{
+		if(!IsArgOpt(this))
+			throw new Exception(String.format("cannot %s on non-opt argument!", "useMemory"));
+		put(USINGMEMORY ,t);
 		return this;
 	}
 	public ParseOrderedArg makeOpt() {
@@ -51,7 +58,17 @@ public class ParseOrderedArg extends JSONObject {
 	public static boolean IsUsingMemory(JSONObject arg) {
 		return arg.optBoolean(USINGMEMORY,false);
 	}
+	public static Transformer<Object,Object> GetMemoryTransformer(JSONObject arg) {
+		Object res = arg.get(USINGMEMORY);
+		if(res != null && res instanceof Transformer<?,?>)
+			return (Transformer<Object,Object>)res;
+		else
+			return null;
+	}
 	public static Object GetDefault(JSONObject arg) {
 		return arg.opt(USINGDEFAULT);
+	}
+	public JSONObject j() {
+		return (JSONObject)this;
 	}
 }

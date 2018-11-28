@@ -82,13 +82,14 @@ public class StandardParserInterpreter extends AbstractParser{
 		logger_.info(String.format("line=\"%s\"\nprefix=\"%s\"\n", line,prefix));
 		JSONObject res = null;
 		if(line.startsWith(prefix)) {
-			String[] tokens = line.split(" ",2);
+			String[] tokens = line.split(" +",2);
+			System.err.format("split[0]=\"%s\"\nsplit[1]=\"%s\"\n",(tokens.length>=1)?tokens[0]:"null",(tokens.length>=2)?tokens[1]:"null");
 			String cmd = tokens[0].substring(prefix.length());
 			if(!getDispatchTable().containsKey(cmd))
 				return defaultHandle(line.substring(prefix.length()));
 			res = new JSONObject();
 			res.put(CMD, cmd);
-			if(tokens.length==2)
+			if(tokens.length==2 && !tokens[1].isEmpty())
 				res.put(REM, tokens[1]);
 			return res;
 		} else {

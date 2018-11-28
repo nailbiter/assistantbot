@@ -3,30 +3,29 @@
  */
 package managers;
 
+import static java.util.Arrays.asList;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.apache.commons.collections4.IterableUtils;
+import org.apache.commons.collections4.Predicate;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.github.nailbiter.util.TableBuilder;
 import com.github.nailbiter.util.TrelloAssistant;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.IterableUtils;
-import org.apache.commons.collections4.Predicate;
 
 import assistantbot.ResourceProvider;
 import managers.tasks.Task;
 import managers.tasks.TaskManagerForTask;
 import util.KeyRing;
+import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
-
-import static util.parsers.ParseOrdered.ArgTypes;
-import static java.util.Arrays.asList;
 
 /**
  * @author nailbiter
@@ -46,7 +45,8 @@ public class TaskManager extends AbstractManager implements TaskManagerForTask {
 				KeyRing.getTrello().getString("token"));
 		rp_ = rp;
 		listid_ = 
-				ta_.findListByName(managers.habits.Constants.INBOXBOARDID, managers.habits.Constants.INBOXLISTNAME);
+				ta_.findListByName(managers.habits.Constants.INBOXBOARDID, 
+						managers.habits.Constants.INBOXLISTNAME);
 	}
 	protected int getSeparatorIndex(JSONArray cards) throws Exception{
 		int res = IterableUtils.indexOf(cards, new Predicate<Object>() {
@@ -127,14 +127,14 @@ public class TaskManager extends AbstractManager implements TaskManagerForTask {
 	public static JSONArray GetCommands() {
 		JSONArray res = new JSONArray()
 				.put(new ParseOrderedCmd("taskdone", "mark as done", 
-						Arrays.asList((JSONObject)new ParseOrderedArg("taskid",ArgTypes.integer))))
+						Arrays.asList(new ParseOrderedArg("taskid",ArgTypes.integer).j())))
 				.put(new ParseOrderedCmd("taskpostpone","postpone a task",
-						asList((JSONObject)new ParseOrderedArg("estimate",ArgTypes.integer))))
+						asList(new ParseOrderedArg("estimate",ArgTypes.integer).j())))
 				.put(new ParseOrderedCmd("tasks","show list of tasks",
-						asList((JSONObject) new ParseOrderedArg("tasknum",ArgTypes.integer).makeOpt())))
+						asList(new ParseOrderedArg("tasknum",ArgTypes.integer).makeOpt().j())))
 				.put(new ParseOrderedCmd("tasknew","create new task",
-						asList((JSONObject) new ParseOrderedArg("estimate",ArgTypes.integer),
-								(JSONObject) new ParseOrderedArg("description",ArgTypes.remainder).makeOpt()
+						asList(new ParseOrderedArg("estimate",ArgTypes.integer).j(),
+								new ParseOrderedArg("description",ArgTypes.remainder).makeOpt().j()
 								)));
 		return res;
 	}

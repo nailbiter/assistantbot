@@ -94,8 +94,8 @@ public class InteractiveShell implements ResourceProvider {
 	}
 	@Override
 	public int sendMessage(String string, MyManager testManager) throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
+		//FIXME
+		return sendMessage(string);
 	}
 	@Override
 	public int sendMessageWithKeyBoard(String msg, List<List<InlineKeyboardButton>> makePerCatButtons) {
