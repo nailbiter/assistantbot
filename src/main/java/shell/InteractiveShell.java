@@ -84,7 +84,7 @@ public class InteractiveShell implements ResourceProvider {
 	}
 	@Override
 	public int sendMessage(String msg) {
-		System.out.println(msg);
+		System.out.println("\n"+msg);
 		return -1;
 	}
 	@Override
