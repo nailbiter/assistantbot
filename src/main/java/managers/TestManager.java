@@ -98,7 +98,7 @@ public class TestManager extends AbstractManager implements OptionReplier {
 		testScores_.insertOne(doc);
 		return String.format("put %s to scores",doc.toJson());
 	}
-	private double ScoreToDouble(String score) throws Exception{
+	private static double ScoreToDouble(String score) throws Exception{
 		Matcher m = null;
 		if((m = Pattern.compile("\\s*(\\d+)\\s*/\\s*(\\d+)\\s*").matcher(score)).matches()) {
 			return Double.parseDouble(m.group(1))/Double.parseDouble(m.group(2));
@@ -128,6 +128,7 @@ public class TestManager extends AbstractManager implements OptionReplier {
 	public String testdo(JSONObject obj) throws Exception
 	{
 		int index = lastUsedTestIndex = obj.getInt("index");
+		rp_.sendMessage(String.format("test #%d", index));
 		String[] res = this.testContainer_.get(index).isCalled();
 		logger_.info(String.format("run this index=%d", index));
 		int id = -1;
