@@ -72,7 +72,7 @@ public class TaskManager extends AbstractManager implements TaskManagerForTask {
 		int TNL = this.getParamObject(mc_).getInt(TASKNAMELENLIMIT);
 		if(res.has("tasknum")) {
 //			return arr.getJSONObject(sepIndex+res.getInt("tasknum")).toString(2);
-			rp_.sendMessage(arr.getJSONObject(sepIndex+res.getInt("tasknum")).getString("url"));
+			rp_.sendMessage(arr.getJSONObject(sepIndex+res.getInt("tasknum")).getString("shortUrl"));
 			return "";
 		} else {
 			TableBuilder tb = new TableBuilder();
