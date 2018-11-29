@@ -51,7 +51,7 @@ public class MashaRemind {
 		tb.addNewlineAndTokens("название", "осталось дней");
 		for(JSONObject obj:tasks) {
 			tb.newRow();
-			tb.addToken(CutString(obj.getString("name"),parameters.getInt("margin")));
+			tb.addToken(com.github.nailbiter.util.Util.CutString(obj.getString("name"),parameters.getInt("margin")));
 			double daysTill = obj.getDouble("daysTill"); 
 			if(daysTill<0) {
 				tb.addToken(String.format("** %.3f **", daysTill));
@@ -64,12 +64,5 @@ public class MashaRemind {
 		sb.append(tb.toString());
 		
 		return sb.toString();
-	}
-	static String CutString(String in,int maxlen) {
-		if(in.length()<=maxlen) {
-			return in;
-		} else {
-			return in.substring(0, maxlen)+"...";
-		}
 	}
 }

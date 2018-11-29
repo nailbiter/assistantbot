@@ -18,6 +18,7 @@ import org.json.JSONObject;
 
 import com.github.nailbiter.util.TableBuilder;
 import com.github.nailbiter.util.TrelloAssistant;
+import com.mongodb.MongoClient;
 
 import assistantbot.ResourceProvider;
 import managers.tasks.Task;
@@ -38,7 +39,9 @@ public class TaskManager extends AbstractManager implements TaskManagerForTask {
 	private ResourceProvider rp_;
 	private TrelloAssistant ta_;
 	private String listid_;
+	private MongoClient mc_;
 	protected static int REMINDBEFOREMIN = 10;
+	protected static String TASKNAMELENLIMIT = "TASKNAMELENLIMIT";
 	public TaskManager(ResourceProvider rp) throws Exception {
 		super(GetCommands());
 		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
@@ -47,6 +50,7 @@ public class TaskManager extends AbstractManager implements TaskManagerForTask {
 		listid_ = 
 				ta_.findListByName(managers.habits.Constants.INBOXBOARDID, 
 						managers.habits.Constants.INBOXLISTNAME);
+		mc_ = rp.getMongoClient();
 	}
 	protected int getSeparatorIndex(JSONArray cards) throws Exception{
 		int res = IterableUtils.indexOf(cards, new Predicate<Object>() {
@@ -69,12 +73,28 @@ public class TaskManager extends AbstractManager implements TaskManagerForTask {
 		tb.newRow();
 		tb.addToken("#_");
 		tb.addToken("name_");
+		tb.addToken("labels_");
+		int TNL = this.getParamObject(mc_).getInt(TASKNAMELENLIMIT);
 		for(int i = sepIndex+1;i < arr.length(); i++) {
+			JSONObject card = arr.getJSONObject(i);
 			tb.newRow();
 			tb.addToken(i - sepIndex);
-			tb.addToken(arr.getJSONObject(i).getString("name"));
+			tb.addToken(card.getString("name"),TNL);
+			tb.addToken(GetLabel(card),TNL);
 		}
 		return tb.toString();
+	}
+	private String GetLabel(JSONObject card) {
+		JSONArray label = card.optJSONArray("labels");
+		if(label==null)
+			return "";
+		StringBuilder sb = new StringBuilder();
+		for(Object o:label) {
+			JSONObject obj = (JSONObject)o;
+			if(obj.has("name"))
+				sb.append(String.format("#%s, ", obj.getString("name")));
+		}
+		return sb.toString();
 	}
 	public String tasknew(JSONObject res)
 	{
