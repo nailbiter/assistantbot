@@ -74,7 +74,7 @@ while(1){
 			if(exists $cmdjson->{$json->{command}}){
 				myExec($cmdjson->{$json->{command}});
 			} else {
-				printf("cannot execute %s\n",$cmdjson->{$json->{command}});
+				printf("cannot execute %s\n",$json->{command});
 			}
 		}
 		unlink $tmpfile or warn "Could not unlink $tmpfile: $!";

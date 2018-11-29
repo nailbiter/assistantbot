@@ -23,6 +23,9 @@ import managers.misc.RandomSetGenerator;
 import util.KeyRing;
 import util.Util;
 import util.parsers.ParseOrdered;
+import util.parsers.ParseOrdered.ArgTypes;
+import util.parsers.ParseOrderedArg;
+import util.parsers.ParseOrderedCmd;
 
 public class MiscUtilManager extends AbstractManager {
 	Random rand_ = new Random();
@@ -35,7 +38,6 @@ public class MiscUtilManager extends AbstractManager {
 	private static final String TASKLISTNAME = "todo";
 	private static final String DISTRICOLLECTIONBNAME = "randsetdistrib";
 	NoteMaker nm_ = null;
-	
 	
 	public MiscUtilManager(ResourceProvider rp) throws Exception {
 		super(GetCommands());
@@ -50,7 +52,7 @@ public class MiscUtilManager extends AbstractManager {
 		mc_ = rp.getMongoClient();
 		nm_ = new NoteMaker(mc_);
 	}
-	public static JSONArray GetCommands() {
+	public static JSONArray GetCommands() throws Exception {
 		return new JSONArray()
 				.put(ParseOrdered.MakeCommand("rand", "return random",
 						asList(
@@ -61,8 +63,8 @@ public class MiscUtilManager extends AbstractManager {
 						asList(ParseOrdered.MakeCommandArg("size",ParseOrdered.ArgTypes.integer,false))))
 				.put(ParseOrdered.MakeCommand("note","make note",asList(ParseOrdered.MakeCommandArg("notecontent",ParseOrdered.ArgTypes.remainder,false))))
 				.put(ParseOrdered.MakeCommand("exit", "exit the bot", new ArrayList<JSONObject>()))
-				.put(ParseOrdered.MakeCommand("restart", "restart the bot",
-						asList(ParseOrdered.MakeCommandArg("command",ParseOrdered.ArgTypes.remainder,true))))
+				.put(new ParseOrderedCmd("restart","restart the bot",
+						asList(new ParseOrderedArg("command",ArgTypes.remainder).makeOpt().useDefault("uoesnuoeu").j())))
 				.put(ParseOrdered.MakeCommand("ttask", "make new task", Arrays.asList((
 						ParseOrdered.MakeCommandArg("task",ParseOrdered.ArgTypes.remainder,false)))));
 	}
@@ -74,9 +76,10 @@ public class MiscUtilManager extends AbstractManager {
 	public String restart(JSONObject obj) throws Exception {
 		if(obj.getString("command").equals("help")) {
 			return Util.GetFile(Util.GetRebootCommandFileName());
+		} else {
+			Util.SaveJSONObjectToFile(GetRebootFileName(), obj);
+			return exit(obj);	
 		}
-		Util.SaveJSONObjectToFile(GetRebootFileName(), obj);
-		return exit(obj);
 	}
 	@Override
 	public String processReply(int messageID, String msg) {
