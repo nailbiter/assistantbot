@@ -6,6 +6,7 @@ package managers;
 import static java.util.Arrays.asList;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -13,9 +14,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.collections4.Closure;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.bson.Document;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.github.nailbiter.util.TableBuilder;
@@ -30,12 +37,13 @@ import util.KeyRing;
 import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
+import static managers.habits.Constants.SEPARATOR;
 
 /**
  * @author nailbiter
  *
  */
-public class TaskManager extends AbstractManager implements TaskManagerForTask {
+public class TaskManager extends AbstractManager implements TaskManagerForTask,Closure<JSONObject> {
 	Timer timer = new Timer();
 	protected List<Task> tasks = null;
 	protected JSONArray jsontasks = null;
@@ -48,6 +56,7 @@ public class TaskManager extends AbstractManager implements TaskManagerForTask {
 	protected static String SNOOZED = "SNOOZED";
 	protected HashMap<String,ImmutableTriple<Comparator<JSONObject>,String,Integer>> comparators_
 		= new HashMap<String,ImmutableTriple<Comparator<JSONObject>,String,Integer>>();
+	private Timer timer_;
 	public TaskManager(ResourceProvider rp) throws Exception {
 		super(GetCommands());
 		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
@@ -55,6 +64,7 @@ public class TaskManager extends AbstractManager implements TaskManagerForTask {
 		rp_ = rp;
 		
 		mc_ = rp.getMongoClient();
+		timer_ = new Timer();
 		FillTable(comparators_,ta_);
 	}
 	private static void FillTable(HashMap<String, ImmutableTriple<Comparator<JSONObject>, String, Integer>> c, TrelloAssistant ta) throws Exception {
@@ -85,8 +95,7 @@ public class TaskManager extends AbstractManager implements TaskManagerForTask {
 			throw new Exception(String.format("unknown key %s", identifier));
 		ImmutableTriple<Comparator<JSONObject>, String, Integer> triple = 
 				comparators_.get(identifier);
-		TrelloMover tm = 
-				new TrelloMover(ta_,triple.middle,managers.habits.Constants.SEPARATOR);
+		TrelloMover tm = new TrelloMover(ta_,triple.middle,SEPARATOR); 
 		ArrayList<JSONObject> res = tm.getCardsInSegment(triple.right);
 		Collections.sort(res, triple.left);
 		return res;
@@ -97,12 +106,14 @@ public class TaskManager extends AbstractManager implements TaskManagerForTask {
 		tb.addToken("#_");
 		tb.addToken("name_");
 		tb.addToken("labels_");
+//		tb.addToken("pos_");
 		for(int i = 0;i < arr.size(); i++) {
 			JSONObject card = arr.get(i);
 			tb.newRow();
 			tb.addToken(i + 1);
 			tb.addToken(card.getString("name"),TNL);
 			tb.addToken(GetLabel(card),TNL);
+//			tb.addToken(card.getInt("pos"));
 		}
 		return tb.toString();
 	}
@@ -171,8 +182,7 @@ public class TaskManager extends AbstractManager implements TaskManagerForTask {
 		}
 		return tb.toString();
 	}
-
-	String getTasks() throws Exception
+	private String getTasks() throws Exception
 	{
 		com.github.nailbiter.util.TableBuilder tb = new com.github.nailbiter.util.TableBuilder();
 		tb.addNewlineAndTokens(new String[] {"#","duedate", "remaining time","description"});
@@ -188,8 +198,61 @@ public class TaskManager extends AbstractManager implements TaskManagerForTask {
 			}
 		return tb.toString();
 	}
-	public String taskpostpone(JSONObject obj) {
-		return String.format("got: %s", obj.toString(2));
+	public String taskpostpone(JSONObject obj) throws JSONException, Exception {
+		JSONObject card = getTasks(INBOX).get(obj.getInt("num")-1);
+//		if(obj.getString("moveToSnoozed?").length()>0) 
+		{
+			new TrelloMover(ta_,comparators_.get(INBOX).middle,SEPARATOR)
+			.moveTo(card,comparators_.get(SNOOZED).middle,comparators_.get(SNOOZED).right);
+		}
+		
+		Date date = ComputePostponeDate(obj.getString("estimate"));
+		System.err.format("date: %s\n", date.toString());
+		setUpSnooze(card,date);
+		saveSnoozeToDb(card,date);
+		
+		return String.format("snoozing card \"%s\" to %s", 
+				card.getString("name"),date.toString());
+	}
+	private void saveSnoozeToDb(JSONObject card, Date date) {
+		mc_.getDatabase("logistics").getCollection("postponedTasks")
+		.insertOne(Document.parse(new JSONObject()
+				.put("date", date)
+				.put("shortUrl", card.getString("shortUrl"))
+				.toString()));
+	}
+	private void setUpSnooze(final JSONObject card, Date date) {
+		Date now = new Date();
+		System.err.format("now: %s\n", now.toString());
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				TaskManager.this.execute(card);
+			}
+		}, date.getTime()-now.getTime());
+	}
+	private Date ComputePostponeDate(String string) throws Exception {
+		Matcher m = null;
+		Calendar c = Calendar.getInstance();
+		if((m = Pattern.compile("(\\d{2})(\\d{2})(\\d{2})(\\d{2})").matcher(string)).matches()) {
+//			SimpleDateFormat dateFormat = new SimpleDateFormat("MMddHHmm");
+//			dateFormat.setTimeZone(TimeZone.getTimeZone("JST"));
+//			return dateFormat.parse(string);
+			c.set(Calendar.MONTH, Integer.parseInt(m.group(1)));
+			c.set(Calendar.DATE, Integer.parseInt(m.group(2)));
+			c.set(Calendar.HOUR_OF_DAY, Integer.parseInt(m.group(3)));
+			c.set(Calendar.MINUTE, Integer.parseInt(m.group(4)));
+			return c.getTime();
+		} if((m = Pattern.compile("(\\d{2})(\\d{2})").matcher(string)).matches()) {
+//			SimpleDateFormat dateFormat = new SimpleDateFormat("HHmm");
+//			dateFormat.setTimeZone(TimeZone.getTimeZone("JST"));
+//			return dateFormat.parse(string);
+			c.set(Calendar.HOUR_OF_DAY, Integer.parseInt(m.group(1)));
+			c.set(Calendar.MINUTE, Integer.parseInt(m.group(2)));
+			return c.getTime();
+		} else {
+			throw new Exception(String.format("cannot parse %s", string));
+		}
 	}
 	public static JSONArray GetCommands() throws Exception {
 		JSONArray res = new JSONArray()
@@ -197,10 +260,12 @@ public class TaskManager extends AbstractManager implements TaskManagerForTask {
 						asList(new ParseOrderedArg("tasknum",ArgTypes.integer)
 								.makeOpt().j())))
 				.put(new ParseOrderedCmd("taskpostpone","change task's due",
-						asList(new ParseOrderedArg("estimate",ArgTypes.string)
-								.j(),
-								new ParseOrderedArg("moveToSnoozed?",ArgTypes.string)
-								.makeOpt().useDefault("").j())))
+						asList(new ParseOrderedArg("num",ArgTypes.integer).j(),
+								new ParseOrderedArg("estimate",ArgTypes.string)
+								.j()
+//								,new ParseOrderedArg("moveToSnoozed?",ArgTypes.string)
+//								.makeOpt().useDefault("").j()
+								)))
 				//TODO
 				.put(new ParseOrderedCmd("taskdone", "mark as done", 
 						asList(new ParseOrderedArg("taskid",ArgTypes.integer)
@@ -225,6 +290,18 @@ public class TaskManager extends AbstractManager implements TaskManagerForTask {
 	@Override
 	public void schedule(TimerTask tt, Date d) {
 		timer.schedule(tt, d);
+	}
+	@Override
+	public void execute(JSONObject card) {
+		System.err.format("execute %s\n", card.toString(2));
+		try {
+			new TrelloMover(ta_,comparators_.get(SNOOZED).middle,SEPARATOR)
+			.moveTo(card,comparators_.get(INBOX).middle,comparators_.get(INBOX).right);
+			rp_.sendMessage(String.format("snooze \"%s\"", card.getString("name")));
+		} catch (Exception e) {
+			e.printStackTrace();
+			rp_.sendMessage(ExceptionUtils.getStackTrace(e));
+		}
 	}
 
 }

@@ -4,13 +4,11 @@ import java.util.ArrayList;
 
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.collections4.Predicate;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.github.nailbiter.util.TrelloAssistant;
-
-import managers.habits.Constants;
-
 /**
  * 
  * @author oleksiileontiev
@@ -32,16 +30,14 @@ public class TrelloMover {
 	/**
 	 * FIXME: support segNum>1
 	 * @param segNum
+	 * @param cards 
 	 * @return
 	 * @throws Exception
 	 */
-	public ArrayList<JSONObject> getCardsInSegment(int segNum) throws Exception {
+	protected ImmutablePair<Integer,Integer> getSegmentStartEnd(int segNum, JSONArray cards) throws Exception{
 		if(segNum!=0 && segNum !=1)
 			throw new Exception(String.format("segNum %d not supported", segNum));
-		
-		JSONArray cards = ta_.getCardsInList(LISTID);
-		
-		int separatorIndex = GetSeparatorIndex(cards);
+		int separatorIndex = getSeparatorIndex(cards);
 		if( separatorIndex < 0 ) {
 			if(segNum==0)
 				separatorIndex = cards.length();
@@ -58,23 +54,41 @@ public class TrelloMover {
 			left = separatorIndex + 1;
 			right = cards.length();
 		}
-		
+		return new ImmutablePair<Integer,Integer>(left,right);
+	}
+	public ArrayList<JSONObject> getCardsInSegment(int segNum) throws Exception {
+		JSONArray cards = ta_.getCardsInList(LISTID);
+		ImmutablePair<Integer, Integer> bounds = 
+				this.getSegmentStartEnd(segNum,cards);
 		ArrayList<JSONObject> res = new ArrayList<JSONObject>();
-		for(int i = left; i < right; i++ )
+		for(int i = bounds.left; i < bounds.right; i++ )
 			res.add(cards.getJSONObject(i));
 		return res;
 	}
-	protected static int GetSeparatorIndex(JSONArray cards) throws Exception{
+	protected int getSeparatorIndex(JSONArray cards) throws Exception{
 		int res = IterableUtils.indexOf(cards, new Predicate<Object>() {
 			@Override
 			public boolean evaluate(Object arg0) {
 				System.err.format("check: %s\n", arg0.toString());
 				JSONObject obj = (JSONObject)arg0;
-				return ((JSONObject)obj).getString("name").equals(managers.habits.Constants.SEPARATOR);
+				return ((JSONObject)obj).getString("name").equals(SEPARATOR);
 			}
 		});
-//		if(res<0)
-//			throw new Exception("no separator");
 		return res;
+	}
+	public void moveTo(JSONObject card, String listid, int segNum) throws Exception {
+		JSONArray cards = ta_.getCardsInList(LISTID);
+		ImmutablePair<Integer, Integer> bounds = 
+				this.getSegmentStartEnd(segNum,cards);
+		System.err.format("preparing to move \"%s\" to seg #%d\n", 
+				card.getString("name"),segNum);
+		ta_.moveCard(
+				card.getString("id"), 
+				listid,
+				(segNum==0)?"top":
+					(bounds.left==cards.length())?"bottom":
+						Integer.toString((int)((cards.getJSONObject(bounds.left-1).getInt("pos")+
+								cards.getJSONObject(bounds.left).getInt("pos")+0.0)/2.0))
+				);
 	}
 }
