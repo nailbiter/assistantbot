@@ -107,24 +107,22 @@ public class TaskManager extends AbstractManager implements TaskManagerForTask {
 		return tb.toString();
 	}
 	protected static String PrintTask(ArrayList<JSONObject> arr,int index) {
-		return arr.get(index-1).getString("shortUrl");
+		return String.format("%s %s",
+				arr.get(index-1).getString("name"),
+				arr.get(index-1).getString("shortUrl"));
 	}
 	public String tasks(JSONObject res) throws Exception {
 		int TNL = this.getParamObject(mc_).getInt(TASKNAMELENLIMIT);
 		if( !res.has("tasknum") ) {
 			return PrintTasks(getTasks(INBOX),TNL);
 		} else if(res.getInt("tasknum")>0){
-//			ArrayList<JSONObject> arr = getTasks(INBOX);
-//			rp_.sendMessage(arr.get(res.getInt("tasknum"))
-//					.getString("shortUrl"));
-			return PrintTask(getTasks(INBOX),res.getInt("tasknum"));
-//			return "TODO";
+			rp_.sendMessage(PrintTask(getTasks(INBOX),res.getInt("tasknum")));
+			return "";
 		} else if(res.getInt("tasknum")==0) {
-//			return "TODO";
 			return PrintTasks(getTasks(SNOOZED),TNL);
 		} else if( res.getInt("tasknum") < 0 ) {
-//			return "TODO";
-			return PrintTask(getTasks(SNOOZED),-res.getInt("tasknum"));
+			rp_.sendMessage(PrintTask(getTasks(SNOOZED),-res.getInt("tasknum")));
+			return "";
 		} else {
 			throw new Exception("this should not happen");
 		}
