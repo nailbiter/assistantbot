@@ -17,6 +17,6 @@ public class sh extends Command {
 			sb.append(" "+args[i]);
 		String line = "sh "+sb;
 		System.out.println("sh: "+line);
-		out().println(Util.runScript(line));
+		out().println(Util.RunScript(line));
 	}
 }

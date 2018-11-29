@@ -6,6 +6,7 @@
 	"parserPrefix":"/",
 	"managers":[
 		"MoneyManager",
+		"PerlScript",
 		"HabitManager",
 		"TaskManager",
 		"TestManager",

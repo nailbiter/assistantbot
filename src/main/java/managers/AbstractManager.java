@@ -18,7 +18,7 @@ import static util.parsers.StandardParserInterpreter.CMD;
  *
  */
 public abstract class AbstractManager implements MyManager {
-	private ParseOrdered po_ = null;
+	protected ParseOrdered po_ = null;
 	protected AbstractManager(JSONArray commands) {
 		po_ = new ParseOrdered(commands,this.getClass().getName());
 	}
@@ -28,19 +28,18 @@ public abstract class AbstractManager implements MyManager {
 	@Override
 	public String getResultAndFormat(JSONObject res) throws Exception {
 		System.err.println(String.format("%s got: %s",this.getClass().getName(), res.toString()));
-		if(res.has(CMD))
-		{
+//		if(res.has(CMD))
+//		{
 			System.err.println("dispatcher got: "+res.toString());
 			return (String)this.getClass().getMethod(res.getString(CMD),JSONObject.class)
 					.invoke(this,po_.parse(res));
-		}
-		return null;
+//		}
+//		return null;
 	}
-//	protected boolean hasCommand(JSONObject res) {
-//		return getCommands().keySet().contains(res.getString(CMD));
-//	}
 	protected JSONObject getParamObject(MongoClient mc) throws JSONException, Exception {
-		String classname = this.getClass().getName();
+		return GetParamObject(mc,this.getClass().getName());
+	}
+	protected static JSONObject GetParamObject(MongoClient mc,String classname) throws JSONException, Exception {
 		System.err.format("getting param object for %s\n", classname);
 		JSONObject parameters = MongoUtil.GetJsonObjectFromDatabase(mc, 
 				"logistics.params",

@@ -67,9 +67,11 @@ public class TaskManager extends AbstractManager implements TaskManagerForTask {
 		System.err.format("sepIndex = %d\n", sepIndex);
 		TableBuilder tb = new TableBuilder();
 		tb.newRow();
+		tb.addToken("#_");
 		tb.addToken("name_");
 		for(int i = sepIndex+1;i < arr.length(); i++) {
 			tb.newRow();
+			tb.addToken(i - sepIndex);
 			tb.addToken(arr.getJSONObject(i).getString("name"));
 		}
 		return tb.toString();

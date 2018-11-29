@@ -164,24 +164,22 @@ public class Util{
 	        os.close();
 	    }
 	}
-	public static String runScript(String cmd) throws Exception{
-		System.out.println("going to run: "+cmd);
+	public static String RunScript(String cmd) throws Exception{
+		System.err.println("going to run: "+cmd);
 		StringBuilder res = new StringBuilder();
 		try {
-		Runtime run = Runtime.getRuntime();
-	    Process pr = run.exec(cmd);
-	    pr.waitFor();
-	    BufferedReader buf = new BufferedReader(new InputStreamReader(pr.getInputStream()));
-	    String line = "";
-	    while ((line=buf.readLine())!=null) {
-	            res.append(line+"\n");
-	    }
-		}
-		catch(Exception e)
-		{
+			Runtime run = Runtime.getRuntime();
+		    Process pr = run.exec(cmd);
+		    pr.waitFor();
+		    BufferedReader buf = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+		    String line = "";
+		    while ((line=buf.readLine())!=null) {
+		            res.append(line+"\n");
+		    }
+		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("here with: "+res.toString());
+		System.err.println("here with: "+res.toString());
 	    return res.toString();
 	}
 	public static String GetRebootCommandFileName() {
