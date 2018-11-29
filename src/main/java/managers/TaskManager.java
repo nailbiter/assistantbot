@@ -69,20 +69,24 @@ public class TaskManager extends AbstractManager implements TaskManagerForTask {
 		JSONArray arr = ta_.getCardsInList(listid_);
 		int sepIndex = getSeparatorIndex(arr);
 		System.err.format("sepIndex = %d\n", sepIndex);
-		TableBuilder tb = new TableBuilder();
-		tb.newRow();
-		tb.addToken("#_");
-		tb.addToken("name_");
-		tb.addToken("labels_");
 		int TNL = this.getParamObject(mc_).getInt(TASKNAMELENLIMIT);
-		for(int i = sepIndex+1;i < arr.length(); i++) {
-			JSONObject card = arr.getJSONObject(i);
+		if(res.has("tasknum")) {
+			return arr.getJSONObject(sepIndex+res.getInt("tasknum")).toString(2);
+		} else {
+			TableBuilder tb = new TableBuilder();
 			tb.newRow();
-			tb.addToken(i - sepIndex);
-			tb.addToken(card.getString("name"),TNL);
-			tb.addToken(GetLabel(card),TNL);
+			tb.addToken("#_");
+			tb.addToken("name_");
+			tb.addToken("labels_");
+			for(int i = sepIndex+1;i < arr.length(); i++) {
+				JSONObject card = arr.getJSONObject(i);
+				tb.newRow();
+				tb.addToken(i - sepIndex);
+				tb.addToken(card.getString("name"),TNL);
+				tb.addToken(GetLabel(card),TNL);
+			}
+			return tb.toString();
 		}
-		return tb.toString();
 	}
 	private String GetLabel(JSONObject card) {
 		JSONArray label = card.optJSONArray("labels");

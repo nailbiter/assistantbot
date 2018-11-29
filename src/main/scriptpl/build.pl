@@ -47,7 +47,7 @@ sub help{
 	);
 	$tb->add('-----','-------');
 	for(keys(%METHODS)){
-		$tb->add($_,$METHODS{$_}->{description});
+		$tb->add((($_ eq $DEFMETHOD)?'_':'').$_,$METHODS{$_}->{description});
 	}
 #	$tb->add('-----','-------');
 	print $tb;
