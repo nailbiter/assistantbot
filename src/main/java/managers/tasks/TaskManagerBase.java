@@ -253,11 +253,8 @@ public class TaskManagerBase extends AbstractManager implements ScriptHelper  {
 		String res = null;
 		if(arg.equals("a")) {
 			res = a_.toString();
-//			return a_.toString();
 		} else if(arg.equals("b")) {
-//			System.err.format("execute %s gave %s\n", args)
 			res = b_.toString();
-//			return b_.toString();
 		} else {
 			res = null;
 		}
