@@ -206,7 +206,7 @@ public class TaskManager extends AbstractManager implements Closure<JSONObject> 
 		Matcher m = null;
 		Calendar c = Calendar.getInstance();
 		if((m = Pattern.compile("(\\d{2})(\\d{2})(\\d{2})(\\d{2})").matcher(string)).matches()) {
-			c.set(Calendar.MONTH, Integer.parseInt(m.group(1)));
+			c.set(Calendar.MONTH, Integer.parseInt(m.group(1))-1);
 			c.set(Calendar.DATE, Integer.parseInt(m.group(2)));
 			c.set(Calendar.HOUR_OF_DAY, Integer.parseInt(m.group(3)));
 			c.set(Calendar.MINUTE, Integer.parseInt(m.group(4)));
