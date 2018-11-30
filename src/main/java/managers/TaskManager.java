@@ -51,14 +51,14 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		}
 	}
 	public String tasks(JSONObject res) throws Exception {
-		int TNL = this.getParamObject(mc_).getInt(TASKNAMELENLIMIT);
+//		int TNL = .getInt(TASKNAMELENLIMIT);
 		if( !res.has("tasknum") ) {
-			return PrintTasks(getTasks(INBOX),TNL);
+			return PrintTasks(getTasks(INBOX),this.getParamObject(mc_));
 		} else if(res.getInt("tasknum")>0){
 			rp_.sendMessage(PrintTask(getTasks(INBOX),res.getInt("tasknum")));
 			return "";
 		} else if(res.getInt("tasknum")==0) {
-			return PrintTasks(getTasks(SNOOZED),TNL);
+			return PrintTasks(getTasks(SNOOZED),this.getParamObject(mc_));
 		} else if( res.getInt("tasknum") < 0 ) {
 			rp_.sendMessage(PrintTask(getTasks(SNOOZED),-res.getInt("tasknum")));
 			return "";
@@ -81,6 +81,9 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		return String.format("removed task \"%s\"", card.getString("name"));
 	}
 	public String taskpostpone(JSONObject obj) throws JSONException, Exception {
+		if( !obj.has("num") ) {
+			return PrintSnoozed(ta_,mc_,comparators_.get(SNOOZED).middle,getParamObject(mc_));
+		}
 		JSONObject card = getTasks(INBOX).get(obj.getInt("num")-1);
 		
 		if(obj.getString("moveToSnoozed?").toUpperCase().equals("T")) 
@@ -104,10 +107,11 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 						asList(new ParseOrderedArg("tasknum",ArgTypes.integer)
 								.makeOpt().j())))
 				.put(new ParseOrderedCmd("taskpostpone","change task's due",
-						asList(new ParseOrderedArg("num",ArgTypes.integer).j(),
+						asList(new ParseOrderedArg("num",ArgTypes.integer)
+								.makeOpt().j(),
 								new ParseOrderedArg("estimate",ArgTypes.string)
-								.j()
-								,new ParseOrderedArg("moveToSnoozed?",ArgTypes.string)
+								.makeOpt().j(),
+								new ParseOrderedArg("moveToSnoozed?",ArgTypes.string)
 								.makeOpt().useDefault("t").j()
 								)))
 				.put(new ParseOrderedCmd("tasknew","create new task",

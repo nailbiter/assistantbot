@@ -27,7 +27,9 @@ import com.mongodb.MongoClient;
 
 import assistantbot.ResourceProvider;
 import managers.AbstractManager;
+import util.JsonUtil;
 import util.KeyRing;
+import util.MongoUtil;
 
 public class TaskManagerBase extends AbstractManager  {
 
@@ -67,7 +69,7 @@ public class TaskManagerBase extends AbstractManager  {
 		
 	}
 
-	protected static String PrintTasks(ArrayList<JSONObject> arr, int TNL) throws JSONException, ParseException {
+	protected static String PrintTasks(ArrayList<JSONObject> arr, JSONObject po) throws JSONException, ParseException {
 		TableBuilder tb = new TableBuilder();
 		tb.newRow();
 		tb.addToken("#_");
@@ -78,10 +80,10 @@ public class TaskManagerBase extends AbstractManager  {
 			JSONObject card = arr.get(i);
 			tb.newRow();
 			tb.addToken(i + 1);
-			tb.addToken(card.getString("name"),TNL);
-			tb.addToken(GetLabels(card),TNL);
+			tb.addToken(card.getString("name"),po.getJSONObject("sep").getInt("name"));
+			tb.addToken(GetLabels(card),po.getJSONObject("sep").getInt("labels"));
 			if(HasDue(card)) {
-				tb.addToken(util.Util.PrintDaysTill(DaysTill(card), "="),TNL);
+				tb.addToken(util.Util.PrintDaysTill(DaysTill(card), "="),po.getJSONObject("sep").getInt("due"));
 			} else {
 				tb.addToken("∞");
 			}
@@ -117,6 +119,45 @@ public class TaskManagerBase extends AbstractManager  {
 				sb.append(String.format("#%s, ", obj.getString("name")));
 		}
 		return sb.toString();
+	}
+
+	protected static String PrintSnoozed(TrelloAssistant ta, MongoClient mc, String listid, JSONObject po) throws Exception {
+		JSONArray tasks = ta.getCardsInList(listid);
+		JSONArray reminders = 
+				MongoUtil.GetJSONArrayFromDatabase(mc, "logistics", POSTPONEDTASKS);
+		
+		Date now = new Date();
+		ArrayList<JSONObject> res = new ArrayList<JSONObject>();
+		for(Object o:reminders) {
+			JSONObject obj = (JSONObject)o;
+			Date d = util.Util.MongoDateStringToLocalDate(obj.getString("date"));
+			if( d.after(now) ) {
+				res.add(new JSONObject()
+						.put("date", d)
+						.put("name", JsonUtil.FindInJSONArray(tasks, SHORTURL, obj.getString(SHORTURL))
+								.getString("name")));
+			}
+		}
+		
+		Collections.sort(res, new Comparator<JSONObject>() {
+			@Override
+			public int compare(JSONObject o1, JSONObject o2) {
+				Date d1 = (Date) o1.get("date"),
+						d2 = (Date) o2.get("date");
+				return d1.compareTo(d2);
+			}
+		});
+		TableBuilder tb = new TableBuilder();
+		tb.addNewlineAndTokens("#_", "name_", "date_");
+		int i = 1;
+		for(JSONObject obj:res) {
+			tb.newRow();
+			tb.addToken(i++);
+			tb.addToken(obj.getString("name"),po.getJSONObject("sep").getInt("name"));
+			tb.addToken(obj.get("date").toString(),po.getJSONObject("sep").getInt("date"));
+		}
+		
+		return tb.toString();
 	}
 
 	protected TaskManagerBase(JSONArray commands, ResourceProvider rp) throws Exception {
