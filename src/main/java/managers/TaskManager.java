@@ -93,7 +93,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		}
 		
 		Date date = ComputePostponeDate(obj.getString("estimate"));
-		logToDb(String.format("% to %s", "taskpostpone",date.toString()),card);
+		logToDb(String.format("%s to %s", "taskpostpone",date.toString()),card);
 		System.err.format("date: %s\n", date.toString());
 		setUpReminder(card,date);
 		saveSnoozeToDb(card,date);
