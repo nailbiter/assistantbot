@@ -2,6 +2,8 @@ package managers.tasks;
 
 import static managers.habits.Constants.SEPARATOR;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -15,10 +17,12 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.bson.Document;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.github.nailbiter.util.TableBuilder;
 import com.github.nailbiter.util.TrelloAssistant;
+import com.github.nailbiter.util.Util;
 import com.mongodb.MongoClient;
 
 import assistantbot.ResourceProvider;
@@ -63,20 +67,37 @@ public class TaskManagerBase extends AbstractManager  {
 		
 	}
 
-	protected static String PrintTasks(ArrayList<JSONObject> arr, int TNL) {
+	protected static String PrintTasks(ArrayList<JSONObject> arr, int TNL) throws JSONException, ParseException {
 		TableBuilder tb = new TableBuilder();
 		tb.newRow();
 		tb.addToken("#_");
 		tb.addToken("name_");
 		tb.addToken("labels_");
+		tb.addToken("due_");
 		for(int i = 0;i < arr.size(); i++) {
 			JSONObject card = arr.get(i);
 			tb.newRow();
 			tb.addToken(i + 1);
 			tb.addToken(card.getString("name"),TNL);
 			tb.addToken(GetLabels(card),TNL);
+			if(HasDue(card)) {
+				tb.addToken(util.Util.PrintDaysTill(DaysTill(card), "="),TNL);
+			} else {
+				tb.addToken("∞");
+			}
 		}
 		return tb.toString();
+	}
+
+	private static double DaysTill(JSONObject obj) throws JSONException, ParseException {
+		SimpleDateFormat DF = Util.GetTrelloDateFormat();
+		Date due = DF.parse(obj.getString("due")),
+				now = new Date();
+		return (due.getTime()-now.getTime())/(1000*60*60*24*1.0d);
+	}
+
+	private static boolean HasDue(JSONObject card) {
+		return card.optBoolean("dueComplete",false)==false && !card.isNull("due");
 	}
 
 	protected static String PrintTask(ArrayList<JSONObject> arr, int index) {

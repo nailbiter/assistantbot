@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 
 import managers.MyManager;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -316,6 +317,15 @@ public class Util{
 			return c.getTime();
 		} else {
 			throw new Exception(String.format("cannot parse %s", string));
+		}
+	}
+	public static String PrintDaysTill(double daysTill, String filler) {
+		if(daysTill<0) {
+			return (String.format("** %.3f **", daysTill));
+		} else if(daysTill<1) {
+			return (String.format("%.3f", daysTill));
+		} else {
+			return (StringUtils.repeat(filler,(int)daysTill));
 		}
 	}
 }

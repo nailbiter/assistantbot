@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -52,15 +51,9 @@ public class MashaRemind {
 		for(JSONObject obj:tasks) {
 			tb.newRow();
 			tb.addToken(com.github.nailbiter.util.Util.CutString(obj.getString("name"),parameters.getInt("margin")));
-			double daysTill = obj.getDouble("daysTill"); 
-			if(daysTill<0) {
-				tb.addToken(String.format("** %.3f **", daysTill));
-			} else if(daysTill<1) {
-				tb.addToken(String.format("%.3f", daysTill));
-			} else {
-				tb.addToken(StringUtils.repeat(parameters.getString("filler"),(int)daysTill));
-			}
-		}
+			double daysTill = obj.getDouble("daysTill");
+			tb.addToken(util.Util.PrintDaysTill(daysTill,parameters.getString("filler")));
+		}	
 		sb.append(tb.toString());
 		
 		return sb.toString();
