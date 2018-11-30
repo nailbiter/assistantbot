@@ -161,9 +161,16 @@ public class TaskManager extends AbstractManager implements Closure<JSONObject> 
 		}
 		return sb.toString();
 	}
+	public String tasknew(JSONObject obj) throws Exception {
+		ImmutableTriple<Comparator<JSONObject>, String, Integer> triple = comparators_.get(INBOX);
+		JSONObject res = ta_.addCard(triple.middle, new JSONObject()
+				.put("name", obj.getString("name")));
+		new TrelloMover(ta_,triple.middle,SEPARATOR).moveTo(res,triple.middle,triple.right);
+		return String.format("created new card %s",res.getString("shortUrl"));
+	}
 	public String taskpostpone(JSONObject obj) throws JSONException, Exception {
 		JSONObject card = getTasks(INBOX).get(obj.getInt("num")-1);
-//		if(obj.getString("moveToSnoozed?").length()>0) 
+		if(obj.getString("moveToSnoozed?").toUpperCase().equals("T")) 
 		{
 			new TrelloMover(ta_,comparators_.get(INBOX).middle,SEPARATOR)
 			.moveTo(card,comparators_.get(SNOOZED).middle,comparators_.get(SNOOZED).right);
@@ -221,19 +228,20 @@ public class TaskManager extends AbstractManager implements Closure<JSONObject> 
 						asList(new ParseOrderedArg("num",ArgTypes.integer).j(),
 								new ParseOrderedArg("estimate",ArgTypes.string)
 								.j()
-//								,new ParseOrderedArg("moveToSnoozed?",ArgTypes.string)
-//								.makeOpt().useDefault("").j()
+								,new ParseOrderedArg("moveToSnoozed?",ArgTypes.string)
+								.makeOpt().useDefault("t").j()
+								)))
+				.put(new ParseOrderedCmd("tasknew","create new task",
+						asList(
+//								new ParseOrderedArg("estimate",ArgTypes.integer).j(),
+								new ParseOrderedArg("name",ArgTypes.remainder).makeOpt().j()
 								)))
 				//TODO
 				.put(new ParseOrderedCmd("taskdone", "mark as done", 
 						asList(new ParseOrderedArg("taskid",ArgTypes.integer)
 								.j())))
-				//TODO
-				.put(new ParseOrderedCmd("tasknew","create new task",
-						asList(new ParseOrderedArg("estimate",ArgTypes.integer)
-								.j(),
-								new ParseOrderedArg("description",ArgTypes.remainder)
-								.makeOpt().j())));
+				
+				;
 		return res;
 	}
 
