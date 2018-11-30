@@ -307,7 +307,7 @@ public class Util{
 		if((m = Pattern.compile("[A-Z][a-z]{2} ([A-Z][a-z]{2}) (\\d{2}) (\\d{2}):(\\d{2}):(\\d{2}) ([A-Z]{3}) (\\d{4})").matcher(string)).matches()) {
 			Calendar c = Calendar.getInstance(TimeZone.getTimeZone(m.group(6)));
 			c.set(parseInt(m.group(7)),
-					MONTHNAMES.getInt(m.group(1)),
+					MONTHNAMES.getInt(m.group(1))-1,
 					parseInt(m.group(2)),
 					parseInt(m.group(3)),
 					parseInt(m.group(4)),
