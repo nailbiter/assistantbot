@@ -46,6 +46,7 @@ public class ScriptHelperImpl implements ScriptHelper {
 		mongoClient_ = rp.getMongoClient();
 		rp_ = rp;
 	}
+	@Override
 	public void setInvocable(Invocable inv) {
 		inv_ = inv;
 	}

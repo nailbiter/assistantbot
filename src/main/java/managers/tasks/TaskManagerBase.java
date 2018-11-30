@@ -2,6 +2,8 @@ package managers.tasks;
 
 import static managers.habits.Constants.SEPARATOR;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,6 +15,9 @@ import java.util.HashMap;
 import java.util.Timer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.script.Invocable;
+import javax.script.ScriptException;
 
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.bson.Document;
@@ -30,42 +35,75 @@ import managers.AbstractManager;
 import util.JsonUtil;
 import util.KeyRing;
 import util.MongoUtil;
+import util.ScriptApp;
+import util.ScriptHelper;
 
-public class TaskManagerBase extends AbstractManager  {
+public class TaskManagerBase extends AbstractManager implements ScriptHelper  {
 
 	protected static final String POSTPONEDTASKS = "postponedTasks";
 	protected Timer timer = new Timer();
 	protected ResourceProvider rp_;
 	protected TrelloAssistant ta_;
 	protected MongoClient mc_;
+	private ScriptApp sa_;
 	protected static int REMINDBEFOREMIN = 10;
 	protected static String TASKNAMELENLIMIT = "TASKNAMELENLIMIT";
 	protected static String INBOX = "INBOX";
 	protected static String SNOOZED = "SNOOZED";
 	protected static String SHORTURL = "shortUrl";
+	private JSONObject a_=null, b_=null;
 	protected HashMap<String,ImmutableTriple<Comparator<JSONObject>,String,Integer>> comparators_ = new HashMap<String,ImmutableTriple<Comparator<JSONObject>,String,Integer>>();
 
-	protected static void FillTable(HashMap<String, ImmutableTriple<Comparator<JSONObject>, String, Integer>> c, TrelloAssistant ta) throws Exception {
-		String listid = ta.findListByName(managers.habits.Constants.INBOXBOARDID, 
+	protected TaskManagerBase(JSONArray commands, ResourceProvider rp) throws Exception {
+		super(commands);
+		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
+				KeyRing.getTrello().getString("token"));
+		rp_ = rp;
+		mc_ = rp.getMongoClient();
+		
+		sa_ = new ScriptApp(getParamObject(mc_).getString("scriptFolder"), this);
+		fillTable();
+	}
+	protected void fillTable() throws Exception {
+		JSONObject po = this.getParamObject(mc_);
+		String listid = ta_.findListByName(managers.habits.Constants.INBOXBOARDID, 
 				managers.habits.Constants.INBOXLISTNAME);
-		c.put(INBOX, new ImmutableTriple<Comparator<JSONObject>,String,Integer>(
+		comparators_.put(INBOX, new ImmutableTriple<Comparator<JSONObject>,String,Integer>(
 				new Comparator<JSONObject>() {
 					@Override
 					public int compare(JSONObject o1, JSONObject o2) {
-						return o1.getString("name")
-								.compareTo(o2.getString("name"));
+						TaskManagerBase.this.a_ = o1;
+						TaskManagerBase.this.b_ = o2;
+						try {
+							int res = 
+									Integer.parseInt(TaskManagerBase.this.sa_.runCommand("inbox"));
+							System.err.format("comparing \"%s\" and \"%s\" gave %d\n", o1.getString("name"),o2.getString("name"),res);
+							return res;
+						} catch (NumberFormatException | FileNotFoundException | NoSuchMethodException
+								| ScriptException e) {
+							e.printStackTrace();
+							return 0;
+						}
+						
 					}
-				},
-				listid, 1));
-		c.put(SNOOZED, new ImmutableTriple<Comparator<JSONObject>,String,Integer>(
+				},listid,1));
+		comparators_.put(SNOOZED, new ImmutableTriple<Comparator<JSONObject>,String,Integer>(
 				new Comparator<JSONObject>() {
 					@Override
 					public int compare(JSONObject o1, JSONObject o2) {
-						return o1.getString("name")
-								.compareTo(o2.getString("name"));
+						TaskManagerBase.this.a_ = o1;
+						TaskManagerBase.this.b_ = o2;
+						try {
+							return Integer.parseInt(TaskManagerBase.this.sa_.runCommand("snoozed"));
+						} catch (NumberFormatException | FileNotFoundException | NoSuchMethodException
+								| ScriptException e) {
+							e.printStackTrace();
+							return 0;
+						}
+						
 					}
-				},
-				listid, 0));
+				}
+				,listid, 0));
 		
 	}
 
@@ -160,16 +198,6 @@ public class TaskManagerBase extends AbstractManager  {
 		return tb.toString();
 	}
 
-	protected TaskManagerBase(JSONArray commands, ResourceProvider rp) throws Exception {
-		super(commands);
-		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
-				KeyRing.getTrello().getString("token"));
-		rp_ = rp;
-		mc_ = rp.getMongoClient();
-		
-		FillTable(comparators_,ta_);
-	}
-
 	protected Date ComputePostponeDate(String string) throws Exception {
 		Matcher m = null;
 		Calendar c = Calendar.getInstance();
@@ -219,6 +247,25 @@ public class TaskManagerBase extends AbstractManager  {
 				.put("message",msg)
 				.put("obj",obj)
 				.toString()));
+	}
+	@Override
+	public String execute(String arg) throws Exception {
+		String res = null;
+		if(arg.equals("a")) {
+			res = a_.toString();
+//			return a_.toString();
+		} else if(arg.equals("b")) {
+//			System.err.format("execute %s gave %s\n", args)
+			res = b_.toString();
+//			return b_.toString();
+		} else {
+			res = null;
+		}
+		System.err.format("execute %s gave %s\n", arg,(res==null)?"null":res);
+		return res;
+	}
+	@Override
+	public void setInvocable(Invocable inv) {
 	}
 
 }

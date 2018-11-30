@@ -16,13 +16,13 @@ public class ScriptApp {
 	private static final String SCRIPTHELPERVARNAME = "ScriptHelper";
 	private static final String SCRIPTEXTENSION = ".js";
 	private String includeFolderName_;
-	private ScriptHelperImpl sh_;
+	private ScriptHelper sh_;
 
 	public ScriptApp(String scriptFolder, ScriptHelper sh) {
 		this(scriptFolder,"common",sh);
 	}
 	public ScriptApp(String scriptFolder, String includeFolderName,ScriptHelper sh) {
-		sh_ = (ScriptHelperImpl) sh;
+		sh_ = sh;
 		includeFolderName_ = includeFolderName;
 		
 		scriptFolder_ = scriptFolder; 

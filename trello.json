@@ -1,13 +1,13 @@
 {
-   "pulledData" : {
-      "trelloTitle" : "GF: task tracker"
-   },
+   "cardurl" : "https://trello.com/c/NSzDang",
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
    ],
    "url" : {
-      "indicator" : "https://trello.com/c/FMIlCbXE",
-      "parser" : "https://trello.com/c/hkuY0OBL"
+      "parser" : "https://trello.com/c/hkuY0OBL",
+      "indicator" : "https://trello.com/c/FMIlCbXE"
    },
-   "cardurl" : "https://trello.com/c/NSzDangD"
+   "pulledData" : {
+      "trelloTitle" : "GF: task tracker"
+   }
 }
