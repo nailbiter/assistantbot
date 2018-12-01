@@ -152,7 +152,6 @@ public class TimeManager extends AbstractManager implements Runnable, OptionRepl
 				String msg = gotUpdate(sleepingObj_.getString("name"));
 				if(sleepingObj_.getString("canBePersistent").equals("message")) {
 					waitingForTimeReportMessageId_ = 
-//							rp_.sendMessageWithKeyBoard(WHEREAREYOUNOW, MakeButtons(categories_));
 							rp_.sendMessage(msg);
 				}
 			} else {
@@ -221,7 +220,8 @@ public class TimeManager extends AbstractManager implements Runnable, OptionRepl
 		if(!isWaitingForAnswer_) {
 			waitingForPersistentCategoryChoiceMessageId_ = 
 					rp_.sendMessageWithKeyBoard("choose the cat", MakePerCatButtons(categories_));
-			return "choose the category";
+//			return "choose the category";
+			return "";
 		} else {
 			return String.format("cannot /sleepstart because isWaitingForAnswer_=%s", 
 					Boolean.toString(isWaitingForAnswer_));
