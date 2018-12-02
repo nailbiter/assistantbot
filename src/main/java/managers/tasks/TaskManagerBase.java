@@ -28,10 +28,16 @@ import org.json.JSONObject;
 import com.github.nailbiter.util.TableBuilder;
 import com.github.nailbiter.util.TrelloAssistant;
 import com.github.nailbiter.util.Util;
+import com.mongodb.Block;
+import static com.mongodb.client.model.Filters.and;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.gte;
+import static com.mongodb.client.model.Filters.lte;
 import com.mongodb.MongoClient;
 
 import assistantbot.ResourceProvider;
 import managers.AbstractManager;
+import managers.TaskManager;
 import util.JsonUtil;
 import util.KeyRing;
 import util.MongoUtil;
@@ -65,7 +71,7 @@ public class TaskManagerBase extends AbstractManager implements ScriptHelper  {
 		fillTable();
 	}
 	protected void fillTable() throws Exception {
-		JSONObject po = this.getParamObject(mc_);
+//		JSONObject po = this.getParamObject(mc_);
 		String listid = ta_.findListByName(managers.habits.Constants.INBOXBOARDID, 
 				managers.habits.Constants.INBOXLISTNAME);
 		comparators_.put(INBOX, new ImmutableTriple<Comparator<JSONObject>,String,Integer>(
@@ -147,16 +153,19 @@ public class TaskManagerBase extends AbstractManager implements ScriptHelper  {
 	}
 
 	private static String GetLabels(JSONObject card) {
+		return GetLabels(card,new ArrayList<String>());
+	}
+	private static String GetLabels(JSONObject card,ArrayList<String> filter) {
 		JSONArray label = card.optJSONArray("labels");
 		if(label==null)
 			return "";
-		StringBuilder sb = new StringBuilder();
+		ArrayList<String> res = new ArrayList<String>();
 		for(Object o:label) {
 			JSONObject obj = (JSONObject)o;
-			if(obj.has("name"))
-				sb.append(String.format("#%s, ", obj.getString("name")));
+			if(obj.has("name") && (filter.isEmpty() || filter.contains(obj.getString("name"))))
+				res.add(String.format("#%s", obj.getString("name")));
 		}
-		return sb.toString();
+		return String.join(", ", res);
 	}
 
 	protected static String PrintSnoozed(TrelloAssistant ta, MongoClient mc, String listid, JSONObject po) throws Exception {
@@ -198,6 +207,48 @@ public class TaskManagerBase extends AbstractManager implements ScriptHelper  {
 		return tb.toString();
 	}
 
+	protected static String PrintDoneTasks(TrelloAssistant ta, MongoClient mc, HashMap<String, ImmutableTriple<Comparator<JSONObject>, String, Integer>> c) throws Exception {
+		final JSONObject po = GetParamObject(mc, TaskManager.class.getName()).getJSONObject("sep");
+		final JSONArray alltasks = ta.getAllCardsInList(c.get(INBOX).middle);
+		System.err.format("alltasks has %d cards\n", alltasks.length());
+		final TableBuilder tb = new TableBuilder();
+		tb.newRow().addToken("name_").addToken("label_");
+		
+		final ArrayList<String> recognizedCats = new ArrayList<String>();
+		mc.getDatabase("logistics").getCollection("timecats").find().forEach(new Block<Document>() {
+			@Override
+			public void apply(Document arg0) {
+				recognizedCats.add(arg0.getString("name"));
+			}
+		});
+		recognizedCats.add("future");
+		
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		Date d = cal.getTime();
+		System.err.format("date: %s\n", d.toString());
+		
+		mc.getDatabase("logistics").getCollection("taskLog")
+		.find(and(eq("message","taskdone"),gte("date",d)))
+		.forEach(new Block<Document>() {
+					@Override
+					public void apply(Document arg0) {
+						JSONObject obj = new JSONObject(arg0.toJson());
+						System.err.format("obj=%s\n", obj.toString());
+						String su = obj.getJSONObject("obj")
+								.getString(SHORTURL);
+						JSONObject card = JsonUtil.FindInJSONArray(alltasks, SHORTURL, su);
+						tb.newRow()
+						.addToken(card.getString("name"),po.getInt("name"))
+						.addToken(GetLabels(card,recognizedCats),po.getInt("labels"));
+					}
+				});
+		
+		return tb.toString();
+	}
 	protected Date ComputePostponeDate(String string) throws Exception {
 		Matcher m = null;
 		Calendar c = Calendar.getInstance();
@@ -242,11 +293,9 @@ public class TaskManagerBase extends AbstractManager implements ScriptHelper  {
 
 	protected void logToDb(String msg, JSONObject obj) {
 		mc_.getDatabase("logistics").getCollection("taskLog")
-		.insertOne(Document.parse(new JSONObject()
-				.put("date",new Date())
-				.put("message",msg)
-				.put("obj",obj)
-				.toString()));
+		.insertOne(new Document("date",new Date())
+					.append("message",msg)
+					.append("obj",Document.parse(obj.toString())));
 	}
 	@Override
 	public String execute(String arg) throws Exception {

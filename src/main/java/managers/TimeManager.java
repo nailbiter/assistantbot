@@ -220,7 +220,6 @@ public class TimeManager extends AbstractManager implements Runnable, OptionRepl
 		if(!isWaitingForAnswer_) {
 			waitingForPersistentCategoryChoiceMessageId_ = 
 					rp_.sendMessageWithKeyBoard("choose the cat", MakePerCatButtons(categories_));
-//			return "choose the category";
 			return "";
 		} else {
 			return String.format("cannot /sleepstart because isWaitingForAnswer_=%s", 

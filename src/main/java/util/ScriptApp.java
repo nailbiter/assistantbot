@@ -28,9 +28,9 @@ public class ScriptApp {
 		scriptFolder_ = scriptFolder; 
 		if(!scriptFolder_.endsWith("/"))
 			scriptFolder_ += "/";
-		System.out.format("script folder: %s\n", scriptFolder_);
+		System.err.format("script folder: %s\n", scriptFolder_);
 		
-		System.out.format("commands: %s\n", getCommands().toString());
+		System.err.format("commands: %s\n", getCommands().toString());
         factory = new ScriptEngineManager();
 	}
 	public ArrayList<String> getCommands(){
@@ -44,12 +44,12 @@ public class ScriptApp {
 		for (File file:listOfFiles) {
 		  if (file.isFile()) {
 			String fn = file.getName();
-		    System.out.println("File " + fn);
+		    System.err.println("File " + fn);
 		    if(fn.endsWith(".js")) {
 		    	commands.add(fn.substring(0, fn.length()-3));
 		    }
 		  } else if (file.isDirectory()) {
-		    System.out.println("Directory " + file.getName());
+		    System.err.println("Directory " + file.getName());
 		  }
 		}
 	}

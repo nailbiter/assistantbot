@@ -75,10 +75,13 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		return String.format("created new card %s",res.getString("shortUrl"));
 	}
 	public String taskdone(JSONObject obj) throws JSONException, Exception {
+		if( !obj.has("num") ) {
+			return PrintDoneTasks(ta_,mc_,comparators_);
+		}
 		JSONObject card = getTasks(INBOX).get(obj.getInt("num")-1);
 		logToDb("taskdone",card);
 		ta_.archiveCard(card.getString("id"));
-		return String.format("removed task \"%s\"", card.getString("name"));
+		return String.format("archived task \"%s\"", card.getString("name"));
 	}
 	public String taskpostpone(JSONObject obj) throws JSONException, Exception {
 		if( !obj.has("num") ) {
@@ -118,10 +121,9 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 						asList(
 								new ParseOrderedArg("name",ArgTypes.remainder).makeOpt().j()
 								)))
-				//TODO
 				.put(new ParseOrderedCmd("taskdone", "mark as done", 
 						asList(new ParseOrderedArg("num",ArgTypes.integer)
-								.j())))
+								.makeOpt().j())))
 				
 				;
 		return res;
