@@ -238,9 +238,10 @@ public class TaskManagerBase extends AbstractManager implements ScriptHelper  {
 					public void apply(Document arg0) {
 						JSONObject obj = new JSONObject(arg0.toJson());
 						System.err.format("obj=%s\n", obj.toString());
-						String su = obj.getJSONObject("obj")
-								.getString(SHORTURL);
-						JSONObject card = JsonUtil.FindInJSONArray(alltasks, SHORTURL, su);
+//						String su = obj.getJSONObject("obj")
+//								.getString(SHORTURL);
+//						JSONObject card = JsonUtil.FindInJSONArray(alltasks, SHORTURL, su);
+						JSONObject card = obj.getJSONObject("obj");
 						tb.newRow()
 						.addToken(card.getString("name"),po.getInt("name"))
 						.addToken(GetLabels(card,recognizedCats),po.getInt("labels"));

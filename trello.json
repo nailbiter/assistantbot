@@ -1,13 +1,13 @@
 {
-   "pulledData" : {
-      "trelloTitle" : "script to check tasks done, display cats"
-   },
+   "cardurl" : "https://trello.com/c/fYYAcKHz",
+   "dependencies" : [
+      "src/main/java/com/github/nailbiter/util/"
+   ],
    "url" : {
       "parser" : "https://trello.com/c/hkuY0OBL",
       "indicator" : "https://trello.com/c/FMIlCbXE"
    },
-   "cardurl" : "https://trello.com/c/fYYAcKHz",
-   "dependencies" : [
-      "src/main/java/com/github/nailbiter/util/"
-   ]
+   "pulledData" : {
+      "trelloTitle" : "script to check tasks done, display cats"
+   }
 }
