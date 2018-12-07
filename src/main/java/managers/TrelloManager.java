@@ -49,14 +49,11 @@ public class TrelloManager extends AbstractManager{
 		commands.add("movetoeasytasks");
 //		commands.add("rename");
 		for(String cmd:commands) {
-			res.put(new ParseOrderedCmd(cmd,cmd,new ArrayList<JSONObject>())
-					/*Arrays.asList(
-					new ParseOrderedArg("rem", ArgTypes.remainder).j()))*/
-					);
+			res.put(new ParseOrderedCmd(cmd,cmd,new ArrayList<JSONObject>()));
 		}
 		commands.clear();
 		
-//		commands.add("makearchived");
+		commands.add("makearchived");
 		commands.add("addcard");
 //		commands.add("countcard");
 //		commands.add("getactions");
@@ -129,7 +126,10 @@ public class TrelloManager extends AbstractManager{
 		String cardid = arr.getJSONObject(arr.length()-1).getString("id");
 		ta_.moveCard(cardid, INBOXBOARDIDLONG+"."+newlistid,"top");
 		
-		return String.format("moved %s\n", arr.getJSONObject(arr.length()-1).toString(2));
+		return String.format("moved \"%s\"\n", 
+//				arr.getJSONObject(arr.length()-1).toString(2)
+				arr.getJSONObject(arr.length()-1).getString("name")
+				);
 	}
 	public String getactions(String rem) throws Exception {
 		String listId = ta_.findListByName(HABITBOARDID, "TODO");
