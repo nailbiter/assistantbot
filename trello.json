@@ -1,13 +1,13 @@
 {
-   "cardurl" : "https://trello.com/c/fYYAcKHz",
+   "cardurl" : "https://trello.com/c/36nz0uVp",
+   "pulledData" : {
+      "trelloTitle" : "trello app into GF, show name of card moved"
+   },
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
    ],
    "url" : {
-      "parser" : "https://trello.com/c/hkuY0OBL",
-      "indicator" : "https://trello.com/c/FMIlCbXE"
-   },
-   "pulledData" : {
-      "trelloTitle" : "script to check tasks done, display cats"
+      "indicator" : "https://trello.com/c/FMIlCbXE",
+      "parser" : "https://trello.com/c/hkuY0OBL"
    }
 }

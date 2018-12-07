@@ -1,4 +1,4 @@
-.PHONY: all offline pull jar gym add
+.PHONY: all offline pull jar gym add trello
 
 #JARSUFF=-jar-with-dependencies
 JARNAME=assistantBot-0.0.1-SNAPSHOT$(JARSUFF)
@@ -20,6 +20,8 @@ all: src/main/resources/profiles/telegram.json target/$(JARNAME).jar
 	rm -rf $(REBOOTFILE)
 	./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>&1 | tee log/log.telegram.txt
 include Makefile.sources
+trello: src/main/resources/profiles/trello.json target/$(JARNAME).jar
+	./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>log/log.$@.txt
 interactive: src/main/resources/profiles/interactive.json target/$(JARNAME).jar
 	./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>log/log.interactive.txt
 offline: src/main/resources/profiles/offline.json target/$(JARNAME).jar
