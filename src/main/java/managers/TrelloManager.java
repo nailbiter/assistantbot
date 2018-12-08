@@ -224,7 +224,8 @@ public class TrelloManager extends AbstractManager{
 		
 		return String.format("added \"%s\" %d times", obj.toString(),obj.getInt("count"));
 	}
-	public String makearchived(String rem) throws Exception {
+	public String makearchived(JSONObject arg) throws Exception {
+		String rem = arg.getString("rem");
 		String listId = ta_.findListByName(HABITBOARDID, "todo");
 		
 		JSONObject res = ta_.addCard(listId, new JSONObject().put("name", rem));
