@@ -6,9 +6,6 @@ import java.util.Hashtable;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -27,13 +24,10 @@ public class TrelloManager extends AbstractManager{
 	protected static final String HABITBOARDID = "kDCITi9O";
 	protected static final String INBOXBOARDID = "foFETfOx";
 	private TrelloAssistant ta_;
-//	private ScriptEngine engine_;
 	public TrelloManager(ResourceProvider rp) {
 		super(GetCommands());
 		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
 				KeyRing.getTrello().getString("token"));
-//		ScriptEngineManager mgr = new ScriptEngineManager();
-//		engine_ = mgr.getEngineByName("JavaScript");
 	}
 	private static JSONArray GetCommands() {
 		ArrayList<String> commands = new ArrayList<String>();
