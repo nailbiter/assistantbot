@@ -9,6 +9,7 @@ import com.mongodb.MongoClient;
 
 import assistantbot.ResourceProvider;
 import managers.misc.MashaRemind;
+import util.JsonUtil;
 import util.KeyRing;
 import util.MongoUtil;
 import util.ScriptApp;
@@ -50,7 +51,7 @@ public class ReportManager extends AbstractManager {
 				res2 = sa_.runCommand(String.format("timestat -d money -e %s -u %s", settings.getInt("moneycount"),settings.getString("moneyunit")));
 		rp_.sendFile(Util.saveToTmpFile(
 				String.format("<html>\n<head><style type=\"text/css\">\n%s\n</style></head>\n%s\n<br><br>\n%s\n</html>",
-						settings.getString("cssstyle"),
+						JsonUtil.JoinJsonArray(settings.getJSONArray("cssstyle"), "\n"),
 						res,res2)));
 		return "";
 	}

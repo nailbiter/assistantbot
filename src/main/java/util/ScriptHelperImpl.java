@@ -166,19 +166,23 @@ public class ScriptHelperImpl implements ScriptHelper {
 		ArrayList<String> firstRow = new ArrayList<>();
 		for(int i = 0; i < categories.size(); i++) {
 			firstRow.add(categories.get(i));
-			firstRow.add("%");
+//			firstRow.add("%");
 		}
 		firstRow.add("TOTAL");
-		firstRow.add("%");
+//		firstRow.add("%");
 		firstRow.add(0, "dates");
-		if(te==TableEngine.ASCIITABLE) ((AsciiTable) at).addRule();
+		if(te==TableEngine.ASCIITABLE) 
+			((AsciiTable) at).addRule();
 		AddRow(at,te,firstRow,true);
-		if(te==TableEngine.ASCIITABLE) ((AsciiTable) at).addRule();
+		if(te==TableEngine.ASCIITABLE) 
+			((AsciiTable) at).addRule();
 		for(int i = res.length()-1; i>=0; i--)
 			PrintRecord(at,res.getJSONObject(i),categories,databaseName,inv,functionName,total,te,false);
-		if(te==TableEngine.ASCIITABLE) ((AsciiTable) at).addRule();
+		if(te==TableEngine.ASCIITABLE) 
+			((AsciiTable) at).addRule();
 		PrintRecord(at,total,categories,databaseName,inv,functionName,total,te,true);
-		if(te==TableEngine.ASCIITABLE) ((AsciiTable) at).addRule();
+		if(te==TableEngine.ASCIITABLE) 
+			((AsciiTable) at).addRule();
 		
 		if(te==TableEngine.ASCIITABLE)
 //			System.out.println(((AsciiTable) at).render());
@@ -203,7 +207,7 @@ public class ScriptHelperImpl implements ScriptHelper {
 		} else if(te==TableEngine.HTML) {
 			((StringBuilder)table).append("<tr>\n");
 			for(int i = 0; i < row.size(); i++) {
-				if((i%2==0) || isHeader)
+				if( ( i == 0 ) || ( i == ( row.size() - 1 ) ) || isHeader )
 					((StringBuilder)table).append(String.format("\t<th>%s</th>\n", row.get(i)));
 				else
 					((StringBuilder)table).append(String.format("\t<td>%s</td>\n", row.get(i)));
@@ -219,17 +223,17 @@ public class ScriptHelperImpl implements ScriptHelper {
 		if(te==TableEngine.HTML)
 			procentFormat = "<b>%4.2f</b>";
 		else
-			procentFormat = "%4.2f"; 
+			procentFormat = "%4.2f";
 		row.add(String.format("%s..%s", 
 				df.format(new Date(obj.getLong(STARTDATEKEY))),
 				df.format(new Date(obj.getLong(ENDDATEKEY)))));
 		for(String category:categories) {
 			System.err.format("fn=%s, obj=%s, dn=%s\n", functionName,obj.toString(),databaseName);
-			row.add((String)inv.invokeFunction(functionName,obj.optInt(category),databaseName));
-			row.add(String.format(procentFormat, (100.0*obj.optInt(category))/obj.getInt(TOTALVALUEKEY)));
+			row.add(Util.PrintTooltip((String)inv.invokeFunction(functionName,obj.optInt(category),databaseName), 
+					String.format(procentFormat, (100.0*obj.optInt(category))/obj.getInt(TOTALVALUEKEY))));
 		}
-		row.add((String)inv.invokeFunction(functionName,obj.getInt(TOTALVALUEKEY),databaseName));
-		row.add(String.format(procentFormat, (100.0*obj.getInt(TOTALVALUEKEY))/total.getInt(TOTALVALUEKEY)));
+		row.add(Util.PrintTooltip((String)inv.invokeFunction(functionName,obj.getInt(TOTALVALUEKEY),databaseName), 
+				String.format(procentFormat, (100.0*obj.getInt(TOTALVALUEKEY))/total.getInt(TOTALVALUEKEY))));
 		AddRow(at,te,row,isHeader);
 	}
 	public void setParamObject(JSONObject settings) {

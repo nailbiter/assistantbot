@@ -1,6 +1,5 @@
 package managers;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 public interface MyManager extends Replier{

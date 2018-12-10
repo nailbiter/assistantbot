@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -11,7 +12,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class JsonUtil {
-
 	public static JSONObject FindInJSONArray(JSONArray array,String key,String val) {
 		for(Object o: array) {
 			JSONObject obj = (JSONObject)o;
@@ -20,7 +20,6 @@ public class JsonUtil {
 		}
 		return null;
 	}
-
 	public static void SortJSONArray(JSONArray arr,String key)
 	{
 		List<JSONObject> list = new ArrayList<JSONObject>();
@@ -65,6 +64,19 @@ public class JsonUtil {
 		for(String key: objKeys) {
 			if( !listOfKeys.contains(key) )
 				obj.remove(key);
+		}
+	}
+	public static String JoinJsonArray(JSONArray arr, String infix) {
+		
+		Iterator<Object> it = arr.iterator();
+		if( !it.hasNext() ) {
+			return "";
+		} else {
+			StringBuilder sb = new StringBuilder(it.next().toString());
+			while( it.hasNext() ) {
+				sb.append(infix+it.next().toString());
+			}
+			return sb.toString();
 		}
 	}
 }

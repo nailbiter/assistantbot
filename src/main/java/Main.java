@@ -37,10 +37,6 @@ public class Main {
     	JsonUtil.CapitalizeJsonKeys(profileObj);
     	System.err.format("profile: %s\n",profileObj.toString(2));
     	Util.setProfileObj(profileObj.toString());
-//    	Util.SetJarFolder(profileObj.getString("RESFOLDER"));
-//    	Util.SetRebootFileName(profileObj.getString("TMPFILE"));
-//    	Util.SetRebootCommandFileName(profileObj.getString("CMDFILE"));
-//    	Util.SetTmpFolderName(profileObj.getString("TMPFOLDER"));
     	
     	if(profileObj.has("OFFLINE")) {
     		try {

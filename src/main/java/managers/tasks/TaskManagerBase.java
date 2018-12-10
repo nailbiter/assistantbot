@@ -179,10 +179,13 @@ public class TaskManagerBase extends AbstractManager implements ScriptHelper  {
 			JSONObject obj = (JSONObject)o;
 			Date d = util.Util.MongoDateStringToLocalDate(obj.getString("date"));
 			if( d.after(now) ) {
+				JSONObject habitObj = JsonUtil.FindInJSONArray(tasks, SHORTURL, obj.getString(SHORTURL));
+				if(habitObj==null) {
+					continue;
+				}
 				res.add(new JSONObject()
 						.put("date", d)
-						.put("name", JsonUtil.FindInJSONArray(tasks, SHORTURL, obj.getString(SHORTURL))
-								.getString("name")));
+						.put("name", habitObj.getString("name")));
 			}
 		}
 		
@@ -221,7 +224,6 @@ public class TaskManagerBase extends AbstractManager implements ScriptHelper  {
 				recognizedCats.add(arg0.getString("name"));
 			}
 		});
-		recognizedCats.add("future");
 		
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.HOUR_OF_DAY, 0);

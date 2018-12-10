@@ -21,7 +21,6 @@ import managers.tasks.TaskManagerBase;
 import managers.tasks.TrelloMover;
 import util.JsonUtil;
 import util.MongoUtil;
-import util.ScriptApp;
 import util.Util;
 import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseOrderedArg;
