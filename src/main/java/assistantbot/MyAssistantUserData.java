@@ -16,7 +16,6 @@ import it.sauronsoftware.cron4j.Scheduler;
 import managers.MyManager;
 import managers.OptionReplier;
 import util.Util;
-import util.MyBasicBot;
 import util.UserData;
 import util.parsers.AbstractParser;
 import util.parsers.StandardParserInterpreter;
