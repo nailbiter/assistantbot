@@ -7,9 +7,14 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.bson.Document;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.mongodb.Block;
@@ -23,14 +28,11 @@ import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
 
-import static util.parsers.ParseOrdered.MakeCommand;
-import static util.parsers.ParseOrdered.MakeCommandArg;
-import static util.parsers.ParseOrdered.ArgTypes;
-
 public class MoneyManager extends AbstractManager implements OptionReplier{
 	JSONArray cats = new JSONArray();
 	ResourceProvider ud_ = null;
 	MongoCollection<Document> money;
+//	private ScriptEngine engine_;
 	private static final String PATTERN = "yyyyMMddHHmm";
 	public MoneyManager(ResourceProvider myAssistantUserData) throws Exception
 	{
@@ -45,11 +47,18 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		};
 		mongoClient.getDatabase("logistics").getCollection("moneycats").find().forEach(printBlock);
 		money = mongoClient.getDatabase("logistics").getCollection("money");
-		
+//		engine_ = new ScriptEngineManager().getEngineByName("JavaScript");
 		ud_ = myAssistantUserData;
 	}
+	protected int simpleEval(String expr) {
+		String[] split = expr.split("+");
+		int res = 0;
+		for(String part:split)
+			res += Integer.parseInt(part);
+		return res;
+	}
 	Hashtable<Integer,JSONObject> pendingOperations = new Hashtable<Integer,JSONObject>();
-	public String money(JSONObject obj) throws ParseException
+	public String money(JSONObject obj) throws ParseException, JSONException, ScriptException
 	{
 		int msgid = ud_.sendMessageWithKeyBoard("which category?", cats);
 		
@@ -60,6 +69,7 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 				System.out.format("%s matches!\n", comment);
 				SimpleDateFormat sdf = new SimpleDateFormat(PATTERN);
 				Date d = sdf.parse(comment.substring(0,PATTERN.length()));
+				obj.put("amount", simpleEval(obj.getString("amount")));
 				obj.put("date", d);
 				obj.put("comment", comment.substring(PATTERN.length()).trim());
 			}
@@ -131,7 +141,7 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 				.put(new ParseOrderedCmd("costs","show last NUM costs",
 						Arrays.asList((JSONObject) new ParseOrderedArg("num", ArgTypes.integer).makeOpt().useDefault(5))))
 				.put(new ParseOrderedCmd("money", "spent money",
-						Arrays.asList((JSONObject)new ParseOrderedArg("amount",ParseOrdered.ArgTypes.integer),
+						Arrays.asList((JSONObject)new ParseOrderedArg("amount",ParseOrdered.ArgTypes.string),
 								(JSONObject)new ParseOrderedArg("comment", ParseOrdered.ArgTypes.remainder).makeOpt())))
 				;
 		return res;

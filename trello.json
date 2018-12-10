@@ -1,10 +1,10 @@
 {
+   "cardurl" : "https://trello.com/c/KRMYr6PH",
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
    ],
-   "cardurl" : "https://trello.com/c/cbBg1mAY",
    "pulledData" : {
-      "trelloTitle" : "insomnia gf"
+      "trelloTitle" : "report show percentage context"
    },
    "url" : {
       "indicator" : "https://trello.com/c/FMIlCbXE",

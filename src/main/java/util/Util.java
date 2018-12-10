@@ -328,4 +328,9 @@ public class Util{
 			return (StringUtils.repeat(filler,(int)daysTill));
 		}
 	}
+	public static String PrintTooltip(String tip,String text) {
+		return String.format("<div class=\"tooltip\">%s\n" + 
+				"				  <span class=\"tooltiptext\">%s</span>\n" + 
+				"				</div> ", text,tip);
+	}
 }
