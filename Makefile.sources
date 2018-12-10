@@ -1,6 +1,6 @@
 ASBOTSOURCES=MyAssistantUserData MyAssistantBot ResourceProvider
 MANAGERSOURCES=$(addsuffix Manager,Time Money Test MiscUtil Habit German Gym Abstract Report JShell Task PerlScript Trello)
-UTILSOURCES=StorageManager MyBasicBot MongoUtil Util TelegramUtil JsonUtil ScriptApp ScriptHelper ScriptHelperImpl
+UTILSOURCES=StorageManager MyBasicBot MongoUtil Util TelegramUtil JsonUtil ScriptApp ScriptHelper ScriptHelperImpl AssistantBotException
 HABITMANAGERSOURCES=HabitManagerBase JSONObjectCallback Donep Constants
 SHELLSOURCES=InteractiveShell
 TESTSOURCES=UrlTest JsonTest ParadigmTest

@@ -1,13 +1,13 @@
 {
+   "pulledData" : {
+      "trelloTitle" : "trAnsport money"
+   },
+   "cardurl" : "https://trello.com/c/SvmwEouw",
    "url" : {
       "indicator" : "https://trello.com/c/FMIlCbXE",
       "parser" : "https://trello.com/c/hkuY0OBL"
    },
-   "cardurl" : "https://trello.com/c/KRMYr6PH",
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
-   ],
-   "pulledData" : {
-      "trelloTitle" : "report show percentage context"
-   }
+   ]
 }

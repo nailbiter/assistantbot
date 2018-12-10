@@ -23,6 +23,8 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Sorts;
 
 import assistantbot.ResourceProvider;
+import util.AssistantBotException;
+import util.Util;
 import util.parsers.ParseOrdered;
 import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseOrderedArg;
@@ -32,7 +34,6 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 	JSONArray cats = new JSONArray();
 	ResourceProvider ud_ = null;
 	MongoCollection<Document> money;
-//	private ScriptEngine engine_;
 	private static final String PATTERN = "yyyyMMddHHmm";
 	public MoneyManager(ResourceProvider myAssistantUserData) throws Exception
 	{
@@ -47,35 +48,25 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		};
 		mongoClient.getDatabase("logistics").getCollection("moneycats").find().forEach(printBlock);
 		money = mongoClient.getDatabase("logistics").getCollection("money");
-//		engine_ = new ScriptEngineManager().getEngineByName("JavaScript");
 		ud_ = myAssistantUserData;
 	}
-	protected int simpleEval(String expr) {
-		String[] split = expr.split("+");
-		int res = 0;
-		for(String part:split)
-			res += Integer.parseInt(part);
-		return res;
-	}
 	Hashtable<Integer,JSONObject> pendingOperations = new Hashtable<Integer,JSONObject>();
-	public String money(JSONObject obj) throws ParseException, JSONException, ScriptException
+	public String money(JSONObject obj) throws ParseException, JSONException, ScriptException, AssistantBotException
 	{
 		int msgid = ud_.sendMessageWithKeyBoard("which category?", cats);
+		obj.put("amount", Util.SimpleEval(obj.getString("amount")));
 		
-		{
-			String comment = obj.optString("comment");
-			System.out.format("comment=%s\n", comment);
-			if(comment.matches("^"+StringUtils.repeat("[0-9]",PATTERN.length())+".*")) {
-				System.out.format("%s matches!\n", comment);
-				SimpleDateFormat sdf = new SimpleDateFormat(PATTERN);
-				Date d = sdf.parse(comment.substring(0,PATTERN.length()));
-				obj.put("amount", simpleEval(obj.getString("amount")));
-				obj.put("date", d);
-				obj.put("comment", comment.substring(PATTERN.length()).trim());
-			}
-			else
-				System.out.format("%s doesn't match!\n",comment);
+		String comment = obj.optString("comment");
+		System.err.format("comment=\"%s\"\n", comment);
+		if(comment.matches("^"+StringUtils.repeat("[0-9]",PATTERN.length())+".*")) {
+			System.err.format("%s matches!\n", comment);
+			SimpleDateFormat sdf = new SimpleDateFormat(PATTERN);
+			Date d = sdf.parse(comment.substring(0,PATTERN.length()));
+			obj.put("date", d);
+			obj.put("comment", comment.substring(PATTERN.length()).trim());
 		}
+		else
+			System.err.format("%s doesn't match!\n",comment);
 		
 		this.pendingOperations.put(msgid, obj);
 		return String.format("prepare to put %s",obj.toString());

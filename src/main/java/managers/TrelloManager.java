@@ -17,6 +17,7 @@ import com.github.nailbiter.util.TrelloAssistant;
 
 import assistantbot.ResourceProvider;
 import util.KeyRing;
+import util.Util;
 import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
@@ -26,13 +27,13 @@ public class TrelloManager extends AbstractManager{
 	protected static final String HABITBOARDID = "kDCITi9O";
 	protected static final String INBOXBOARDID = "foFETfOx";
 	private TrelloAssistant ta_;
-	private ScriptEngine engine_;
+//	private ScriptEngine engine_;
 	public TrelloManager(ResourceProvider rp) {
 		super(GetCommands());
 		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
 				KeyRing.getTrello().getString("token"));
-		ScriptEngineManager mgr = new ScriptEngineManager();
-		engine_ = mgr.getEngineByName("JavaScript");
+//		ScriptEngineManager mgr = new ScriptEngineManager();
+//		engine_ = mgr.getEngineByName("JavaScript");
 	}
 	private static JSONArray GetCommands() {
 		ArrayList<String> commands = new ArrayList<String>();
@@ -182,7 +183,8 @@ public class TrelloManager extends AbstractManager{
 	public String removecards(String rem) throws Exception {
 		String[] split = rem.split(" ",2);
 		String listId = ta_.findListByName(HABITBOARDID, "TODO");
-		int count = (int)engine_.eval(split[0]);
+//		int count = (int)engine_.eval(split[0]);
+		int count = Util.SimpleEval(split[0]);
 		String name = split[1];
 		JSONArray array = ta_.getCardsInList(listId);
 		
@@ -206,7 +208,7 @@ public class TrelloManager extends AbstractManager{
 		String listId = ta_.findListByName(HABITBOARDID, "TODO");
 		JSONObject obj = new JSONObject()
 				.put("name", split[1])
-				.put("count", (int)engine_.eval(split[0])),
+				.put("count", Util.SimpleEval(split[0])),
 				clone = new JSONObject(obj.toString());
 		
 		clone.remove("count");

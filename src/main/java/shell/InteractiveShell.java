@@ -12,6 +12,7 @@ import org.jline.reader.impl.completer.StringsCompleter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.github.nailbiter.util.TableBuilder;
 import com.mongodb.MongoClient;
 
 import assistantbot.ResourceProvider;
@@ -75,7 +76,21 @@ public class InteractiveShell implements ResourceProvider {
 	}
 	@Override
 	public int sendMessageWithKeyBoard(String msg, JSONArray categories) {
-		// TODO Auto-generated method stub
+		TableBuilder tb = new TableBuilder();
+		StringBuilder res = new StringBuilder();
+		
+		res.append("send keyboard:\n");
+		
+		tb.addNewlineAndTokens("#", "option");
+		int i = 1;
+		for(Object o:categories) {
+			tb.newRow();
+			tb.addToken(i++);
+			tb.addToken((String)o);
+		}
+		res.append(tb.toString());
+		
+		sendMessage(res.toString());
 		return 0;
 	}
 	@Override

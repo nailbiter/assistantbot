@@ -55,13 +55,17 @@ public class TimeManager extends AbstractManager implements Runnable, OptionRepl
 		MongoClient mc = rp.getMongoClient();
 		rp_ = rp;
 		time_ = mc.getDatabase("logistics").getCollection("time");
-		categories_ = new JSONArray(CollectionUtils.filter(MongoUtil.GetJSONArrayFromDatabase(mc, "logistics", "timecats").toList(), 
-				new Predicate<Object>() {
-					@Override
-					public boolean evaluate(Object arg0) {
-						return ((JSONObject)arg0).optBoolean("isTimeCat", true);
-					}
-			})); 
+		categories_ = MongoUtil.GetJSONArrayFromDatabase(mc, "logistics", "timecats");
+		for( int i = 0; i < categories_.length(); i++ ) {
+			if( !categories_.getJSONObject(i).optBoolean("isTimeCat",true) ) {
+				categories_.remove(i);
+				i--;
+			}
+		}
+		System.err.println("timecats");
+		for( int i = 0; i < categories_.length(); i++ ) {
+			System.err.println("\t"+categories_.getJSONObject(i).getString("name"));
+		}
 		rp.getScheduler().schedule(String.format("*/%d * * * *",DELAYMIN), this);
 		sleepingTimes_ = mc.getDatabase("logistics").getCollection("sleepingtimes");
 	}
@@ -110,19 +114,23 @@ public class TimeManager extends AbstractManager implements Runnable, OptionRepl
 	}
 	protected static ArrayList<List<InlineKeyboardButton>> MakeButtons(JSONArray categories)
 	{
-		ArrayList<List<InlineKeyboardButton>> buttons = new ArrayList<List<InlineKeyboardButton>>(); 
+		ArrayList<List<InlineKeyboardButton>> buttons = new ArrayList<List<InlineKeyboardButton>>();
+		ArrayList<String> cats = new ArrayList<String>();
 		for(int i = 0; i < categories.length();)
 		{
 			buttons.add(new ArrayList<InlineKeyboardButton>());
 			for(int j = 0; j < ROWNUM && i < categories.length(); j++)
 			{
 				JSONObject obj = categories.getJSONObject(i);
+				cats.add(obj.getString("name"));
 				buttons.get(buttons.size()-1).add(new InlineKeyboardButton()
 						.setText(obj.getString("name"))
 						.setCallbackData(obj.getString("name")));
 				i++;
 			}
 		}
+		
+		System.err.format("timecats: %s\n", cats.toString());
 		return buttons;
 	}
 	private List<List<InlineKeyboardButton>> MakePerCatButtons(JSONArray categories) {
