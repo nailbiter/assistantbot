@@ -3,6 +3,7 @@
  */
 package managers;
 
+import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,8 +20,10 @@ import static util.parsers.StandardParserInterpreter.CMD;
  */
 public abstract class AbstractManager implements MyManager {
 	protected ParseOrdered po_ = null;
+	protected Logger logger_;
 	protected AbstractManager(JSONArray commands) {
 		po_ = new ParseOrdered(commands,this.getClass().getName());
+		logger_ = Logger.getLogger(this.getClass().getName());
 	}
 	/* (non-Javadoc)
 	 * @see util.MyManager#getResultAndFormat(org.json.JSONObject)

@@ -45,9 +45,13 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 			System.err.format("set up %s\n", obj.toString(2));
 			Date d = Util.MongoDateStringToLocalDate(obj.getString("date"));
 			System.err.format("date: %s\n", d.toString());
-			setUpReminder(
-					JsonUtil.FindInJSONArray(cards, SHORTURL, obj.getString(SHORTURL)),
-					d);
+			JSONObject habitObj = 
+					JsonUtil.FindInJSONArray(cards, SHORTURL, obj.getString(SHORTURL));
+			if( habitObj != null ) {
+				setUpReminder(habitObj,d);
+			} else {
+				logger_.warning(String.format("could not setUpReminder for %s\n", obj.toString(2)));
+			}
 		}
 	}
 	public String tasks(JSONObject res) throws Exception {
@@ -84,7 +88,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 	}
 	public String taskpostpone(JSONObject obj) throws JSONException, Exception {
 		if( !obj.has("num") ) {
-			return PrintSnoozed(ta_,mc_,comparators_.get(SNOOZED).middle,getParamObject(mc_));
+			return PrintSnoozed(ta_,mc_,comparators_.get(SNOOZED).middle,getParamObject(mc_),logger_);
 		}
 		JSONObject card = getTasks(INBOX).get(obj.getInt("num")-1);
 		

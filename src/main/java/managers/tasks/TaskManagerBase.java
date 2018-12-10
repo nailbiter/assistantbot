@@ -13,6 +13,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Timer;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -168,7 +169,7 @@ public class TaskManagerBase extends AbstractManager implements ScriptHelper  {
 		return String.join(", ", res);
 	}
 
-	protected static String PrintSnoozed(TrelloAssistant ta, MongoClient mc, String listid, JSONObject po) throws Exception {
+	protected static String PrintSnoozed(TrelloAssistant ta, MongoClient mc, String listid, JSONObject po, Logger logger) throws Exception {
 		JSONArray tasks = ta.getCardsInList(listid);
 		JSONArray reminders = 
 				MongoUtil.GetJSONArrayFromDatabase(mc, "logistics", POSTPONEDTASKS);
@@ -182,6 +183,8 @@ public class TaskManagerBase extends AbstractManager implements ScriptHelper  {
 				JSONObject habitObj = JsonUtil.FindInJSONArray(tasks, SHORTURL, obj.getString(SHORTURL));
 				if(habitObj==null) {
 					continue;
+				} else {
+					logger.warning(String.format("could not list %s\n", obj.toString(2)));
 				}
 				res.add(new JSONObject()
 						.put("date", d)
