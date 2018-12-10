@@ -221,7 +221,6 @@ public class TaskManagerBase extends AbstractManager implements ScriptHelper  {
 				recognizedCats.add(arg0.getString("name"));
 			}
 		});
-		recognizedCats.add("future");
 		
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.HOUR_OF_DAY, 0);

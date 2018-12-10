@@ -12,7 +12,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class JsonUtil {
-
 	public static JSONObject FindInJSONArray(JSONArray array,String key,String val) {
 		for(Object o: array) {
 			JSONObject obj = (JSONObject)o;
@@ -21,7 +20,6 @@ public class JsonUtil {
 		}
 		return null;
 	}
-
 	public static void SortJSONArray(JSONArray arr,String key)
 	{
 		List<JSONObject> list = new ArrayList<JSONObject>();

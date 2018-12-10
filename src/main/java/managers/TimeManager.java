@@ -8,6 +8,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.Predicate;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.Document;
 import org.json.JSONArray;
@@ -52,7 +55,13 @@ public class TimeManager extends AbstractManager implements Runnable, OptionRepl
 		MongoClient mc = rp.getMongoClient();
 		rp_ = rp;
 		time_ = mc.getDatabase("logistics").getCollection("time");
-		categories_ = MongoUtil.GetJSONArrayFromDatabase(mc, "logistics", "timecats");
+		categories_ = new JSONArray(CollectionUtils.filter(MongoUtil.GetJSONArrayFromDatabase(mc, "logistics", "timecats").toList(), 
+				new Predicate<Object>() {
+					@Override
+					public boolean evaluate(Object arg0) {
+						return ((JSONObject)arg0).optBoolean("isTimeCat", true);
+					}
+			})); 
 		rp.getScheduler().schedule(String.format("*/%d * * * *",DELAYMIN), this);
 		sleepingTimes_ = mc.getDatabase("logistics").getCollection("sleepingtimes");
 	}

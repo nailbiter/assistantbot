@@ -38,3 +38,5 @@ gym:
 	./src/main/pl/makeGym.pl --program src/main/resources/gym.json
 cp.txt: src/main/pl/parseCp.pl pom.xml
 	mvn exec:exec -Dexec.executable="echo" -Dexec.args="%classpath" | perl  $< --bogus $(BOGUS) > $@
+README.html: README.md
+	markdown $< > $@
