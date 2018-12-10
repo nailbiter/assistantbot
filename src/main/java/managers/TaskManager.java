@@ -50,7 +50,8 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 			if( habitObj != null ) {
 				setUpReminder(habitObj,d);
 			} else {
-				logger_.warning(String.format("could not setUpReminder for %s\n", obj.toString(2)));
+				logger_.warning(
+						String.format("could not setUpReminder for %s\n", obj.toString(2)));
 			}
 		}
 	}
