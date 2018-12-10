@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.TimeZone;
 import java.util.Timer;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -257,7 +258,7 @@ public class TaskManagerBase extends AbstractManager implements ScriptHelper  {
 	}
 	protected Date ComputePostponeDate(String string) throws Exception {
 		Matcher m = null;
-		Calendar c = Calendar.getInstance();
+		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("JST"));
 		if((m = Pattern.compile("(\\d{2})(\\d{2})(\\d{2})(\\d{2})").matcher(string)).matches()) {
 			c.set(Calendar.MONTH, Integer.parseInt(m.group(1))-1);
 			c.set(Calendar.DATE, Integer.parseInt(m.group(2)));
