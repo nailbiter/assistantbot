@@ -1,13 +1,13 @@
 {
    "pulledData" : {
-      "trelloTitle" : "trAnsport money"
+      "trelloTitle" : "fix future"
    },
-   "cardurl" : "https://trello.com/c/SvmwEouw",
+   "dependencies" : [
+      "src/main/java/com/github/nailbiter/util/"
+   ],
    "url" : {
       "indicator" : "https://trello.com/c/FMIlCbXE",
       "parser" : "https://trello.com/c/hkuY0OBL"
    },
-   "dependencies" : [
-      "src/main/java/com/github/nailbiter/util/"
-   ]
+   "cardurl" : "https://trello.com/c/SUHQYgwm"
 }
