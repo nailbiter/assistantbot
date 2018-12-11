@@ -1,13 +1,13 @@
 {
-   "pulledData" : {
-      "trelloTitle" : "trAnsport money"
-   },
-   "cardurl" : "https://trello.com/c/SvmwEouw",
-   "url" : {
-      "indicator" : "https://trello.com/c/FMIlCbXE",
-      "parser" : "https://trello.com/c/hkuY0OBL"
-   },
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
-   ]
+   ],
+   "cardurl" : "https://trello.com/c/Lod70Hqu",
+   "url" : {
+      "parser" : "https://trello.com/c/hkuY0OBL",
+      "indicator" : "https://trello.com/c/FMIlCbXE"
+   },
+   "pulledData" : {
+      "trelloTitle" : "food fun tag"
+   }
 }
