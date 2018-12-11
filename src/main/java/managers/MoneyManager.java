@@ -3,6 +3,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
@@ -24,6 +26,7 @@ import com.mongodb.client.model.Sorts;
 
 import assistantbot.ResourceProvider;
 import util.AssistantBotException;
+import util.ParseCommentLine;
 import util.Util;
 import util.parsers.ParseOrdered;
 import util.parsers.ParseOrdered.ArgTypes;
@@ -34,42 +37,51 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 	JSONArray cats = new JSONArray();
 	ResourceProvider ud_ = null;
 	MongoCollection<Document> money;
-	private static final String PATTERN = "yyyyMMddHHmm";
+	
+	Hashtable<Integer,JSONObject> pendingOperations = new Hashtable<Integer,JSONObject>();
 	public MoneyManager(ResourceProvider myAssistantUserData) throws Exception
 	{
 		super(GetCommands());
 		MongoClient mongoClient = myAssistantUserData.getMongoClient();
-		Block<Document> printBlock = new Block<Document>() {
+		mongoClient.getDatabase("logistics").getCollection("moneycats").find()
+			.forEach(new Block<Document>() {
 		       @Override
 		       public void apply(final Document doc) {
-		    	   JSONObject obj = new JSONObject(doc.toJson());
-		    	   cats.put(obj.getString("name"));
+		    	   cats.put(new JSONObject(doc.toJson()).getString("name"));
 		       }
-		};
-		mongoClient.getDatabase("logistics").getCollection("moneycats").find().forEach(printBlock);
+			});
 		money = mongoClient.getDatabase("logistics").getCollection("money");
 		ud_ = myAssistantUserData;
 	}
-	Hashtable<Integer,JSONObject> pendingOperations = new Hashtable<Integer,JSONObject>();
 	public String money(JSONObject obj) throws ParseException, JSONException, ScriptException, AssistantBotException
 	{
+		if( !obj.has("amount") ) {
+			return ShowTags(money);
+		}
 		int msgid = ud_.sendMessageWithKeyBoard("which category?", cats);
 		obj.put("amount", Util.SimpleEval(obj.getString("amount")));
 		
 		String comment = obj.optString("comment");
 		System.err.format("comment=\"%s\"\n", comment);
-		if(comment.matches("^"+StringUtils.repeat("[0-9]",PATTERN.length())+".*")) {
-			System.err.format("%s matches!\n", comment);
-			SimpleDateFormat sdf = new SimpleDateFormat(PATTERN);
-			Date d = sdf.parse(comment.substring(0,PATTERN.length()));
-			obj.put("date", d);
-			obj.put("comment", comment.substring(PATTERN.length()).trim());
-		}
-		else
-			System.err.format("%s doesn't match!\n",comment);
+		HashMap<String, Object> parsed = new ParseCommentLine(ParseCommentLine.Mode.FROMLEFT).parse(comment);
+		if( parsed.containsKey(ParseCommentLine.DATE) )
+			obj.put("date", (Date)parsed.get(ParseCommentLine.DATE));
+		obj.put("tags", new JSONArray((Set<String>)parsed.get(ParseCommentLine.TAGS)));
+		obj.put("comment", (String)parsed.getOrDefault(ParseCommentLine.REM,""));
 		
 		this.pendingOperations.put(msgid, obj);
 		return String.format("prepare to put %s",obj.toString());
+	}
+	private static String ShowTags(MongoCollection<Document> money) {
+		final StringBuilder sb = new StringBuilder("tags: \n");
+		money.find().forEach(new Block<Document>() {
+			@Override
+			public void apply(Document arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		return null;
 	}
 	private void putMoney(JSONObject obj,String categoryName)
 	{
@@ -80,7 +92,8 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 			res.put("date", (Date)obj.get("date"));
 		else
 			res.put("date", new Date());
-		res.put("comment", obj.optString("comment"));
+		res.put("comment", obj.getString("comment"));
+		res.put("tags", obj.getJSONArray("tags"));
 		money.insertOne(res);
 	}
 	public String costs(JSONObject obj) {
@@ -132,7 +145,7 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 				.put(new ParseOrderedCmd("costs","show last NUM costs",
 						Arrays.asList((JSONObject) new ParseOrderedArg("num", ArgTypes.integer).makeOpt().useDefault(5))))
 				.put(new ParseOrderedCmd("money", "spent money",
-						Arrays.asList((JSONObject)new ParseOrderedArg("amount",ParseOrdered.ArgTypes.string),
+						Arrays.asList((JSONObject)new ParseOrderedArg("amount",ParseOrdered.ArgTypes.string).makeOpt(),
 								(JSONObject)new ParseOrderedArg("comment", ParseOrdered.ArgTypes.remainder).makeOpt())))
 				;
 		return res;

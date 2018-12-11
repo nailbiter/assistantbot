@@ -1,13 +1,13 @@
 {
-   "pulledData" : {
-      "trelloTitle" : "fix future"
-   },
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
    ],
+   "cardurl" : "https://trello.com/c/Lod70Hqu",
    "url" : {
-      "indicator" : "https://trello.com/c/FMIlCbXE",
-      "parser" : "https://trello.com/c/hkuY0OBL"
+      "parser" : "https://trello.com/c/hkuY0OBL",
+      "indicator" : "https://trello.com/c/FMIlCbXE"
    },
-   "cardurl" : "https://trello.com/c/SUHQYgwm"
+   "pulledData" : {
+      "trelloTitle" : "food fun tag"
+   }
 }
