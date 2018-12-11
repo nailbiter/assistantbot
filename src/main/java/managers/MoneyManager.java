@@ -74,14 +74,25 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 	}
 	private static String ShowTags(MongoCollection<Document> money) {
 		final StringBuilder sb = new StringBuilder("tags: \n");
+		final HashSet<String> res = new HashSet<String> ();
 		money.find().forEach(new Block<Document>() {
 			@Override
 			public void apply(Document arg0) {
-				// TODO Auto-generated method stub
-				
+				JSONArray arr;
+				try {
+					arr = new JSONObject(arg0.toJson()).getJSONArray("tags");
+				}
+				catch(JSONException e) {
+					return;
+				}
+				for(Object o:arr)
+					res.add((String)o);
 			}
 		});
-		return null;
+		
+		for(String tag:res)
+			sb.append(String.format("%s%s\n", "  ",tag));
+		return sb.toString();
 	}
 	private void putMoney(JSONObject obj,String categoryName)
 	{
