@@ -82,7 +82,12 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		if( !obj.has("num") ) {
 			return PrintDoneTasks(ta_,mc_,comparators_);
 		}
-		JSONObject card = getTasks(INBOX).get(obj.getInt("num")-1);
+		
+		JSONObject card = null;
+		if( obj.getInt("num") > 0 )
+			card = getTasks(INBOX).get(obj.getInt("num")-1);
+		else
+			card = getTasks(SNOOZED).get(-obj.getInt("num")-1);
 		logToDb("taskdone",card);
 		ta_.archiveCard(card.getString("id"));
 		return String.format("archived task \"%s\"", card.getString("name"));
