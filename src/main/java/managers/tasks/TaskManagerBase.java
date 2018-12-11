@@ -1,8 +1,10 @@
 package managers.tasks;
 
+import static com.mongodb.client.model.Filters.and;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.gte;
 import static managers.habits.Constants.SEPARATOR;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -18,7 +20,6 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.script.Invocable;
 import javax.script.ScriptException;
 
 import org.apache.commons.lang3.tuple.ImmutableTriple;
@@ -31,10 +32,6 @@ import com.github.nailbiter.util.TableBuilder;
 import com.github.nailbiter.util.TrelloAssistant;
 import com.github.nailbiter.util.Util;
 import com.mongodb.Block;
-import static com.mongodb.client.model.Filters.and;
-import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Filters.gte;
-import static com.mongodb.client.model.Filters.lte;
 import com.mongodb.MongoClient;
 
 import assistantbot.ResourceProvider;
@@ -44,9 +41,9 @@ import util.JsonUtil;
 import util.KeyRing;
 import util.MongoUtil;
 import util.ScriptApp;
-import util.ScriptHelper;
+import util.ScriptHelperVarkeeper;
 
-public class TaskManagerBase extends AbstractManager implements ScriptHelper  {
+public class TaskManagerBase extends AbstractManager {
 
 	protected static final String POSTPONEDTASKS = "postponedTasks";
 	protected Timer timer = new Timer();
@@ -59,8 +56,9 @@ public class TaskManagerBase extends AbstractManager implements ScriptHelper  {
 	protected static String INBOX = "INBOX";
 	protected static String SNOOZED = "SNOOZED";
 	protected static String SHORTURL = "shortUrl";
-	private JSONObject a_=null, b_=null;
+//	private JSONObject a_=null, b_=null;
 	protected HashMap<String,ImmutableTriple<Comparator<JSONObject>,String,Integer>> comparators_ = new HashMap<String,ImmutableTriple<Comparator<JSONObject>,String,Integer>>();
+	private ScriptHelperVarkeeper varkeeper_ = null;
 
 	protected TaskManagerBase(JSONArray commands, ResourceProvider rp) throws Exception {
 		super(commands);
@@ -68,20 +66,21 @@ public class TaskManagerBase extends AbstractManager implements ScriptHelper  {
 				KeyRing.getTrello().getString("token"));
 		rp_ = rp;
 		mc_ = rp.getMongoClient();
-		
-		sa_ = new ScriptApp(getParamObject(mc_).getString("scriptFolder"), this);
+		varkeeper_ = new ScriptHelperVarkeeper();
+		sa_ = new ScriptApp(getParamObject(mc_).getString("scriptFolder"), varkeeper_);
 		fillTable();
 	}
 	protected void fillTable() throws Exception {
-//		JSONObject po = this.getParamObject(mc_);
 		String listid = ta_.findListByName(managers.habits.Constants.INBOXBOARDID, 
 				managers.habits.Constants.INBOXLISTNAME);
 		comparators_.put(INBOX, new ImmutableTriple<Comparator<JSONObject>,String,Integer>(
 				new Comparator<JSONObject>() {
 					@Override
 					public int compare(JSONObject o1, JSONObject o2) {
-						TaskManagerBase.this.a_ = o1;
-						TaskManagerBase.this.b_ = o2;
+//						TaskManagerBase.this.a_ = o1;
+//						TaskManagerBase.this.b_ = o2;
+						varkeeper_.set("a", o1.toString());
+						varkeeper_.set("b", o2.toString());
 						try {
 							int res = 
 									Integer.parseInt(TaskManagerBase.this.sa_.runCommand("inbox"));
@@ -99,8 +98,10 @@ public class TaskManagerBase extends AbstractManager implements ScriptHelper  {
 				new Comparator<JSONObject>() {
 					@Override
 					public int compare(JSONObject o1, JSONObject o2) {
-						TaskManagerBase.this.a_ = o1;
-						TaskManagerBase.this.b_ = o2;
+//						TaskManagerBase.this.a_ = o1;
+//						TaskManagerBase.this.b_ = o2;
+						varkeeper_.set("a", o1.toString());
+						varkeeper_.set("b", o2.toString());
 						try {
 							return Integer.parseInt(TaskManagerBase.this.sa_.runCommand("snoozed"));
 						} catch (NumberFormatException | FileNotFoundException | NoSuchMethodException
@@ -304,21 +305,21 @@ public class TaskManagerBase extends AbstractManager implements ScriptHelper  {
 					.append("message",msg)
 					.append("obj",Document.parse(obj.toString())));
 	}
-	@Override
-	public String execute(String arg) throws Exception {
-		String res = null;
-		if(arg.equals("a")) {
-			res = a_.toString();
-		} else if(arg.equals("b")) {
-			res = b_.toString();
-		} else {
-			res = null;
-		}
-		System.err.format("execute %s gave %s\n", arg,(res==null)?"null":res);
-		return res;
-	}
-	@Override
-	public void setInvocable(Invocable inv) {
-	}
+//	@Override
+//	public String execute(String arg) throws Exception {
+//		String res = null;
+//		if(arg.equals("a")) {
+//			res = a_.toString();
+//		} else if(arg.equals("b")) {
+//			res = b_.toString();
+//		} else {
+//			res = null;
+//		}
+//		System.err.format("execute %s gave %s\n", arg,(res==null)?"null":res);
+//		return res;
+//	}
+//	@Override
+//	public void setInvocable(Invocable inv) {
+//	}
 
 }
