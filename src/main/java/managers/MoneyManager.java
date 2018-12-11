@@ -34,11 +34,11 @@ import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
 
 public class MoneyManager extends AbstractManager implements OptionReplier{
-	JSONArray cats = new JSONArray();
+	HashSet<String> cats = new HashSet<String>();
 	ResourceProvider ud_ = null;
 	MongoCollection<Document> money;
-	
 	Hashtable<Integer,JSONObject> pendingOperations = new Hashtable<Integer,JSONObject>();
+	
 	public MoneyManager(ResourceProvider myAssistantUserData) throws Exception
 	{
 		super(GetCommands());
@@ -47,7 +47,7 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 			.forEach(new Block<Document>() {
 		       @Override
 		       public void apply(final Document doc) {
-		    	   cats.put(new JSONObject(doc.toJson()).getString("name"));
+		    	   cats.add(new JSONObject(doc.toJson()).getString("name"));
 		       }
 			});
 		money = mongoClient.getDatabase("logistics").getCollection("money");
@@ -58,7 +58,7 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		if( !obj.has("amount") ) {
 			return ShowTags(money);
 		}
-		int msgid = ud_.sendMessageWithKeyBoard("which category?", cats);
+		
 		obj.put("amount", Util.SimpleEval(obj.getString("amount")));
 		
 		String comment = obj.optString("comment");
@@ -66,11 +66,29 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		HashMap<String, Object> parsed = new ParseCommentLine(ParseCommentLine.Mode.FROMLEFT).parse(comment);
 		if( parsed.containsKey(ParseCommentLine.DATE) )
 			obj.put("date", (Date)parsed.get(ParseCommentLine.DATE));
-		obj.put("tags", new JSONArray((Set<String>)parsed.get(ParseCommentLine.TAGS)));
 		obj.put("comment", (String)parsed.getOrDefault(ParseCommentLine.REM,""));
 		
-		this.pendingOperations.put(msgid, obj);
-		return String.format("prepare to put %s",obj.toString());
+		Set<String> tags = (Set<String>)parsed.get(ParseCommentLine.TAGS);
+		String category = null;
+		for(String tag:tags)
+			if(cats.contains(tag.substring(ParseCommentLine.TAGSPREF.length())))
+				category = tag.substring(ParseCommentLine.TAGSPREF.length());
+		HashSet<String> prefixedCats = new HashSet<String>();
+		for(String cat:cats)
+			prefixedCats.add(ParseCommentLine.TAGSPREF+cat);
+		tags.removeAll(prefixedCats);
+//		money 2147 %201812042036 #food #mybusket
+		System.err.format("prefixedCats=%s\ntags=%s\n", 
+				prefixedCats.toString(),tags.toString());
+		obj.put("tags", new JSONArray(tags));
+		
+		if( category == null ) {
+			int msgid = ud_.sendMessageWithKeyBoard("which category?", new JSONArray(cats));
+			this.pendingOperations.put(msgid, obj);
+			return String.format("prepare to put %s",obj.toString());
+		} else {
+			return putMoney(obj,category);
+		}
 	}
 	private static String ShowTags(MongoCollection<Document> money) {
 		final StringBuilder sb = new StringBuilder("tags: \n");
@@ -81,8 +99,7 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 				JSONArray arr;
 				try {
 					arr = new JSONObject(arg0.toJson()).getJSONArray("tags");
-				}
-				catch(JSONException e) {
+				} catch(JSONException e) {
 					return;
 				}
 				for(Object o:arr)
@@ -94,7 +111,7 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 			sb.append(String.format("%s%s\n", "  ",tag));
 		return sb.toString();
 	}
-	private void putMoney(JSONObject obj,String categoryName)
+	private String putMoney(JSONObject obj,String categoryName)
 	{
 		Document res = new Document();
 		res.put("amount", obj.getInt("amount"));
@@ -106,6 +123,8 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		res.put("comment", obj.getString("comment"));
 		res.put("tags", obj.getJSONArray("tags"));
 		money.insertOne(res);
+		return String.format("put %s in category %s",
+					obj.toString(),categoryName);
 	}
 	public String costs(JSONObject obj) {
 		int howMuch = obj.getInt("num");
@@ -169,9 +188,7 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 	public String optionReply(String option, Integer msgID) {
 		if(this.pendingOperations.containsKey(msgID))
 		{
-			this.putMoney(this.pendingOperations.get(msgID), option);
-			String res = String.format("put %s in category %s",
-					this.pendingOperations.get(msgID).toString(),option);
+			String res = this.putMoney(this.pendingOperations.get(msgID), option);
 			this.pendingOperations.remove(msgID);
 			return res;
 		}

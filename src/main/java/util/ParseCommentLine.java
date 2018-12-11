@@ -11,11 +11,11 @@ public class ParseCommentLine {
 	}
 	private Mode m_;
 	private SimpleDateFormat sdf_;
-	public static String TAGS = "tags";
-	public static String REM = "rem";
-	public static String DATE = "date";
-	private static String DATEPREF = "%";
-	private static String TAGSPREF = "#";
+	public final static String TAGS = "tags";
+	public final static String REM = "rem";
+	public final static String DATE = "date";
+	public final static String DATEPREF = "%";
+	public final static String TAGSPREF = "#";
 	private static final String PATTERN = "yyyyMMddHHmm";
 	public ParseCommentLine(Mode m) {
 		m_ = m;

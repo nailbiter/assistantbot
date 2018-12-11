@@ -2,12 +2,12 @@
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
    ],
-   "url" : {
-      "parser" : "https://trello.com/c/hkuY0OBL",
-      "indicator" : "https://trello.com/c/FMIlCbXE"
-   },
    "cardurl" : "https://trello.com/c/Lod70Hqu",
    "pulledData" : {
       "trelloTitle" : "food fun tag"
+   },
+   "url" : {
+      "indicator" : "https://trello.com/c/FMIlCbXE",
+      "parser" : "https://trello.com/c/hkuY0OBL"
    }
 }
