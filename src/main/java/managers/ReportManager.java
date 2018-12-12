@@ -19,6 +19,7 @@ import util.parsers.ParseOrdered;
 import static java.util.Arrays.asList;
 
 public class ReportManager extends AbstractManager {
+	private static final String FOLDERNAME = "forreport/";
 	private MongoClient mc_;
 	private TrelloAssistant ta_;
 	private ResourceProvider rp_;
@@ -31,7 +32,7 @@ public class ReportManager extends AbstractManager {
 				KeyRing.getTrello().getString("token"));
 		rp_ = rp;
 		sih_ = new ScriptHelperImpl(rp);
-		sa_ = new ScriptApp(Util.getScriptFolder(), sih_);
+		sa_ = new ScriptApp(Util.getScriptFolder()+FOLDERNAME, sih_);
 	}
 	public static JSONArray GetCommands() {
 		return new JSONArray()

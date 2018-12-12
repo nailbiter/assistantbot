@@ -38,6 +38,7 @@ public class MiscUtilManager extends AbstractManager {
 	private static final String TASKLISTNAME = "todo";
 	private static final String DISTRICOLLECTIONBNAME = "randsetdistrib";
 	NoteMaker nm_ = null;
+	private ResourceProvider rp_;
 	
 	public MiscUtilManager(ResourceProvider rp) throws Exception {
 		super(GetCommands());
@@ -51,6 +52,7 @@ public class MiscUtilManager extends AbstractManager {
 		}
 		mc_ = rp.getMongoClient();
 		nm_ = new NoteMaker(mc_);
+		rp_ = rp;
 	}
 	public static JSONArray GetCommands() throws Exception {
 		return new JSONArray()
@@ -120,7 +122,8 @@ public class MiscUtilManager extends AbstractManager {
 	}
 	public String ttask(JSONObject obj) throws Exception {
 		String task = obj.getString("task");
-		ta_.addCard(tasklist_, new JSONObject().put("name", task));
-		return String.format("task \"%s\" added", task);
+		JSONObject card = ta_.addCard(tasklist_, new JSONObject().put("name", task));
+		rp_.sendMessage(String.format("task \"%s\" added\nurl: %s", task,card.getString("shortUrl")));
+		return "";
 	}
 }
