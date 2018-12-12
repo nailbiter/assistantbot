@@ -3,15 +3,15 @@ var recognizedCats = getVar('recognizedCats');
 var catWeights = {
 	//sleeping : 1,
 	parttime: 2,
-	logistics: 3,
+	logistics: -4,
 	gym: 4,
 	reading: 5,
 	work: -6,
 	rest: 7,
-	social: 8,
+	social: -5,
 	useless: 9,
 	german: 10,
-	coding: 11,
+	coding: 100,
 	"math project": 12,
 	future: -7,
 };
