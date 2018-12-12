@@ -1,14 +1,15 @@
 {
-   "url" : {
-      "indicator" : "https://trello.com/c/FMIlCbXE",
-      "parser" : "https://trello.com/c/hkuY0OBL",
-      "distribGen" : "https://trello.com/c/3R83mhwS"
-   },
+   "cardurl" : "https://trello.com/c/ofzAma1H",
    "pulledData" : {
-      "trelloTitle" : "optimize"
+      "trelloTitle" : "sort order: tasks with deadlines -> labels"
+   },
+   "url" : {
+      "distribGen" : "https://trello.com/c/3R83mhwS",
+      "indicator" : "https://trello.com/c/FMIlCbXE",
+      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
+      "parser" : "https://trello.com/c/hkuY0OBL"
    },
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
-   ],
-   "cardurl" : "https://trello.com/c/cKyvGxxY"
+   ]
 }

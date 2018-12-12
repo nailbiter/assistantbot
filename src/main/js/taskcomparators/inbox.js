@@ -1,4 +1,4 @@
 function main(cmdline){
 	var split = cmdline.split(" ");
-	return compare(JSON.parse(ScriptHelper.execute(split[0])),JSON.parse(ScriptHelper.execute(split[1])));
+	return compare(getVar(split[0]),getVar(split[1]));
 }
