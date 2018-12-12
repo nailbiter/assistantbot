@@ -41,6 +41,9 @@ import util.JsonUtil;
 import util.KeyRing;
 import util.MongoUtil;
 import util.ScriptApp;
+import util.ScriptHelper;
+import util.ScriptHelperArray;
+import util.ScriptHelperLogger;
 import util.ScriptHelperVarkeeper;
 
 public class TaskManagerBase extends AbstractManager {
@@ -67,7 +70,10 @@ public class TaskManagerBase extends AbstractManager {
 		rp_ = rp;
 		mc_ = rp.getMongoClient();
 		varkeeper_ = new ScriptHelperVarkeeper();
-		sa_ = new ScriptApp(getParamObject(mc_).getString("scriptFolder"), varkeeper_);
+		sa_ = new ScriptApp(getParamObject(mc_).getString("scriptFolder"), 
+				new ScriptHelperArray()
+					.add(new ScriptHelperLogger())
+					.add(varkeeper_));
 		FillTable(comparators_,ta_,sa_);
 		FillRecognizedCats(recognizedCats_,mc_,varkeeper_);
 	}

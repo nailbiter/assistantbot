@@ -3,7 +3,7 @@ package util;
 public class AssistantBotException extends Exception {
 	private static final long serialVersionUID = 1L;
 	public static enum Type {
-		ARITHMETICPARSE, COMMENTPARSE
+		ARITHMETICPARSE, COMMENTPARSE,SCRIPTHELPERARRAY
 	};
 	private Type t_;
 	public AssistantBotException(Type t,String msg) {

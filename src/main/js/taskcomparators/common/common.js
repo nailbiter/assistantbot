@@ -13,18 +13,25 @@ var catWeights = {
 	german: 10,
 	coding: 11,
 	"math project": 12,
-	future: 13,
+	future: -7,
 };
 
 //procedures
 function compare(obj1,obj2){
-	//var res = compareLabel(obj1,obj2);
-	var res = compareName(obj1,obj2);
-	return JSON.stringify(res);
+	var comparisonArray = [compareLabel,compareName];
+	for(var i = 0; i < comparisonArray.length; i++ ){
+		var res = comparisonArray[i](obj1,obj2);
+		if( res != 0 )
+			return JSON.stringify(res);
+	}
+	return JSON.stringify(0);
 }
 function compareLabel(o1,o2){
 	var l1 = getMainLabel(o1),
 		l2 = getMainLabel(o2);
+	log("l1: "+l1);
+	log("l2: "+l2);
+
 	var b1 = l1 in catWeights,
 		b2 = l2 in catWeights;
 	if( b1 && b2 ){
@@ -37,10 +44,20 @@ function compareLabel(o1,o2){
 		return strcmp(l1,l2);
 	}
 }
+function log(msg){
+	ScriptHelper.execute(JSON.stringify({
+		cmd:"log",
+		data:msg,
+	}));
+}
 function getMainLabel(o){
-	for(label in o.labels)
+	log('recognizedCats: '+JSON.stringify(recognizedCats));
+	for(var i = 0; i < o.labels.length; i++){
+		var label = o.labels[i];
+		log('label: '+label);
 		if( recognizedCats.indexOf(label) >= 0 )
 			return label;
+	}
 }
 function compareName(o1,o2){
 	return strcmp(o1.name,o2.name)
