@@ -144,10 +144,11 @@ public class TaskManagerBase extends AbstractManager {
 
 	protected static String PrintTask(ArrayList<JSONObject> arr, int index, TrelloAssistant ta) throws JSONException, Exception {
 		JSONObject card = arr.get(index-1);
-		return String.format("%s %s\nemail: %s",
-				card.getString("name"),
-				card.getString("shortUrl"),
-				ta.getCardEmail(card.getString("id")));
+		return String.format("%s %s"
+				,card.getString("name")
+				,card.getString("shortUrl")
+//				,ta.getCardEmail(card.getString("id"))
+				);
 	}
 
 	private static String GetLabels(JSONObject card) {
