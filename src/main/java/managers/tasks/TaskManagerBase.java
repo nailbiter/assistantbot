@@ -76,11 +76,11 @@ public class TaskManagerBase extends AbstractManager {
 				new Comparator<JSONObject>() {
 					@Override
 					public int compare(JSONObject o1, JSONObject o2) {
-						varkeeper_.set("a", o1.toString());
-						varkeeper_.set("b", o2.toString());
+//						varkeeper_.set("a", o1.toString());
+//						varkeeper_.set("b", o2.toString());
 						try {
 							int res = 
-									Integer.parseInt(TaskManagerBase.this.sa_.runCommand("inbox"));
+									Integer.parseInt(TaskManagerBase.this.sa_.runCommand(String.format("%s %s %s", "inbox",o1.getString("id"),o2.getString("id"))));
 							System.err.format("comparing \"%s\" and \"%s\" gave %d\n", o1.getString("name"),o2.getString("name"),res);
 							return res;
 						} catch (NumberFormatException | FileNotFoundException | NoSuchMethodException
@@ -94,10 +94,10 @@ public class TaskManagerBase extends AbstractManager {
 				new Comparator<JSONObject>() {
 					@Override
 					public int compare(JSONObject o1, JSONObject o2) {
-						varkeeper_.set("a", o1.toString());
-						varkeeper_.set("b", o2.toString());
+//						varkeeper_.set("a", o1.toString());
+//						varkeeper_.set("b", o2.toString());
 						try {
-							return Integer.parseInt(TaskManagerBase.this.sa_.runCommand("snoozed"));
+							return Integer.parseInt(TaskManagerBase.this.sa_.runCommand(String.format("%s %s %s", "snoozed",o1.getString("id"),o2.getString("id"))));
 						} catch (NumberFormatException | FileNotFoundException | NoSuchMethodException
 								| ScriptException e) {
 							e.printStackTrace();
@@ -147,7 +147,6 @@ public class TaskManagerBase extends AbstractManager {
 		return String.format("%s %s"
 				,card.getString("name")
 				,card.getString("shortUrl")
-//				,ta.getCardEmail(card.getString("id"))
 				);
 	}
 
@@ -241,9 +240,6 @@ public class TaskManagerBase extends AbstractManager {
 					public void apply(Document arg0) {
 						JSONObject obj = new JSONObject(arg0.toJson());
 						System.err.format("obj=%s\n", obj.toString());
-//						String su = obj.getJSONObject("obj")
-//								.getString(SHORTURL);
-//						JSONObject card = JsonUtil.FindInJSONArray(alltasks, SHORTURL, su);
 						JSONObject card = obj.getJSONObject("obj");
 						tb.newRow()
 						.addToken(card.getString("name"),po.getInt("name"))
@@ -289,7 +285,15 @@ public class TaskManagerBase extends AbstractManager {
 	}
 
 	private static void FillVarkeeper(ArrayList<JSONObject> res, ScriptHelperVarkeeper varkeeper) {
-		
+		for(JSONObject o:res) {
+			JSONObject obj = new JSONObject(o.toString());
+			JSONArray labels = o.getJSONArray("labels");
+			obj.put("labels", new JSONArray());
+			for(Object oo:labels)
+				obj.getJSONArray("labels").put(((JSONObject)oo).getString("name"));
+			varkeeper.set(o.getString("id"), obj.toString());
+		}
+			
 	}
 	protected void saveSnoozeToDb(JSONObject card, Date date) {
 		mc_.getDatabase("logistics").getCollection(POSTPONEDTASKS)
