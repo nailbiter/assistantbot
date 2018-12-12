@@ -80,7 +80,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 	}
 	public String taskdone(JSONObject obj) throws JSONException, Exception {
 		if( !obj.has("num") ) {
-			return PrintDoneTasks(ta_,mc_,comparators_);
+			return PrintDoneTasks(ta_,mc_,comparators_,recognizedCats_);
 		}
 		
 		JSONObject card = null;

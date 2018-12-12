@@ -58,6 +58,7 @@ public class TaskManagerBase extends AbstractManager {
 	protected static String SHORTURL = "shortUrl";
 	protected HashMap<String,ImmutableTriple<Comparator<JSONObject>,String,Integer>> comparators_ = new HashMap<String,ImmutableTriple<Comparator<JSONObject>,String,Integer>>();
 	private ScriptHelperVarkeeper varkeeper_ = null;
+	protected ArrayList<String> recognizedCats_ = new ArrayList<String>();
 
 	protected TaskManagerBase(JSONArray commands, ResourceProvider rp) throws Exception {
 		super(commands);
@@ -67,20 +68,28 @@ public class TaskManagerBase extends AbstractManager {
 		mc_ = rp.getMongoClient();
 		varkeeper_ = new ScriptHelperVarkeeper();
 		sa_ = new ScriptApp(getParamObject(mc_).getString("scriptFolder"), varkeeper_);
-		fillTable();
+		FillTable(comparators_,ta_,sa_);
+		FillRecognizedCats(recognizedCats_,mc_,varkeeper_);
 	}
-	protected void fillTable() throws Exception {
-		String listid = ta_.findListByName(managers.habits.Constants.INBOXBOARDID, 
+	private static void FillRecognizedCats(final ArrayList<String> recognizedCats,MongoClient mc, ScriptHelperVarkeeper varkeeper){
+		mc.getDatabase("logistics").getCollection("timecats").find().forEach(new Block<Document>() {
+			@Override
+			public void apply(Document arg0) {
+				recognizedCats.add(arg0.getString("name"));
+			}
+		});
+		varkeeper.set("recognizedCats", new JSONArray(recognizedCats).toString());
+	}
+	private static void FillTable(HashMap<String,ImmutableTriple<Comparator<JSONObject>,String,Integer>> c,TrelloAssistant ta,final ScriptApp sa) throws Exception {
+		String listid = ta.findListByName(managers.habits.Constants.INBOXBOARDID, 
 				managers.habits.Constants.INBOXLISTNAME);
-		comparators_.put(INBOX, new ImmutableTriple<Comparator<JSONObject>,String,Integer>(
+		c.put(INBOX, new ImmutableTriple<Comparator<JSONObject>,String,Integer>(
 				new Comparator<JSONObject>() {
 					@Override
 					public int compare(JSONObject o1, JSONObject o2) {
-						varkeeper_.set("a", o1.toString());
-						varkeeper_.set("b", o2.toString());
 						try {
 							int res = 
-									Integer.parseInt(TaskManagerBase.this.sa_.runCommand("inbox"));
+									Integer.parseInt(sa.runCommand(String.format("%s %s %s", "inbox",o1.getString("id"),o2.getString("id"))));
 							System.err.format("comparing \"%s\" and \"%s\" gave %d\n", o1.getString("name"),o2.getString("name"),res);
 							return res;
 						} catch (NumberFormatException | FileNotFoundException | NoSuchMethodException
@@ -90,14 +99,12 @@ public class TaskManagerBase extends AbstractManager {
 						}
 					}
 				},listid,1));
-		comparators_.put(SNOOZED, new ImmutableTriple<Comparator<JSONObject>,String,Integer>(
+		c.put(SNOOZED, new ImmutableTriple<Comparator<JSONObject>,String,Integer>(
 				new Comparator<JSONObject>() {
 					@Override
 					public int compare(JSONObject o1, JSONObject o2) {
-						varkeeper_.set("a", o1.toString());
-						varkeeper_.set("b", o2.toString());
 						try {
-							return Integer.parseInt(TaskManagerBase.this.sa_.runCommand("snoozed"));
+							return Integer.parseInt(sa.runCommand(String.format("%s %s %s", "snoozed",o1.getString("id"),o2.getString("id"))));
 						} catch (NumberFormatException | FileNotFoundException | NoSuchMethodException
 								| ScriptException e) {
 							e.printStackTrace();
@@ -147,7 +154,6 @@ public class TaskManagerBase extends AbstractManager {
 		return String.format("%s %s"
 				,card.getString("name")
 				,card.getString("shortUrl")
-//				,ta.getCardEmail(card.getString("id"))
 				);
 	}
 
@@ -211,20 +217,12 @@ public class TaskManagerBase extends AbstractManager {
 		return tb.toString();
 	}
 
-	protected static String PrintDoneTasks(TrelloAssistant ta, MongoClient mc, HashMap<String, ImmutableTriple<Comparator<JSONObject>, String, Integer>> c) throws Exception {
+	protected static String PrintDoneTasks(TrelloAssistant ta, MongoClient mc, HashMap<String, ImmutableTriple<Comparator<JSONObject>, String, Integer>> c, final ArrayList<String> recognizedCats) throws Exception {
 		final JSONObject po = GetParamObject(mc, TaskManager.class.getName()).getJSONObject("sep");
 		final JSONArray alltasks = ta.getAllCardsInList(c.get(INBOX).middle);
 		System.err.format("alltasks has %d cards\n", alltasks.length());
 		final TableBuilder tb = new TableBuilder();
 		tb.newRow().addToken("name_").addToken("label_");
-		
-		final ArrayList<String> recognizedCats = new ArrayList<String>();
-		mc.getDatabase("logistics").getCollection("timecats").find().forEach(new Block<Document>() {
-			@Override
-			public void apply(Document arg0) {
-				recognizedCats.add(arg0.getString("name"));
-			}
-		});
 		
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -241,13 +239,10 @@ public class TaskManagerBase extends AbstractManager {
 					public void apply(Document arg0) {
 						JSONObject obj = new JSONObject(arg0.toJson());
 						System.err.format("obj=%s\n", obj.toString());
-//						String su = obj.getJSONObject("obj")
-//								.getString(SHORTURL);
-//						JSONObject card = JsonUtil.FindInJSONArray(alltasks, SHORTURL, su);
 						JSONObject card = obj.getJSONObject("obj");
 						tb.newRow()
 						.addToken(card.getString("name"),po.getInt("name"))
-						.addToken(GetLabels(card,recognizedCats),po.getInt("labels"));
+						.addToken(GetLabels(card, recognizedCats),po.getInt("labels"));
 					}
 				});
 		
@@ -289,7 +284,15 @@ public class TaskManagerBase extends AbstractManager {
 	}
 
 	private static void FillVarkeeper(ArrayList<JSONObject> res, ScriptHelperVarkeeper varkeeper) {
-		
+		for(JSONObject o:res) {
+			JSONObject obj = new JSONObject(o.toString());
+			JSONArray labels = o.getJSONArray("labels");
+			obj.put("labels", new JSONArray());
+			for(Object oo:labels)
+				obj.getJSONArray("labels").put(((JSONObject)oo).getString("name"));
+			varkeeper.set(o.getString("id"), obj.toString());
+		}
+			
 	}
 	protected void saveSnoozeToDb(JSONObject card, Date date) {
 		mc_.getDatabase("logistics").getCollection(POSTPONEDTASKS)
@@ -305,21 +308,4 @@ public class TaskManagerBase extends AbstractManager {
 					.append("message",msg)
 					.append("obj",Document.parse(obj.toString())));
 	}
-//	@Override
-//	public String execute(String arg) throws Exception {
-//		String res = null;
-//		if(arg.equals("a")) {
-//			res = a_.toString();
-//		} else if(arg.equals("b")) {
-//			res = b_.toString();
-//		} else {
-//			res = null;
-//		}
-//		System.err.format("execute %s gave %s\n", arg,(res==null)?"null":res);
-//		return res;
-//	}
-//	@Override
-//	public void setInvocable(Invocable inv) {
-//	}
-
 }

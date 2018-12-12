@@ -1,3 +1,4 @@
 function main(cmdline){
-	return compare();
+	var split = cmdline.split(" ");
+	return compare(getVar(split[0]),getVar(split[1]));
 }
