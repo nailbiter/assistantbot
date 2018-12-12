@@ -58,11 +58,16 @@ public class TrelloMover {
 	}
 	public ArrayList<JSONObject> getCardsInSegment(int segNum) throws Exception {
 		JSONArray cards = ta_.getCardsInList(LISTID);
+		System.err.format("get cards for segment %d\n", segNum);
 		ImmutablePair<Integer, Integer> bounds = 
 				this.getSegmentStartEnd(segNum,cards);
 		ArrayList<JSONObject> res = new ArrayList<JSONObject>();
-		for(int i = bounds.left; i < bounds.right; i++ )
-			res.add(cards.getJSONObject(i));
+		for(int i = bounds.left; i < bounds.right; i++ ) {
+			JSONObject card = cards.getJSONObject(i);
+			res.add(card);
+			System.err.format("adding %s\n", card.toString(2));
+		}
+			
 		return res;
 	}
 	protected int getSeparatorIndex(JSONArray cards) throws Exception{

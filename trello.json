@@ -1,13 +1,14 @@
 {
+   "cardurl" : "https://trello.com/c/By2FYa6T",
+   "pulledData" : {
+      "trelloTitle" : "Return webpage URL on task"
+   },
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
    ],
    "url" : {
-      "indicator" : "https://trello.com/c/FMIlCbXE",
-      "parser" : "https://trello.com/c/hkuY0OBL"
-   },
-   "pulledData" : {
-      "trelloTitle" : "done snoozed"
-   },
-   "cardurl" : "https://trello.com/c/gbkWHji7"
+      "distribGen" : "https://trello.com/c/3R83mhwS",
+      "parser" : "https://trello.com/c/hkuY0OBL",
+      "indicator" : "https://trello.com/c/FMIlCbXE"
+   }
 }
