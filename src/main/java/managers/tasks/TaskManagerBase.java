@@ -149,10 +149,12 @@ public class TaskManagerBase extends AbstractManager {
 		return card.optBoolean("dueComplete",false)==false && !card.isNull("due");
 	}
 
-	protected static String PrintTask(ArrayList<JSONObject> arr, int index) {
-		return String.format("%s %s",
-				arr.get(index-1).getString("name"),
-				arr.get(index-1).getString("shortUrl"));
+	protected static String PrintTask(ArrayList<JSONObject> arr, int index, TrelloAssistant ta) throws JSONException, Exception {
+		JSONObject card = arr.get(index-1);
+		return String.format("%s %s\nemail: %s",
+				card.getString("name"),
+				card.getString("shortUrl"),
+				ta.getCardEmail(card.getString("id")));
 	}
 
 	private static String GetLabels(JSONObject card) {

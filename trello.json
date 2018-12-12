@@ -1,13 +1,13 @@
 {
-   "cardurl" : "https://trello.com/c/8LIFD7Oj",
    "url" : {
       "parser" : "https://trello.com/c/hkuY0OBL",
       "indicator" : "https://trello.com/c/FMIlCbXE"
    },
-   "pulledData" : {
-      "trelloTitle" : "set implementer, logging"
-   },
+   "cardurl" : "https://trello.com/c/3cY35GwD",
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
-   ]
+   ],
+   "pulledData" : {
+      "trelloTitle" : "print tags sorted"
+   }
 }

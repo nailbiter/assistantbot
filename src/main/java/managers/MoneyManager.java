@@ -1,7 +1,10 @@
 package managers;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -92,7 +95,7 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 	}
 	private static String ShowTags(MongoCollection<Document> money) {
 		final StringBuilder sb = new StringBuilder("tags: \n");
-		final HashSet<String> res = new HashSet<String> ();
+		final HashSet<String> set = new HashSet<String> ();
 		money.find().forEach(new Block<Document>() {
 			@Override
 			public void apply(Document arg0) {
@@ -103,11 +106,13 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 					return;
 				}
 				for(Object o:arr)
-					res.add((String)o);
+					set.add((String)o);
 			}
 		});
 		
-		for(String tag:res)
+		ArrayList<String> rres = new ArrayList<String>(set);
+		Collections.sort(rres);
+		for(String tag:rres)
 			sb.append(String.format("%s%s\n", "  ",tag));
 		return sb.toString();
 	}
