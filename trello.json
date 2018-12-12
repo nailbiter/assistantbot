@@ -1,17 +1,17 @@
 {
+   "url" : {
+      "distribGen" : "https://trello.com/c/3R83mhwS",
+      "parser" : "https://trello.com/c/hkuY0OBL",
+      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
+      "sort order" : "https://trello.com/c/ofzAma1H",
+      "indicator" : "https://trello.com/c/FMIlCbXE",
+      "compare deadlines" : "https://trello.com/c/W4CSDHPl"
+   },
+   "cardurl" : "https://trello.com/c/W4CSDHPl",
    "pulledData" : {
       "trelloTitle" : "compare deadlines"
    },
-   "url" : {
-      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
-      "distribGen" : "https://trello.com/c/3R83mhwS",
-      "indicator" : "https://trello.com/c/FMIlCbXE",
-      "parser" : "https://trello.com/c/hkuY0OBL",
-      "sort order" : "https://trello.com/c/ofzAma1H",
-      "autoCheckLabel" : "https://trello.com/c/cexmj2vA"
-   },
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
-   ],
-   "cardurl" : "https://trello.com/c/W4CSDHPl"
+   ]
 }

@@ -35,13 +35,18 @@ function compareDate(o1,o2){
 	} else if(!b[0] && b[1]){
 		return -1;
 	} else {
-		return numcmp(talkToHelper({
+		var d1 = talkToHelper({
 			cmd:"daysTill",
 			data:o1.due,
-		}),talkToHelper({
+		}), d2 = talkToHelper({
 			cmd:"daysTill",
 			data:o2.due,
-		}));
+		});
+		if(d1<0 && d2<0){
+			return numcmp(-d1,-d2);
+		} else {
+			return numcmp(d1,d2);
+		}
 	}
 }
 function talkToHelper(x){

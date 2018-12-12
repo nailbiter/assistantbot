@@ -13,3 +13,4 @@ Prerequisites
 4. Java Development Kit
 5. [maven](https://maven.apache.org/)
 6. [git](https://git-scm.com/)
+6. [GNU Make](https://www.gnu.org/software/make/)
