@@ -1,4 +1,4 @@
-package util;
+package util.scripthelpers;
 
 import java.util.logging.Logger;
 
@@ -22,8 +22,8 @@ public class ScriptHelperLogger implements ScriptHelper {
 			throw e;
 		}
 		
-		if(obj.getString("cmd").equals("log")) {
-			log(obj.getString("data"));
+		if(obj.getString(ScriptHelperMisc.CMD).equals("log")) {
+			log(obj.getString(ScriptHelperMisc.DATA));
 			return "";
 		} else {
 			return null;
@@ -31,7 +31,6 @@ public class ScriptHelperLogger implements ScriptHelper {
 	}
 
 	private void log(String string) {
-//		logger_.info(String.format("%s: %s", this.getClass().getName(),string));
 		logger_.info(string);
 	}
 	@Override

@@ -1,4 +1,4 @@
-package util;
+package util.scripthelpers;
 
 import javax.script.Invocable;
 

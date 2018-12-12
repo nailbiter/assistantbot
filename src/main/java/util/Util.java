@@ -351,4 +351,10 @@ public class Util{
 			
 		return res;
 	}
+	public static double DaysTill(String string) throws ParseException {
+		SimpleDateFormat DF = com.github.nailbiter.util.Util.GetTrelloDateFormat();
+		Date due = DF.parse(string),
+				now = new Date();
+		return (due.getTime()-now.getTime())/(1000*60*60*24*1.0d);
+	}
 }
