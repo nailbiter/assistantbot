@@ -41,10 +41,11 @@ import util.JsonUtil;
 import util.KeyRing;
 import util.MongoUtil;
 import util.ScriptApp;
-import util.ScriptHelper;
-import util.ScriptHelperArray;
-import util.ScriptHelperLogger;
-import util.ScriptHelperVarkeeper;
+import util.scripthelpers.ScriptHelper;
+import util.scripthelpers.ScriptHelperArray;
+import util.scripthelpers.ScriptHelperLogger;
+import util.scripthelpers.ScriptHelperMisc;
+import util.scripthelpers.ScriptHelperVarkeeper;
 
 public class TaskManagerBase extends AbstractManager {
 
@@ -73,6 +74,7 @@ public class TaskManagerBase extends AbstractManager {
 		sa_ = new ScriptApp(getParamObject(mc_).getString("scriptFolder"), 
 				new ScriptHelperArray()
 					.add(new ScriptHelperLogger())
+					.add(new ScriptHelperMisc())
 					.add(varkeeper_));
 		FillTable(comparators_,ta_,sa_);
 		FillRecognizedCats(recognizedCats_,mc_,varkeeper_);
@@ -145,10 +147,7 @@ public class TaskManagerBase extends AbstractManager {
 	}
 
 	private static double DaysTill(JSONObject obj) throws JSONException, ParseException {
-		SimpleDateFormat DF = Util.GetTrelloDateFormat();
-		Date due = DF.parse(obj.getString("due")),
-				now = new Date();
-		return (due.getTime()-now.getTime())/(1000*60*60*24*1.0d);
+		return util.Util.DaysTill(obj.getString("due"));
 	}
 
 	private static boolean HasDue(JSONObject card) {

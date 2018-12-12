@@ -1,6 +1,7 @@
-package util;
+package util.scripthelpers;
 
 import java.io.IOException;
+import util.Util;
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ public class ScriptHelperImpl implements ScriptHelper {
 				.invoke(this, incoming.getJSONObject(DATAFIELDNAME));
 	}
 	public void sendAsFile(JSONObject obj) throws JSONException, IOException, Exception {
-		rp_.sendFile(Util.saveToTmpFile(obj.getString("content")));
+		rp_.sendFile(util.Util.saveToTmpFile(obj.getString("content")));
 	}
 	public void addToDatabase(JSONObject jsonObject) {
 		String[] split = jsonObject.getString("dbname").trim().split("\\.");

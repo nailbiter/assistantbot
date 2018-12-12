@@ -10,6 +10,8 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import util.scripthelpers.ScriptHelper;
+
 public class ScriptApp {
 	private String scriptFolder_;
 	private ScriptEngineManager factory;

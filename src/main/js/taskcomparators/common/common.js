@@ -18,13 +18,34 @@ var catWeights = {
 
 //procedures
 function compare(obj1,obj2){
-	var comparisonArray = [compareLabel,compareName];
+	var comparisonArray = [compareLabel,compareDate,compareName];
 	for(var i = 0; i < comparisonArray.length; i++ ){
 		var res = comparisonArray[i](obj1,obj2);
 		if( res != 0 )
 			return JSON.stringify(res);
 	}
 	return JSON.stringify(0);
+}
+function compareDate(o1,o2){
+	var b = [o1.due==null,o2.due==null];
+	if( b[0] && b[1]){
+		return 0;
+	} else if(b[0] && !b[1]) {
+		return 1;
+	} else if(!b[0] && b[1]){
+		return -1;
+	} else {
+		return numcmp(talkToHelper({
+			cmd:"daysTill",
+			data:o1.due,
+		}),talkToHelper({
+			cmd:"daysTill",
+			data:o2.due,
+		}));
+	}
+}
+function talkToHelper(x){
+	return JSON.parse(ScriptHelper.execute(JSON.stringify(x)));
 }
 function compareLabel(o1,o2){
 	var l1 = getMainLabel(o1),
@@ -35,7 +56,7 @@ function compareLabel(o1,o2){
 	var b1 = l1 in catWeights,
 		b2 = l2 in catWeights;
 	if( b1 && b2 ){
-		return intcmp(catWeights[l1],catWeights[l2]);
+		return numcmp(catWeights[l1],catWeights[l2]);
 	} else if( b1 && !b2) {
 		return 1;
 	} else if( !b1 && b2) {
@@ -66,7 +87,7 @@ function strcmp(a, b)
 {   
     return (a<b?-1:(a>b?1:0));  
 }
-function intcmp(a,b){
+function numcmp(a,b){
     return (a<b?-1:(a>b?1:0));  
 }
 function getVar(key){

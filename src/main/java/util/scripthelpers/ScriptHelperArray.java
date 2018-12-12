@@ -1,8 +1,11 @@
-package util;
+package util.scripthelpers;
 
 import java.util.ArrayList;
 
 import javax.script.Invocable;
+
+import util.AssistantBotException;
+import util.AssistantBotException.Type;
 
 public class ScriptHelperArray implements ScriptHelper {
 	ArrayList<ScriptHelper> helpers_ = new ArrayList<ScriptHelper>();
