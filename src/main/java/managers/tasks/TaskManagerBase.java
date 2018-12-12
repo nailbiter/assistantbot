@@ -56,7 +56,6 @@ public class TaskManagerBase extends AbstractManager {
 	protected static String INBOX = "INBOX";
 	protected static String SNOOZED = "SNOOZED";
 	protected static String SHORTURL = "shortUrl";
-//	private JSONObject a_=null, b_=null;
 	protected HashMap<String,ImmutableTriple<Comparator<JSONObject>,String,Integer>> comparators_ = new HashMap<String,ImmutableTriple<Comparator<JSONObject>,String,Integer>>();
 	private ScriptHelperVarkeeper varkeeper_ = null;
 
@@ -77,8 +76,6 @@ public class TaskManagerBase extends AbstractManager {
 				new Comparator<JSONObject>() {
 					@Override
 					public int compare(JSONObject o1, JSONObject o2) {
-//						TaskManagerBase.this.a_ = o1;
-//						TaskManagerBase.this.b_ = o2;
 						varkeeper_.set("a", o1.toString());
 						varkeeper_.set("b", o2.toString());
 						try {
@@ -91,15 +88,12 @@ public class TaskManagerBase extends AbstractManager {
 							e.printStackTrace();
 							return 0;
 						}
-						
 					}
 				},listid,1));
 		comparators_.put(SNOOZED, new ImmutableTriple<Comparator<JSONObject>,String,Integer>(
 				new Comparator<JSONObject>() {
 					@Override
 					public int compare(JSONObject o1, JSONObject o2) {
-//						TaskManagerBase.this.a_ = o1;
-//						TaskManagerBase.this.b_ = o2;
 						varkeeper_.set("a", o1.toString());
 						varkeeper_.set("b", o2.toString());
 						try {
@@ -109,7 +103,6 @@ public class TaskManagerBase extends AbstractManager {
 							e.printStackTrace();
 							return 0;
 						}
-						
 					}
 				}
 				,listid, 0));
@@ -151,10 +144,11 @@ public class TaskManagerBase extends AbstractManager {
 
 	protected static String PrintTask(ArrayList<JSONObject> arr, int index, TrelloAssistant ta) throws JSONException, Exception {
 		JSONObject card = arr.get(index-1);
-		return String.format("%s %s\nemail: %s",
-				card.getString("name"),
-				card.getString("shortUrl"),
-				ta.getCardEmail(card.getString("id")));
+		return String.format("%s %s"
+				,card.getString("name")
+				,card.getString("shortUrl")
+//				,ta.getCardEmail(card.getString("id"))
+				);
 	}
 
 	private static String GetLabels(JSONObject card) {
@@ -289,10 +283,14 @@ public class TaskManagerBase extends AbstractManager {
 				comparators_.get(identifier);
 		TrelloMover tm = new TrelloMover(ta_,triple.middle,SEPARATOR); 
 		ArrayList<JSONObject> res = tm.getCardsInSegment(triple.right);
+		FillVarkeeper(res,varkeeper_);
 		Collections.sort(res, triple.left);
 		return res;
 	}
 
+	private static void FillVarkeeper(ArrayList<JSONObject> res, ScriptHelperVarkeeper varkeeper) {
+		
+	}
 	protected void saveSnoozeToDb(JSONObject card, Date date) {
 		mc_.getDatabase("logistics").getCollection(POSTPONEDTASKS)
 		.insertOne(Document.parse(new JSONObject()

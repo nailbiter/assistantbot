@@ -1,14 +1,14 @@
 {
-   "cardurl" : "https://trello.com/c/By2FYa6T",
    "pulledData" : {
-      "trelloTitle" : "Return webpage URL on task"
+      "trelloTitle" : "optimize"
+   },
+   "url" : {
+      "indicator" : "https://trello.com/c/FMIlCbXE",
+      "distribGen" : "https://trello.com/c/3R83mhwS",
+      "parser" : "https://trello.com/c/hkuY0OBL"
    },
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
    ],
-   "url" : {
-      "distribGen" : "https://trello.com/c/3R83mhwS",
-      "parser" : "https://trello.com/c/hkuY0OBL",
-      "indicator" : "https://trello.com/c/FMIlCbXE"
-   }
+   "cardurl" : "https://trello.com/c/cKyvGxxY"
 }
