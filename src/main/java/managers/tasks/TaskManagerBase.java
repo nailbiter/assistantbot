@@ -7,7 +7,6 @@ import static managers.habits.Constants.SEPARATOR;
 
 import java.io.FileNotFoundException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -30,7 +29,6 @@ import org.json.JSONObject;
 
 import com.github.nailbiter.util.TableBuilder;
 import com.github.nailbiter.util.TrelloAssistant;
-import com.github.nailbiter.util.Util;
 import com.mongodb.Block;
 import com.mongodb.MongoClient;
 
@@ -41,7 +39,6 @@ import util.JsonUtil;
 import util.KeyRing;
 import util.MongoUtil;
 import util.ScriptApp;
-import util.scripthelpers.ScriptHelper;
 import util.scripthelpers.ScriptHelperArray;
 import util.scripthelpers.ScriptHelperLogger;
 import util.scripthelpers.ScriptHelperMisc;
