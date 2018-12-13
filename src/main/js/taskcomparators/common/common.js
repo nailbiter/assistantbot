@@ -1,14 +1,16 @@
 //global var's
 var recognizedCats = getVar('recognizedCats');
+//global var's
+var recognizedCats = getVar('recognizedCats');
 var catWeights = {
 	//sleeping : 1,
-	parttime: 2,
+	parttime: -5,
 	logistics: -4,
 	gym: 4,
 	reading: 5,
 	work: -6,
 	rest: 7,
-	social: -5,
+	social: -4,
 	useless: 9,
 	german: 10,
 	coding: 100,
