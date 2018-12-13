@@ -33,6 +33,9 @@ GetOptions(
 );
 while(<>){
     chomp $_;
+    if(/^Downloading:/){
+        next;
+    }
     if(/^\[[A-Z]+\]/){
         next;
     }
