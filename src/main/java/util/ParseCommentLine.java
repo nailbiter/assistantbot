@@ -2,8 +2,10 @@ package util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.regex.Pattern;
 
 public class ParseCommentLine {
 	public static enum Mode{
@@ -29,7 +31,7 @@ public class ParseCommentLine {
 	 * 	.REM 	:String
 	 *  .TAGS	:HashSet<String>
 	 *  .DATE	:Date
-	 * @throws AssistantBotException 
+	 * @throws AssistantBotException if cannot parse the date 
 	 */
 	public HashMap<String,Object> parse(String line) throws AssistantBotException {
 		if( m_ != Mode.FROMLEFT )
@@ -47,8 +49,14 @@ public class ParseCommentLine {
 				((HashSet<String>)res.get("tags")).add(split[0]);
 			} else if( split[0].startsWith(DATEPREF) ) {
 				try {
-					res.put(DATE, sdf_.parse(split[0].substring(DATEPREF.length())));
-				} catch (ParseException e) {
+					String dateline = split[0].substring(DATEPREF.length());
+					Date d = null;
+					if(Pattern.matches(String.format("\\d{%s}", PATTERN.length()), dateline))
+						d = sdf_.parse(dateline);
+					else
+						d = Util.ComputePostponeDate(dateline);
+					res.put(DATE, d);
+				} catch (Exception e) {
 					e.printStackTrace();
 					throw new AssistantBotException(AssistantBotException.Type.COMMENTPARSE, 
 							String.format("cannot parse %s from \"%s\"", DATE,split[0]));

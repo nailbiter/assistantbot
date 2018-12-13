@@ -13,11 +13,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.TimeZone;
 import java.util.Timer;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.script.ScriptException;
 
@@ -250,24 +247,6 @@ public class TaskManagerBase extends AbstractManager {
 		
 		return tb.toString();
 	}
-	protected Date ComputePostponeDate(String string) throws Exception {
-		Matcher m = null;
-		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("JST"));
-		if((m = Pattern.compile("(\\d{2})(\\d{2})(\\d{2})(\\d{2})").matcher(string)).matches()) {
-			c.set(Calendar.MONTH, Integer.parseInt(m.group(1))-1);
-			c.set(Calendar.DATE, Integer.parseInt(m.group(2)));
-			c.set(Calendar.HOUR_OF_DAY, Integer.parseInt(m.group(3)));
-			c.set(Calendar.MINUTE, Integer.parseInt(m.group(4)));
-			return c.getTime();
-		} if((m = Pattern.compile("(\\d{2})(\\d{2})").matcher(string)).matches()) {
-			c.set(Calendar.HOUR_OF_DAY, Integer.parseInt(m.group(1)));
-			c.set(Calendar.MINUTE, Integer.parseInt(m.group(2)));
-			return c.getTime();
-		} else {
-			throw new Exception(String.format("cannot parse %s", string));
-		}
-	}
-
 	@Override
 	public String processReply(int messageID, String msg) {
 		return null;

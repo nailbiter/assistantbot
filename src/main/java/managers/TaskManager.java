@@ -7,6 +7,7 @@ import static java.util.Arrays.asList;
 
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.TimerTask;
 
 import org.apache.commons.collections4.Closure;
@@ -21,6 +22,7 @@ import managers.tasks.TaskManagerBase;
 import managers.tasks.TrelloMover;
 import util.JsonUtil;
 import util.MongoUtil;
+import util.ParseCommentLine;
 import util.Util;
 import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseOrderedArg;
@@ -72,8 +74,16 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 	}
 	public String tasknew(JSONObject obj) throws Exception {
 		ImmutableTriple<Comparator<JSONObject>, String, Integer> triple = comparators_.get(INBOX);
-		JSONObject res = ta_.addCard(triple.middle, new JSONObject()
-				.put("name", obj.getString("name")));
+		HashMap<String, Object> parsed = 
+				new ParseCommentLine(ParseCommentLine.Mode.FROMLEFT)
+				.parse(obj.getString("name"));
+		JSONObject card = new JSONObject()
+				.put("name", (String)parsed.get(ParseCommentLine.REM));
+		if( parsed.containsKey(ParseCommentLine.DATE) )
+			card.put("due", (Date)parsed.get(ParseCommentLine.DATE));
+		
+		JSONObject res = ta_.addCard(triple.middle, card);
+		
 		new TrelloMover(ta_,triple.middle,SEPARATOR).moveTo(res,triple.middle,triple.right);
 		logToDb("tasknew",res);
 		return String.format("created new card %s",res.getString("shortUrl"));
@@ -104,7 +114,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 			.moveTo(card,comparators_.get(SNOOZED).middle,comparators_.get(SNOOZED).right);
 		}
 		
-		Date date = ComputePostponeDate(obj.getString("estimate"));
+		Date date = Util.ComputePostponeDate(obj.getString("estimate"));
 		logToDb(String.format("%s to %s", "taskpostpone",date.toString()),card);
 		System.err.format("date: %s\n", date.toString());
 		setUpReminder(card,date);

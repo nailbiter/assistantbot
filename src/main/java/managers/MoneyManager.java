@@ -80,7 +80,6 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		for(String cat:cats)
 			prefixedCats.add(ParseCommentLine.TAGSPREF+cat);
 		tags.removeAll(prefixedCats);
-//		money 2147 %201812042036 #food #mybusket
 		System.err.format("prefixedCats=%s\ntags=%s\n", 
 				prefixedCats.toString(),tags.toString());
 		obj.put("tags", new JSONArray(tags));

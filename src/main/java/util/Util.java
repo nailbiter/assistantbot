@@ -357,4 +357,21 @@ public class Util{
 				now = new Date();
 		return (due.getTime()-now.getTime())/(1000*60*60*24*1.0d);
 	}
+	public static Date ComputePostponeDate(String string) throws Exception {
+		Matcher m = null;
+		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("JST"));
+		if((m = Pattern.compile("(\\d{2})(\\d{2})(\\d{2})(\\d{2})").matcher(string)).matches()) {
+			c.set(Calendar.MONTH, Integer.parseInt(m.group(1))-1);
+			c.set(Calendar.DATE, Integer.parseInt(m.group(2)));
+			c.set(Calendar.HOUR_OF_DAY, Integer.parseInt(m.group(3)));
+			c.set(Calendar.MINUTE, Integer.parseInt(m.group(4)));
+			return c.getTime();
+		} if((m = Pattern.compile("(\\d{2})(\\d{2})").matcher(string)).matches()) {
+			c.set(Calendar.HOUR_OF_DAY, Integer.parseInt(m.group(1)));
+			c.set(Calendar.MINUTE, Integer.parseInt(m.group(2)));
+			return c.getTime();
+		} else {
+			throw new Exception(String.format("cannot parse %s", string));
+		}
+	}
 }
