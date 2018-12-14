@@ -190,10 +190,8 @@ public class HabitManager extends HabitManagerBase
 		JSONArray habits = this.getPendingHabitNames();
 		System.out.println("len="+habits.length());
 		com.github.nailbiter.util.TableBuilder tb = new com.github.nailbiter.util.TableBuilder();
-		{
-			tb.newRow();
-			tb.addToken("name");
-		}
+		tb.newRow();
+		tb.addToken("name_");
 		for(Object o:habits) {
 			String name = (String)o;
 			tb.newRow();

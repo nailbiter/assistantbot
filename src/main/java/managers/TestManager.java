@@ -27,7 +27,6 @@ import assistantbot.ResourceProvider;
 import managers.tests.JsonTest;
 import managers.tests.ParadigmTest;
 import managers.tests.UrlTest;
-import util.parsers.ParseOrdered;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
 import static util.parsers.ParseOrdered.ArgTypes;
@@ -96,7 +95,7 @@ public class TestManager extends AbstractManager implements OptionReplier {
 		doc.put("testname", testContainer_.get(obj.getInt("testnum")).getName());
 		doc.put("score", obj.getDouble("score"));
 		testScores_.insertOne(doc);
-		return String.format("put %s to scores",doc.toJson());
+		return String.format("put: %s\n to scores",new JSONObject(doc.toJson()).toString(2));
 	}
 	private static double ScoreToDouble(String score) throws Exception{
 		Matcher m = null;

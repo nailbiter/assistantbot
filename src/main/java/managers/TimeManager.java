@@ -250,7 +250,7 @@ public class TimeManager extends AbstractManager implements Runnable, OptionRepl
 		doc.put("startsleep", new Date());
 		doc.put("category", categoryName);
 		sleepingTimes_.insertOne(doc);
-		return String.format("sleepstart %s",Util.JsonObjectToTable(sleepingObj_));
+		return String.format("sleepstart\n%s",Util.JsonObjectToTable(sleepingObj_));
 	}
 	public String sleepend(JSONObject obj)
 	{
