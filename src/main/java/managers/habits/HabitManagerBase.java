@@ -16,8 +16,10 @@ import managers.AbstractManager;
 import managers.HabitManager;
 import managers.OptionReplier;
 import util.parsers.ParseOrdered;
+import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
+import static java.util.Arrays.asList;
 
 public abstract class HabitManagerBase extends AbstractManager implements OptionReplier{
 	public enum HabitRunnableEnum{
@@ -51,16 +53,14 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 			});
 		}
 	}
-	public static JSONArray GetCommands() throws Exception {
-		JSONArray res = new JSONArray();
-		res.put(ParseOrdered.MakeCommand("habits", "list all habits and info",
-				Arrays.asList(ParseOrdered.MakeCommandArg("key", ParseOrdered.ArgTypes.string, true))));
-		res.put(new ParseOrderedCmd("done", "done habit",
-				Arrays.asList(
-						(JSONObject)new ParseOrderedArg("habit", ParseOrdered.ArgTypes.remainder).makeOpt().useMemory()
-						)));
-		res.put(ParseOrdered.MakeCommand("doneg", "done habit graphically",new ArrayList<JSONObject>()));
-		res.put(ParseOrdered.MakeCommand("donep", "done habit graphically",new ArrayList<JSONObject>()));
+	public static JSONArray GetCommands() {
+		JSONArray res = new JSONArray()
+			.put(new ParseOrderedCmd("habits", "list all habits and info",
+				asList(new ParseOrderedArg("key", ArgTypes.string).useDefault("").j())))
+			.put(new ParseOrderedCmd("done", "done habit",
+				asList(new ParseOrderedArg("habit", ArgTypes.remainder).useMemory().j())))
+			.put(new ParseOrderedCmd("doneg", "done habit graphically"))
+			.put(new ParseOrderedCmd("donep", "done habit graphically"));
 		return res;
 	}
 	public String optionReply(String option, Integer msgID) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {

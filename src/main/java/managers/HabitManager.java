@@ -3,6 +3,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.Set;
 import java.util.TimeZone;
 import org.bson.Document;
 import org.json.JSONArray;
@@ -320,11 +321,15 @@ public class HabitManager extends HabitManagerBase
 	}
 	@Override
 	public String habits(JSONObject res) throws Exception {
-		if(!res.has("key"))
+		String keyline = res.getString("key");
+		Set<String> flags = Util.StringToSet(keyline);
+		
+		if( flags.isEmpty() ) {
 			return getHabitsInfo();
-		else if(res.getString("key").equals("s"))
+		} else if(flags.contains("s")) {
 			return getHabitsInfoShort();
-		else
-			return "uknnown key";
+		} else {
+			return String.format("cannot parse flag line \"%s\"", keyline);
+		}
 	}
 }

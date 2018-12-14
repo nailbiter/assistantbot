@@ -95,7 +95,7 @@ public class TestManager extends AbstractManager implements OptionReplier {
 		doc.put("testname", testContainer_.get(obj.getInt("testnum")).getName());
 		doc.put("score", obj.getDouble("score"));
 		testScores_.insertOne(doc);
-		return String.format("put: %s\n to scores",new JSONObject(doc.toJson()).toString(2));
+		return String.format("put: %s to scores",new JSONObject(doc.toJson()).toString(2));
 	}
 	private static double ScoreToDouble(String score) throws Exception{
 		Matcher m = null;

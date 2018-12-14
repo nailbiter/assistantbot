@@ -1,5 +1,6 @@
 package util.parsers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -13,6 +14,9 @@ public class ParseOrderedCmd extends JSONObject {
 		for(int i = 0; i < args.size(); i++)
 			array.put(args.get(i));
 		put("args", array);
+	}
+	public ParseOrderedCmd(String string, String string2) {
+		this(string,string2,new ArrayList<JSONObject>());
 	}
 	public ParseOrderedCmd makeDefaultHandler() {
 		put(StandardParserInterpreter.DEFMESSAGEHANDLERKEY, true);

@@ -21,15 +21,17 @@ public class ParseOrderedArg extends JSONObject {
 		if(isOpt) put("isOpt", isOpt);
 		put("type", type.toString());
 	}
-	public ParseOrderedArg useMemory() throws Exception{
-		if(!IsArgOpt(this))
-			throw new Exception(String.format("cannot %s on non-opt argument!", "useMemory"));
+	public ParseOrderedArg useMemory(){
+//		if(!IsArgOpt(this))
+//			throw new Exception(String.format("cannot %s on non-opt argument!", "useMemory"));
+		makeOpt();
 		put(USINGMEMORY ,true);
 		return this;
 	}
-	public ParseOrderedArg useMemory(Transformer<Object,Object> t) throws Exception{
-		if(!IsArgOpt(this))
-			throw new Exception(String.format("cannot %s on non-opt argument!", "useMemory"));
+	public ParseOrderedArg useMemory(Transformer<Object,Object> t){
+//		if(!IsArgOpt(this))
+//			throw new Exception(String.format("cannot %s on non-opt argument!", "useMemory"));
+		makeOpt();
 		put(USINGMEMORY ,t);
 		return this;
 	}
@@ -37,9 +39,10 @@ public class ParseOrderedArg extends JSONObject {
 		put("isOpt",true);
 		return this;
 	}
-	public ParseOrderedArg useDefault(Object defValue)  throws Exception{
-		if(!IsArgOpt(this))
-			throw new Exception(String.format("cannot %s on non-opt argument!", "useDefault"));
+	public ParseOrderedArg useDefault(Object defValue){
+		makeOpt();
+//		if(!IsArgOpt(this))
+//			throw new Exception(String.format("cannot %s on non-opt argument!", "useDefault"));
 		put(USINGDEFAULT,defValue);
 		return this;
 	}

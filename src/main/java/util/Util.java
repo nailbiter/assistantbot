@@ -18,10 +18,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -384,5 +386,11 @@ public class Util{
 			tb.addToken(obj.get(key).toString());
 		}
 		return tb;
+	}
+	public static Set<String> StringToSet(String string) {
+		Set<String> res = new HashSet<String>();
+		for(int i = 0; i < string.length(); i++)
+			res.add(string.substring(i, i+1));
+		return res;
 	}
 }
