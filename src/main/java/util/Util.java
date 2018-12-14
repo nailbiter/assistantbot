@@ -33,6 +33,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.github.nailbiter.util.TableBuilder;
+
 import assistantbot.ResourceProvider;
 import static java.lang.Integer.parseInt;
 
@@ -373,5 +375,14 @@ public class Util{
 		} else {
 			throw new Exception(String.format("cannot parse %s", string));
 		}
+	}
+	public static TableBuilder JsonObjectToTable(JSONObject obj) {
+		TableBuilder tb = new TableBuilder();
+		for(String key:obj.keySet()) {
+			tb.newRow();
+			tb.addToken(key);
+			tb.addToken(obj.get(key).toString());
+		}
+		return tb;
 	}
 }
