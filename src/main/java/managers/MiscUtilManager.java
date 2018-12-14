@@ -20,6 +20,7 @@ import com.mongodb.client.MongoCollection;
 import assistantbot.ResourceProvider;
 import managers.misc.NoteMaker;
 import managers.misc.RandomSetGenerator;
+import util.JsonUtil;
 import util.KeyRing;
 import util.Util;
 import util.parsers.ParseOrdered;
@@ -123,6 +124,7 @@ public class MiscUtilManager extends AbstractManager {
 	public String ttask(JSONObject obj) throws Exception {
 		String task = obj.getString("task");
 		JSONObject card = ta_.addCard(tasklist_, new JSONObject().put("name", task));
+		JsonUtil.FilterJsonKeys(card, new JSONArray().put("name").put("shortUrl"));
 		rp_.sendMessage(String.format("added task\n%s", Util.JsonObjectToTable(card)));
 		return "";
 	}

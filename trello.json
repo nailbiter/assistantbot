@@ -1,19 +1,19 @@
 {
-   "cardurl" : "json table",
-   "pulledData" : {
-      "trelloTitle" : "sleepstart jsonobject to table, /ttask"
-   },
-   "urlnames" : {
-      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
-      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
-      "indicator" : "https://trello.com/c/FMIlCbXE",
-      "parser" : "https://trello.com/c/hkuY0OBL",
-      "distribGen" : "https://trello.com/c/3R83mhwS",
-      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
-      "json table" : "https://trello.com/c/gfyEEt3o",
-      "sort order" : "https://trello.com/c/ofzAma1H"
-   },
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
-   ]
+   ],
+   "cardurl" : "json table",
+   "urlnames" : {
+      "indicator" : "https://trello.com/c/FMIlCbXE",
+      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
+      "distribGen" : "https://trello.com/c/3R83mhwS",
+      "json table" : "https://trello.com/c/gfyEEt3o",
+      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
+      "sort order" : "https://trello.com/c/ofzAma1H",
+      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
+      "parser" : "https://trello.com/c/hkuY0OBL"
+   },
+   "pulledData" : {
+      "trelloTitle" : "sleepstart jsonobject to table, /ttask"
+   }
 }
