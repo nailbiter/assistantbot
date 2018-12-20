@@ -60,9 +60,16 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 	{
 		if( !obj.has("amount") ) {
 			return ShowTags(money);
-		} else if( obj.getInt("amount") < 0 ) {
-			return costs( -obj.getInt("amount"));
 		}
+		
+		try {
+			int am = Integer.parseInt(obj.getString("amount"));
+			if( am < 0 ) {
+				return costs( -am );
+			}
+		} catch(NumberFormatException e) {
+		}
+		
 		
 		obj.put("amount", Util.SimpleEval(obj.getString("amount")));
 		
