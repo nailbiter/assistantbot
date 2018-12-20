@@ -68,11 +68,14 @@ public class ScriptApp {
 		return (String) inv.invokeFunction("main",(split.length>1)?split[1]:null);
 	}
 	private void preloadEngine(ScriptEngine engine, String scriptFolder) throws FileNotFoundException, ScriptException {
+		if(includeFolderName_ == null )
+			return;
+		
 		String includeFolder = String.format("%s%s/", scriptFolder,includeFolderName_);
 		System.err.format("incFol=%s\n", includeFolder);
 		
-		File folder = new File(includeFolder);
-		File[] listOfFiles = folder.listFiles();
+		File incFolder = new File(includeFolder);
+		File[] listOfFiles = incFolder.listFiles();
 		for (File file:listOfFiles) {
 		  if (file.isFile()) {
 			String fn = file.getName();

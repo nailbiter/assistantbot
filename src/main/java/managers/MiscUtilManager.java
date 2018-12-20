@@ -3,10 +3,14 @@ package managers;
 import static java.util.Arrays.asList;
 import static util.Util.GetRebootFileName;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Random;
+
+import javax.script.Invocable;
+import javax.script.ScriptException;
 
 import org.bson.Document;
 import org.json.JSONArray;
@@ -22,11 +26,13 @@ import managers.misc.NoteMaker;
 import managers.misc.RandomSetGenerator;
 import util.JsonUtil;
 import util.KeyRing;
+import util.ScriptApp;
 import util.Util;
 import util.parsers.ParseOrdered;
 import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
+import util.scripthelpers.ScriptHelper;
 
 public class MiscUtilManager extends AbstractManager {
 	Random rand_ = new Random();
@@ -40,6 +46,7 @@ public class MiscUtilManager extends AbstractManager {
 	private static final String DISTRICOLLECTIONBNAME = "randsetdistrib";
 	NoteMaker nm_ = null;
 	private ResourceProvider rp_;
+	private ScriptApp sa_;
 	
 	public MiscUtilManager(ResourceProvider rp) throws Exception {
 		super(GetCommands());
@@ -54,15 +61,25 @@ public class MiscUtilManager extends AbstractManager {
 		mc_ = rp.getMongoClient();
 		nm_ = new NoteMaker(mc_);
 		rp_ = rp;
+		sa_ = new ScriptApp(Util.getScriptFolder()+"gendistrib",null, 
+				new ScriptHelper() {
+					@Override
+					public String execute(String arg) throws Exception {
+						return null;
+					}
+					@Override
+					public void setInvocable(Invocable inv) {
+					}
+		});
 	}
 	public static JSONArray GetCommands() throws Exception {
 		return new JSONArray()
 				.put(new ParseOrderedCmd("rand", "return random",
-					new ParseOrderedArg("key",ParseOrdered.ArgTypes.integer).makeOpt().j(),
-					new ParseOrderedArg("charset",ParseOrdered.ArgTypes.string).makeOpt().j()
+					new ParseOrderedArg("key",ParseOrdered.ArgTypes.integer).makeOpt(),
+					new ParseOrderedArg("charset",ParseOrdered.ArgTypes.string).makeOpt()
 				))
-				.put(ParseOrdered.MakeCommand("randset","return randomly generated set",
-						asList(ParseOrdered.MakeCommandArg("size",ParseOrdered.ArgTypes.integer,false))))
+				.put(new ParseOrderedCmd("randset","return randomly generated set",
+						new ParseOrderedArg("size",ArgTypes.integer)))
 				.put(ParseOrdered.MakeCommand("note","make note",asList(ParseOrdered.MakeCommandArg("notecontent",ParseOrdered.ArgTypes.remainder,false))))
 				.put(new ParseOrderedCmd("exit", "exit the bot"))
 				.put(new ParseOrderedCmd("restart","restart the bot"))
@@ -75,26 +92,18 @@ public class MiscUtilManager extends AbstractManager {
 		return String.format("made note \"%s\"", noteContent);
 	}
 	public String restart(JSONObject obj) throws Exception {
-//		if(obj.getString("command").equals("help")) {
-//			return Util.GetFile(Util.GetRebootCommandFileName());
-//		} else {
 		Util.SaveJSONObjectToFile(GetRebootFileName(), obj);
 		return exit(obj);	
-//		}
 	}
 	@Override
 	public String processReply(int messageID, String msg) {
 		return null;
 	}
-	public String randset(JSONObject obj) {
-		MongoCollection<Document> col = mc_.getDatabase("logistics").getCollection(DISTRICOLLECTIONBNAME);
+	public String randset(JSONObject obj) throws FileNotFoundException, NoSuchMethodException, ScriptException {
 		final ArrayList<JSONObject> data = new ArrayList<JSONObject>();
-		col.find().forEach(new Block<Document>(){
-			@Override
-			public void apply(Document doc) {
-				data.add(new JSONObject(doc.toJson()));
-			}
-		});
+		JSONArray distrib = new JSONArray(sa_.runCommand("updatedistrib"));
+		for(Object o:distrib)
+			data.add((JSONObject)o);
 		
 		ArrayList<String> res = RandomSetGenerator.MakeRandomSet(data,obj.getInt("size"));
 		return String.format("%s", res.toString());
