@@ -151,10 +151,10 @@ public class TaskManagerBase extends AbstractManager {
 						, mainLabel
 						,LABELJOINER
 						,String.join(LABELJOINER, labelset))
-					,po.getInt("labels"));
+					,po.getJSONObject("sep").getInt("labels"));
 			} else {
 				tb.addToken(String.join(LABELJOINER, labelset)
-						,po.getInt("labels"));
+						,po.getJSONObject("sep").getInt("labels"));
 			}
 			tb.addToken(po.getJSONObject("sep").getInt("labels"));
 			if( HasDue(card) ) {
