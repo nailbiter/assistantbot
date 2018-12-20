@@ -147,9 +147,14 @@ public class TaskManagerBase extends AbstractManager {
 			
 			if( mainLabel != null ) {
 				labelset.remove(mainLabel);
-				tb.addToken(String.format("%s%s%s", mainLabel,LABELJOINER,String.join(LABELJOINER, labelset)));
+				tb.addToken(String.format("%s%s%s"
+						, mainLabel
+						,LABELJOINER
+						,String.join(LABELJOINER, labelset))
+					,po.getInt("labels"));
 			} else {
-				tb.addToken(String.join(LABELJOINER, labelset));
+				tb.addToken(String.join(LABELJOINER, labelset)
+						,po.getInt("labels"));
 			}
 			tb.addToken(po.getJSONObject("sep").getInt("labels"));
 			if( HasDue(card) ) {
