@@ -1,22 +1,22 @@
 {
-   "cardurl" : "distrib_gen_js",
    "urlnames" : {
+      "indicator" : "https://trello.com/c/FMIlCbXE",
       "compare deadlines" : "https://trello.com/c/W4CSDHPl",
       "parser" : "https://trello.com/c/hkuY0OBL",
-      "remove_costs" : "https://trello.com/c/PmEunKmi",
-      "print_only_taskdone_stat" : "https://trello.com/c/XrVeN6rK",
-      "indicator" : "https://trello.com/c/FMIlCbXE",
+      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
+      "auto_check_mult_main_labels" : "https://trello.com/c/cexmj2vA",
       "sort order" : "https://trello.com/c/ofzAma1H",
       "json table" : "https://trello.com/c/gfyEEt3o",
       "distrib_gen_js" : "https://trello.com/c/3R83mhwS",
-      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
-      "auto_check_mult_main_labels" : "https://trello.com/c/cexmj2vA",
-      "label, deadline in task title" : "https://trello.com/c/8g5nF20K"
+      "remove_costs" : "https://trello.com/c/PmEunKmi",
+      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
+      "print_only_taskdone_stat" : "https://trello.com/c/XrVeN6rK"
    },
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
    ],
    "pulledData" : {
       "trelloTitle" : "distrib gen JavaScript"
-   }
+   },
+   "cardurl" : "distrib_gen_js"
 }
