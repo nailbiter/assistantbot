@@ -156,7 +156,7 @@ public class TaskManagerBase extends AbstractManager {
 				tb.addToken(String.join(LABELJOINER, labelset)
 						,po.getJSONObject("sep").getInt("labels"));
 			}
-			tb.addToken(po.getJSONObject("sep").getInt("labels"));
+//			tb.addToken(po.getJSONObject("sep").getInt("labels"));
 			if( HasDue(card) ) {
 				tb.addToken(PrintDaysTill(DaysTill(card), "="),po.getJSONObject("sep").getInt("due"));
 			} else {
