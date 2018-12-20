@@ -7,5 +7,5 @@
 	"filetosendto":"test.html",
     	"scriptFolder":"src/main/js/",
 	"managers":["GermanManager","MiscUtilManager","ReportManager","JShellManager","TaskManager",
-		"MoneyManager","TestManager","PerlScriptManager"]
+		"MoneyManager","TestManager","PerlScriptManager","GymManager"]
 }

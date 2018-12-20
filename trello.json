@@ -1,20 +1,20 @@
 {
    "pulledData" : {
-      "trelloTitle" : "remove costs /command"
+      "trelloTitle" : "gymdone count"
+   },
+   "urlnames" : {
+      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
+      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
+      "json table" : "https://trello.com/c/gfyEEt3o",
+      "indicator" : "https://trello.com/c/FMIlCbXE",
+      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
+      "distribGen" : "https://trello.com/c/3R83mhwS",
+      "sort order" : "https://trello.com/c/ofzAma1H",
+      "parser" : "https://trello.com/c/hkuY0OBL",
+      "remove_costs" : "https://trello.com/c/PmEunKmi"
    },
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
    ],
-   "cardurl" : "remove_costs",
-   "urlnames" : {
-      "parser" : "https://trello.com/c/hkuY0OBL",
-      "json table" : "https://trello.com/c/gfyEEt3o",
-      "sort order" : "https://trello.com/c/ofzAma1H",
-      "remove_costs" : "https://trello.com/c/PmEunKmi",
-      "distribGen" : "https://trello.com/c/3R83mhwS",
-      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
-      "indicator" : "https://trello.com/c/FMIlCbXE",
-      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
-      "label, deadline in task title" : "https://trello.com/c/8g5nF20K"
-   }
+   "cardurl" : "https://trello.com/c/X1YLeiJF"
 }

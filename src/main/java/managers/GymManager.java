@@ -14,6 +14,7 @@ import util.MongoUtil;
 import util.parsers.ParseOrdered;
 import static java.util.Arrays.asList;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Logger;
 
@@ -73,17 +74,23 @@ public class GymManager extends AbstractManager {
 		} else if(exercisenum<0) {
 			final TableBuilder tb = new TableBuilder();
 			tb.addTokens("#_","name_", "comment_");
+			final ArrayList<Integer> index = new ArrayList<Integer>();
+			index.add(0);
 			mongoClient_.getDatabase("logistics").getCollection("gymLog")
 			.find().sort(Sorts.descending("_id")).limit(-exercisenum).forEach(new Block<Document>() {
 				@Override
 				public void apply(Document doc) {
 					tb.newRow();
 					JSONObject obj = new JSONObject(doc.toJson());
-					tb.addTokens(String.format("%d:%d:%s",
-							obj.getInt("weekCount"),
-							obj.getInt("dayCount"),
-							obj.getJSONObject("exercise").getString("name")),
-							obj.optString("comment", ""));
+					index.add(0, index.get(0)+1);
+					tb.addTokens(
+							Integer.toString(index.get(0)),
+							String.format("%d:%d:%s",
+								obj.getInt("weekCount"),
+								obj.getInt("dayCount"),
+								obj.getJSONObject("exercise").getString("name")),
+							obj.optString("comment", "")
+							);
 				}
 			});
 			return tb.toString();
