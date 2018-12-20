@@ -12,6 +12,9 @@ import com.mongodb.client.model.Sorts;
 import assistantbot.ResourceProvider;
 import util.MongoUtil;
 import util.parsers.ParseOrdered;
+import util.parsers.ParseOrderedArg;
+import util.parsers.ParseOrderedCmd;
+
 import static java.util.Arrays.asList;
 
 import java.util.ArrayList;
@@ -34,13 +37,12 @@ public class GymManager extends AbstractManager {
 	}
 	public static JSONArray GetCommands() {
 		return new JSONArray()
-				.put(ParseOrdered.MakeCommand("gymlist","list gym exercises",
-						asList(ParseOrdered.MakeCommandArg("dayCount",ParseOrdered.ArgTypes.integer,false))))
-				.put(ParseOrdered.MakeCommand("gymdone","done gym exercise",
-						asList(
-								ParseOrdered.MakeCommandArg("exercisenum",ParseOrdered.ArgTypes.integer,false),
-								ParseOrdered.MakeCommandArg("comment",ParseOrdered.ArgTypes.remainder,true)
-								)))
+				.put(new ParseOrderedCmd("gymlist","list gym exercises",
+						new ParseOrderedArg("dayCount",ParseOrdered.ArgTypes.integer).j()))
+				.put(new ParseOrderedCmd("gymdone","done gym exercise",
+						new ParseOrderedArg("exercisenum",ParseOrdered.ArgTypes.integer).useMemory(),
+						new ParseOrderedArg("comment",ParseOrdered.ArgTypes.remainder).useDefault("")
+				))
 				;
 	}
 	@Override

@@ -2,19 +2,19 @@
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
    ],
+   "cardurl" : "https://trello.com/c/E9GaVSIN",
    "urlnames" : {
+      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
+      "distribGen" : "https://trello.com/c/3R83mhwS",
+      "remove_costs" : "https://trello.com/c/PmEunKmi",
       "json table" : "https://trello.com/c/gfyEEt3o",
       "parser" : "https://trello.com/c/hkuY0OBL",
-      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
-      "indicator" : "https://trello.com/c/FMIlCbXE",
-      "distribGen" : "https://trello.com/c/3R83mhwS",
-      "sort order" : "https://trello.com/c/ofzAma1H",
-      "remove_costs" : "https://trello.com/c/PmEunKmi",
       "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
+      "sort order" : "https://trello.com/c/ofzAma1H",
+      "indicator" : "https://trello.com/c/FMIlCbXE",
       "label, deadline in task title" : "https://trello.com/c/8g5nF20K"
    },
    "pulledData" : {
-      "trelloTitle" : "gymdone count"
-   },
-   "cardurl" : "https://trello.com/c/X1YLeiJF"
+      "trelloTitle" : "gymdone numbdefault"
+   }
 }
