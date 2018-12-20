@@ -72,18 +72,18 @@ public class GymManager extends AbstractManager {
 			throw new Exception(String.format("(%d<=0 || %d<%d)", exercisenum,program_.length(),exercisenum));
 		} else if(exercisenum<0) {
 			final TableBuilder tb = new TableBuilder();
-			tb.addNewlineAndTokens("name", "comment");
+			tb.addTokens("#_","name_", "comment_");
 			mongoClient_.getDatabase("logistics").getCollection("gymLog")
 			.find().sort(Sorts.descending("_id")).limit(-exercisenum).forEach(new Block<Document>() {
 				@Override
 				public void apply(Document doc) {
 					tb.newRow();
 					JSONObject obj = new JSONObject(doc.toJson());
-					tb.addToken(String.format("%d:%d:%s",
+					tb.addTokens(String.format("%d:%d:%s",
 							obj.getInt("weekCount"),
 							obj.getInt("dayCount"),
-							obj.getJSONObject("exercise").getString("name")));
-					tb.addToken(obj.optString("comment", ""));
+							obj.getJSONObject("exercise").getString("name")),
+							obj.optString("comment", ""));
 				}
 			});
 			return tb.toString();

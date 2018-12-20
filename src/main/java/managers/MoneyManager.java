@@ -60,6 +60,8 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 	{
 		if( !obj.has("amount") ) {
 			return ShowTags(money);
+		} else if( obj.getInt("amount") < 0 ) {
+			return costs( -obj.getInt("amount"));
 		}
 		
 		obj.put("amount", Util.SimpleEval(obj.getString("amount")));
@@ -130,8 +132,8 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		return String.format("put %s in category %s",
 					obj.toString(),categoryName);
 	}
-	public String costs(JSONObject obj) {
-		int howMuch = obj.getInt("num");
+	private String costs(int howMuch) {
+//		int howMuch = obj.getInt("num");
 		final com.github.nailbiter.util.TableBuilder tb = new com.github.nailbiter.util.TableBuilder();
 		tb.newRow();
 		tb.addToken("#");
@@ -176,8 +178,8 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 	}
 	public static JSONArray GetCommands() throws Exception {
 		JSONArray res = new JSONArray()
-				.put(new ParseOrderedCmd("costs","show last NUM costs",
-						Arrays.asList((JSONObject) new ParseOrderedArg("num", ArgTypes.integer).makeOpt().useDefault(5))))
+//				.put(new ParseOrderedCmd("costs","show last NUM costs",
+//						Arrays.asList((JSONObject) new ParseOrderedArg("num", ArgTypes.integer).makeOpt().useDefault(5))))
 				.put(new ParseOrderedCmd("money", "spent money",
 						Arrays.asList((JSONObject)new ParseOrderedArg("amount",ParseOrdered.ArgTypes.string).makeOpt(),
 								(JSONObject)new ParseOrderedArg("comment", ParseOrdered.ArgTypes.remainder).makeOpt())))

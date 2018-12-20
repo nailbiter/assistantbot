@@ -25,4 +25,8 @@ public class ParseOrderedCmd extends JSONObject {
 	public static boolean IsDefaultHandler(JSONObject cmd) {
 		return cmd.optBoolean(StandardParserInterpreter.DEFMESSAGEHANDLERKEY, false);
 	}
+	public ParseOrderedCmd addArgument(JSONObject arg) {
+		getJSONArray("args").put(arg);
+		return this;
+	}
 }

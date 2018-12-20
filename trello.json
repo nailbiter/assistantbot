@@ -2,18 +2,19 @@
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
    ],
-   "cardurl" : "json table",
+   "cardurl" : "remove_costs",
+   "pulledData" : {
+      "trelloTitle" : "remove costs /command"
+   },
    "urlnames" : {
-      "indicator" : "https://trello.com/c/FMIlCbXE",
-      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
-      "distribGen" : "https://trello.com/c/3R83mhwS",
+      "sort order" : "https://trello.com/c/ofzAma1H",
       "json table" : "https://trello.com/c/gfyEEt3o",
       "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
-      "sort order" : "https://trello.com/c/ofzAma1H",
+      "distribGen" : "https://trello.com/c/3R83mhwS",
       "compare deadlines" : "https://trello.com/c/W4CSDHPl",
+      "indicator" : "https://trello.com/c/FMIlCbXE",
+      "remove_costs" : "https://trello.com/c/PmEunKmi",
+      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
       "parser" : "https://trello.com/c/hkuY0OBL"
-   },
-   "pulledData" : {
-      "trelloTitle" : "sleepstart jsonobject to table, /ttask"
    }
 }
