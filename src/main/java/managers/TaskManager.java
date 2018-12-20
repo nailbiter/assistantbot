@@ -59,12 +59,12 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 	}
 	public String tasks(JSONObject res) throws Exception {
 		if( !res.has("tasknum") ) {
-			return PrintTasks(getTasks(INBOX),this.getParamObject(mc_));
+			return PrintTasks(getTasks(INBOX),this.getParamObject(mc_),recognizedCats_);
 		} else if(res.getInt("tasknum")>0){
 			rp_.sendMessage(PrintTask(getTasks(INBOX),res.getInt("tasknum"),ta_));
 			return "";
 		} else if(res.getInt("tasknum")==0) {
-			return PrintTasks(getTasks(SNOOZED),this.getParamObject(mc_));
+			return PrintTasks(getTasks(SNOOZED),this.getParamObject(mc_),recognizedCats_);
 		} else if( res.getInt("tasknum") < 0 ) {
 			rp_.sendMessage(PrintTask(getTasks(SNOOZED),-res.getInt("tasknum"), ta_));
 			return "";

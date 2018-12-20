@@ -1,20 +1,21 @@
 {
+   "cardurl" : "auto_check_mult_main_labels",
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
    ],
-   "cardurl" : "https://trello.com/c/E9GaVSIN",
-   "urlnames" : {
-      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
-      "distribGen" : "https://trello.com/c/3R83mhwS",
-      "remove_costs" : "https://trello.com/c/PmEunKmi",
-      "json table" : "https://trello.com/c/gfyEEt3o",
-      "parser" : "https://trello.com/c/hkuY0OBL",
-      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
-      "sort order" : "https://trello.com/c/ofzAma1H",
-      "indicator" : "https://trello.com/c/FMIlCbXE",
-      "label, deadline in task title" : "https://trello.com/c/8g5nF20K"
-   },
    "pulledData" : {
-      "trelloTitle" : "gymdone numbdefault"
+      "trelloTitle" : "! auto check task labels multiple"
+   },
+   "urlnames" : {
+      "auto_check_mult_main_labels" : "https://trello.com/c/cexmj2vA",
+      "distribGen" : "https://trello.com/c/3R83mhwS",
+      "json table" : "https://trello.com/c/gfyEEt3o",
+      "remove_costs" : "https://trello.com/c/PmEunKmi",
+      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
+      "indicator" : "https://trello.com/c/FMIlCbXE",
+      "sort order" : "https://trello.com/c/ofzAma1H",
+      "parser" : "https://trello.com/c/hkuY0OBL",
+      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
+      "compare deadlines" : "https://trello.com/c/W4CSDHPl"
    }
 }

@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Timer;
 import java.util.logging.Logger;
 
@@ -32,18 +33,22 @@ import com.mongodb.MongoClient;
 import assistantbot.ResourceProvider;
 import managers.AbstractManager;
 import managers.TaskManager;
+import util.AssistantBotException;
 import util.JsonUtil;
 import util.KeyRing;
 import util.MongoUtil;
+import util.ParseCommentLine;
 import util.ScriptApp;
 import util.scripthelpers.ScriptHelperArray;
 import util.scripthelpers.ScriptHelperLogger;
 import util.scripthelpers.ScriptHelperMisc;
 import util.scripthelpers.ScriptHelperVarkeeper;
+import static util.Util.PrintDaysTill;
 
 public class TaskManagerBase extends AbstractManager {
 
 	protected static final String POSTPONEDTASKS = "postponedTasks";
+	private static final String LABELJOINER = ", ";;
 	protected Timer timer = new Timer();
 	protected ResourceProvider rp_;
 	protected TrelloAssistant ta_;
@@ -118,28 +123,68 @@ public class TaskManagerBase extends AbstractManager {
 		
 	}
 
-	protected static String PrintTasks(ArrayList<JSONObject> arr, JSONObject po) throws JSONException, ParseException {
-		TableBuilder tb = new TableBuilder();
-		tb.newRow();
-		tb.addToken("#_");
-		tb.addToken("name_");
-		tb.addToken("labels_");
-		tb.addToken("due_");
+	protected static String PrintTasks(ArrayList<JSONObject> arr, JSONObject po, ArrayList<String> recognizedCats) throws JSONException, ParseException, AssistantBotException {
+		TableBuilder tb = new TableBuilder()
+			.addTokens("#_","name_","labels_","due_");
+		AssistantBotException isBad = null;
+		
 		for(int i = 0;i < arr.size(); i++) {
 			JSONObject card = arr.get(i);
-			tb.newRow();
-			tb.addToken(i + 1);
-			tb.addToken(card.getString("name"),po.getJSONObject("sep").getInt("name"));
-			tb.addToken(GetLabels(card),po.getJSONObject("sep").getInt("labels"));
-			if(HasDue(card)) {
-				tb.addToken(util.Util.PrintDaysTill(DaysTill(card), "="),po.getJSONObject("sep").getInt("due"));
+			tb.newRow()
+			.addToken(i + 1)
+			.addToken(card.getString("name"),po.getJSONObject("sep").getInt("name"));
+			
+			HashSet<String> labelset = GetLabels(card.getJSONArray("labels")) ;
+			String mainLabel = null;
+			try {
+				mainLabel = GetMainLabel(labelset,recognizedCats);
+			} catch (AssistantBotException e) {
+				if( e.getType() == AssistantBotException.Type.NOTONEMAINLABEL )
+					isBad = e;
+				else
+					throw e;
+			}
+			
+			if( mainLabel != null ) {
+				labelset.remove(mainLabel);
+				tb.addToken(String.format("%s%s%s", mainLabel,LABELJOINER,String.join(LABELJOINER, labelset)));
+			} else {
+				tb.addToken(String.join(LABELJOINER, labelset));
+			}
+			tb.addToken(po.getJSONObject("sep").getInt("labels"));
+			if( HasDue(card) ) {
+				tb.addToken(PrintDaysTill(DaysTill(card), "="),po.getJSONObject("sep").getInt("due"));
 			} else {
 				tb.addToken("∞");
 			}
 		}
-		return tb.toString();
+		
+		StringBuilder sb = new StringBuilder(tb.toString());
+		if( isBad != null ) {
+			sb.append(String.format("\ne: %s", isBad.getMessage()));
+		}
+		
+		return sb.toString();
 	}
 
+	private static String GetMainLabel(HashSet<String> labelset, ArrayList<String> recognizedCats) throws AssistantBotException {
+		String res = null;
+		for(String cat:recognizedCats) {
+			String prefixedCat = 
+					String.format("%s%s", ParseCommentLine.TAGSPREF,cat);
+			if(labelset.contains(prefixedCat)) {
+				if(res!=null) {
+					throw new AssistantBotException(AssistantBotException.Type.NOTONEMAINLABEL, String.format("%s -> %s", res,cat));
+				} else {
+					res = prefixedCat;
+				}
+			}
+		}
+		if( res == null)
+			throw new AssistantBotException(AssistantBotException.Type.NOTONEMAINLABEL,labelset.toString());
+		else
+			return res;
+	}
 	private static double DaysTill(JSONObject obj) throws JSONException, ParseException {
 		return util.Util.DaysTill(obj.getString("due"));
 	}
@@ -156,20 +201,28 @@ public class TaskManagerBase extends AbstractManager {
 				);
 	}
 
-	private static String GetLabels(JSONObject card) {
-		return GetLabels(card,new ArrayList<String>());
+	private static HashSet<String> GetLabels(JSONArray label) {
+		return FormatLabels(label,new ArrayList<String>());
 	}
-	private static String GetLabels(JSONObject card,ArrayList<String> filter) {
-		JSONArray label = card.optJSONArray("labels");
-		if(label==null)
-			return "";
-		ArrayList<String> res = new ArrayList<String>();
+	/**
+	 * @deprecated
+	 * @param label
+	 * @param filter
+	 * @return
+	 */
+	private static HashSet<String> FormatLabels(JSONArray label,ArrayList<String> filter) {
+//		if(label==null)
+//			return "";
+		HashSet<String> res = new HashSet<String>();
+		if( label == null )
+			return res;
 		for(Object o:label) {
 			JSONObject obj = (JSONObject)o;
 			if(obj.has("name") && (filter.isEmpty() || filter.contains(obj.getString("name"))))
 				res.add(String.format("#%s", obj.getString("name")));
 		}
-		return String.join(", ", res);
+//		return String.join(", ", res);
+		return res;
 	}
 
 	protected static String PrintSnoozed(TrelloAssistant ta, MongoClient mc, String listid, JSONObject po, Logger logger) throws Exception {
@@ -239,9 +292,12 @@ public class TaskManagerBase extends AbstractManager {
 						JSONObject obj = new JSONObject(arg0.toJson());
 						System.err.format("obj=%s\n", obj.toString());
 						JSONObject card = obj.getJSONObject("obj");
-						tb.newRow()
-						.addToken(card.getString("name"),po.getInt("name"))
-						.addToken(GetLabels(card, recognizedCats),po.getInt("labels"));
+						tb
+						.newRow()
+						.addToken(card.getString("name"),po.getInt("name"));
+						String labelline = String.join(", ", 
+								FormatLabels(card.getJSONArray("labels"), recognizedCats));
+						tb.addToken(labelline,po.getInt("labels"));
 					}
 				});
 		
