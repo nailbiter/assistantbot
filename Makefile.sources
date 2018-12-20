@@ -8,6 +8,7 @@ SHELLSOURCES=InteractiveShell
 TESTSOURCES=UrlTest JsonTest ParadigmTest
 MISCSOURCES=MashaRemind RandomSetGenerator NoteMaker
 PARSERSOURCES=AbstractParser ParseOrdered StandardParserInterpreter ParseOrderedArg ParseOrderedCmd
+MANAGERTASKSOURCES=TaskManagerBase
 SOURCES=\
  $(addprefix util/parsers/,$(PARSERSOURCES))\
  $(addprefix assistantbot/,$(ASBOTSOURCES))\
@@ -18,6 +19,7 @@ SOURCES=\
  $(addprefix util/scripthelpers/,$(SCRIPTHELPERSOURCES))\
  $(addprefix com/github/nailbiter/util/,TrelloAssistant Util opts/Option TableBuilder)\
  $(addprefix managers/tests/,$(TESTSOURCES))\
+ $(addprefix managers/tasks/,$(MANAGERTASKSOURCES))\
  $(addprefix managers/habits/,$(HABITMANAGERSOURCES))\
  $(MAINCLASS)
 add:

@@ -156,7 +156,6 @@ public class TaskManagerBase extends AbstractManager {
 				tb.addToken(String.join(LABELJOINER, labelset)
 						,po.getJSONObject("sep").getInt("labels"));
 			}
-//			tb.addToken(po.getJSONObject("sep").getInt("labels"));
 			if( HasDue(card) ) {
 				tb.addToken(PrintDaysTill(DaysTill(card), "="),po.getJSONObject("sep").getInt("due"));
 			} else {
@@ -207,29 +206,16 @@ public class TaskManagerBase extends AbstractManager {
 	}
 
 	private static HashSet<String> GetLabels(JSONArray label) {
-		return FormatLabels(label,new ArrayList<String>());
-	}
-	/**
-	 * @deprecated
-	 * @param label
-	 * @param filter
-	 * @return
-	 */
-	private static HashSet<String> FormatLabels(JSONArray label,ArrayList<String> filter) {
-//		if(label==null)
-//			return "";
 		HashSet<String> res = new HashSet<String>();
 		if( label == null )
 			return res;
 		for(Object o:label) {
 			JSONObject obj = (JSONObject)o;
-			if(obj.has("name") && (filter.isEmpty() || filter.contains(obj.getString("name"))))
+			if( obj.has("name") )
 				res.add(String.format("#%s", obj.getString("name")));
 		}
-//		return String.join(", ", res);
 		return res;
 	}
-
 	protected static String PrintSnoozed(TrelloAssistant ta, MongoClient mc, String listid, JSONObject po, Logger logger) throws Exception {
 		JSONArray tasks = ta.getCardsInList(listid);
 		JSONArray reminders = 
@@ -275,11 +261,9 @@ public class TaskManagerBase extends AbstractManager {
 	}
 
 	protected static String PrintDoneTasks(TrelloAssistant ta, MongoClient mc, HashMap<String, ImmutableTriple<Comparator<JSONObject>, String, Integer>> c, final ArrayList<String> recognizedCats) throws Exception {
-		final JSONObject po = GetParamObject(mc, TaskManager.class.getName()).getJSONObject("sep");
 		final JSONArray alltasks = ta.getAllCardsInList(c.get(INBOX).middle);
 		System.err.format("alltasks has %d cards\n", alltasks.length());
-		final TableBuilder tb = new TableBuilder();
-		tb.newRow().addToken("name_").addToken("label_");
+		TableBuilder tb = new TableBuilder().addTokens("cat_","count_");
 		
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -289,6 +273,8 @@ public class TaskManagerBase extends AbstractManager {
 		Date d = cal.getTime();
 		System.err.format("date: %s\n", d.toString());
 		
+		final ArrayList<AssistantBotException> exs = new ArrayList<AssistantBotException>();
+		final HashMap<String,Integer> stat = new HashMap<String,Integer>();
 		mc.getDatabase("logistics").getCollection("taskLog")
 		.find(and(eq("message","taskdone"),gte("date",d)))
 		.forEach(new Block<Document>() {
@@ -297,16 +283,31 @@ public class TaskManagerBase extends AbstractManager {
 						JSONObject obj = new JSONObject(arg0.toJson());
 						System.err.format("obj=%s\n", obj.toString());
 						JSONObject card = obj.getJSONObject("obj");
-						tb
-						.newRow()
-						.addToken(card.getString("name"),po.getInt("name"));
-						String labelline = String.join(", ", 
-								FormatLabels(card.getJSONArray("labels"), recognizedCats));
-						tb.addToken(labelline,po.getInt("labels"));
+						try {
+							String mainCat = GetMainLabel(GetLabels(card.getJSONArray("labels")),
+									recognizedCats);
+							if( !stat.containsKey(mainCat) )
+								stat.put(mainCat, 0);
+							stat.put(mainCat, stat.get(mainCat)+1);
+						} catch (AssistantBotException e) {
+							if(e.getType()==AssistantBotException.Type.NOTONEMAINLABEL)
+								exs.add(0, e);
+							else
+								e.printStackTrace();
+						}
 					}
 				});
 		
-		return tb.toString();
+		int total = 0;
+		for(String cat:stat.keySet()) {
+			tb.newRow().addToken(cat)
+			.addToken(stat.get(cat));
+			total += stat.get(cat);
+		}
+		tb.newRow().addToken("TOTAL").addToken(total);
+		
+		return tb.toString() + 
+				(exs.isEmpty()?"":String.format("\ne: %s", exs.get(0).getMessage()));
 	}
 	@Override
 	public String processReply(int messageID, String msg) {
