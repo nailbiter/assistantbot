@@ -80,7 +80,7 @@ public class GymManager extends AbstractManager {
 			.find().sort(Sorts.descending("_id")).limit(-exercisenum).forEach(new Block<Document>() {
 				@Override
 				public void apply(Document doc) {
-					tb.newRow();
+//					tb.newRow();
 					JSONObject obj = new JSONObject(doc.toJson());
 					index.add(0, index.get(0)+1);
 					tb.addTokens(
