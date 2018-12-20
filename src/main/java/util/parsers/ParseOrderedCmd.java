@@ -15,6 +15,14 @@ public class ParseOrderedCmd extends JSONObject {
 			array.put(args.get(i));
 		put("args", array);
 	}
+	public ParseOrderedCmd(String name,String help,JSONObject ...args) {
+		put("name", name);
+		put("help", (help==null)?"(null)":help);
+		JSONArray array = new JSONArray();
+		for(JSONObject arg:args)
+			array.put(arg);
+		put("args", array);
+	}
 	public ParseOrderedCmd(String string, String string2) {
 		this(string,string2,new ArrayList<JSONObject>());
 	}

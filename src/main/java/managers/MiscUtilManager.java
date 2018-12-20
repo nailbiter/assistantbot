@@ -57,17 +57,15 @@ public class MiscUtilManager extends AbstractManager {
 	}
 	public static JSONArray GetCommands() throws Exception {
 		return new JSONArray()
-				.put(ParseOrdered.MakeCommand("rand", "return random",
-						asList(
-								ParseOrdered.MakeCommandArg("key",ParseOrdered.ArgTypes.integer,true),
-								ParseOrdered.MakeCommandArg("charset",ParseOrdered.ArgTypes.string,true)
-								)))
+				.put(new ParseOrderedCmd("rand", "return random",
+					new ParseOrderedArg("key",ParseOrdered.ArgTypes.integer).makeOpt().j(),
+					new ParseOrderedArg("charset",ParseOrdered.ArgTypes.string).makeOpt().j()
+				))
 				.put(ParseOrdered.MakeCommand("randset","return randomly generated set",
 						asList(ParseOrdered.MakeCommandArg("size",ParseOrdered.ArgTypes.integer,false))))
 				.put(ParseOrdered.MakeCommand("note","make note",asList(ParseOrdered.MakeCommandArg("notecontent",ParseOrdered.ArgTypes.remainder,false))))
-				.put(ParseOrdered.MakeCommand("exit", "exit the bot", new ArrayList<JSONObject>()))
-				.put(new ParseOrderedCmd("restart","restart the bot",
-						asList(new ParseOrderedArg("command",ArgTypes.remainder).makeOpt().useDefault("uoesnuoeu").j())))
+				.put(new ParseOrderedCmd("exit", "exit the bot"))
+				.put(new ParseOrderedCmd("restart","restart the bot"))
 				.put(ParseOrdered.MakeCommand("ttask", "make new task", Arrays.asList((
 						ParseOrdered.MakeCommandArg("task",ParseOrdered.ArgTypes.remainder,false)))));
 	}
