@@ -75,12 +75,12 @@ public class MiscUtilManager extends AbstractManager {
 		return String.format("made note \"%s\"", noteContent);
 	}
 	public String restart(JSONObject obj) throws Exception {
-		if(obj.getString("command").equals("help")) {
-			return Util.GetFile(Util.GetRebootCommandFileName());
-		} else {
-			Util.SaveJSONObjectToFile(GetRebootFileName(), obj);
-			return exit(obj);	
-		}
+//		if(obj.getString("command").equals("help")) {
+//			return Util.GetFile(Util.GetRebootCommandFileName());
+//		} else {
+		Util.SaveJSONObjectToFile(GetRebootFileName(), obj);
+		return exit(obj);	
+//		}
 	}
 	@Override
 	public String processReply(int messageID, String msg) {
