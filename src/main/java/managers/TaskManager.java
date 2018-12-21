@@ -8,6 +8,7 @@ import static java.util.Arrays.asList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.TimerTask;
 
 import org.apache.commons.collections4.Closure;
@@ -81,6 +82,9 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 				.put("name", (String)parsed.get(ParseCommentLine.REM));
 		if( parsed.containsKey(ParseCommentLine.DATE) )
 			card.put("due", (Date)parsed.get(ParseCommentLine.DATE));
+		if( parsed.containsKey(ParseCommentLine.TAGS) )
+			card.put("labelByName", 
+					new JSONArray((HashSet<String>)parsed.get(ParseCommentLine.TAGS)));
 		
 		JSONObject res = ta_.addCard(triple.middle, card);
 		

@@ -16,7 +16,9 @@ public class ParseCommentLine {
 	public final static String TAGS = "tags";
 	public final static String REM = "rem";
 	public final static String DATE = "date";
+	//FIXME: make it private
 	public final static String DATEPREF = "%";
+	//FIXME: make it private
 	public final static String TAGSPREF = "#";
 	private static final String PATTERN = "yyyyMMddHHmm";
 	public ParseCommentLine(Mode m) {
@@ -32,6 +34,7 @@ public class ParseCommentLine {
 	 *  .TAGS	:HashSet<String>
 	 *  .DATE	:Date
 	 * @throws AssistantBotException if cannot parse the date 
+	 * FIXME cut prefix in TAGS
 	 */
 	public HashMap<String,Object> parse(String line) throws AssistantBotException {
 		if( m_ != Mode.FROMLEFT )
@@ -75,5 +78,8 @@ public class ParseCommentLine {
 			res.put(REM, line);
 		
 		return res;
+	}
+	private String[] SplitInTwo(String src,String pat) {
+		return src.split(pat,2);
 	}
 }
