@@ -20,6 +20,7 @@ import static java.util.Arrays.asList;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Logger;
+import static util.parsers.ParseOrdered.ArgTypes;
 
 public class GymManager extends AbstractManager {
 	private MongoClient mongoClient_;
@@ -27,6 +28,8 @@ public class GymManager extends AbstractManager {
 	private Logger logger_;
 	int dayCount_ = -1;
 	private JSONArray program_;
+	private int exercisenum_;
+	private ResourceProvider rp_;
 
 	public GymManager(ResourceProvider rp) throws Exception {
 		super(GetCommands());
@@ -34,14 +37,17 @@ public class GymManager extends AbstractManager {
 		logger_ = Logger.getLogger(this.getClass().getName());
 		gymSingleton_ = MongoUtil.GetJsonObjectFromDatabase(mongoClient_, "logistics.gymSingleton");
 		logger_.info(String.format("gymSingleton_=%s", gymSingleton_.toString()));
+		rp_ = rp;
 	}
 	public static JSONArray GetCommands() {
 		return new JSONArray()
 				.put(new ParseOrderedCmd("gymlist","list gym exercises",
-						new ParseOrderedArg("dayCount",ParseOrdered.ArgTypes.integer).j()))
+						new ParseOrderedArg("dayCount",ArgTypes.integer)))
 				.put(new ParseOrderedCmd("gymdone","done gym exercise",
-						new ParseOrderedArg("exercisenum",ParseOrdered.ArgTypes.integer).useMemory(),
-						new ParseOrderedArg("comment",ParseOrdered.ArgTypes.remainder).useDefault("")
+						new ParseOrderedArg("exercisenum",ArgTypes.integer)
+							.makeOpt(),
+						new ParseOrderedArg("comment",ArgTypes.remainder)
+							.useDefault("")
 				))
 				;
 	}
@@ -70,10 +76,10 @@ public class GymManager extends AbstractManager {
 		return tb.toString();
 	}
 	public String gymdone(JSONObject obj) throws Exception{
-		int exercisenum = obj.getInt("exercisenum");
+		int exercisenum = obj.optInt("exercisenum",exercisenum_);
 		if(exercisenum==0 || program_.length()<exercisenum) {
 			throw new Exception(String.format("(%d<=0 || %d<%d)", exercisenum,program_.length(),exercisenum));
-		} else if(exercisenum<0) {
+		} else if( exercisenum < 0 ) {
 			final TableBuilder tb = new TableBuilder();
 			tb.addTokens("#_","name_", "comment_");
 			final ArrayList<Integer> index = new ArrayList<Integer>();
@@ -96,6 +102,7 @@ public class GymManager extends AbstractManager {
 			});
 			return tb.toString();
 		} else {
+			exercisenum_ = exercisenum;
 			obj.remove("name");
 			obj.put("dayCount",dayCount_ );
 			obj.put("weekCount", gymSingleton_.getInt("weekCount"));
@@ -104,6 +111,7 @@ public class GymManager extends AbstractManager {
 			obj.put("date", new Date());
 			mongoClient_.getDatabase("logistics").getCollection("gymLog")
 				.insertOne(Document.parse(obj.toString()));
+			rp_.sendMessage(String.format("gymdone #%d", exercisenum));
 			return String.format("added %s to %s",obj.toString() ,"logistics.gymLog");
 		}
 	}
