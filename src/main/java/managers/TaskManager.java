@@ -76,7 +76,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 	public String tasknew(JSONObject obj) throws Exception {
 		ImmutableTriple<Comparator<JSONObject>, String, Integer> triple = comparators_.get(INBOX);
 		HashMap<String, Object> parsed = 
-				new ParseCommentLine(ParseCommentLine.Mode.FROMLEFT)
+				new ParseCommentLine(ParseCommentLine.Mode.FROMRIGHT)
 				.parse(obj.getString("name"));
 		JSONObject card = new JSONObject()
 				.put("name", (String)parsed.get(ParseCommentLine.REM));

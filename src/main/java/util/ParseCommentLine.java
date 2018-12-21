@@ -2,9 +2,11 @@ package util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ParseCommentLine {
@@ -13,6 +15,7 @@ public class ParseCommentLine {
 	}
 	private Mode m_;
 	private SimpleDateFormat sdf_;
+	private final String SPLITPAT = " +";
 	public final static String TAGS = "tags";
 	public final static String REM = "rem";
 	public final static String DATE = "date";
@@ -37,14 +40,10 @@ public class ParseCommentLine {
 	 * FIXME cut prefix in TAGS
 	 */
 	public HashMap<String,Object> parse(String line) throws AssistantBotException {
-		if( m_ != Mode.FROMLEFT )
-			throw new AssistantBotException(AssistantBotException.Type.COMMENTPARSE, 
-					String.format("cannot parse \"%s\"", line));
-		
 		HashMap<String, Object> res = new HashMap<String,Object>();
 		res.put(TAGS, new HashSet<String>());
 				
-		for( String[] split = line.split(" +",2) ;  ; line = split[1], split = line.split(" +",2) ) {
+		for( String[] split = SplitInTwo(line,SPLITPAT,m_) ;  ; line = split[1], split = SplitInTwo(line,SPLITPAT,m_) ) {
 			if( split.length == 0 )
 				break;
 			
@@ -79,7 +78,26 @@ public class ParseCommentLine {
 		
 		return res;
 	}
-	private String[] SplitInTwo(String src,String pat) {
-		return src.split(pat,2);
+	private String[] SplitInTwo(String src,String pat, Mode m) throws AssistantBotException {
+		if( src == null || pat == null || m == null ) {
+			throw new AssistantBotException(AssistantBotException.Type.COMMENTPARSE, 
+					String.format("cannot parse \"%s\" with mode %s", src,m.toString()));
+		} else if( m == Mode.FROMLEFT ) {
+			return src.split(pat,2);
+		} else if( m == Mode.FROMRIGHT ) {
+			String[] split = src.split(pat);
+			if( split.length <= 1 ) {
+				return split;
+			} else {
+//				ArrayList<String> res = new ArrayList<String>();
+				String last = split[split.length-1];
+//				res.add( last );
+//				res.add( src.substring(0, src.lastIndexOf(last)) );
+//				return (String[]) res.toArray();
+				return new String[] {last,src.substring(0, src.lastIndexOf(last))};
+			}
+		} else
+			throw new AssistantBotException(AssistantBotException.Type.COMMENTPARSE, 
+					String.format("cannot parse \"%s\" with mode %s", src,m.toString()));			
 	}
 }
