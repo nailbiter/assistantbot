@@ -1,23 +1,23 @@
 {
-   "pulledData" : {
-      "trelloTitle" : "! label in task"
-   },
    "urlnames" : {
-      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
-      "sort order" : "https://trello.com/c/ofzAma1H",
-      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
+      "indicator" : "https://trello.com/c/FMIlCbXE",
       "distrib_gen_js" : "https://trello.com/c/3R83mhwS",
       "json table" : "https://trello.com/c/gfyEEt3o",
-      "indicator" : "https://trello.com/c/FMIlCbXE",
-      "parser" : "https://trello.com/c/hkuY0OBL",
-      "auto_check_mult_main_labels" : "https://trello.com/c/cexmj2vA",
+      "sort order" : "https://trello.com/c/ofzAma1H",
       "print_only_taskdone_stat" : "https://trello.com/c/XrVeN6rK",
-      "label_in_task" : "https://trello.com/c/tqUrbAOy",
+      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
+      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
+      "parser" : "https://trello.com/c/hkuY0OBL",
+      "remove_costs" : "https://trello.com/c/PmEunKmi",
+      "auto_check_mult_main_labels" : "https://trello.com/c/cexmj2vA",
       "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
-      "remove_costs" : "https://trello.com/c/PmEunKmi"
+      "label_in_task" : "https://trello.com/c/tqUrbAOy"
    },
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
    ],
+   "pulledData" : {
+      "trelloTitle" : "! label in task"
+   },
    "cardurl" : "label_in_task"
 }

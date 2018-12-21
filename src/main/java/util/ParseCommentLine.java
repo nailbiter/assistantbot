@@ -89,11 +89,7 @@ public class ParseCommentLine {
 			if( split.length <= 1 ) {
 				return split;
 			} else {
-//				ArrayList<String> res = new ArrayList<String>();
 				String last = split[split.length-1];
-//				res.add( last );
-//				res.add( src.substring(0, src.lastIndexOf(last)) );
-//				return (String[]) res.toArray();
 				return new String[] {last,src.substring(0, src.lastIndexOf(last))};
 			}
 		} else

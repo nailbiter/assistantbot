@@ -90,7 +90,9 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		
 		new TrelloMover(ta_,triple.middle,SEPARATOR).moveTo(res,triple.middle,triple.right);
 		logToDb("tasknew",res);
-		return String.format("created new card %s",res.getString("shortUrl"));
+//		return ;
+		rp_.sendMessage(String.format("created new card %s",res.getString("shortUrl")));
+		return "";
 	}
 	public String taskdone(JSONObject obj) throws JSONException, Exception {
 		if( !obj.has("num") ) {
