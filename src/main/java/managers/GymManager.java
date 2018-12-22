@@ -1,5 +1,9 @@
 package managers;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.logging.Logger;
+
 import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -11,16 +15,9 @@ import com.mongodb.client.model.Sorts;
 
 import assistantbot.ResourceProvider;
 import util.MongoUtil;
-import util.parsers.ParseOrdered;
+import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
-
-import static java.util.Arrays.asList;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.logging.Logger;
-import static util.parsers.ParseOrdered.ArgTypes;
 
 public class GymManager extends AbstractManager {
 	private MongoClient mongoClient_;
@@ -112,7 +109,7 @@ public class GymManager extends AbstractManager {
 			mongoClient_.getDatabase("logistics").getCollection("gymLog")
 				.insertOne(Document.parse(obj.toString()));
 			rp_.sendMessage(String.format("gymdone #%d", exercisenum));
-			return String.format("added %s to %s",obj.toString() ,"logistics.gymLog");
+			return String.format("added %s to %s",obj.toString(2) ,"logistics.gymLog");
 		}
 	}
 }

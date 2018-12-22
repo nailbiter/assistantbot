@@ -3,6 +3,7 @@ package managers;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -121,7 +122,10 @@ public class TrelloManager extends AbstractManager{
 			HashMap<String, Object> parsed = 
 					new ParseCommentLine(ParseCommentLine.Mode.FROMLEFT)
 					.parse(rem);
-			parsed.get(ParseCommentLine.TAGS);
+			HashSet<String> tags = 
+					(HashSet<String>) parsed.get(ParseCommentLine.TAGS);
+			for(String tag:tags)
+				ta_.setLabelByName(cardid, tag,newlistid);
 		}
 		
 		
@@ -188,7 +192,6 @@ public class TrelloManager extends AbstractManager{
 	public String removecards(String rem) throws Exception {
 		String[] split = rem.split(" ",2);
 		String listId = ta_.findListByName(HABITBOARDID, "TODO");
-//		int count = (int)engine_.eval(split[0]);
 		int count = Util.SimpleEval(split[0]);
 		String name = split[1];
 		JSONArray array = ta_.getCardsInList(listId);
