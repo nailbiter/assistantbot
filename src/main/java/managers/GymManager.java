@@ -44,7 +44,7 @@ public class GymManager extends AbstractManager {
 						new ParseOrderedArg("exercisenum",ArgTypes.integer)
 							.makeOpt(),
 						new ParseOrderedArg("comment",ArgTypes.remainder)
-							.useDefault("")
+							.useMemory()
 				))
 				;
 	}
