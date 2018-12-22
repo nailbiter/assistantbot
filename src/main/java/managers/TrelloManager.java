@@ -2,6 +2,7 @@ package managers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -14,10 +15,13 @@ import com.github.nailbiter.util.TrelloAssistant;
 
 import assistantbot.ResourceProvider;
 import util.KeyRing;
+import util.ParseCommentLine;
 import util.Util;
+import util.parsers.AbstractParser;
 import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
+import util.parsers.StandardParserInterpreter;
 
 public class TrelloManager extends AbstractManager{
 	protected static final String INBOXBOARDIDLONG = "5a83f33d7c047209445249dd";
@@ -33,23 +37,22 @@ public class TrelloManager extends AbstractManager{
 		ArrayList<String> commands = new ArrayList<String>();
 		JSONArray res = new JSONArray();
 		
-		commands.add("movetoeasytasks");
+		
 //		commands.add("rename");
 		for(String cmd:commands) {
-			res.put(new ParseOrderedCmd(cmd,cmd,new ArrayList<JSONObject>()));
+			res.put(new ParseOrderedCmd(cmd,cmd));
 		}
 		commands.clear();
 		
 		commands.add("makearchived");
 		commands.add("addcard");
+		commands.add("movetoeasytasks");
 //		commands.add("countcard");
 //		commands.add("getactions");
 //		commands.add("removecards");
 		for(String cmd:commands) {
 			res.put(new ParseOrderedCmd(cmd,cmd,
-					Arrays.asList(
-					new ParseOrderedArg("rem", ArgTypes.remainder).j()))
-					);
+					new ParseOrderedArg("rem", ArgTypes.remainder)));
 		}
 		commands.clear();
 		
@@ -113,8 +116,16 @@ public class TrelloManager extends AbstractManager{
 		String cardid = arr.getJSONObject(arr.length()-1).getString("id");
 		ta_.moveCard(cardid, INBOXBOARDIDLONG+"."+newlistid,"top");
 		
+		if( arg.has( StandardParserInterpreter.REM ) ) {
+			String rem = arg.optString(StandardParserInterpreter.REM).trim();
+			HashMap<String, Object> parsed = 
+					new ParseCommentLine(ParseCommentLine.Mode.FROMLEFT)
+					.parse(rem);
+			parsed.get(ParseCommentLine.TAGS);
+		}
+		
+		
 		return String.format("moved \"%s\"\n", 
-//				arr.getJSONObject(arr.length()-1).toString(2)
 				arr.getJSONObject(arr.length()-1).getString("name")
 				);
 	}

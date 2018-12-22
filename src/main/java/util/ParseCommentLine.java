@@ -19,10 +19,8 @@ public class ParseCommentLine {
 	public final static String TAGS = "tags";
 	public final static String REM = "rem";
 	public final static String DATE = "date";
-	//FIXME: make it private
-	public final static String DATEPREF = "%";
-	//FIXME: make it private
-	public final static String TAGSPREF = "#";
+	private final static String DATEPREF = "%";
+	private final static String TAGSPREF = "#";
 	private static final String PATTERN = "yyyyMMddHHmm";
 	public ParseCommentLine(Mode m) {
 		m_ = m;
@@ -48,7 +46,8 @@ public class ParseCommentLine {
 				break;
 			
 			if( split[0].startsWith(TAGSPREF) ) {
-				((HashSet<String>)res.get("tags")).add(split[0]);
+				((HashSet<String>)res.get("tags"))
+				.add(split[0].substring(TAGSPREF.length()));
 			} else if( split[0].startsWith(DATEPREF) ) {
 				try {
 					String dateline = split[0].substring(DATEPREF.length());
@@ -95,5 +94,9 @@ public class ParseCommentLine {
 		} else
 			throw new AssistantBotException(AssistantBotException.Type.COMMENTPARSE, 
 					String.format("cannot parse \"%s\" with mode %s", src,m.toString()));			
+	}
+	//FIXME: remove
+	public static String getTagspref() {
+		return TAGSPREF;
 	}
 }

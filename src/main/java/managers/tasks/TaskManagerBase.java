@@ -175,7 +175,7 @@ public class TaskManagerBase extends AbstractManager {
 		String res = null;
 		for(String cat:recognizedCats) {
 			String prefixedCat = 
-					String.format("%s%s", ParseCommentLine.TAGSPREF,cat);
+					String.format("%s",cat);
 			if(labelset.contains(prefixedCat)) {
 				if(res!=null) {
 					throw new AssistantBotException(AssistantBotException.Type.NOTONEMAINLABEL, String.format("%s -> %s", res,cat));
@@ -212,7 +212,7 @@ public class TaskManagerBase extends AbstractManager {
 		for(Object o:label) {
 			JSONObject obj = (JSONObject)o;
 			if( obj.has("name") )
-				res.add(String.format("#%s", obj.getString("name")));
+				res.add(String.format("%s", obj.getString("name")));
 		}
 		return res;
 	}

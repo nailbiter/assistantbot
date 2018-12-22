@@ -90,7 +90,6 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		
 		new TrelloMover(ta_,triple.middle,SEPARATOR).moveTo(res,triple.middle,triple.right);
 		logToDb("tasknew",res);
-//		return ;
 		rp_.sendMessage(String.format("created new card %s",res.getString("shortUrl")));
 		return "";
 	}

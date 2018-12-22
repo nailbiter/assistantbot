@@ -86,5 +86,49 @@
 				"reps":"3*6"
 			}
 		]
+	},
+	{
+		"weekCount":2,
+		"dayCount":1,
+		"program":[
+			{
+				"name":"running",
+				"reps":"16 min"
+			},
+			{
+				"name":"bench",
+				"reps":"5*62.5(115), 5(1)*70(130),5*3*77.5(142.5)"
+			},
+			{
+				"name":"fly",
+				"reps":"3*10-12 (??)"
+			},
+			{
+				"name":"stand press",
+				"reps":"3*6"
+			}
+		]
+	},
+	{
+		"weekCount":2,
+		"dayCount":2,
+		"program":[
+			{
+				"name":"running",
+				"reps":"16 min"
+			},
+			{
+				"name":"rsid",
+				"reps":"2*15, 3*10"
+			},
+			{
+				"name":"bic",
+				"reps":"2*15, 3*10"
+			},
+			{
+				"name":"molot",
+				"reps":"2*15*15, 3*12*22.5"
+			}
+		]
 	}
 ]

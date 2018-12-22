@@ -83,14 +83,14 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		Set<String> tags = (Set<String>)parsed.get(ParseCommentLine.TAGS);
 		String category = null;
 		for(String tag:tags)
-			if(cats.contains(tag.substring(ParseCommentLine.TAGSPREF.length())))
-				category = tag.substring(ParseCommentLine.TAGSPREF.length());
-		HashSet<String> prefixedCats = new HashSet<String>();
-		for(String cat:cats)
-			prefixedCats.add(ParseCommentLine.TAGSPREF+cat);
-		tags.removeAll(prefixedCats);
-		System.err.format("prefixedCats=%s\ntags=%s\n", 
-				prefixedCats.toString(),tags.toString());
+			if(cats.contains(tag))
+				category = tag;
+//		HashSet<String> prefixedCats = new HashSet<String>();
+//		for(String cat:cats)
+//			prefixedCats.add(ParseCommentLine.getTagspref()+cat);
+		tags.removeAll(cats);
+//		System.err.format("prefixedCats=%s\ntags=%s\n", 
+//				prefixedCats.toString(),tags.toString());
 		obj.put("tags", new JSONArray(tags));
 		
 		if( category == null ) {
