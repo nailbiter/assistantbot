@@ -12,14 +12,11 @@ import java.util.Random;
 import javax.script.Invocable;
 import javax.script.ScriptException;
 
-import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.github.nailbiter.util.TrelloAssistant;
-import com.mongodb.Block;
 import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
 
 import assistantbot.ResourceProvider;
 import managers.misc.NoteMaker;
@@ -36,14 +33,17 @@ import util.scripthelpers.ScriptHelper;
 
 public class MiscUtilManager extends AbstractManager {
 	Random rand_ = new Random();
-	private final static String LOWERCASE = "abcdefghijklmnopqrstuvwxyz";
-	private final static String UPPERCASE = LOWERCASE.toUpperCase();
+	private final static String[] ALPHABETS = new String[] {
+			"abcdefghijklmnopqrstuvwxyz",
+			"abcdefghijklmnopqrstuvwxyz".toUpperCase(),
+			"0123456789"
+	};
 	private Hashtable<String,Object> hash_ = new Hashtable<String,Object>();
 	TrelloAssistant ta_;
 	String tasklist_ = null;
 	private MongoClient mc_;
 	private static final String TASKLISTNAME = "todo";
-	private static final String DISTRICOLLECTIONBNAME = "randsetdistrib";
+//	private static final String DISTRICOLLECTIONBNAME = "randsetdistrib";
 	NoteMaker nm_ = null;
 	private ResourceProvider rp_;
 	private ScriptApp sa_;
@@ -54,8 +54,7 @@ public class MiscUtilManager extends AbstractManager {
 				KeyRing.getTrello().getString("token"));
 		try{
 			tasklist_ = ta_.findListByName(managers.habits.Constants.HABITBOARDID, TASKLISTNAME);
-		}
-		catch(Exception e) {
+		} catch(Exception e) {
 			e.printStackTrace(System.err);
 		}
 		mc_ = rp.getMongoClient();
@@ -75,8 +74,10 @@ public class MiscUtilManager extends AbstractManager {
 	public static JSONArray GetCommands() throws Exception {
 		return new JSONArray()
 				.put(new ParseOrderedCmd("rand", "return random",
-					new ParseOrderedArg("key",ParseOrdered.ArgTypes.integer).makeOpt(),
-					new ParseOrderedArg("charset",ParseOrdered.ArgTypes.string).makeOpt()
+					new ParseOrderedArg("key",ParseOrdered.ArgTypes.integer)
+						.makeOpt(),
+					new ParseOrderedArg("charset",ParseOrdered.ArgTypes.string)
+						.useDefault("aA")
 				))
 				.put(new ParseOrderedCmd("randset","return randomly generated set",
 						new ParseOrderedArg("size",ArgTypes.integer)))
@@ -120,8 +121,23 @@ public class MiscUtilManager extends AbstractManager {
 		else
 			len = (int)hash_.get("key");
 		hash_.put("key", len);
+		
 		StringBuilder sb = new StringBuilder();
-		String alphabet = UPPERCASE+LOWERCASE;
+		String alphabet = "";
+		String charset = obj.getString("charset");
+		System.err.format("charset=\"%s\"\n", charset);
+		for(int i = 0; i < charset.length(); i++) {
+			char c = charset.charAt(i);
+			for(String a:ALPHABETS) {
+				System.err.format("\t checking \"%s\"\n", a);
+				if( a.indexOf(c) >= 0 ) {
+					System.err.format("\t adding \"%s\"", a);
+					alphabet += a;
+					break;
+				}
+			}
+		}
+		System.err.format("alphabet=\"%s\"\n", alphabet);
 		
 		for(int i = 0; i < len; i++)
 			sb.append(alphabet.charAt(rand_.nextInt(alphabet.length())));
