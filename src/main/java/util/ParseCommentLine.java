@@ -3,28 +3,56 @@ package util;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
 
 public class ParseCommentLine {
 	public static enum Mode{
 		FROMLEFT,FROMRIGHT
 	}
 	private Mode m_;
-	private SimpleDateFormat sdf_;
+	private static final String PATTERN = "yyyyMMddHHmm";
+	private static SimpleDateFormat SDF = new SimpleDateFormat(PATTERN);
 	private final String SPLITPAT = " +";
 	public final static String TAGS = "tags";
 	public final static String REM = "rem";
 	public final static String DATE = "date";
 	private final static String DATEPREF = "%";
 	private final static String TAGSPREF = "#";
-	private static final String PATTERN = "yyyyMMddHHmm";
+	public static enum TOKENTYPE {
+			STRING,DATE
+	};
+	private static ArrayList<ImmutableTriple<String, String, TOKENTYPE>> handlers_ = 
+			new ArrayList<ImmutableTriple<String,String,TOKENTYPE>>();
 	public ParseCommentLine(Mode m) {
 		m_ = m;
-		sdf_ = new SimpleDateFormat(PATTERN);
+		handlers_.add(new ImmutableTriple<String, String, TOKENTYPE>(
+				TAGS,TAGSPREF,TOKENTYPE.STRING
+				));
+		handlers_.add(new ImmutableTriple<String, String, TOKENTYPE>(
+				DATE,DATEPREF,TOKENTYPE.DATE
+				));
+		
+	}
+	public ParseCommentLine addHandler(String name,String pref,TOKENTYPE tokentype) {
+		handlers_
+			.add(new ImmutableTriple<String, String, TOKENTYPE>(name,pref,tokentype));
+		return this;
+	}
+	private static void SortHandlers(ArrayList<ImmutableTriple<String, String, TOKENTYPE>> handlers) {
+		Collections.sort(handlers, new Comparator<ImmutableTriple<String, String, TOKENTYPE>>(){
+			@Override
+			public int compare(ImmutableTriple<String, String, TOKENTYPE> o1,
+					ImmutableTriple<String, String, TOKENTYPE> o2) {
+				return -Integer.compare(o1.middle.length(), o2.middle.length());
+			}
+		});
 	}
 	/**
 	 * 
@@ -39,31 +67,25 @@ public class ParseCommentLine {
 	 */
 	public HashMap<String,Object> parse(String line) throws AssistantBotException {
 		HashMap<String, Object> res = new HashMap<String,Object>();
-		res.put(TAGS, new HashSet<String>());
-				
+		
+		SortHandlers(handlers_);
+		
 		for( String[] split = SplitInTwo(line,SPLITPAT,m_) ;  ; line = split[1], split = SplitInTwo(line,SPLITPAT,m_) ) {
-			if( split.length == 0 )
-				break;
+			System.err.format("starting new iteration with line=\"%s\"\n", line);
 			
-			if( split[0].startsWith(TAGSPREF) ) {
-				((HashSet<String>)res.get("tags"))
-				.add(split[0].substring(TAGSPREF.length()));
-			} else if( split[0].startsWith(DATEPREF) ) {
-				try {
-					String dateline = split[0].substring(DATEPREF.length());
-					Date d = null;
-					if(Pattern.matches(String.format("\\d{%s}", PATTERN.length()), dateline))
-						d = sdf_.parse(dateline);
-					else
-						d = Util.ComputePostponeDate(dateline);
-					res.put(DATE, d);
-				} catch (Exception e) {
-					e.printStackTrace();
-					throw new AssistantBotException(AssistantBotException.Type.COMMENTPARSE, 
-							String.format("cannot parse %s from \"%s\"", DATE,split[0]));
-				}
-			} else {
+			if( split.length == 0 ) {
 				break;
+			} else {
+				boolean willBreak = true;
+				for(ImmutableTriple<String, String, TOKENTYPE> h:handlers_) {
+					if(split[0].startsWith(h.middle)) {
+						Handle(h,split[0],res);
+						willBreak = false;
+						break;
+					}
+				}
+				if( willBreak )
+					break;
 			}
 			
 			if( split.length == 1 ) {
@@ -73,9 +95,31 @@ public class ParseCommentLine {
 		}
 		
 		if( line != null )
-			res.put(REM, line);
+			res.put(REM, line.trim());
 		
 		return res;
+	}
+	private static void Handle(ImmutableTriple<String, String, TOKENTYPE> h, String token, HashMap<String, Object> res) throws AssistantBotException {
+		if( h.right == TOKENTYPE.STRING ) {
+			if( !res.containsKey(h.left) )
+				res.put(h.left, new HashSet<String>());
+			((HashSet<String>)res.get(h.left))
+				.add(token.substring(h.middle.length()));
+		} else if( h.right == TOKENTYPE.DATE) {
+			try {
+				String dateline = token.substring(h.middle.length());
+				Date d = null;
+				if(Pattern.matches(String.format("\\d{%s}", PATTERN.length()), dateline))
+					d = SDF.parse(dateline);
+				else
+					d = Util.ComputePostponeDate(dateline);
+				res.put(DATE, d);
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new AssistantBotException(AssistantBotException.Type.COMMENTPARSE, 
+						String.format("cannot parse %s from \"%s\"", DATE,token));
+			}
+		}
 	}
 	private String[] SplitInTwo(String src,String pat, Mode m) throws AssistantBotException {
 		if( src == null || pat == null || m == null ) {
@@ -85,7 +129,7 @@ public class ParseCommentLine {
 			return src.split(pat,2);
 		} else if( m == Mode.FROMRIGHT ) {
 			String[] split = src.split(pat);
-			if( split.length <= 1 ) {
+			if ( split.length <= 1 ) {
 				return split;
 			} else {
 				String last = split[split.length-1];
@@ -94,9 +138,5 @@ public class ParseCommentLine {
 		} else
 			throw new AssistantBotException(AssistantBotException.Type.COMMENTPARSE, 
 					String.format("cannot parse \"%s\" with mode %s", src,m.toString()));			
-	}
-	//FIXME: remove
-	public static String getTagspref() {
-		return TAGSPREF;
 	}
 }

@@ -107,48 +107,53 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		ta_.archiveCard(card.getString("id"));
 		return String.format("archived task \"%s\"", card.getString("name"));
 	}
-	public String taskpostpone(JSONObject obj) throws JSONException, Exception {
-		if( !obj.has("num") ) {
+	public String taskmodify(JSONObject obj) throws JSONException, Exception {
+		if( !obj.has("num") )
 			return PrintSnoozed(ta_,mc_,comparators_.get(SNOOZED).middle,getParamObject(mc_),logger_);
-		}
-		JSONObject card = getTasks(INBOX).get(obj.getInt("num")-1);
 		
-		if(obj.getString("moveToSnoozed?").toUpperCase().equals("T")) 
-		{
+		JSONObject card = getTasks(INBOX).get(obj.getInt("num")-1);
+//		if(obj.getString("moveToSnoozed?").toUpperCase().equals("T")) 
+//		{
 			new TrelloMover(ta_,comparators_.get(INBOX).middle,SEPARATOR)
 			.moveTo(card,comparators_.get(SNOOZED).middle,comparators_.get(SNOOZED).right);
+//		}
+		
+		String remainder = obj.getString("remainder");
+		final String SNOOZEDATE = "SNOOZEDATE";
+		HashMap<String, Object> parsed = new ParseCommentLine(ParseCommentLine.Mode.FROMLEFT)
+				.addHandler(SNOOZEDATE, "%%", ParseCommentLine.TOKENTYPE.DATE)
+				.parse(remainder);
+		
+		if(parsed.containsKey(SNOOZEDATE)) {
+			Date date = (Date) parsed.get(SNOOZEDATE);
+			logToDb(String.format("%s to %s", "taskpostpone",date.toString()),card);
+			System.err.format("date: %s\n", date.toString());
+			setUpReminder(card,date);
+			saveSnoozeToDb(card,date);
+			rp_.sendMessage(String.format("snoozing card \"%s\" to %s", 
+					card.getString("name"),date.toString()));
 		}
-		
-		Date date = Util.ComputePostponeDate(obj.getString("estimate"));
-		logToDb(String.format("%s to %s", "taskpostpone",date.toString()),card);
-		System.err.format("date: %s\n", date.toString());
-		setUpReminder(card,date);
-		saveSnoozeToDb(card,date);
-		
-		return String.format("snoozing card \"%s\" to %s", 
-				card.getString("name"),date.toString());
+		return "";
 	}
 	public static JSONArray GetCommands() throws Exception {
 		JSONArray res = new JSONArray()
 				.put(new ParseOrderedCmd("tasks","show list of tasks",
-						asList(new ParseOrderedArg("tasknum",ArgTypes.integer)
-								.makeOpt().j())))
-				.put(new ParseOrderedCmd("taskpostpone","change task's due",
-						asList(new ParseOrderedArg("num",ArgTypes.integer)
-								.makeOpt().j(),
-								new ParseOrderedArg("estimate",ArgTypes.string)
-								.makeOpt().j(),
+						new ParseOrderedArg("tasknum",ArgTypes.integer)
+								.makeOpt()))
+				.put(new ParseOrderedCmd("taskmodify","change task's due",
+						new ParseOrderedArg("num",ArgTypes.integer)
+								.makeOpt(),
+								new ParseOrderedArg("remainder",ArgTypes.string)
+								.makeOpt(),
 								new ParseOrderedArg("moveToSnoozed?",ArgTypes.string)
-								.makeOpt().useDefault("t").j()
-								)))
+								.makeOpt().useDefault("t")
+								))
 				.put(new ParseOrderedCmd("tasknew","create new task",
-						asList(
 								new ParseOrderedArg("name",ArgTypes.remainder).makeOpt().j()
-								)))
+								))
 				.put(new ParseOrderedCmd("taskdone", "mark as done", 
-						asList(new ParseOrderedArg("num",ArgTypes.integer)
-								.makeOpt().j())))
-				
+						new ParseOrderedArg("num",ArgTypes.integer)
+								.makeOpt()))
 				;
 		return res;
 	}

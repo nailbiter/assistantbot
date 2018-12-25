@@ -9,6 +9,7 @@ TESTSOURCES=UrlTest JsonTest ParadigmTest
 MISCSOURCES=MashaRemind RandomSetGenerator NoteMaker
 PARSERSOURCES=AbstractParser ParseOrdered StandardParserInterpreter ParseOrderedArg ParseOrderedCmd
 MANAGERTASKSOURCES=TaskManagerBase
+UNITTESTSOURCES=MainTest ParseCommentLineTest Test
 SOURCES=\
  $(addprefix util/parsers/,$(PARSERSOURCES))\
  $(addprefix assistantbot/,$(ASBOTSOURCES))\
@@ -21,6 +22,7 @@ SOURCES=\
  $(addprefix managers/tests/,$(TESTSOURCES))\
  $(addprefix managers/tasks/,$(MANAGERTASKSOURCES))\
  $(addprefix managers/habits/,$(HABITMANAGERSOURCES))\
+ $(addprefix testing/,$(UNITTESTSOURCES))\
  $(MAINCLASS)
 add:
 	git add $(addprefix src/main/java/,$(addsuffix .java,$(SOURCES)))

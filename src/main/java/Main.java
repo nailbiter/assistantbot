@@ -1,7 +1,3 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.telegram.telegrambots.ApiContextInitializer;
@@ -10,13 +6,23 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import assistantbot.MyAssistantBot;
 import shell.InteractiveShell;
+import testing.MainTest;
 import util.Util;
-import com.github.nailbiter.util.opts.Option;
-import static com.github.nailbiter.util.opts.Option.ArgEnum;
+import util.AssistantBotException;
 import util.JsonUtil;
 public class Main {
     public static void main(String[] args) throws Exception {
-    	JSONObject description = new JSONObject(), result = null;
+    	try {
+    		new MainTest().test();
+    	} catch (Exception e) {
+    		e.printStackTrace(System.out);
+    		throw e;
+    	}
+    	
+    	
+    	JSONObject description = new JSONObject(), 
+    			result = null;
+    	
     	try {
 			result = new JSONObject(com.github.nailbiter.util.Util.ParseCommandLine(description.toString(), args));
 			if(result.getJSONArray("others").length()>0) {
