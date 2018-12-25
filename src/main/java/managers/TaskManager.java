@@ -108,12 +108,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		if( !obj.has("num") )
 			return PrintSnoozed(ta_,mc_,comparators_.get(SNOOZED).middle,getParamObject(mc_),logger_);
 		
-		JSONObject card = getTask(obj.getInt("num")-1);
-//		if(obj.getString("moveToSnoozed?").toUpperCase().equals("T")) 
-//		{
-			new TrelloMover(ta_,comparators_.get(INBOX).middle,SEPARATOR)
-			.moveTo(card,comparators_.get(SNOOZED).middle,comparators_.get(SNOOZED).right);
-//		}
+		JSONObject card = getTask(obj.getInt("num"));
 		
 		String remainder = obj.getString("remainder");
 		final String SNOOZEDATE = "SNOOZEDATE";
@@ -122,6 +117,8 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 				.parse(remainder);
 		
 		if(parsed.containsKey(SNOOZEDATE)) {
+			new TrelloMover(ta_,comparators_.get(INBOX).middle,SEPARATOR)
+			.moveTo(card,comparators_.get(SNOOZED).middle,comparators_.get(SNOOZED).right);
 			Date date = (Date) parsed.get(SNOOZEDATE);
 			logToDb(String.format("%s to %s", "taskpostpone",date.toString()),card);
 			System.err.format("date: %s\n", date.toString());
