@@ -113,7 +113,7 @@ public class ParseCommentLine {
 					d = SDF.parse(dateline);
 				else
 					d = Util.ComputePostponeDate(dateline);
-				res.put(DATE, d);
+				res.put(h.left, d);
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw new AssistantBotException(AssistantBotException.Type.COMMENTPARSE, 

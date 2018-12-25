@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.TimerTask;
 
 import org.apache.commons.collections4.Closure;
@@ -98,11 +99,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 			return PrintDoneTasks(ta_,mc_,comparators_,recognizedCats_);
 		}
 		
-		JSONObject card = null;
-		if( obj.getInt("num") > 0 )
-			card = getTasks(INBOX).get(obj.getInt("num")-1);
-		else
-			card = getTasks(SNOOZED).get(-obj.getInt("num")-1);
+		JSONObject card = getTask(obj.getInt("num"));
 		logToDb("taskdone",card);
 		ta_.archiveCard(card.getString("id"));
 		return String.format("archived task \"%s\"", card.getString("name"));
@@ -111,7 +108,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		if( !obj.has("num") )
 			return PrintSnoozed(ta_,mc_,comparators_.get(SNOOZED).middle,getParamObject(mc_),logger_);
 		
-		JSONObject card = getTasks(INBOX).get(obj.getInt("num")-1);
+		JSONObject card = getTask(obj.getInt("num")-1);
 //		if(obj.getString("moveToSnoozed?").toUpperCase().equals("T")) 
 //		{
 			new TrelloMover(ta_,comparators_.get(INBOX).middle,SEPARATOR)
@@ -132,6 +129,12 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 			saveSnoozeToDb(card,date);
 			rp_.sendMessage(String.format("snoozing card \"%s\" to %s", 
 					card.getString("name"),date.toString()));
+		}
+		if(parsed.containsKey(ParseCommentLine.TAGS)) {
+			Set<String> tags = (Set<String>)parsed.get(ParseCommentLine.TAGS);
+			for(String tagname:tags)
+				ta_.setLabelByName(card.getString("id"), tagname, card.getString("idList"));
+			rp_.sendMessage(String.format("tagging with %s", tags.toString()));
 		}
 		return "";
 	}

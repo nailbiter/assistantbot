@@ -1,5 +1,6 @@
 //global var's
 var recognizedCats = getVar('recognizedCats');
+var EXCLAMATION = "!";
 //global var's
 var recognizedCats = getVar('recognizedCats');
 var catWeights = {
@@ -20,13 +21,29 @@ var catWeights = {
 
 //procedures
 function compare(obj1,obj2){
-	var comparisonArray = [compareLabel,compareDate,compareName];
+	var comparisonArray = [compareLabel,compareDate,compareExclamation,compareName];
 	for(var i = 0; i < comparisonArray.length; i++ ){
 		var res = comparisonArray[i](obj1,obj2);
 		if( res != 0 )
 			return JSON.stringify(res);
 	}
 	return JSON.stringify(0);
+}
+function compareExclamation(o1,o2){
+	var i1 = 0, i2 = 0;
+	log("compareExclamation "+JSON.stringify(o1));
+	log("compareExclamation "+JSON.stringify(o2));
+
+	for(var i = 0; i < o1.labels.length; i++){
+		if( o1.labels[i] == EXCLAMATION )
+			i1 = 1;
+	}
+	for(var i = 0; i < o2.labels.length; i++){
+		if( o2.labels[i] == EXCLAMATION )
+			i2 = 1;
+	}
+
+	return -(i1-i2);
 }
 function compareDate(o1,o2){
 	var b = [o1.due==null,o2.due==null];
@@ -57,8 +74,8 @@ function talkToHelper(x){
 function compareLabel(o1,o2){
 	var l1 = getMainLabel(o1),
 		l2 = getMainLabel(o2);
-	log("l1: "+l1);
-	log("l2: "+l2);
+	log("getMainLabel: "+l1);
+	log("getMainLabel: "+l2);
 
 	var b1 = l1 in catWeights,
 		b2 = l2 in catWeights;

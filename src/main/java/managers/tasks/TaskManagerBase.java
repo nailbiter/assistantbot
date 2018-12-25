@@ -351,4 +351,12 @@ public class TaskManagerBase extends AbstractManager {
 					.append("message",msg)
 					.append("obj",Document.parse(obj.toString())));
 	}
+	protected JSONObject getTask(int num) throws Exception {
+		JSONObject card = null;
+		if( num > 0 )
+			card = getTasks(INBOX).get(num-1);
+		else
+			card = getTasks(SNOOZED).get(-num-1);
+		return card;
+	}
 }
