@@ -1,4 +1,4 @@
-.PHONY: all offline pull jar gym add trello interactive habits
+.PHONY: all offline pull jar add trello interactive habits
 
 #JARSUFF=-jar-with-dependencies
 JARNAME=assistantBot-0.0.1-SNAPSHOT$(JARSUFF)
@@ -39,8 +39,6 @@ pull:
 jar: $(addprefix src/main/java/,$(addsuffix .java,$(SOURCES))) pom.xml cp.txt
 	mvn compile
 	touch target/$(JARNAME).jar
-gym:
-	./src/main/pl/uploadJson.pl --file src/main/resources/gym.json --colname gymProgram
 
 #FILES
 cp.txt: src/main/pl/parseCp.pl pom.xml

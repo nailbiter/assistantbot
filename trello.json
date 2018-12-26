@@ -1,25 +1,26 @@
 {
-   "cardurl" : "add_run",
+   "cardurl" : "replace_gym_with_js",
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
    ],
-   "urlnames" : {
-      "indicator" : "https://trello.com/c/FMIlCbXE",
-      "distrib_gen_js" : "https://trello.com/c/3R83mhwS",
-      "json table" : "https://trello.com/c/gfyEEt3o",
-      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
-      "auto_check_mult_main_labels" : "https://trello.com/c/cexmj2vA",
-      "remove_costs" : "https://trello.com/c/PmEunKmi",
-      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
-      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
-      "parser" : "https://trello.com/c/hkuY0OBL",
-      "write_gymdone_num" : "https://trello.com/c/pvXRhy3L",
-      "print_only_taskdone_stat" : "https://trello.com/c/XrVeN6rK",
-      "add_run" : "https://trello.com/c/HsN2IoqH",
-      "sort order" : "https://trello.com/c/ofzAma1H",
-      "label_in_task" : "https://trello.com/c/tqUrbAOy"
-   },
    "pulledData" : {
-      "trelloTitle" : "! add run to gym plan"
+      "trelloTitle" : "gymlog replace with JavaScript"
+   },
+   "urlnames" : {
+      "distrib_gen_js" : "https://trello.com/c/3R83mhwS",
+      "auto_check_mult_main_labels" : "https://trello.com/c/cexmj2vA",
+      "sort order" : "https://trello.com/c/ofzAma1H",
+      "print_only_taskdone_stat" : "https://trello.com/c/XrVeN6rK",
+      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
+      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
+      "remove_costs" : "https://trello.com/c/PmEunKmi",
+      "parser" : "https://trello.com/c/hkuY0OBL",
+      "label_in_task" : "https://trello.com/c/tqUrbAOy",
+      "indicator" : "https://trello.com/c/FMIlCbXE",
+      "write_gymdone_num" : "https://trello.com/c/pvXRhy3L",
+      "json table" : "https://trello.com/c/gfyEEt3o",
+      "replace_gym_with_js" : "https://trello.com/c/TnjMxInQ",
+      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
+      "add_run" : "https://trello.com/c/HsN2IoqH"
    }
 }

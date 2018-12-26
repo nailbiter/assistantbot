@@ -17,11 +17,15 @@ public class ScriptHelperVarkeeper implements ScriptHelper{
 		System.err.format("get(%s)=%s\n", arg,res);
 		return res;
 	}
-	public void set(String key,String val) {
+	public ScriptHelperVarkeeper set(String key,String val) {
 		System.err.format("set(%s)=%s\n", key,val);
 		vars_.put(key, val);
+		return this;
 	}
 	@Override
 	public void setInvocable(Invocable inv) {
+	}
+	public ScriptHelperVarkeeper set(String key,Object obj) {
+		return set(key,obj.toString());
 	}
 }

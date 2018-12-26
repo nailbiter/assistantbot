@@ -1,4 +1,4 @@
-[
+var program = [
 	{
 		"weekCount":1,
 		"dayCount":1,
@@ -166,3 +166,6 @@
 		]
 	}
 ]
+function getProgram(){
+	return program;
+}

@@ -40,7 +40,7 @@ function parseCommandLine(cmdline,optionsFullNames){
 				res[optionsFullNames[waitingForArg]] = true;
 			}
 			waitingForArg = split[i].substring(1);
-		}else{
+		} else {
 			if(waitingForArg.length > 0){
 				res[optionsFullNames[waitingForArg]] = split[i];
 				waitingForArg = '';

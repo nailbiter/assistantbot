@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import org.bson.Document;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.github.nailbiter.util.TableBuilder;
@@ -15,26 +16,31 @@ import com.mongodb.client.model.Sorts;
 
 import assistantbot.ResourceProvider;
 import util.MongoUtil;
+import util.ScriptApp;
+import util.Util;
 import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
+import util.scripthelpers.ScriptHelperVarkeeper;
 
 public class GymManager extends AbstractManager {
+	private static final String FOLDERNAME = "gym/";
 	private MongoClient mc_;
-//	private JSONObject gymSingleton_;
 	private Logger logger_;
 	int dayCount_ = -1;
 	private JSONArray program_;
 	private int exercisenum_;
 	private ResourceProvider rp_;
+	private ScriptApp sa_;
+	private ScriptHelperVarkeeper vh_;
 
 	public GymManager(ResourceProvider rp) throws Exception {
 		super(GetCommands());
 		mc_ = rp.getMongoClient();
 		logger_ = Logger.getLogger(this.getClass().getName());
-//		gymSingleton_ = MongoUtil.GetJsonObjectFromDatabase(mongoClient_, "logistics.gymSingleton");
-//		logger_.info(String.format("gymSingleton_=%s", gymSingleton_.toString()));
 		rp_ = rp;
+		vh_ = new ScriptHelperVarkeeper();
+		sa_ = new ScriptApp(Util.getScriptFolder()+FOLDERNAME, vh_);
 	}
 	public static JSONArray GetCommands() {
 		return new JSONArray()
@@ -56,11 +62,8 @@ public class GymManager extends AbstractManager {
 		if(args.getInt("dayCount")<=0 || args.getInt("dayCount")>4)
 			throw new Exception(String.format("%d<=0 || %d>4", args.getInt("dayCount"),args.getInt("dayCount")));
 		dayCount_ = args.getInt("dayCount");
-		JSONObject paramObj = getParamObject(mc_);
-		program_ = MongoUtil.GetJsonObjectFromDatabase(mc_, "logistics.gymProgram",
-				new JSONObject()
-				.put("weekCount", paramObj.getInt("weekCount"))
-				.put("dayCount", args.getInt("dayCount"))).getJSONArray("program");
+		
+		program_ = getGymProgram(args);
 		TableBuilder tb = new TableBuilder();
 		tb.addNewlineAndTokens("#","name", "reps");
 		int i = 1;
@@ -72,6 +75,17 @@ public class GymManager extends AbstractManager {
 			tb.addToken(obj.getString("reps"));
 		}
 		return tb.toString();
+	}
+	private JSONArray getGymProgram(JSONObject args) throws JSONException, Exception {
+		JSONObject paramObj = getParamObject(mc_);
+		String res = 
+				sa_.runCommand(String.format("getprogram %d %d", paramObj.getInt("weekCount"),args.getInt("dayCount")));
+		System.err.format("res=%s\n", res);
+		return new JSONArray(res);
+//		return MongoUtil.GetJsonObjectFromDatabase(mc_, "logistics.gymProgram",
+//				new JSONObject()
+//				.put("weekCount", paramObj.getInt("weekCount"))
+//				.put("dayCount", args.getInt("dayCount"))).getJSONArray("program");
 	}
 	public String gymdone(JSONObject obj) throws Exception{
 		int exercisenum = obj.optInt("exercisenum",exercisenum_);
