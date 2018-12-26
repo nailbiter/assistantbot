@@ -1,26 +1,26 @@
 {
-   "pulledData" : {
-      "trelloTitle" : "gymlog replace with JavaScript"
+   "urlnames" : {
+      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
+      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
+      "sort order" : "https://trello.com/c/ofzAma1H",
+      "indicator" : "https://trello.com/c/FMIlCbXE",
+      "replace_gym_with_js" : "https://trello.com/c/TnjMxInQ",
+      "json table" : "https://trello.com/c/gfyEEt3o",
+      "distrib_gen_js" : "https://trello.com/c/3R83mhwS",
+      "label_in_task" : "https://trello.com/c/tqUrbAOy",
+      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
+      "add_run" : "https://trello.com/c/HsN2IoqH",
+      "write_gymdone_num" : "https://trello.com/c/pvXRhy3L",
+      "print_only_taskdone_stat" : "https://trello.com/c/XrVeN6rK",
+      "parser" : "https://trello.com/c/hkuY0OBL",
+      "remove_costs" : "https://trello.com/c/PmEunKmi",
+      "auto_check_mult_main_labels" : "https://trello.com/c/cexmj2vA"
    },
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
    ],
-   "urlnames" : {
-      "sort order" : "https://trello.com/c/ofzAma1H",
-      "print_only_taskdone_stat" : "https://trello.com/c/XrVeN6rK",
-      "add_run" : "https://trello.com/c/HsN2IoqH",
-      "indicator" : "https://trello.com/c/FMIlCbXE",
-      "write_gymdone_num" : "https://trello.com/c/pvXRhy3L",
-      "parser" : "https://trello.com/c/hkuY0OBL",
-      "auto_check_mult_main_labels" : "https://trello.com/c/cexmj2vA",
-      "label_in_task" : "https://trello.com/c/tqUrbAOy",
-      "json table" : "https://trello.com/c/gfyEEt3o",
-      "remove_costs" : "https://trello.com/c/PmEunKmi",
-      "distrib_gen_js" : "https://trello.com/c/3R83mhwS",
-      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
-      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
-      "replace_gym_with_js" : "https://trello.com/c/TnjMxInQ",
-      "label, deadline in task title" : "https://trello.com/c/8g5nF20K"
-   },
-   "cardurl" : "replace_gym_with_js"
+   "cardurl" : "replace_gym_with_js",
+   "pulledData" : {
+      "trelloTitle" : "gymlog replace with JavaScript"
+   }
 }

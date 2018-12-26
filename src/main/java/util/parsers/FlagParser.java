@@ -2,6 +2,7 @@ package util.parsers;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.logging.Logger;
 
 import com.github.nailbiter.util.TableBuilder;
 
@@ -10,6 +11,7 @@ import util.AssistantBotException;
 public class FlagParser {
 	HashMap<Character,String> flagDescriptions_ = new HashMap<Character,String>();
 	HashSet<Character> flags_ = new HashSet<Character>();
+	Logger logger_ = Logger.getLogger(FlagParser.class.getName());
 	boolean isStrict_ = false;
 	public FlagParser addFlag(char f,String description) throws AssistantBotException {
 		if(f == 'h')
@@ -36,9 +38,12 @@ public class FlagParser {
 	}
 	public FlagParser parse(String flagline) throws AssistantBotException {
 		flags_.clear();
+		logger_.info("going to parse: "+flagline);
 		for(int i = 0; i < flagline.length(); i++) {
+			logger_.info("\tgoing to parse: "+new Character(flagline.charAt(i)).toString());
 			char c = flagline.charAt(i);
 			if(flagDescriptions_.containsKey(c)) {
+				logger_.info("\tadding");
 				flags_.add(c);
 			} else if( isStrict_ ) {
 				throw new AssistantBotException(
