@@ -84,7 +84,7 @@ var program = [
 			{
 				"name":"stand press",
 				"reps":"3*6"
-			}
+			},
 		]
 	},
 	{
@@ -164,7 +164,29 @@ var program = [
 				"reps":"2xMax"
 			}
 		]
-	}
+	},
+	{
+		"weekCount":2,
+		"dayCount":4,
+		"program":[
+			{
+				"name":"running",
+				"reps":"16 min"
+			},
+			{
+				"name":"bench",
+				"reps":"5*62.5(115), 3(1)*72.5(135), 3*77.5(142.5), 3*4*82.5(152.5)",
+			},
+			{
+				"name":"fly",
+				"reps":"3*10"
+			},
+			{
+				"name":"stand press",
+				"reps":"3*6"
+			},
+		]
+	},
 ]
 function getProgram(){
 	return program;
