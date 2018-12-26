@@ -56,9 +56,9 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 	public static JSONArray GetCommands() {
 		JSONArray res = new JSONArray()
 			.put(new ParseOrderedCmd("habits", "list all habits and info",
-				asList(new ParseOrderedArg("key", ArgTypes.string).useDefault("").j())))
+				new ParseOrderedArg("key", ArgTypes.string).useDefault("s")))
 			.put(new ParseOrderedCmd("done", "done habit",
-				new ParseOrderedArg("habit", ArgTypes.remainder).useDefault("s")))
+				new ParseOrderedArg("habit", ArgTypes.remainder).useMemory()))
 			.put(new ParseOrderedCmd("doneg", "done habit graphically"))
 			.put(new ParseOrderedCmd("donep", "done habit graphically"
 					,new ParseOrderedArg("flags",ArgTypes.string).useDefault("c").useMemory()));
