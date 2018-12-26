@@ -24,7 +24,6 @@ public class Donep {
 	private TrelloAssistant ta_;
 	private ResourceProvider rp_;
 	private Hashtable<Integer, String> optionMsgs_;
-	JSONArray cards_;
 	private Hashtable<String, Integer> names_ = new Hashtable<String,Integer>();
 	private FlagParser fp_;
 	private String name_;
@@ -38,10 +37,9 @@ public class Donep {
 				.addFlag('c', "choose");
 	}
 	private String donep() throws Exception {
-		String listid = ta_.findListByName(HABITBOARDID, TODOLISTNAME);
-		cards_ = ta_.getCardsInList(listid);
+		JSONArray cards = ta_.getCardsInList(ta_.findListByName(HABITBOARDID, TODOLISTNAME));
 		names_.clear();
-		for(Object o:cards_) {
+		for(Object o:cards) {
 			String name = ((JSONObject)o).getString("name");
 			if(!names_.containsKey(name))
 				names_.put(name, 0);
@@ -56,19 +54,23 @@ public class Donep {
 		return "";
 	}
 	public String donep(String code) throws JSONException, Exception {
-		String name = name_ = code.substring(0, code.lastIndexOf(':'));
-		return removeCard(name);
+		return removeCard( name_ = code.substring(0, code.lastIndexOf(':')) );
 	}
 	private String removeCard(String name) throws JSONException, Exception {
+		JSONArray cards = ta_.getCardsInList(ta_.findListByName(HABITBOARDID, TODOLISTNAME));
 		JSONObject obj = null;
-		for(Object o:cards_) {
+		for(Object o:cards) {
 			if(((JSONObject)o).getString("name").equals(name)) {
 				obj = (JSONObject)o;
 				break;
 			}
 		}
-		ta_.removeCard(obj.getString("id"));
-		return String.format("removed \"%s\", %d remains", obj.getString("name"),names_.get(obj.getString("name"))-1);
+		if( obj != null ) {
+			ta_.removeCard(obj.getString("id"));
+			return String.format("removed \"%s\", %d remains", obj.getString("name"),names_.get(obj.getString("name"))-1);
+		} else {
+			return String.format("no card named \"%s\" found", name);
+		}
 	}
 	public String donepFlags(String flags) throws JSONException, Exception {
 		fp_.parse(flags);
