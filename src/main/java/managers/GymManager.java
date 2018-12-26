@@ -81,10 +81,6 @@ public class GymManager extends AbstractManager {
 				sa_.runCommand(String.format("getprogram %d %d", paramObj.getInt("weekCount"),args.getInt("dayCount")));
 		System.err.format("res=%s\n", res);
 		return new JSONArray(res);
-//		return MongoUtil.GetJsonObjectFromDatabase(mc_, "logistics.gymProgram",
-//				new JSONObject()
-//				.put("weekCount", paramObj.getInt("weekCount"))
-//				.put("dayCount", args.getInt("dayCount"))).getJSONArray("program");
 	}
 	public String gymdone(JSONObject obj) throws Exception{
 		int exercisenum = obj.optInt("exercisenum",exercisenum_);
@@ -120,10 +116,11 @@ public class GymManager extends AbstractManager {
 			obj.put("weekCount", paramObj.getInt("weekCount"));
 			obj.remove("exercisenum");
 			obj.put("exercise", program_.getJSONObject(exercisenum-1));
+			obj.getJSONObject("exercise").put("num", exercisenum);
 			obj.put("date", new Date());
 			mc_.getDatabase("logistics").getCollection("gymLog")
 				.insertOne(Document.parse(obj.toString()));
-			rp_.sendMessage(String.format("gymdone #%d", exercisenum));
+//			rp_.sendMessage(String.format("gymdone #%d", exercisenum));
 			return String.format("added %s to %s",obj.toString(2) ,"logistics.gymLog");
 		}
 	}
