@@ -3,6 +3,7 @@
  */
 package managers;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,6 +21,7 @@ import org.json.JSONObject;
 import assistantbot.ResourceProvider;
 import managers.tasks.TaskManagerBase;
 import managers.tasks.TrelloMover;
+import util.AssistantBotException;
 import util.JsonUtil;
 import util.MongoUtil;
 import util.ParseCommentLine;
@@ -59,12 +61,12 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 	}
 	public String tasks(JSONObject res) throws Exception {
 		if( !res.has("tasknum") ) {
-			return PrintTasks(getTasks(INBOX),this.getParamObject(mc_),recognizedCats_);
+			return PrintTasks(getTasks(INBOX),this.getParamObject(mc_),recognizedCatNames_);
 		} else if(res.getInt("tasknum")>0){
 			rp_.sendMessage(PrintTask(getTasks(INBOX),res.getInt("tasknum"),ta_));
 			return "";
 		} else if(res.getInt("tasknum")==0) {
-			return PrintTasks(getTasks(SNOOZED),this.getParamObject(mc_),recognizedCats_);
+			return PrintTasks(getTasks(SNOOZED),this.getParamObject(mc_),recognizedCatNames_);
 		} else if( res.getInt("tasknum") < 0 ) {
 			rp_.sendMessage(PrintTask(getTasks(SNOOZED),-res.getInt("tasknum"), ta_));
 			return "";
@@ -92,15 +94,30 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		rp_.sendMessage(String.format("created new card %s",res.getString("shortUrl")));
 		return "";
 	}
-	public String taskdone(JSONObject obj) throws JSONException, Exception {
-		if( !obj.has("num") ) {
-			return PrintDoneTasks(ta_,mc_,comparators_,recognizedCats_);
-		}
+	public String taskdone(JSONObject obj) throws JSONException, Exception,AssistantBotException {
+		ArrayList<AssistantBotException> exs = 
+				new ArrayList<AssistantBotException>();
+		HashMap<String,Integer> stat = 
+				GetDoneTasksStat(ta_,mc_,comparators_,recognizedCatNames_,exs);
 		
-		JSONObject card = getTask(obj.getInt("num"));
-		logToDb("taskdone",card);
-		ta_.archiveCard(card.getString("id"));
-		return String.format("archived task \"%s\"", card.getString("name"));
+		if( !obj.has("num") ) {
+			return PrintDoneTasks(stat,exs);
+		} else {
+			JSONObject card = getTask(obj.getInt("num"));
+			
+			String mc = GetMainLabel(GetLabels(card.getJSONArray("labels")),
+					recognizedCatNames_);
+			JSONObject cat = JsonUtil.FindInJSONArray(cats_, "name", mc);
+			int a = stat.getOrDefault(mc, 0),
+					b = cat.optInt("maxdone", 0);
+			if( a >= b || b < 0 )
+				throw new AssistantBotException(AssistantBotException.Type.CANNOTDOTASK,
+						String.format("main cat: %s, %d >= %d", mc,a,b));
+			
+			logToDb("taskdone",card);
+			ta_.archiveCard(card.getString("id"));
+			return String.format("archived task \"%s\"", card.getString("name"));
+		}
 	}
 	public String taskmodify(JSONObject obj) throws JSONException, Exception {
 		if( !obj.has("num") )

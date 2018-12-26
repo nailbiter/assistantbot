@@ -57,7 +57,7 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 		}
 	}
 	private void sendHtmlMessage(SendMessage message, Update update, String reply) throws TelegramApiException {
-		reply = Util.CheckMessageLen(reply);
+//		reply = Util.CheckMessageLen(reply);
 		
 		message.setText(ToHTML(reply));
 		message.setChatId(update.getMessage().getChatId());								

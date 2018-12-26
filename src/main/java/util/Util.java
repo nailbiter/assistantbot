@@ -54,11 +54,9 @@ public class Util{
 			+ "\"Jun\":6,\"Jul\":7,\"Aug\":8,\"Sep\":9,\"Oct\":10,\"Nov\":11,"
 			+ "\"Dec\":12}");
 	private static final int MAXLINENUMINMESSAGE = 41;
-//	private static final int MAXLINENUMINMESSAGE = 20;
 	private static Random rand_ = new Random();
 	private static JSONObject profileObj_;
-	protected static void init() throws Exception
-	{
+	protected static void init() throws Exception {
 	}
 	public static void setProfileObj(String string) throws Exception {
 		profileObj_ = new JSONObject(string);
@@ -393,5 +391,11 @@ public class Util{
 			return sb.toString();
 		}
 		
+	}
+	public static <T> ArrayList<T> GetArrayHead(ArrayList<T> arr, int maxsize) {
+		ArrayList<T> res = new ArrayList<T>();
+		for(int i = 0; i < maxsize && i < arr.size(); i++)
+			res.add(arr.get(i));
+		return res;
 	}
 }
