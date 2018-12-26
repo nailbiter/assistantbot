@@ -312,7 +312,7 @@ public class HabitManager extends HabitManagerBase
 	}
 	@Override
 	public String donep(JSONObject res) throws Exception {
-		return donep_.donep();
+		return donep_.donepFlags(res.getString("flags"));
 	}
 	public String donep(String code) throws JSONException, Exception {
 		return donep_.donep(code);

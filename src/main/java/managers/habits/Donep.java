@@ -9,6 +9,8 @@ import org.json.JSONObject;
 import com.github.nailbiter.util.TrelloAssistant;
 
 import assistantbot.ResourceProvider;
+import util.AssistantBotException;
+import util.parsers.FlagParser;
 
 import static managers.habits.Constants.HABITBOARDID;
 import static managers.habits.Constants.TODOLISTNAME;
@@ -20,17 +22,22 @@ import static managers.habits.Constants.TODOLISTNAME;
  */
 public class Donep {
 	private TrelloAssistant ta_;
-	private ResourceProvider ud_;
+	private ResourceProvider rp_;
 	private Hashtable<Integer, String> optionMsgs_;
 	JSONArray cards_;
 	private Hashtable<String, Integer> names_ = new Hashtable<String,Integer>();
+	private FlagParser fp_;
+	private String name_;
 
-	public Donep(TrelloAssistant ta, ResourceProvider ud, Hashtable<Integer, String> optionMsgs) {
+	public Donep(TrelloAssistant ta, ResourceProvider rp, Hashtable<Integer, String> optionMsgs) throws AssistantBotException {
 		ta_ = ta;
-		ud_ = ud;
+		rp_ = rp;
 		optionMsgs_ = optionMsgs;
+		fp_ = new FlagParser()
+				.addFlag('s', "same")
+				.addFlag('c', "choose");
 	}
-	public String donep() throws Exception {
+	private String donep() throws Exception {
 		String listid = ta_.findListByName(HABITBOARDID, TODOLISTNAME);
 		cards_ = ta_.getCardsInList(listid);
 		names_.clear();
@@ -44,13 +51,16 @@ public class Donep {
 		JSONArray opts = new JSONArray();
 		for(String name:names_.keySet())
 			opts.put(String.format("%s: %d", name,names_.get(name)));
-		int id = ud_.sendMessageWithKeyBoard("which habbit?", opts);
+		int id = rp_.sendMessageWithKeyBoard("which habbit?", opts);
 		optionMsgs_.put(id,"donep");
 		return "";
 	}
 	public String donep(String code) throws JSONException, Exception {
+		String name = name_ = code.substring(0, code.lastIndexOf(':'));
+		return removeCard(name);
+	}
+	private String removeCard(String name) throws JSONException, Exception {
 		JSONObject obj = null;
-		String name = code.substring(0, code.lastIndexOf(':'));
 		for(Object o:cards_) {
 			if(((JSONObject)o).getString("name").equals(name)) {
 				obj = (JSONObject)o;
@@ -59,5 +69,14 @@ public class Donep {
 		}
 		ta_.removeCard(obj.getString("id"));
 		return String.format("removed \"%s\", %d remains", obj.getString("name"),names_.get(obj.getString("name"))-1);
+	}
+	public String donepFlags(String flags) throws JSONException, Exception {
+		fp_.parse(flags);
+		if(fp_.contains('c'))
+			return donep();
+		else if(fp_.contains('s'))
+			return removeCard(name_);
+		else
+			return fp_.getHelp();
 	}
 }
