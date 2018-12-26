@@ -1,24 +1,25 @@
 {
+   "cardurl" : "add_run",
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
    ],
    "urlnames" : {
+      "indicator" : "https://trello.com/c/FMIlCbXE",
+      "distrib_gen_js" : "https://trello.com/c/3R83mhwS",
+      "json table" : "https://trello.com/c/gfyEEt3o",
+      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
+      "auto_check_mult_main_labels" : "https://trello.com/c/cexmj2vA",
       "remove_costs" : "https://trello.com/c/PmEunKmi",
-      "sort order" : "https://trello.com/c/ofzAma1H",
-      "label_in_task" : "https://trello.com/c/tqUrbAOy",
+      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
       "compare deadlines" : "https://trello.com/c/W4CSDHPl",
       "parser" : "https://trello.com/c/hkuY0OBL",
       "write_gymdone_num" : "https://trello.com/c/pvXRhy3L",
-      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
-      "distrib_gen_js" : "https://trello.com/c/3R83mhwS",
-      "auto_check_mult_main_labels" : "https://trello.com/c/cexmj2vA",
-      "json table" : "https://trello.com/c/gfyEEt3o",
       "print_only_taskdone_stat" : "https://trello.com/c/XrVeN6rK",
-      "indicator" : "https://trello.com/c/FMIlCbXE",
-      "label, deadline in task title" : "https://trello.com/c/8g5nF20K"
+      "add_run" : "https://trello.com/c/HsN2IoqH",
+      "sort order" : "https://trello.com/c/ofzAma1H",
+      "label_in_task" : "https://trello.com/c/tqUrbAOy"
    },
    "pulledData" : {
-      "trelloTitle" : "gymdone singleton to params"
-   },
-   "cardurl" : "https://trello.com/c/kd6UAXAR"
+      "trelloTitle" : "! add run to gym plan"
+   }
 }

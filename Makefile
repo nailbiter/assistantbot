@@ -19,6 +19,11 @@ all: src/main/resources/profiles/telegram.json target/$(JARNAME).jar
 	rm -rf $(REBOOTFILE)
 	$(PERL) ./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>&1 | tee log/log.telegram.txt
 include Makefile.sources
+
+#PHONY
+habits:
+	make -C src/main/resources/habits
+	./src/main/pl/uploadJson.pl --file src/main/resources/habits/habits.json --colname habits
 trello: src/main/resources/profiles/trello.json target/$(JARNAME).jar
 	./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>log/log.$@.txt
 interactive: src/main/resources/profiles/interactive.json target/$(JARNAME).jar
@@ -35,7 +40,9 @@ jar: $(addprefix src/main/java/,$(addsuffix .java,$(SOURCES))) pom.xml cp.txt
 	mvn compile
 	touch target/$(JARNAME).jar
 gym:
-	./src/main/pl/makeGym.pl --program src/main/resources/gym.json
+	./src/main/pl/uploadJson.pl --file src/main/resources/gym.json --colname gymProgram
+
+#FILES
 cp.txt: src/main/pl/parseCp.pl pom.xml
 	mvn exec:exec -Dexec.executable="echo" -Dexec.args="%classpath" | perl  $< --bogus $(BOGUS) > $@
 README.html: README.md
