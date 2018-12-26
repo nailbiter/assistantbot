@@ -57,8 +57,6 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 		}
 	}
 	private void sendHtmlMessage(SendMessage message, Update update, String reply) throws TelegramApiException {
-//		String[] split = reply.split("\n");
-//		System.err.format("split.size=%d\n", split.length);
 		reply = Util.CheckMessageLen(reply);
 		
 		message.setText(ToHTML(reply));

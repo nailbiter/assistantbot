@@ -1,27 +1,27 @@
 {
+   "cardurl" : "limit_to_40",
+   "urlnames" : {
+      "print_only_taskdone_stat" : "https://trello.com/c/XrVeN6rK",
+      "json table" : "https://trello.com/c/gfyEEt3o",
+      "auto_check_mult_main_labels" : "https://trello.com/c/cexmj2vA",
+      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
+      "donep" : "https://trello.com/c/4rTjnXHm",
+      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
+      "add_run" : "https://trello.com/c/HsN2IoqH",
+      "parser" : "https://trello.com/c/hkuY0OBL",
+      "remove_costs" : "https://trello.com/c/PmEunKmi",
+      "limit_to_40" : "https://trello.com/c/fkFYN06v",
+      "write_gymdone_num" : "https://trello.com/c/pvXRhy3L",
+      "indicator" : "https://trello.com/c/FMIlCbXE",
+      "label_in_task" : "https://trello.com/c/tqUrbAOy",
+      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
+      "replace_gym_with_js" : "https://trello.com/c/TnjMxInQ",
+      "distrib_gen_js" : "https://trello.com/c/3R83mhwS",
+      "sort order" : "https://trello.com/c/ofzAma1H"
+   },
    "pulledData" : {
       "trelloTitle" : "limit to 40 tasks"
    },
-   "urlnames" : {
-      "remove_costs" : "https://trello.com/c/PmEunKmi",
-      "auto_check_mult_main_labels" : "https://trello.com/c/cexmj2vA",
-      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
-      "parser" : "https://trello.com/c/hkuY0OBL",
-      "indicator" : "https://trello.com/c/FMIlCbXE",
-      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
-      "sort order" : "https://trello.com/c/ofzAma1H",
-      "print_only_taskdone_stat" : "https://trello.com/c/XrVeN6rK",
-      "replace_gym_with_js" : "https://trello.com/c/TnjMxInQ",
-      "label_in_task" : "https://trello.com/c/tqUrbAOy",
-      "limit_to_40" : "https://trello.com/c/fkFYN06v",
-      "write_gymdone_num" : "https://trello.com/c/pvXRhy3L",
-      "distrib_gen_js" : "https://trello.com/c/3R83mhwS",
-      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
-      "donep" : "https://trello.com/c/4rTjnXHm",
-      "add_run" : "https://trello.com/c/HsN2IoqH",
-      "json table" : "https://trello.com/c/gfyEEt3o"
-   },
-   "cardurl" : "limit_to_40",
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
    ]
