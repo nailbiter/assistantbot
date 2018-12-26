@@ -36,7 +36,7 @@ public class Donep {
 				.addFlag('s', "same")
 				.addFlag('c', "choose");
 	}
-	private String donep() throws Exception {
+	private JSONArray getCards() throws Exception {
 		JSONArray cards = ta_.getCardsInList(ta_.findListByName(HABITBOARDID, TODOLISTNAME));
 		names_.clear();
 		for(Object o:cards) {
@@ -45,8 +45,12 @@ public class Donep {
 				names_.put(name, 0);
 			names_.put(name, 1+names_.get(name));
 		}
-		
+		return cards;
+	}
+	private String donep() throws Exception {
+		/*JSONArray cards = */getCards();
 		JSONArray opts = new JSONArray();
+		
 		for(String name:names_.keySet())
 			opts.put(String.format("%s: %d", name,names_.get(name)));
 		int id = rp_.sendMessageWithKeyBoard("which habbit?", opts);
@@ -57,7 +61,7 @@ public class Donep {
 		return removeCard( name_ = code.substring(0, code.lastIndexOf(':')) );
 	}
 	private String removeCard(String name) throws JSONException, Exception {
-		JSONArray cards = ta_.getCardsInList(ta_.findListByName(HABITBOARDID, TODOLISTNAME));
+		JSONArray cards = getCards();
 		JSONObject obj = null;
 		for(Object o:cards) {
 			if(((JSONObject)o).getString("name").equals(name)) {
