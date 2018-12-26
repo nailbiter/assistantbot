@@ -110,7 +110,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 			JSONObject cat = JsonUtil.FindInJSONArray(cats_, "name", mc);
 			int a = stat.getOrDefault(mc, 0),
 					b = cat.optInt("maxdone", 0);
-			if( a >= b || b < 0 )
+			if( a >= b && b >= 0 )
 				throw new AssistantBotException(AssistantBotException.Type.CANNOTDOTASK,
 						String.format("main cat: %s, %d >= %d", mc,a,b));
 			
