@@ -116,6 +116,11 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 				.addHandler(SNOOZEDATE, "%%", ParseCommentLine.TOKENTYPE.DATE)
 				.parse(remainder);
 		
+		if(parsed.containsKey(ParseCommentLine.DATE)) {
+			Date due = (Date)parsed.get(ParseCommentLine.DATE);
+			ta_.setCardDue(card.getString("id"), due);
+			rp_.sendMessage(String.format("set due %s to \"%s\"", due.toString(),card.getString("name")));
+		}
 		if(parsed.containsKey(SNOOZEDATE)) {
 			new TrelloMover(ta_,comparators_.get(INBOX).middle,SEPARATOR)
 			.moveTo(card,comparators_.get(SNOOZED).middle,comparators_.get(SNOOZED).right);
@@ -131,7 +136,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 			Set<String> tags = (Set<String>)parsed.get(ParseCommentLine.TAGS);
 			for(String tagname:tags)
 				ta_.setLabelByName(card.getString("id"), tagname, card.getString("idList"));
-			rp_.sendMessage(String.format("tagging with %s", tags.toString()));
+			rp_.sendMessage(String.format("tagging \"%s\" with %s",card.getString("name"), tags.toString()));
 		}
 		return "";
 	}

@@ -1,4 +1,4 @@
-.PHONY: all offline pull jar gym add trello
+.PHONY: all offline pull jar gym add trello interactive habits
 
 #JARSUFF=-jar-with-dependencies
 JARNAME=assistantBot-0.0.1-SNAPSHOT$(JARSUFF)
@@ -31,7 +31,7 @@ target/$(JARNAME).jar : $(addprefix src/main/java/,$(addsuffix .java,$(SOURCES))
 pull:
 	git pull
 	cd src/main/java/com/github/nailbiter/util && git pull
-jar:$(addprefix src/main/java/,$(addsuffix .java,$(SOURCES))) pom.xml cp.txt
+jar: $(addprefix src/main/java/,$(addsuffix .java,$(SOURCES))) pom.xml cp.txt
 	mvn compile
 	touch target/$(JARNAME).jar
 gym:
