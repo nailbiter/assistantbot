@@ -53,6 +53,8 @@ public class Util{
 			+ "\"Feb\":2,\"Mar\":3,\"Apr\":4,\"May\":5,"
 			+ "\"Jun\":6,\"Jul\":7,\"Aug\":8,\"Sep\":9,\"Oct\":10,\"Nov\":11,"
 			+ "\"Dec\":12}");
+	private static final int MAXLINENUMINMESSAGE = 40;
+//	private static final int MAXLINENUMINMESSAGE = 20;
 	private static Random rand_ = new Random();
 	private static JSONObject profileObj_;
 	protected static void init() throws Exception
@@ -375,5 +377,21 @@ public class Util{
 		for(int i = 0; i < string.length(); i++)
 			res.add(string.substring(i, i+1));
 		return res;
+	}
+	public static String CheckMessageLen(String msg) {
+		String[] split = msg.split("\n");
+		System.err.format("split.size=%d\n", split.length);
+		
+		if(split.length <= MAXLINENUMINMESSAGE) {
+			return msg;
+		} else {
+			StringBuilder sb = new StringBuilder();
+			for(int i = 0; i < (MAXLINENUMINMESSAGE-1); i++) {
+				sb.append(split[i]+"\n");
+			}
+			sb.append("...");
+			return sb.toString();
+		}
+		
 	}
 }

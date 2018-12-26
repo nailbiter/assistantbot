@@ -28,8 +28,7 @@ public class MyAssistantUserData extends UserData implements ResourceProvider {
 	private Logger logger_;
 	private List<MyManager> managers_ = new ArrayList<MyManager>();
 	MyAssistantUserData(Long chatID,MyAssistantBot bot, JSONArray names){
-		try 
-		{
+		try {
 			chatID_ = chatID;
 			bot_ = bot;
 			logger_ = Logger.getLogger(this.getClass().getName());
@@ -38,9 +37,7 @@ public class MyAssistantUserData extends UserData implements ResourceProvider {
 			scheduler_ = new Scheduler();
 			scheduler_.setTimeZone(Util.getTimezone());
 			parser_ = StandardParserInterpreter.Create(managers_, names,this);
-		}
-		catch(Exception e)
-		{
+		} catch(Exception e) {
 			e.printStackTrace(System.out);
 		}
 		if(scheduler_!=null) 
@@ -104,7 +101,9 @@ public class MyAssistantUserData extends UserData implements ResourceProvider {
 		return bot_.sendMessageWithKeyBoard(msg, chatID_, buttons);
 	}
 	@Override
-	public MongoClient getMongoClient() { return bot_.getMongoClient(); }
+	public MongoClient getMongoClient() { 
+		return bot_.getMongoClient(); 
+	}
 	@Override
 	public int sendMessage(String msg) {
 		return bot_.sendMessage(msg, chatID_);

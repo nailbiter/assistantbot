@@ -120,7 +120,6 @@ public class GymManager extends AbstractManager {
 			obj.put("date", new Date());
 			mc_.getDatabase("logistics").getCollection("gymLog")
 				.insertOne(Document.parse(obj.toString()));
-//			rp_.sendMessage(String.format("gymdone #%d", exercisenum));
 			return String.format("added %s to %s",obj.toString(2) ,"logistics.gymLog");
 		}
 	}

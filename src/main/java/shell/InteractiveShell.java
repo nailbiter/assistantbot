@@ -99,6 +99,8 @@ public class InteractiveShell implements ResourceProvider {
 	}
 	@Override
 	public int sendMessage(String msg) {
+		msg = Util.CheckMessageLen(msg);
+		
 		System.out.println("\n"+msg);
 		return -1;
 	}

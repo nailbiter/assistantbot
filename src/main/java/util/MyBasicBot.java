@@ -42,27 +42,30 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 			if (update.hasMessage()) {
 				SendMessage message = new SendMessage();;
 				String reply = null;
-				if(update.getMessage().isReply())
-				{
+				if(update.getMessage().isReply()) {
 					reply = this.processReply(update);
-				}
-				else
-				{
+				} else {
 					reply = reply(update.getMessage());
 				}
 				
-				message.setText(ToHTML(reply));
-				message.setChatId(update.getMessage().getChatId());								
-				message.setParseMode("HTML");
-				
-				if(reply.length()>0)
-					execute(message);
+				sendHtmlMessage(message,update,reply);
 			}
 			else if(update.hasCallbackQuery())
 				this.processUpdateWithCallbackQuery(update);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	private void sendHtmlMessage(SendMessage message, Update update, String reply) throws TelegramApiException {
+		String[] split = reply.split("\n");
+		System.err.format("split.size=%d\n", split.length);
+		
+		message.setText(ToHTML(reply));
+		message.setChatId(update.getMessage().getChatId());								
+		message.setParseMode("HTML");
+		
+		if(reply.length()>0)
+			execute(message);
 	}
 	void processUpdateWithCallbackQuery(Update update) throws Exception
 	{
