@@ -130,5 +130,39 @@
 				"reps":"2*15*15, 3*12*22.5"
 			}
 		]
+	},
+	{
+		"weekCount":2,
+		"dayCount":3,
+		"program":[
+			{
+				"name":"running",
+				"reps":"16 min"
+			},
+			{
+				"name":"tricPull",
+				"reps":"4*10x*35k, 1*8x*40k"
+			},
+			{
+				"name":"grud",
+				"reps":"3x5x27.5"
+			},
+			{
+				"name":"squat",
+				"reps":"72*10/5 (155)"
+			},
+			{
+				"name":"stan",
+				"reps":"3x8x50"
+			},
+			{
+				"name":"matr",
+				"reps":"28.5k*12x*3"
+			},
+			{
+				"name":"pullup",
+				"reps":"2xMax"
+			}
+		]
 	}
 ]
