@@ -1,25 +1,25 @@
 {
-   "urlnames" : {
-      "write_gymdone_num" : "https://trello.com/c/pvXRhy3L",
-      "remove_costs" : "https://trello.com/c/PmEunKmi",
-      "distrib_gen_js" : "https://trello.com/c/3R83mhwS",
-      "limit_to_40" : "https://trello.com/c/fkFYN06v",
-      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
-      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
-      "print_only_taskdone_stat" : "https://trello.com/c/XrVeN6rK",
-      "json table" : "https://trello.com/c/gfyEEt3o",
-      "add_run" : "https://trello.com/c/HsN2IoqH",
-      "sort order" : "https://trello.com/c/ofzAma1H",
-      "indicator" : "https://trello.com/c/FMIlCbXE",
-      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
-      "donep" : "https://trello.com/c/4rTjnXHm",
-      "parser" : "https://trello.com/c/hkuY0OBL",
-      "replace_gym_with_js" : "https://trello.com/c/TnjMxInQ",
-      "label_in_task" : "https://trello.com/c/tqUrbAOy",
-      "auto_check_mult_main_labels" : "https://trello.com/c/cexmj2vA"
-   },
    "pulledData" : {
       "trelloTitle" : "limit to 40 tasks"
+   },
+   "urlnames" : {
+      "remove_costs" : "https://trello.com/c/PmEunKmi",
+      "auto_check_mult_main_labels" : "https://trello.com/c/cexmj2vA",
+      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
+      "parser" : "https://trello.com/c/hkuY0OBL",
+      "indicator" : "https://trello.com/c/FMIlCbXE",
+      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
+      "sort order" : "https://trello.com/c/ofzAma1H",
+      "print_only_taskdone_stat" : "https://trello.com/c/XrVeN6rK",
+      "replace_gym_with_js" : "https://trello.com/c/TnjMxInQ",
+      "label_in_task" : "https://trello.com/c/tqUrbAOy",
+      "limit_to_40" : "https://trello.com/c/fkFYN06v",
+      "write_gymdone_num" : "https://trello.com/c/pvXRhy3L",
+      "distrib_gen_js" : "https://trello.com/c/3R83mhwS",
+      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
+      "donep" : "https://trello.com/c/4rTjnXHm",
+      "add_run" : "https://trello.com/c/HsN2IoqH",
+      "json table" : "https://trello.com/c/gfyEEt3o"
    },
    "cardurl" : "limit_to_40",
    "dependencies" : [
