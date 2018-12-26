@@ -29,7 +29,6 @@ public class PerlScriptManager extends AbstractManager {
 
 	@Override
 	public String processReply(int messageID, String msg) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	protected static JSONArray GetCommands(ResourceProvider rp) throws Exception {
@@ -45,7 +44,8 @@ public class PerlScriptManager extends AbstractManager {
 		    	String name = fn.substring(0, fn.length()-SCRIPTEXTENSION.length());
 		    	//FIXME: add help
 		    	res.put(new ParseOrderedCmd(CMDPREFIX+name,"script",
-		    			Arrays.asList(new ParseOrderedArg("cmdline", ParseOrdered.ArgTypes.remainder).makeOpt().useDefault("").j())));
+		    			new ParseOrderedArg("cmdline", ParseOrdered.ArgTypes.remainder)
+		    			.useDefault("")));
 		    }
 		  } else if (file.isDirectory()) {
 		    System.out.println("Directory " + file.getName());

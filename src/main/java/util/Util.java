@@ -63,10 +63,11 @@ public class Util{
 		JSONArray keys = new JSONArray()
 				.put("RESFOLDER")
 				.put("TMPFOLDER")
-				.put("CMDFILE")
+//				.put("CMDFILE")
 				.put("TMPFILE")
 				.put("PARSERPREFIX")
-				.put("SCRIPTFOLDER");
+				.put("SCRIPTFOLDER")
+				;
 		JsonUtil.FilterJsonKeys(profileObj_,keys);
 		for(Object key:keys) {
 			if(null==profileObj_.getString((String)key))
@@ -199,9 +200,9 @@ public class Util{
 		System.err.println("here with: "+res.toString());
 	    return res.toString();
 	}
-	public static String GetRebootCommandFileName() {
-		return profileObj_.getString("CMDFILE");
-	}
+//	public static String GetRebootCommandFileName() {
+//		return profileObj_.getString("CMDFILE");
+//	}
 	public static String AddTerminalSlash(String dirname) {
 		if(dirname.endsWith("/"))
 			return dirname;

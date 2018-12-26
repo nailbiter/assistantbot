@@ -52,15 +52,17 @@ sub loadJsonFromFile{
 }
 
 #main
-my $cmd, my $tmpfile, my $cmdfile;
+my $cmd;
+my $tmpfile;
+#my $cmdfile;
 GetOptions(
 	"cmd=s" => \$cmd,
 	"tmpfile=s" => \$tmpfile,
-	"cmdfile=s" => \$cmdfile,
+#	"cmdfile=s" => \$cmdfile,
 );
 printf("cmd: \"%s\"\n",$cmd);
 printf("tmpfile: \"%s\"\n",$tmpfile);
-printf("cmdfile: \"%s\"\n",$cmdfile);
+#printf("cmdfile: \"%s\"\n",$cmdfile);
 
 while(1){
 	printf("run: %s\n",$cmd);
@@ -69,14 +71,14 @@ while(1){
 		printf("true branch\n");
 		my $json = loadJsonFromFile($tmpfile);
 		printf("got: %s\n",Dumper($json));
-		if(exists $json->{command}){
-			my $cmdjson = loadJsonFromFile($cmdfile);
-			if(exists $cmdjson->{$json->{command}}){
-				myExec($cmdjson->{$json->{command}});
-			} else {
-				printf("cannot execute %s\n",$json->{command});
-			}
-		}
+#		if(exists $json->{command}){
+#			my $cmdjson = loadJsonFromFile($cmdfile);
+#			if(exists $cmdjson->{$json->{command}}){
+#				myExec($cmdjson->{$json->{command}});
+#			} else {
+#				printf("cannot execute %s\n",$json->{command});
+#			}
+#		}
 		unlink $tmpfile or warn "Could not unlink $tmpfile: $!";
 	} else {
 		printf("false branch\n");

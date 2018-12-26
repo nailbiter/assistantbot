@@ -32,12 +32,18 @@ my %METHODS = (
 		description=>"show this message",
 		function=>\&help,
 	},
-	pulljar => {
-		description => 'pulljar',
+	jar => {
+		description => 'make jar',
 		function => sub {
-			myExec('make pull jar');
+			myExec('make jar');
 		}
-	}
+	},
+	pull => {
+		description => 'make pull',
+		function => sub {
+			myExec('make pull');
+		}
+	},
 );
 #global var's
 #procedures
@@ -49,7 +55,6 @@ sub help{
 	for(keys(%METHODS)){
 		$tb->add((($_ eq $DEFMETHOD)?'_':'').$_,$METHODS{$_}->{description});
 	}
-#	$tb->add('-----','-------');
 	print $tb;
 }
 sub myExec{
@@ -59,14 +64,16 @@ sub myExec{
 		system($cmd);
 	}
 }
+
 #main
-(my $method) = @ARGV;
-$method //= "";
-chomp $method;
-my $func;
-if(exists $METHODS{$method}){
-	$func = $METHODS{$method}->{function};
-} else {
-	$func = $METHODS{$DEFMETHOD}->{function};
+for(@ARGV){
+	my $method = $_;
+	chomp $method;
+	my $func;
+	if(exists $METHODS{$method}){
+		$func = $METHODS{$method}->{function};
+	} else {
+		$func = $METHODS{$DEFMETHOD}->{function};
+	}
+	$func->();
 }
-$func->();
