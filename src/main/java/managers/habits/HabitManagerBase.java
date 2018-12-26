@@ -58,9 +58,10 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 			.put(new ParseOrderedCmd("habits", "list all habits and info",
 				asList(new ParseOrderedArg("key", ArgTypes.string).useDefault("").j())))
 			.put(new ParseOrderedCmd("done", "done habit",
-				asList(new ParseOrderedArg("habit", ArgTypes.remainder).useMemory().j())))
+				new ParseOrderedArg("habit", ArgTypes.remainder).useDefault("s")))
 			.put(new ParseOrderedCmd("doneg", "done habit graphically"))
-			.put(new ParseOrderedCmd("donep", "done habit graphically"));
+			.put(new ParseOrderedCmd("donep", "done habit graphically"
+					,new ParseOrderedArg("flags",ArgTypes.string).useDefault("c").useMemory()));
 		return res;
 	}
 	public String optionReply(String option, Integer msgID) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {

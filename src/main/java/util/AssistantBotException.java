@@ -5,7 +5,8 @@ public class AssistantBotException extends Exception {
 	public static enum Type {
 		ARITHMETICPARSE, COMMENTPARSE,SCRIPTHELPERARRAY,
 		NOTONEMAINLABEL,
-		NOTYETIMPLEMENTED,FAILEDTEST
+		NOTYETIMPLEMENTED,FAILEDTEST,NOMEMORIZEDARG,
+		FLAGPARSEREXCEPTION
 	};
 	private Type t_;
 	public AssistantBotException(Type t,String msg) {

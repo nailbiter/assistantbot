@@ -6,6 +6,7 @@ import org.apache.commons.collections4.Transformer;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import util.AssistantBotException;
 import util.JsonUtil;
 import static util.parsers.StandardParserInterpreter.CMD;
 import static util.parsers.StandardParserInterpreter.REM;
@@ -95,8 +96,7 @@ public class ParseOrdered {
 		JSONObject res = new JSONObject().put("name", obj.getString(CMD));
 		
 		int j = 0;
-		for( ; j < args.length() && line != null; j++ )
-		{
+		for( ; j < args.length() && line != null; j++ ) {
 			System.err.format("line: \"%s\"\n", line);
 			String[] split = line.split(" +",2);
 			System.err.format("split[0]=\"%s\"\nsplit[1]=\"%s\"\n",(split.length>=1)?split[0]:"null",(split.length>=2)?split[1]:"null");
@@ -124,33 +124,43 @@ public class ParseOrdered {
 			JSONObject arg = args.getJSONObject(j); 
 			if( !ParseOrderedArg.IsArgOpt(arg) ) {
 				throw new Exception("not enough arguments");
-			} else if(ParseOrderedArg.GetDefault(arg)!=null) {
-				Object defValue = ParseOrderedArg.GetDefault(arg);
-				System.err.format("getting default argument %s for %s.%s\n", 
-						defValue.toString(),obj.getString(CMD),arg.getString("name"));
-				res.put(arg.getString("name"), defValue);
 			} else if(ParseOrderedArg.IsUsingMemory(arg)){
-				Object prevValue = getMemorized(obj.getString(CMD),arg.getString("name"));
+				Object prevValue = getMemorized(obj.getString(CMD),arg.getString("name"),arg);
 				System.err.format("getting memorized argument %s for %s.%s\n", prevValue.toString(),obj.getString(CMD),arg.getString("name"));
 				res.put(arg.getString("name"), prevValue);
 			} else if(ParseOrderedArg.GetMemoryTransformer(arg)!=null){
 				Transformer<Object,Object> t =
 						ParseOrderedArg.GetMemoryTransformer(arg);
-				Object prevValue = getMemorized(obj.getString(CMD),arg.getString("name"));
+				Object prevValue = getMemorized(obj.getString(CMD),arg.getString("name"),arg);
 				System.err.format("getting memorized argument %s for %s.%s\n", prevValue.toString(),obj.getString(CMD),arg.getString("name"));
 				Object newValue = t.transform(prevValue);
 				System.err.format("new value: %s\n", newValue.toString());
 				memorize(obj.getString(CMD),arg.getString("name"),newValue);
 				res.put(arg.getString("name"), newValue);
+			} else if(ParseOrderedArg.GetDefault(arg)!=null) {
+				Object defValue = ParseOrderedArg.GetDefault(arg);
+				System.err.format("getting default argument %s for %s.%s\n", 
+						defValue.toString(),obj.getString(CMD),arg.getString("name"));
+				res.put(arg.getString("name"), defValue);
 			}
 		}
 			
 		return res;
 	}
-	private void memorize(String cmd, String arg, Object lastArg) {
-		memoTable_.put(cmd+"."+arg, lastArg);
+	private static String GetMemoKey(String cmd, String arg) {
+		return cmd+"."+arg;
 	}
-	private Object getMemorized(String cmd, String arg){
-		return memoTable_.get(cmd+"."+arg); 
+	private void memorize(String cmd, String arg, Object lastArg) {
+		memoTable_.put(GetMemoKey(cmd,arg), lastArg);
+	}
+	private Object getMemorized(String cmd, String arg, JSONObject obj) throws AssistantBotException{
+		String key = GetMemoKey(cmd,arg);
+		if(memoTable_.has(key)) {
+			return memoTable_.get(key);
+		} else if(ParseOrderedArg.GetDefault(obj)!=null) {
+			return ParseOrderedArg.GetDefault(obj);
+		} else {
+			throw new AssistantBotException(AssistantBotException.Type.NOMEMORIZEDARG, key);
+		}
 	}
 }

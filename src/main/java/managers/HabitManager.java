@@ -25,6 +25,8 @@ import managers.habits.JSONObjectCallback;
 import util.JsonUtil;
 import util.KeyRing;
 import util.Util;
+import util.parsers.FlagParser;
+
 import static managers.habits.Constants.FAILLABELCOLOR;
 import static managers.habits.Constants.HABITBOARDID;
 import static managers.habits.Constants.PENDINGLISTNAME;
@@ -321,15 +323,17 @@ public class HabitManager extends HabitManagerBase
 	}
 	@Override
 	public String habits(JSONObject res) throws Exception {
-		String keyline = res.getString("key");
-		Set<String> flags = Util.StringToSet(keyline);
+		FlagParser fp = new FlagParser()
+				.addFlag('f', "full info on habits")
+				.addFlag('s', "short info on habits")
+				.parse(res.getString("key"))
+				;
 		
-		if( flags.isEmpty() ) {
+		if( fp.contains('f') )
 			return getHabitsInfo();
-		} else if(flags.contains("s")) {
+		else if( fp.contains('s') )
 			return getHabitsInfoShort();
-		} else {
-			return String.format("cannot parse flag line \"%s\"", keyline);
-		}
+		else
+			return fp.getHelp();
 	}
 }
