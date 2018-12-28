@@ -31,8 +31,8 @@ function compare(obj1,obj2){
 }
 function compareExclamation(o1,o2){
 	var i1 = 0, i2 = 0;
-	log("compareExclamation "+JSON.stringify(o1));
-	log("compareExclamation "+JSON.stringify(o2));
+	log("compareExclamation "+JSON.stringify(o1.labels));
+	log("compareExclamation "+JSON.stringify(o2.labels));
 
 	for(var i = 0; i < o1.labels.length; i++){
 		if( o1.labels[i] == EXCLAMATION )
@@ -43,7 +43,9 @@ function compareExclamation(o1,o2){
 			i2 = 1;
 	}
 
-	return -(i1-i2);
+	var res = -(i1-i2);
+	log('res: '+res);
+	return res;
 }
 function compareDate(o1,o2){
 	var b = [o1.due==null,o2.due==null];
