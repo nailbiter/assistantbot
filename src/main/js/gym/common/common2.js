@@ -200,7 +200,7 @@ var program = [
 	{
 		weekCount:3,
 		dayCount:1,
-		"program":[
+		program:[
 			{
 				"name":"bench",
 				"reps":[
@@ -218,6 +218,38 @@ var program = [
 				"name":"stand press",
 				"reps":"3*6"
 			},
+		]
+	},
+	{
+		weekCount:1+2,
+		dayCount:3,
+		program:[
+			{
+				name:"tricPull",
+				"reps":"4*10x*35k, 1*8x*40k"
+			},
+			{
+				name:"grud",
+				reps:"3x5x30"
+			},
+			{
+				name:"squat",
+				reps:[
+					['5x10',72],
+				],
+			},
+			{
+				name:"stan",
+				reps:"3x8x50"
+			},
+			{
+				name:"matr",
+				"reps":"28.5k*12x*3"
+			},
+			{
+				name:"pullup",
+				reps:"2xMax"
+			}
 		]
 	},
 ]
