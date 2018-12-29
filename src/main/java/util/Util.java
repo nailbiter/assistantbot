@@ -200,9 +200,6 @@ public class Util{
 		System.err.println("here with: "+res.toString());
 	    return res.toString();
 	}
-//	public static String GetRebootCommandFileName() {
-//		return profileObj_.getString("CMDFILE");
-//	}
 	public static String AddTerminalSlash(String dirname) {
 		if(dirname.endsWith("/"))
 			return dirname;
@@ -219,14 +216,14 @@ public class Util{
 			}
 			String cn = String.format("%s.%s","managers", name);
 			try {
-				Class<?> clazz = Class.forName(cn);
-				Constructor<?> constructor = clazz.getConstructor(ResourceProvider.class);
-				Object instance = constructor.newInstance(rp);
-				managers.add((MyManager) instance);
-			}
-			catch(Exception e) {
+				Class<?> managerClass = Class.forName(cn);
+				Constructor<?> managerConstructor = 
+						managerClass.getConstructor(ResourceProvider.class);
+				Object managerInstance = managerConstructor.newInstance(rp);
+				managers.add((MyManager) managerInstance);
+			} catch(Exception e) {
 				e.printStackTrace();
-				System.err.format("cannot instantiate %s\n", cn);
+				System.err.format("cannot instantiate %s!\n", cn);
 			}
 			System.err.format("added %s\n", cn);
 		}

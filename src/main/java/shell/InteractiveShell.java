@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import static util.parsers.StandardParserInterpreter.Create;
 
-public class InteractiveShell implements ResourceProvider {
+public class InteractiveShell implements ResourceProvider,MyManager {
 	private static String PROMPT = "assistantbot> ";
 	private String fileToOutputTo_;
 	private StandardParserInterpreter parser_;
@@ -137,5 +137,24 @@ public class InteractiveShell implements ResourceProvider {
 	public long getChatId() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+	@Override
+	public String processReply(int messageID, String msg) {
+		return null;
+	}
+	@Override
+	public JSONObject getCommands() {
+		return new JSONObject()
+				.put("help", "display this message");
+	}
+	@Override
+	public String getResultAndFormat(JSONObject res) throws Exception {
+		if(res.has(CMD))
+		{
+			System.err.println(this.getClass().getName()+" got comd: "+res.getString(CMD));
+			if(res.getString(CMD).compareTo("help")==0)
+				return parser_.getHelpMessage();
+		}
+		throw new Exception(String.format("for res=%s", res.toString()));
 	}
 }

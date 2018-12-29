@@ -17,7 +17,7 @@ import util.JsonUtil;
 import util.Util;
 import static util.Util.PopulateManagers;
 
-public class StandardParserInterpreter extends AbstractParser{
+public class StandardParserInterpreter implements AbstractParser{
 	public static final String CMD = "cmd";
 	public static final String REM = "rem";
 	public static final String DEFMESSAGEHANDLERKEY =  "DEFMESSAGEHANDLER";
@@ -107,21 +107,12 @@ public class StandardParserInterpreter extends AbstractParser{
 				.put(CMD, defHandlers_.getString(DEFMESSAGEHANDLERKEY))
 				.put(REM, line);
 	}
-	@Override
-	public String getResultAndFormat(JSONObject res) throws Exception {
-		if(res.has(CMD))
-		{
-			System.err.println(this.getClass().getName()+" got comd: "+res.getString(CMD));
-			if(res.getString(CMD).compareTo("help")==0)
-				return getHelpMessage();
-		}
-		throw new Exception(String.format("for res=%s", res.toString()));
-	}
 	public static StandardParserInterpreter Create(List<MyManager> managers,JSONArray names,ResourceProvider rp) throws JSONException, Exception {
 		PopulateManagers(managers, names, rp);
 		StandardParserInterpreter parser = 
-				new StandardParserInterpreter(managers,Util.GetDefSettingsObject(names));
-		managers.add(parser);
+				new StandardParserInterpreter(managers,
+						Util.GetDefSettingsObject(names));
+		managers.add((MyManager)rp);
 		parser.getHelpMessage();
 		return parser;
 	}

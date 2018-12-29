@@ -20,7 +20,7 @@ import util.UserData;
 import util.parsers.AbstractParser;
 import util.parsers.StandardParserInterpreter;
 
-public class MyAssistantUserData extends UserData implements ResourceProvider {
+public class MyAssistantUserData extends UserData implements ResourceProvider,MyManager {
 	protected Scheduler scheduler_ = null; //FIXME: should it be a singleton?
 	protected StandardParserInterpreter parser_ = null;
 	protected long chatID_;
@@ -32,8 +32,6 @@ public class MyAssistantUserData extends UserData implements ResourceProvider {
 			chatID_ = chatID;
 			bot_ = bot;
 			logger_ = Logger.getLogger(this.getClass().getName());
-			
-
 			scheduler_ = new Scheduler();
 			scheduler_.setTimeZone(Util.getTimezone());
 			parser_ = StandardParserInterpreter.Create(managers_, names,this);
@@ -130,5 +128,25 @@ public class MyAssistantUserData extends UserData implements ResourceProvider {
 	@Override
 	public long getChatId() {
 		return chatID_;
+	}
+	@Override
+	public String processReply(int messageID, String msg) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public JSONObject getCommands() {
+		return new JSONObject()
+				.put("help", "display this message");
+	}
+	@Override
+	public String getResultAndFormat(JSONObject res) throws Exception {
+		if(res.has(CMD))
+		{
+			System.err.println(this.getClass().getName()+" got comd: "+res.getString(CMD));
+			if(res.getString(CMD).compareTo("help")==0)
+				return parser_.getHelpMessage();
+		}
+		throw new Exception(String.format("for res=%s", res.toString()));
 	}
 }
