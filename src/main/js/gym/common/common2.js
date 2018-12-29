@@ -106,8 +106,8 @@ var program = [
 		]
 	},
 	{
-		"weekCount":2,
-		"dayCount":2,
+		weekCount:2,
+		dayCount:2,
 		"program":[
 			{
 				"name":"running",
@@ -128,8 +128,8 @@ var program = [
 		]
 	},
 	{
-		"weekCount":2,
-		"dayCount":3,
+		weekCount:2,
+		dayCount:3,
 		"program":[
 			{
 				"name":"running",
@@ -259,7 +259,6 @@ var program = [
 			{
 				"name":"bench",
 				"reps":[
-					//['8',62.5],
 					['5',62.5],
 					['5',72.5],
 					['1',75],
@@ -274,6 +273,28 @@ var program = [
 				"name":"stand press",
 				"reps":"3*6"
 			},
+		]
+	},
+	{
+		weekCount:3,
+		dayCount:2,
+		program:[
+			{
+				name:"brus",
+				reps:"2*12, 3*25k*10"
+			},
+			{
+				name:"razg",
+				reps:"2*15, 3*10"
+			},
+			{
+				name:"bic",
+				reps:"2*15, 3*10"
+			},
+			{
+				name:"molot",
+				reps:"2*15*15k, 3*12*22.5k"
+			}
 		]
 	},
 ]
