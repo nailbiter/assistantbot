@@ -1,32 +1,32 @@
 {
-   "urlnames" : {
-      "label_in_task" : "https://trello.com/c/tqUrbAOy",
-      "check_exclamation" : "https://trello.com/c/I2UZf4ds",
-      "json table" : "https://trello.com/c/gfyEEt3o",
-      "write_gymdone_num" : "https://trello.com/c/pvXRhy3L",
-      "indicator" : "https://trello.com/c/FMIlCbXE",
-      "replace_gym_with_js" : "https://trello.com/c/TnjMxInQ",
-      "limit_to_40" : "https://trello.com/c/fkFYN06v",
-      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
-      "done_tast_limit" : "https://trello.com/c/fy6l2nbZ",
-      "add_run" : "https://trello.com/c/HsN2IoqH",
-      "donep" : "https://trello.com/c/4rTjnXHm",
-      "parser" : "https://trello.com/c/hkuY0OBL",
-      "distrib_gen_js" : "https://trello.com/c/3R83mhwS",
-      "plbuild_pull_jar" : "https://trello.com/c/QfGjg1UR",
-      "plus_snooze" : "https://trello.com/c/zBFzhL2R",
-      "sort order" : "https://trello.com/c/ofzAma1H",
-      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
-      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
-      "print_only_taskdone_stat" : "https://trello.com/c/XrVeN6rK",
-      "auto_check_mult_main_labels" : "https://trello.com/c/cexmj2vA",
-      "remove_costs" : "https://trello.com/c/PmEunKmi"
-   },
-   "pulledData" : {
-      "trelloTitle" : "gym misc fix"
-   },
-   "cardurl" : "plus_snooze",
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
-   ]
+   ],
+   "urlnames" : {
+      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
+      "replace_gym_with_js" : "https://trello.com/c/TnjMxInQ",
+      "write_gymdone_num" : "https://trello.com/c/pvXRhy3L",
+      "donep" : "https://trello.com/c/4rTjnXHm",
+      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
+      "label_in_task" : "https://trello.com/c/tqUrbAOy",
+      "sort order" : "https://trello.com/c/ofzAma1H",
+      "distrib_gen_js" : "https://trello.com/c/3R83mhwS",
+      "auto_check_mult_main_labels" : "https://trello.com/c/cexmj2vA",
+      "indicator" : "https://trello.com/c/FMIlCbXE",
+      "print_only_taskdone_stat" : "https://trello.com/c/XrVeN6rK",
+      "done_tast_limit" : "https://trello.com/c/fy6l2nbZ",
+      "plbuild_pull_jar" : "https://trello.com/c/QfGjg1UR",
+      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
+      "remove_costs" : "https://trello.com/c/PmEunKmi",
+      "json table" : "https://trello.com/c/gfyEEt3o",
+      "plus_snooze" : "https://trello.com/c/zBFzhL2R",
+      "limit_to_40" : "https://trello.com/c/fkFYN06v",
+      "parser" : "https://trello.com/c/hkuY0OBL",
+      "check_exclamation" : "https://trello.com/c/I2UZf4ds",
+      "add_run" : "https://trello.com/c/HsN2IoqH"
+   },
+   "pulledData" : {
+      "trelloTitle" : "gymprog"
+   },
+   "cardurl" : "plus_snooze"
 }
