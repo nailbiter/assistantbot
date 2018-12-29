@@ -1,4 +1,4 @@
-.PHONY: all offline pull jar add trello interactive habits
+.PHONY: all offline pull jar add trello interactive habits users
 
 #JARSUFF=-jar-with-dependencies
 JARNAME=assistantBot-0.0.1-SNAPSHOT$(JARSUFF)
@@ -38,6 +38,8 @@ pull:
 jar: $(addprefix src/main/java/,$(addsuffix .java,$(SOURCES))) pom.xml cp.txt
 	mvn compile
 	touch target/$(JARNAME).jar
+users: src/main/pl/updateUserRecords.pl src/main/resources/userRecords.json
+	$(PERL) src/main/pl/updateUserRecords.pl --json src/main/resources/userRecords.json $(KEYS)
 
 #FILES
 cp.txt: src/main/pl/parseCp.pl pom.xml

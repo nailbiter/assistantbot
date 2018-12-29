@@ -1,20 +1,7 @@
 {
 	"name":"AssistantBot",
 	"resfolder":"src/main/resources/assistantBotFiles/",
-    	"scriptFolder":"src/main/js/",
+	"scriptFolder":"src/main/js/",
 	"tmpfolder":"tmp",
-	"parserPrefix":"/",
-	"managers":[
-		"MoneyManager",
-		"PerlScriptManager",
-		"HabitManager",
-		"TaskManager",
-		"TestManager",
-		"TimeManager",
-		"MiscUtilManager",
-		"ReportManager",
-		"GermanManager",
-		"GymManager",
-		"JShellManager"
-	]
+	"parserPrefix":"/"
 }

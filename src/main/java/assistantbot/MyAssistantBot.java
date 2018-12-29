@@ -13,8 +13,7 @@ import util.UserData;
 public class MyAssistantBot extends MyBasicBot {
 	private JSONObject profileObj_;
 	protected MongoClient mongoClient_ = null;
-	public MyAssistantBot(JSONObject profileObj)
-	{
+	public MyAssistantBot(JSONObject profileObj) {
 		try {
 			profileObj_ = profileObj;
 			util.StorageManager.init();

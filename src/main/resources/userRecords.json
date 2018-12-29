@@ -1,0 +1,9 @@
+{
+	"alex":{
+		"managers":[
+			"MoneyManager","PerlScriptManager","HabitManager",
+			"TaskManager","TestManager","TimeManager","MiscUtilManager","ReportManager",
+			"GermanManager","GymManager","JShellManager"
+		]
+	}
+}

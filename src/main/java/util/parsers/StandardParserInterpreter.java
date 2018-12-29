@@ -108,11 +108,15 @@ public class StandardParserInterpreter implements AbstractParser{
 				.put(REM, line);
 	}
 	public static StandardParserInterpreter Create(List<MyManager> managers,JSONArray names,ResourceProvider rp) throws JSONException, Exception {
+		if(names==null) {
+			throw new Exception(String.format("managers==null"));
+		}
+			
 		PopulateManagers(managers, names, rp);
 		StandardParserInterpreter parser = 
 				new StandardParserInterpreter(managers,
 						Util.GetDefSettingsObject(names));
-		managers.add((MyManager)rp);
+//		managers.add((MyManager)rp);
 		parser.getHelpMessage();
 		return parser;
 	}

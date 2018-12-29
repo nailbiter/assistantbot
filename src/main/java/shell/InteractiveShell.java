@@ -46,6 +46,7 @@ public class InteractiveShell implements ResourceProvider,MyManager {
 		mc_ = uselocaldb ? new MongoClient() : MongoUtil.GetMongoClient( profileObj.getString("PASSWORD") );
 		fileToOutputTo_ = Util.AddTerminalSlash(profileObj.getString("TMPFOLDER")) + profileObj.getString("FILETOSENDTO");
 		ArrayList<MyManager> managers = new ArrayList<MyManager>();
+		managers.add(this);
 		
 		System.setProperty("DEBUG.MONGO", "false");
 		System.setProperty("DB.TRACE", "false");

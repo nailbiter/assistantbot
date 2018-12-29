@@ -34,7 +34,8 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 			logger_ = Logger.getLogger(this.getClass().getName());
 			scheduler_ = new Scheduler();
 			scheduler_.setTimeZone(Util.getTimezone());
-			parser_ = StandardParserInterpreter.Create(managers_, names,this);
+			managers_.add(this);
+			parser_ = StandardParserInterpreter.Create(managers_, names, this);
 		} catch(Exception e) {
 			e.printStackTrace(System.out);
 		}
@@ -131,7 +132,6 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 	}
 	@Override
 	public String processReply(int messageID, String msg) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	@Override
