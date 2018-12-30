@@ -78,27 +78,27 @@ public class StorageManager {
 	{
 		FileReader fr = null;
 		JSONObject res = null;
-		try {
-			System.out.println("StorageManager got "+name);
-			String fname = Util.getJarFolder()+name+".json";
-			System.out.println("storageManager gonna open: "+fname);
-			fr = new FileReader(fname);
-			StringBuilder sb = new StringBuilder();
-            int character;
-            while ((character = fr.read()) != -1) {
-            		sb.append((char)character);
-            }
-            System.out.println("found "+sb.toString());
-			fr.close();
-			res = (JSONObject) (new JSONTokener(sb.toString())).nextValue();
-		}
-		catch(Exception e) {
-			System.out.println(String.format("found nothing: name=%s", name));
-			e.printStackTrace(System.out);
-			res = new JSONObject();
-		}
-		if(register)
-			register(name,res);
+//		try {
+//			System.out.println("StorageManager got "+name);
+//			String fname = Util.getJarFolder()+name+".json";
+//			System.out.println("storageManager gonna open: "+fname);
+//			fr = new FileReader(fname);
+//			StringBuilder sb = new StringBuilder();
+//            int character;
+//            while ((character = fr.read()) != -1) {
+//            		sb.append((char)character);
+//            }
+//            System.out.println("found "+sb.toString());
+//			fr.close();
+//			res = (JSONObject) (new JSONTokener(sb.toString())).nextValue();
+//		}
+//		catch(Exception e) {
+//			System.out.println(String.format("found nothing: name=%s", name));
+//			e.printStackTrace(System.out);
+//			res = new JSONObject();
+//		}
+//		if(register)
+//			register(name,res);
 		return res;
 	}
 	protected static void register(String name, JSONObject ref)
@@ -108,22 +108,22 @@ public class StorageManager {
 	}
 	protected static void dumpAllObjects()
 	{
-		Iterator<String> itr = registeredObjects.keySet().iterator();
-		String str;
-		FileWriter fw;
-		System.out.println("was here on shutdown");
-		while (itr.hasNext()) {
-			 try {
-				   str = itr.next();
-			       System.out.println("Key: "+str+" & Value: "+registeredObjects.get(str));
-			       fw = new FileWriter(Util.getJarFolder()+str+".json");
-			       fw.write(registeredObjects.get(str).toString(2));
-			       fw.close(); 
-			 }
-			 catch(Exception e)
-			 {
-				 e.printStackTrace(System.out);
-			 }
-		    }
+//		Iterator<String> itr = registeredObjects.keySet().iterator();
+//		String str;
+//		FileWriter fw;
+//		System.out.println("was here on shutdown");
+//		while (itr.hasNext()) {
+//			 try {
+//				   str = itr.next();
+//			       System.out.println("Key: "+str+" & Value: "+registeredObjects.get(str));
+//			       fw = new FileWriter(Util.getJarFolder()+str+".json");
+//			       fw.write(registeredObjects.get(str).toString(2));
+//			       fw.close(); 
+//			 }
+//			 catch(Exception e)
+//			 {
+//				 e.printStackTrace(System.out);
+//			 }
+//		    }
 	}
 }

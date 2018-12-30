@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,6 +13,10 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Updates;
+
+import ch.qos.logback.core.filter.Filter;
 import it.sauronsoftware.cron4j.Scheduler;
 import managers.MyManager;
 import managers.OptionReplier;
@@ -27,6 +32,7 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 	MyAssistantBot bot_ = null;
 	private Logger logger_;
 	private List<MyManager> managers_ = new ArrayList<MyManager>();
+	private String userName_ = null;
 	MyAssistantUserData(Long chatID,MyAssistantBot bot, JSONArray names){
 		try {
 			chatID_ = chatID;
@@ -36,6 +42,7 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 			scheduler_.setTimeZone(Util.getTimezone());
 			managers_.add(this);
 			parser_ = StandardParserInterpreter.Create(managers_, names, this);
+			userName_ = (names==null) ? null : "alex" ;
 		} catch(Exception e) {
 			e.printStackTrace(System.out);
 		}
@@ -137,16 +144,69 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 	@Override
 	public JSONObject getCommands() {
 		return new JSONObject()
-				.put("help", "display this message");
+				.put("help", "display this message")
+				.put("start", "display this message")
+				;
 	}
 	@Override
 	public String getResultAndFormat(JSONObject res) throws Exception {
 		if(res.has(CMD))
 		{
 			System.err.println(this.getClass().getName()+" got comd: "+res.getString(CMD));
-			if(res.getString(CMD).compareTo("help")==0)
+			if(res.getString(CMD).equals("help"))
 				return parser_.getHelpMessage();
+			else if(res.getString(CMD).equals("start")) {
+				String[] split = res.optString(StandardParserInterpreter.REM,"")
+						.split(StandardParserInterpreter.SPLITPATTERN);
+				if( split.length==0 || split[0].isEmpty() ) {
+					return unlogin();
+				} else {
+					String username = split[0],
+							password = (split.length>=2) ? split[1] : "";
+					return login(username,password);
+				}
+			}
 		}
 		throw new Exception(String.format("for res=%s", res.toString()));
+	}
+	private String login(String username, String password) throws JSONException, Exception {
+		Document userDoc = new Document("name",username);
+		userDoc.put("pass", password);
+		MongoCollection<Document> coll = bot_.getMongoClient()
+				.getDatabase("logistics").getCollection("users");
+		Document doc = coll.find(userDoc).first();
+		if( doc == null ) {
+			return String.format("cannot log in \"%s\" (wrong username or password)", 
+					username);
+		} else if(doc.containsKey("port")) {
+			return String.format("\"%s\" is already logged in", doc.getString("name"));
+		}
+		
+		JSONObject obj = new JSONObject(doc.toJson());
+		userName_ = obj.getString("name");
+		parser_ = StandardParserInterpreter
+				.Create(managers_, obj.getJSONArray("managers"), this);
+		coll.findOneAndUpdate(userDoc, Updates.set("port",getChatId()));
+		
+		StringBuilder sb = new StringBuilder();
+		for(Object o:obj.getJSONArray("loginmessage"))
+			sb.append(((String)o)+"\n");
+		return sb.toString();
+	}
+	private String unlogin() throws JSONException, Exception {
+		if( userName_ == null ) {
+			return String.format("not logged in");
+		}
+		MongoCollection<Document> coll = bot_.getMongoClient()
+				.getDatabase("logistics").getCollection("users");
+		
+		coll.findOneAndUpdate(new Document("name", userName_),Updates.unset("port"));
+		managers_.clear();
+		managers_.add(this);
+		parser_ = StandardParserInterpreter.Create(managers_, null, this);
+		String res = String.format("logging out \"%s\"",userName_);
+		userName_ = null;
+		
+		return res;
 	}
 }

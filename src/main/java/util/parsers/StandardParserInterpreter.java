@@ -22,8 +22,10 @@ public class StandardParserInterpreter implements AbstractParser{
 	public static final String REM = "rem";
 	public static final String DEFMESSAGEHANDLERKEY =  "DEFMESSAGEHANDLER";
 	public static final String DEFMESSAGEHANDLERPREF =  "_";
+	public static final String SPLITPATTERN = " +";
 	private List<MyManager> managers_ = null;
-	private HashMap<String,MyManager> dispatchTable_ = new HashMap<String,MyManager>();
+	private HashMap<String,MyManager> dispatchTable_ = 
+			new HashMap<String,MyManager>();
 	private JSONObject defHandlers_ = new JSONObject();
 	private Logger logger_;
 	
@@ -82,7 +84,7 @@ public class StandardParserInterpreter implements AbstractParser{
 		logger_.info(String.format("line=\"%s\"\nprefix=\"%s\"\n", line,prefix));
 		JSONObject res = null;
 		if(line.startsWith(prefix)) {
-			String[] tokens = line.split(" +",2);
+			String[] tokens = line.split(SPLITPATTERN,2);
 			System.err.format("split[0]=\"%s\"\nsplit[1]=\"%s\"\n",
 					(tokens.length>=1)?tokens[0]:"null",(tokens.length>=2)?tokens[1]:"null");
 			String cmd = tokens[0].substring(prefix.length());
@@ -109,14 +111,13 @@ public class StandardParserInterpreter implements AbstractParser{
 	}
 	public static StandardParserInterpreter Create(List<MyManager> managers,JSONArray names,ResourceProvider rp) throws JSONException, Exception {
 		if(names==null) {
-			throw new Exception(String.format("managers==null"));
+			names = new JSONArray();
 		}
 			
 		PopulateManagers(managers, names, rp);
 		StandardParserInterpreter parser = 
 				new StandardParserInterpreter(managers,
 						Util.GetDefSettingsObject(names));
-//		managers.add((MyManager)rp);
 		parser.getHelpMessage();
 		return parser;
 	}

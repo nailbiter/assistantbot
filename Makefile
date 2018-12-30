@@ -1,4 +1,4 @@
-.PHONY: all offline pull jar add trello interactive habits users
+.PHONY: all offline pull jar add trello interactive habits users botmanager
 
 #JARSUFF=-jar-with-dependencies
 JARNAME=assistantBot-0.0.1-SNAPSHOT$(JARSUFF)
@@ -13,13 +13,16 @@ RUN=java -classpath $(subst $(BOGUS),$(shell echo ~),$(shell cat cp.txt)) $(MAIN
 PERL=perl -I ~/perl5/lib/perl5
 
 all: src/main/resources/profiles/telegram.json target/$(JARNAME).jar
-	#make -C src/main/resources/assistantBotFiles files
 	mkdir -p tmp
 	rm -rf $(REBOOTFILE)
 	$(PERL) ./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>&1 | tee log/log.telegram.txt
 include Makefile.sources
 
 #PHONY
+botmanager: src/main/resources/profiles/botmanager.json target/$(JARNAME).jar
+	mkdir -p tmp
+	rm -rf $(REBOOTFILE)
+	$(PERL) ./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>&1 | tee log/log.$@.txt
 habits:
 	make -C src/main/resources/habits
 	./src/main/pl/uploadJson.pl --file src/main/resources/habits/habits.json --colname habits

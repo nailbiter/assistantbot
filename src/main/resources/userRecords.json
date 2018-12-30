@@ -4,6 +4,20 @@
 			"MoneyManager","PerlScriptManager","HabitManager",
 			"TaskManager","TestManager","TimeManager","MiscUtilManager","ReportManager",
 			"GermanManager","GymManager","JShellManager"
+		],
+		"loginmessage":[
+			"Tesime"
+		],
+		"restartmessage":[
+			"restart message"
+		]
+	},
+	"father":{
+		"managers":[
+			"MoneyManager"
+		],
+		"loginmessage":[
+			"привет, Папа"
 		]
 	}
 }

@@ -1,0 +1,6 @@
+{
+	"name":"BotManager",
+	"scriptFolder":"src/main/js/",
+	"tmpfolder":"tmp",
+	"parserPrefix":"/"
+}

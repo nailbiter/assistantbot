@@ -95,7 +95,8 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 	}
 	abstract protected JSONObject interpret(Message msg,UserData ud) throws Exception;
 	abstract protected UserData createUserData(Long chatId); 
-	java.util.Hashtable<Long, UserData> userData = new Hashtable<Long,UserData>();
+	protected java.util.Hashtable<Long, UserData> userData = 
+			new Hashtable<Long,UserData>();
 	protected String reply(Message msg){
 		try{
 			if(!this.userData.containsKey(msg.getChatId()))
@@ -108,7 +109,6 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 	            BotLogger.error(this.getLogString(), e);
 	            e.printStackTrace(System.err);
 	            return String.format("e: %s", ExceptionUtils.getStackTrace(e));
-	            
 	    }
 	}
 	abstract protected String getResultAndFormat(JSONObject res,UserData ud) throws Exception;	

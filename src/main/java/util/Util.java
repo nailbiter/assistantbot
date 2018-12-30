@@ -61,9 +61,8 @@ public class Util{
 	public static void setProfileObj(String string) throws Exception {
 		profileObj_ = new JSONObject(string);
 		JSONArray keys = new JSONArray()
-				.put("RESFOLDER")
+//				.put("RESFOLDER")
 				.put("TMPFOLDER")
-//				.put("CMDFILE")
 				.put("TMPFILE")
 				.put("PARSERPREFIX")
 				.put("SCRIPTFOLDER")
@@ -126,21 +125,22 @@ public class Util{
 	}
 	public static String GetFileFromAssistantBotFiles(String name) throws Exception
 	{
-		FileReader fr = null;
-		String fname = getJarFolder()+name;
-		StorageManager.logger_.info(String.format("fname=%s", fname));
-		
-		fr = new FileReader(fname);
-		StringBuilder sb = new StringBuilder();
-	    int character;
-	    while ((character = fr.read()) != -1) {
-	    		sb.append((char)character);
-	    }
-	    System.out.println("found "+sb.toString());
-		fr.close();
-		String res = sb.toString();
-		StorageManager.logger_.info(String.format("res=%s", res));
-		return res;
+//		FileReader fr = null;
+//		String fname = getJarFolder()+name;
+//		StorageManager.logger_.info(String.format("fname=%s", fname));
+//		
+//		fr = new FileReader(fname);
+//		StringBuilder sb = new StringBuilder();
+//	    int character;
+//	    while ((character = fr.read()) != -1) {
+//	    		sb.append((char)character);
+//	    }
+//	    System.out.println("found "+sb.toString());
+//		fr.close();
+//		String res = sb.toString();
+//		StorageManager.logger_.info(String.format("res=%s", res));
+//		return res;
+		return null;
 	}
 	public static void SaveJSONObjectToFile(String filePath, JSONObject obj) throws IOException {
 		BufferedWriter writer = null;
