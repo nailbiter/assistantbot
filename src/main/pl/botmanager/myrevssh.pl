@@ -34,13 +34,17 @@ sub myRand{
 }
 
 #main
-my $id = myRand(10000,20000);
-my $cmd = sprintf("daemonize ssh -R %d:localhost:22 %s",$id,$REMOTE);
+if( 0 ){
+    my $id = myRand(10000,20000);
+    my $cmd = sprintf("daemonize ssh -R %d:localhost:22 %s",$id,$REMOTE);
 #`$cmd`;
-my $num1=myRand(1*$UNIT,2*$UNIT);
-my $num2=myRand(3*$UNIT,4*$UNIT);
+    my $num1=myRand(1*$UNIT,2*$UNIT);
+    my $num2=myRand(3*$UNIT,4*$UNIT);
 
 #echo `date` : $num1 : $num2 | ssh $CERTKEY $LOGIN 'cat >> ports.txt'
-$cmd = sprintf("daemonize /usr/bin/autossh -f -N -M %d -o \"PubkeyAuthentication=yes\" -o \"PasswordAuthentication=no\" %s -R %d %s -p 22 -vvv",$num1,$CERTKEY,$num2,$REMOTE);
-system($cmd);
-printf("ssh localhost -p %d\nssh localhost -p %d\n",$num1,$num2);
+    $cmd = sprintf("daemonize /usr/bin/autossh -f -N -M %d -o \"PubkeyAuthentication=yes\" -o \"PasswordAuthentication=no\" %s -R %d %s -p 22 -vvv",$num1,$CERTKEY,$num2,$REMOTE);
+    system($cmd);
+    printf("ssh localhost -p %d\nssh localhost -p %d\n",$num1,$num2);
+} else {
+    system('/home/nailbiter/myrevssh.sh')
+}
