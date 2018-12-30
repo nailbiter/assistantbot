@@ -33,9 +33,9 @@ public class MyAssistantBot extends MyBasicBot {
 			System.err.format("checking whether initialize \"%s\"\n", obj.getString("name"));
 			if(obj.has("port") && !obj.isNull("port")) {
 				System.err.format("initialize %s\n", obj.toString(2));
-				long port = obj.getLong("port");
+				long port = (long) obj.getJSONObject("port").getInt("$numberLong");
 				MyAssistantUserData ud = new MyAssistantUserData(port,this,
-						obj.getJSONArray("managers"));
+						obj.getJSONArray("managers"),obj.getString("name"));
 				userData.put(port, 
 						(UserData)ud);
 				if(obj.has("restartmessage")) {

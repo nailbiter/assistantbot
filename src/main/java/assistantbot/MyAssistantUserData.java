@@ -42,12 +42,16 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 			scheduler_.setTimeZone(Util.getTimezone());
 			managers_.add(this);
 			parser_ = StandardParserInterpreter.Create(managers_, names, this);
-			userName_ = (names==null) ? null : "alex" ;
+			userName_ = ( names == null ) ? null : "alex";
 		} catch(Exception e) {
 			e.printStackTrace(System.out);
 		}
 		if(scheduler_!=null) 
 			scheduler_.start();
+	}
+	MyAssistantUserData(Long chatID,MyAssistantBot bot, JSONArray names,String name){
+		this(chatID,bot,names);
+		userName_ = name;
 	}
 	public AbstractParser getParser() {return parser_;}
 	public void Update(JSONObject res)  {
