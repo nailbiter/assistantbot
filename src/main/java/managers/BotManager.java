@@ -1,28 +1,29 @@
 package managers;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import assistantbot.ResourceProvider;
 import util.scriptapps.PerlApp;
 
-public class PerlScriptManager extends AbstractManager {
-	private static final String CMDPREFIX = "pl";
+public class BotManager extends AbstractManager {
+	private static final String CMDPREFIX = "";
 	private static PerlApp pa_;
 	private ResourceProvider rp_;
-	public PerlScriptManager(ResourceProvider rp) throws Exception {
+
+	public BotManager(ResourceProvider rp) throws JSONException, Exception {
 		super((pa_ = new PerlApp(GetParamObj(rp).getString("SCRIPTDIR"),
 				GetParamObj(rp).getString("INTERPRETER")))
 				.getCommandsObj(CMDPREFIX));
 		rp_ = rp;
 	}
-
 	@Override
 	public String processReply(int messageID, String msg) {
 		return null;
 	}
 	protected static JSONObject GetParamObj(ResourceProvider rp) throws JSONException, Exception {
-		return AbstractManager.GetParamObject(rp.getMongoClient(), PerlScriptManager.class.getName());
+		return AbstractManager.GetParamObject(rp.getMongoClient(), BotManager.class.getName());
 	}
 	@Override
 	public String getResultAndFormat(JSONObject res) throws Exception {

@@ -38,7 +38,8 @@ import util.JsonUtil;
 import util.KeyRing;
 import util.MongoUtil;
 import util.ParseCommentLine;
-import util.ScriptApp;
+import util.scriptapps.JsApp;
+import util.scriptapps.ScriptApp;
 import util.scripthelpers.ScriptHelperArray;
 import util.scripthelpers.ScriptHelperLogger;
 import util.scripthelpers.ScriptHelperMisc;
@@ -74,7 +75,7 @@ public class TaskManagerBase extends AbstractManager {
 		rp_ = rp;
 		mc_ = rp.getMongoClient();
 		varkeeper_ = new ScriptHelperVarkeeper();
-		sa_ = new ScriptApp(getParamObject(mc_).getString("scriptFolder"), 
+		sa_ = new JsApp(getParamObject(mc_).getString("scriptFolder"), 
 				new ScriptHelperArray()
 					.add(new ScriptHelperLogger())
 					.add(new ScriptHelperMisc())
@@ -104,8 +105,7 @@ public class TaskManagerBase extends AbstractManager {
 									Integer.parseInt(sa.runCommand(String.format("%s %s %s", "inbox",o1.getString("id"),o2.getString("id"))));
 							System.err.format("comparing \"%s\" and \"%s\" gave %d\n", o1.getString("name"),o2.getString("name"),res);
 							return res;
-						} catch (NumberFormatException | FileNotFoundException | NoSuchMethodException
-								| ScriptException e) {
+						} catch (Exception e) {
 							e.printStackTrace();
 							return 0;
 						}
@@ -117,8 +117,7 @@ public class TaskManagerBase extends AbstractManager {
 					public int compare(JSONObject o1, JSONObject o2) {
 						try {
 							return Integer.parseInt(sa.runCommand(String.format("%s %s %s", "snoozed",o1.getString("id"),o2.getString("id"))));
-						} catch (NumberFormatException | FileNotFoundException | NoSuchMethodException
-								| ScriptException e) {
+						} catch (Exception e) {
 							e.printStackTrace();
 							return 0;
 						}

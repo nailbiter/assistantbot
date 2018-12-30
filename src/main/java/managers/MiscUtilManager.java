@@ -13,6 +13,7 @@ import javax.script.Invocable;
 import javax.script.ScriptException;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.github.nailbiter.util.TrelloAssistant;
@@ -23,10 +24,11 @@ import managers.misc.NoteMaker;
 import managers.misc.RandomSetGenerator;
 import util.JsonUtil;
 import util.KeyRing;
-import util.ScriptApp;
 import util.Util;
 import util.parsers.ParseOrdered;
 import util.parsers.ParseOrdered.ArgTypes;
+import util.scriptapps.JsApp;
+import util.scriptapps.ScriptApp;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
 import util.scripthelpers.ScriptHelper;
@@ -43,7 +45,6 @@ public class MiscUtilManager extends AbstractManager {
 	String tasklist_ = null;
 	private MongoClient mc_;
 	private static final String TASKLISTNAME = "todo";
-//	private static final String DISTRICOLLECTIONBNAME = "randsetdistrib";
 	NoteMaker nm_ = null;
 	private ResourceProvider rp_;
 	private ScriptApp sa_;
@@ -60,7 +61,7 @@ public class MiscUtilManager extends AbstractManager {
 		mc_ = rp.getMongoClient();
 		nm_ = new NoteMaker(mc_);
 		rp_ = rp;
-		sa_ = new ScriptApp(Util.getScriptFolder()+"gendistrib",null, 
+		sa_ = new JsApp(Util.getScriptFolder()+"gendistrib",null, 
 				new ScriptHelper() {
 					@Override
 					public String execute(String arg) throws Exception {
@@ -100,7 +101,7 @@ public class MiscUtilManager extends AbstractManager {
 	public String processReply(int messageID, String msg) {
 		return null;
 	}
-	public String randset(JSONObject obj) throws FileNotFoundException, NoSuchMethodException, ScriptException {
+	public String randset(JSONObject obj) throws JSONException, Exception {
 		final ArrayList<JSONObject> data = new ArrayList<JSONObject>();
 		JSONArray distrib = new JSONArray(sa_.runCommand("updatedistrib"));
 		for(Object o:distrib)

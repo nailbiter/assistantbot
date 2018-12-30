@@ -3,5 +3,6 @@
 	"scriptFolder":"src/main/js/",
 	"tmpfolder":"tmp",
 	"parserPrefix":"/",
-	"managers":["MiscUtilManager","BotManager"]
+	"managers":["MiscUtilManager","BotManager",
+		"PerlScriptManager"]
 }

@@ -1,4 +1,4 @@
-package util;
+package util.scriptapps;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,7 +12,7 @@ import javax.script.ScriptException;
 
 import util.scripthelpers.ScriptHelper;
 
-public class ScriptApp {
+public class JsApp implements ScriptApp {
 	private String scriptFolder_;
 	private ScriptEngineManager factory;
 	private static final String SCRIPTHELPERVARNAME = "ScriptHelper";
@@ -20,10 +20,10 @@ public class ScriptApp {
 	private String includeFolderName_;
 	private ScriptHelper sh_;
 
-	public ScriptApp(String scriptFolder, ScriptHelper sh) {
+	public JsApp(String scriptFolder, ScriptHelper sh) {
 		this(scriptFolder,"common",sh);
 	}
-	public ScriptApp(String scriptFolder, String includeFolderName,ScriptHelper sh) {
+	public JsApp(String scriptFolder, String includeFolderName,ScriptHelper sh) {
 		sh_ = sh;
 		includeFolderName_ = includeFolderName;
 		
@@ -35,6 +35,10 @@ public class ScriptApp {
 		System.err.format("commands: %s\n", getCommands().toString());
         factory = new ScriptEngineManager();
 	}
+	/* (non-Javadoc)
+	 * @see util.scriptapps.ScriptApp#getCommands()
+	 */
+	@Override
 	public ArrayList<String> getCommands(){
 		ArrayList<String> commands = new ArrayList<String>();
 		PopulateCommands(commands,scriptFolder_);
@@ -55,6 +59,10 @@ public class ScriptApp {
 		  }
 		}
 	}
+	/* (non-Javadoc)
+	 * @see util.scriptapps.ScriptApp#runCommand(java.lang.String)
+	 */
+	@Override
 	public String runCommand(String line) throws FileNotFoundException, ScriptException, NoSuchMethodException {
     	String[] split = line.split(" ",2);
     	String path = scriptFolder_ + split[0]+SCRIPTEXTENSION;

@@ -15,9 +15,10 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.model.Sorts;
 
 import assistantbot.ResourceProvider;
-import util.ScriptApp;
 import util.Util;
 import util.parsers.ParseOrdered.ArgTypes;
+import util.scriptapps.JsApp;
+import util.scriptapps.ScriptApp;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
 import util.scripthelpers.ScriptHelperVarkeeper;
@@ -39,7 +40,7 @@ public class GymManager extends AbstractManager {
 		logger_ = Logger.getLogger(this.getClass().getName());
 		rp_ = rp;
 		vh_ = new ScriptHelperVarkeeper();
-		sa_ = new ScriptApp(Util.getScriptFolder()+FOLDERNAME, vh_);
+		sa_ = new JsApp(Util.getScriptFolder()+FOLDERNAME, vh_);
 	}
 	public static JSONArray GetCommands() {
 		return new JSONArray()

@@ -12,9 +12,10 @@ import managers.misc.MashaRemind;
 import util.JsonUtil;
 import util.KeyRing;
 import util.MongoUtil;
-import util.ScriptApp;
 import util.Util;
 import util.parsers.ParseOrdered;
+import util.scriptapps.JsApp;
+import util.scriptapps.ScriptApp;
 import util.scripthelpers.ScriptHelperImpl;
 
 import static java.util.Arrays.asList;
@@ -33,7 +34,7 @@ public class ReportManager extends AbstractManager {
 				KeyRing.getTrello().getString("token"));
 		rp_ = rp;
 		sih_ = new ScriptHelperImpl(rp);
-		sa_ = new ScriptApp(Util.getScriptFolder()+FOLDERNAME, sih_);
+		sa_ = new JsApp(Util.getScriptFolder()+FOLDERNAME, sih_);
 	}
 	public static JSONArray GetCommands() {
 		return new JSONArray()
