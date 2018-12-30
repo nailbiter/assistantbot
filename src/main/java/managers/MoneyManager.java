@@ -60,7 +60,7 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 	public String money(JSONObject obj) throws ParseException, JSONException, ScriptException, AssistantBotException
 	{
 		if( !obj.has("amount") ) {
-			return ShowTags(money);
+			return ShowTags(money,rp_);
 		}
 		
 		try {
@@ -97,10 +97,10 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 			return putMoney(obj,category);
 		}
 	}
-	private static String ShowTags(MongoCollection<Document> money) {
+	private static String ShowTags(MongoCollection<Document> money, ResourceProvider rp) {
 		final StringBuilder sb = new StringBuilder("tags: \n");
 		final HashSet<String> set = new HashSet<String> ();
-		money.find().forEach(new Block<Document>() {
+		money.find(new Document(USERNAME,rp.getUserName())).forEach(new Block<Document>() {
 			@Override
 			public void apply(Document arg0) {
 				JSONArray arr;
