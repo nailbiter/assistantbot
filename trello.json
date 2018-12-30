@@ -1,33 +1,33 @@
 {
-   "dependencies" : [
-      "src/main/java/com/github/nailbiter/util/"
-   ],
+   "cardurl" : "dad_task",
    "urlnames" : {
-      "replace_gym_with_js" : "https://trello.com/c/TnjMxInQ",
       "check_exclamation" : "https://trello.com/c/I2UZf4ds",
-      "parser" : "https://trello.com/c/hkuY0OBL",
-      "indicator" : "https://trello.com/c/FMIlCbXE",
-      "donep" : "https://trello.com/c/4rTjnXHm",
-      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
-      "plus_snooze" : "https://trello.com/c/zBFzhL2R",
+      "plbuild_pull_jar" : "https://trello.com/c/QfGjg1UR",
       "print_only_taskdone_stat" : "https://trello.com/c/XrVeN6rK",
       "done_tast_limit" : "https://trello.com/c/fy6l2nbZ",
-      "write_gymdone_num" : "https://trello.com/c/pvXRhy3L",
-      "dad_task" : "https://trello.com/c/l4X6a80c",
-      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
-      "sort order" : "https://trello.com/c/ofzAma1H",
-      "distrib_gen_js" : "https://trello.com/c/3R83mhwS",
-      "remove_costs" : "https://trello.com/c/PmEunKmi",
-      "json table" : "https://trello.com/c/gfyEEt3o",
       "auto_check_mult_main_labels" : "https://trello.com/c/cexmj2vA",
-      "limit_to_40" : "https://trello.com/c/fkFYN06v",
-      "plbuild_pull_jar" : "https://trello.com/c/QfGjg1UR",
+      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
       "add_run" : "https://trello.com/c/HsN2IoqH",
+      "distrib_gen_js" : "https://trello.com/c/3R83mhwS",
+      "limit_to_40" : "https://trello.com/c/fkFYN06v",
+      "sort order" : "https://trello.com/c/ofzAma1H",
+      "indicator" : "https://trello.com/c/FMIlCbXE",
+      "json table" : "https://trello.com/c/gfyEEt3o",
+      "parser" : "https://trello.com/c/hkuY0OBL",
       "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
-      "label_in_task" : "https://trello.com/c/tqUrbAOy"
+      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
+      "dad_task" : "https://trello.com/c/l4X6a80c",
+      "write_gymdone_num" : "https://trello.com/c/pvXRhy3L",
+      "plus_snooze" : "https://trello.com/c/zBFzhL2R",
+      "remove_costs" : "https://trello.com/c/PmEunKmi",
+      "replace_gym_with_js" : "https://trello.com/c/TnjMxInQ",
+      "label_in_task" : "https://trello.com/c/tqUrbAOy",
+      "donep" : "https://trello.com/c/4rTjnXHm"
    },
-   "cardurl" : "dad_task",
    "pulledData" : {
       "trelloTitle" : "я в течении пары дней его подготовлю и тебе отправлю"
-   }
+   },
+   "dependencies" : [
+      "src/main/java/com/github/nailbiter/util/"
+   ]
 }

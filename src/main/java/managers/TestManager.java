@@ -50,7 +50,8 @@ public class TestManager extends AbstractManager implements OptionReplier {
 		logger_ = Logger.getLogger(this.getClass().getName());
 		timer_ = new Timer();
 		AddTests(testContainer_,rp_.getMongoClient());
-		testScores_ = rp_.getMongoClient().getDatabase("logistics").getCollection("scoresOfTests");
+		testScores_ = rp_.getMongoClient().getDatabase(rp.getDbName())
+				.getCollection("scoresOfTests");
 	}
 	private static void AddTests(ArrayList<JsonTest> testContainer, MongoClient mongoClient) throws Exception {
 		testContainer.clear();

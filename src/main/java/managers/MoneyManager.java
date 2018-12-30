@@ -42,19 +42,19 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 	MongoCollection<Document> money;
 	Hashtable<Integer,JSONObject> pendingOperations = new Hashtable<Integer,JSONObject>();
 	
-	public MoneyManager(ResourceProvider myAssistantUserData) throws Exception
+	public MoneyManager(ResourceProvider rp) throws Exception
 	{
 		super(GetCommands());
-		MongoClient mongoClient = myAssistantUserData.getMongoClient();
-		mongoClient.getDatabase("logistics").getCollection("moneycats").find()
+		MongoClient mongoClient = rp.getMongoClient();
+		mongoClient.getDatabase(rp.getDbName()).getCollection("moneycats").find()
 			.forEach(new Block<Document>() {
 		       @Override
 		       public void apply(final Document doc) {
 		    	   cats.add(new JSONObject(doc.toJson()).getString("name"));
 		       }
 			});
-		money = mongoClient.getDatabase("logistics").getCollection("money");
-		ud_ = myAssistantUserData;
+		money = mongoClient.getDatabase(rp.getDbName()).getCollection("money");
+		ud_ = rp;
 	}
 	public String money(JSONObject obj) throws ParseException, JSONException, ScriptException, AssistantBotException
 	{

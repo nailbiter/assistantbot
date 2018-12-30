@@ -60,13 +60,13 @@ public class ReportManager extends AbstractManager {
 	}
 	public String reportshow(JSONObject obj) throws Exception {
 		if(obj.has("type")) {
-			JSONObject oo = MongoUtil.GetJsonObjectFromDatabase(mc_, "logistics.reportDescriptions", new JSONObject().put("type", obj.getInt("type")));
+			JSONObject oo = MongoUtil.GetJsonObjectFromDatabase(mc_, rp_.getDbName()+".reportDescriptions", new JSONObject().put("type", obj.getInt("type")));
 			return (String)this.getClass().getMethod(oo.getString("callback"),JSONObject.class)
 					.invoke(this,oo);
 		} else {
 			TableBuilder tb = new TableBuilder();
 			tb.addNewlineAndTokens("type", "description");
-			JSONArray reports = MongoUtil.GetJSONArrayFromDatabase(mc_, "logistics", "reportDescriptions");
+			JSONArray reports = MongoUtil.GetJSONArrayFromDatabase(mc_, rp_.getDbName(), "reportDescriptions");
 			for(Object o:reports) {
 				JSONObject oo = (JSONObject)o;
 				tb.newRow();

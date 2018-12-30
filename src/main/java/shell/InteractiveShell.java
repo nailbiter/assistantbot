@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import com.github.nailbiter.util.TableBuilder;
 import com.mongodb.MongoClient;
 
+import assistantbot.MyAssistantUserData;
 import assistantbot.ResourceProvider;
 import managers.MyManager;
 import util.KeyRing;
@@ -157,5 +158,9 @@ public class InteractiveShell implements ResourceProvider,MyManager {
 				return parser_.getHelpMessage();
 		}
 		throw new Exception(String.format("for res=%s", res.toString()));
+	}
+	@Override
+	public String getDbName() {
+		return MyAssistantUserData.LOGISTICS;
 	}
 }

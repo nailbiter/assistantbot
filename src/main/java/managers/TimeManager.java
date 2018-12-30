@@ -54,8 +54,8 @@ public class TimeManager extends AbstractManager implements Runnable, OptionRepl
 		super(GetCommands());
 		MongoClient mc = rp.getMongoClient();
 		rp_ = rp;
-		time_ = mc.getDatabase("logistics").getCollection("time");
-		categories_ = MongoUtil.GetJSONArrayFromDatabase(mc, "logistics", "timecats");
+		time_ = mc.getDatabase(rp.getDbName()).getCollection("time");
+		categories_ = MongoUtil.GetJSONArrayFromDatabase(mc, rp.getDbName(), "timecats");
 		for( int i = 0; i < categories_.length(); i++ ) {
 			if( !categories_.getJSONObject(i).optBoolean("isTimeCat",true) ) {
 				categories_.remove(i);
@@ -67,7 +67,7 @@ public class TimeManager extends AbstractManager implements Runnable, OptionRepl
 			System.err.println("\t"+categories_.getJSONObject(i).getString("name"));
 		}
 		rp.getScheduler().schedule(String.format("*/%d * * * *",DELAYMIN), this);
-		sleepingTimes_ = mc.getDatabase("logistics").getCollection("sleepingtimes");
+		sleepingTimes_ = mc.getDatabase(rp.getDbName()).getCollection("sleepingtimes");
 	}
 	public String timestat(JSONObject res) {
 		int num = res.optInt("num",48);

@@ -9,6 +9,8 @@ import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 
+import assistantbot.MyAssistantUserData;
+
 public class UrlTest extends JsonTest {
 	public UrlTest(JSONObject obj) {
 		obj_ = obj;
@@ -17,7 +19,7 @@ public class UrlTest extends JsonTest {
 	public static void AddTests(final ArrayList<JsonTest> testContainer, MongoClient mongoClient) throws Exception
 	{
 		MongoCollection<Document> tests = 
-				mongoClient.getDatabase("logistics").getCollection("urlTests");
+				mongoClient.getDatabase(MyAssistantUserData.LOGISTICS).getCollection("urlTests");
 		tests.find().forEach(new Block<Document>() {
 			@Override
 			public void apply(Document arg0) {

@@ -13,6 +13,7 @@ import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 
+import assistantbot.MyAssistantUserData;
 import managers.MyManager;
 import managers.Replier;
 import managers.TestManager;
@@ -107,7 +108,7 @@ public class ParadigmTest extends JsonTest{
 	}
 	public static void AddTests(final ArrayList<JsonTest> testContainer, MongoClient mongoClient) throws Exception
 	{
-		MongoCollection<Document> tests = mongoClient.getDatabase("logistics").getCollection("paradigmTests");
+		MongoCollection<Document> tests = mongoClient.getDatabase(MyAssistantUserData.LOGISTICS).getCollection("paradigmTests");
 		tests.find().forEach(new Block<Document>() {
 			@Override
 			public void apply(Document arg0) {
@@ -126,11 +127,6 @@ public class ParadigmTest extends JsonTest{
 				obj_.getString("name"),toTable().toString())};
 	}
 	private TableBuilder toTable() {
-//		private String verify(String reply,JSONArray answer,JSONArray row, JSONArray col)
-//		return this.verify(reply,
-//				obj_.getJSONArray("data"),
-//				obj_.getJSONArray("topMostRow"),
-//				obj_.getJSONArray("leftMostColumn"));
 		JSONArray col = new JSONArray(obj_.getJSONArray("leftMostColumn").toString());
 		for(int i = col.length()-1; i>=0;i--)
 			col.put(i+1,col.getString(i));
@@ -139,24 +135,15 @@ public class ParadigmTest extends JsonTest{
 		int colNum = row.length(),
 				rowNum = col.length() - 1;
 		logger_.info(String.format("colnum=%d, rownum=%d", colNum,rowNum));
-//		boolean isCorrect = true;
 		TableBuilder tb = new TableBuilder();
-//		String[] tokens = reply.split(" ");
 		for(int i = 0; i < rowNum ; i++)
 		{
 			tb.newRow();
 			for(int j = 0; j < colNum; j++)
 			{
-//				String answerS = answer.getString(rowNum*j+i),
-//						correct = tokens[rowNum*j+i];
-//				boolean isThisCorrect = answerS.equalsIgnoreCase(correct);
-//				if(isThisCorrect)
-//					numOfCorrectAnswers++;
-//				isCorrect = isCorrect && isThisCorrect;
 				tb.addToken("*");
 			}
 		}
-//		logger_.info(String.format("tb=\n%s", tb.toString()));
 		
 		tb
 			.addRow(row, 0)

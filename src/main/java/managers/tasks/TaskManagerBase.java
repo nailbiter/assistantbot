@@ -29,6 +29,7 @@ import com.github.nailbiter.util.TableBuilder;
 import com.github.nailbiter.util.TrelloAssistant;
 import com.mongodb.Block;
 import com.mongodb.MongoClient;
+import com.mongodb.client.MongoDatabase;
 
 import assistantbot.ResourceProvider;
 import managers.AbstractManager;
@@ -81,10 +82,10 @@ public class TaskManagerBase extends AbstractManager {
 					.add(new ScriptHelperMisc())
 					.add(varkeeper_));
 		FillTable(comparators_,ta_,sa_);
-		FillRecognizedCats(recognizedCatNames_,mc_,varkeeper_,cats_);
+		FillRecognizedCats(recognizedCatNames_,mc_.getDatabase(rp.getDbName()),varkeeper_,cats_);
 	}
-	private static void FillRecognizedCats(final ArrayList<String> recognizedCats,MongoClient mc, ScriptHelperVarkeeper varkeeper, final JSONArray cats){
-		mc.getDatabase("logistics").getCollection("timecats").find().forEach(new Block<Document>() {
+	private static void FillRecognizedCats(final ArrayList<String> recognizedCats,MongoDatabase mongoDatabase, ScriptHelperVarkeeper varkeeper, final JSONArray cats){
+		mongoDatabase.getCollection("timecats").find().forEach(new Block<Document>() {
 			@Override
 			public void apply(Document arg0) {
 				recognizedCats.add(arg0.getString("name"));
@@ -232,10 +233,10 @@ public class TaskManagerBase extends AbstractManager {
 		}
 		return res;
 	}
-	protected static String PrintSnoozed(TrelloAssistant ta, MongoClient mc, String listid, JSONObject po, Logger logger) throws Exception {
+	protected static String PrintSnoozed(TrelloAssistant ta, MongoClient mc, String listid, JSONObject po, Logger logger, String dbname) throws Exception {
 		JSONArray tasks = ta.getCardsInList(listid);
 		JSONArray reminders = 
-				MongoUtil.GetJSONArrayFromDatabase(mc, "logistics", POSTPONEDTASKS);
+				MongoUtil.GetJSONArrayFromDatabase(mc, dbname, POSTPONEDTASKS);
 		
 		Date now = new Date();
 		ArrayList<JSONObject> res = new ArrayList<JSONObject>();
@@ -291,7 +292,7 @@ public class TaskManagerBase extends AbstractManager {
 	}
 	protected static HashMap<String, Integer> GetDoneTasksStat(TrelloAssistant ta, MongoClient mc,
 			HashMap<String, ImmutableTriple<Comparator<JSONObject>, String, Integer>> c,
-			final ArrayList<String> recognizedCats, final ArrayList<AssistantBotException> exs) throws Exception {
+			final ArrayList<String> recognizedCats, final ArrayList<AssistantBotException> exs, String dbname) throws Exception {
 		final JSONArray alltasks = ta.getAllCardsInList(c.get(INBOX).middle);
 		System.err.format("alltasks has %d cards\n", alltasks.length());
 		
@@ -304,7 +305,7 @@ public class TaskManagerBase extends AbstractManager {
 		System.err.format("date: %s\n", d.toString());
 		
 		final HashMap<String,Integer> stat = new HashMap<String,Integer>();
-		mc.getDatabase("logistics").getCollection("taskLog")
+		mc.getDatabase(dbname).getCollection("taskLog")
 		.find(and(eq("message","taskdone"),gte("date",d)))
 		.forEach(new Block<Document>() {
 					@Override
@@ -357,7 +358,7 @@ public class TaskManagerBase extends AbstractManager {
 			
 	}
 	protected void saveSnoozeToDb(JSONObject card, Date date) {
-		mc_.getDatabase("logistics").getCollection(POSTPONEDTASKS)
+		mc_.getDatabase(rp_.getDbName()).getCollection(POSTPONEDTASKS)
 		.insertOne(Document.parse(new JSONObject()
 				.put("date", date)
 				.put("shortUrl", card.getString("shortUrl"))
@@ -365,7 +366,7 @@ public class TaskManagerBase extends AbstractManager {
 	}
 
 	protected void logToDb(String msg, JSONObject obj) {
-		mc_.getDatabase("logistics").getCollection("taskLog")
+		mc_.getDatabase(rp_.getDbName()).getCollection("taskLog")
 		.insertOne(new Document("date",new Date())
 					.append("message",msg)
 					.append("obj",Document.parse(obj.toString())));

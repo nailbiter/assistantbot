@@ -38,12 +38,12 @@ import static managers.habits.Constants.SEPARATOR;
 public class TaskManager extends TaskManagerBase implements Closure<JSONObject> {
 	public TaskManager(ResourceProvider rp) throws Exception {
 		super(GetCommands(),rp);
-		setUpReminders();
+		setUpReminders(rp);
 	}
-	private void setUpReminders() throws Exception {
+	private void setUpReminders(ResourceProvider rp) throws Exception {
 		JSONArray cards = ta_.getCardsInList(comparators_.get(SNOOZED).middle);
 		JSONArray reminders = 
-				MongoUtil.GetJSONArrayFromDatabase(mc_, "logistics", POSTPONEDTASKS);
+				MongoUtil.GetJSONArrayFromDatabase(mc_, rp.getDbName(), POSTPONEDTASKS);
 		for(Object o:reminders) {
 			JSONObject obj = (JSONObject)o;
 			System.err.format("set up %s\n", obj.toString(2));
@@ -98,7 +98,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		ArrayList<AssistantBotException> exs = 
 				new ArrayList<AssistantBotException>();
 		HashMap<String,Integer> stat = 
-				GetDoneTasksStat(ta_,mc_,comparators_,recognizedCatNames_,exs);
+				GetDoneTasksStat(ta_,mc_,comparators_,recognizedCatNames_,exs,rp_.getDbName());
 		
 		if( !obj.has("num") ) {
 			return PrintDoneTasks(stat,exs);
@@ -121,7 +121,12 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 	}
 	public String taskmodify(JSONObject obj) throws JSONException, Exception {
 		if( !obj.has("num") )
-			return PrintSnoozed(ta_,mc_,comparators_.get(SNOOZED).middle,getParamObject(mc_),logger_);
+			return PrintSnoozed(ta_
+					,mc_
+					,comparators_.get(SNOOZED).middle
+					,getParamObject(mc_)
+					,logger_
+					,rp_.getDbName());
 		
 		JSONObject card = getTask(obj.getInt("num"));
 		

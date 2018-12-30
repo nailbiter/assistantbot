@@ -33,6 +33,8 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 	private Logger logger_;
 	private List<MyManager> managers_ = new ArrayList<MyManager>();
 	private String userName_ = null;
+	private static final String DEFAULTUSERNAME = "alex";
+	public static final String LOGISTICS = "logistics";
 	MyAssistantUserData(Long chatID,MyAssistantBot bot, JSONArray names){
 		try {
 			chatID_ = chatID;
@@ -42,7 +44,7 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 			scheduler_.setTimeZone(Util.getTimezone());
 			managers_.add(this);
 			parser_ = StandardParserInterpreter.Create(managers_, names, this);
-			userName_ = ( names == null ) ? null : "alex";
+			userName_ = ( names == null ) ? null : DEFAULTUSERNAME;
 		} catch(Exception e) {
 			e.printStackTrace(System.out);
 		}
@@ -177,7 +179,7 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 		Document userDoc = new Document("name",username);
 		userDoc.put("pass", password);
 		MongoCollection<Document> coll = bot_.getMongoClient()
-				.getDatabase("logistics").getCollection("users");
+				.getDatabase(LOGISTICS).getCollection("users");
 		Document doc = coll.find(userDoc).first();
 		if( doc == null ) {
 			return String.format("cannot log in \"%s\" (wrong username or password)", 
@@ -202,7 +204,7 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 			return String.format("not logged in");
 		}
 		MongoCollection<Document> coll = bot_.getMongoClient()
-				.getDatabase("logistics").getCollection("users");
+				.getDatabase(LOGISTICS).getCollection("users");
 		
 		coll.findOneAndUpdate(new Document("name", userName_),Updates.unset("port"));
 		managers_.clear();
@@ -212,5 +214,12 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 		userName_ = null;
 		
 		return res;
+	}
+	@Override
+	public String getDbName() {
+		if( userName_.equals(DEFAULTUSERNAME) )
+			return "logistics";
+		else
+			return userName_;
 	}
 }
