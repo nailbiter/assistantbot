@@ -70,6 +70,9 @@ public class ParseCommentLine {
 		HashMap<String, Object> res = new HashMap<String,Object>();
 		
 		SortHandlers(handlers_);
+		for(ImmutableTriple<String, String, TOKENTYPE> h:handlers_)
+			if(h.right==TOKENTYPE.STRING)
+				res.put(h.left, new HashSet<String>());
 		
 		for( String[] split = SplitInTwo(line,SPLITPAT,m_) ;  ; line = split[1], split = SplitInTwo(line,SPLITPAT,m_) ) {
 			System.err.format("starting new iteration with line=\"%s\"\n", line);
@@ -102,8 +105,8 @@ public class ParseCommentLine {
 	}
 	private static void Handle(ImmutableTriple<String, String, TOKENTYPE> h, String token, HashMap<String, Object> res) throws AssistantBotException {
 		if( h.right == TOKENTYPE.STRING ) {
-			if( !res.containsKey(h.left) )
-				res.put(h.left, new HashSet<String>());
+//			if( !res.containsKey(h.left) )
+//				res.put(h.left, new HashSet<String>());
 			((HashSet<String>)res.get(h.left))
 				.add(token.substring(h.middle.length()));
 		} else if( h.right == TOKENTYPE.DATE) {
