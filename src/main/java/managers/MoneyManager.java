@@ -1,10 +1,8 @@
 package managers;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,11 +10,8 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import org.apache.commons.lang3.StringUtils;
 import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,6 +20,7 @@ import org.json.JSONObject;
 import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 
 import assistantbot.ResourceProvider;
@@ -32,7 +28,6 @@ import util.AssistantBotException;
 import util.ParseCommentLine;
 import util.Util;
 import util.parsers.ParseOrdered;
-import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
 
@@ -47,7 +42,7 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 	{
 		super(GetCommands());
 		MongoClient mongoClient = rp.getMongoClient();
-		mongoClient.getDatabase(rp.getDbName()).getCollection("moneycats").find()
+		mongoClient.getDatabase(rp.getDbName()).getCollection("moneycats").find(Filters.eq(USERNAME,rp.getUserName()))
 			.forEach(new Block<Document>() {
 		       @Override
 		       public void apply(final Document doc) {
@@ -100,7 +95,7 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 	private static String ShowTags(MongoCollection<Document> money, ResourceProvider rp) {
 		final StringBuilder sb = new StringBuilder("tags: \n");
 		final HashSet<String> set = new HashSet<String> ();
-		money.find(new Document(USERNAME,rp.getUserName())).forEach(new Block<Document>() {
+		money.find(Filters.eq(USERNAME,rp.getUserName())).forEach(new Block<Document>() {
 			@Override
 			public void apply(Document arg0) {
 				JSONArray arr;
@@ -147,7 +142,7 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		final com.github.nailbiter.util.TableBuilder tb1 = new com.github.nailbiter.util.TableBuilder();
 		
 		final JSONObject container = new JSONObject().put("i", 1);
-		money.find(new Document(USERNAME,rp_.getUserName())).sort(Sorts.descending("date")).limit(howMuch).forEach(new Block<Document>() {
+		money.find(Filters.eq(USERNAME,rp_.getUserName())).sort(Sorts.descending("date")).limit(howMuch).forEach(new Block<Document>() {
 		       @Override
 		       public void apply(final Document doc) {
 		    	   	JSONObject obj = new JSONObject(doc.toJson());
