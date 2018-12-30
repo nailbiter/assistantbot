@@ -72,7 +72,7 @@ public class StandardParserInterpreter implements AbstractParser{
 			}
 		});
 		StringBuilder res = new StringBuilder();
-		res.append("\tthe following commands are known:\n");
+//		res.append("\tthe following commands are known:\n");
 		for(String key:keys)
 			res.append(String.format("%s - %s\n", key,cmds.getString(key)));
 		return res.toString();

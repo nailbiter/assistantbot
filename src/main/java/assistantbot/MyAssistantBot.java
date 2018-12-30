@@ -20,7 +20,8 @@ public class MyAssistantBot extends MyBasicBot {
 			util.StorageManager.init();
 			mongoClient_ = MongoUtil.GetMongoClient(profileObj.getString("PASSWORD"));
 			KeyRing.init(getBotUsername(),mongoClient_);
-			initializeUserRecords();
+			if( !profileObj.has("MANAGERS") )
+				initializeUserRecords();
 		} catch(Exception e) {
 			e.printStackTrace(System.out);
 		}
