@@ -37,8 +37,9 @@ import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
 
 public class MoneyManager extends AbstractManager implements OptionReplier{
+	private static final String USERNAME = "username";
 	HashSet<String> cats = new HashSet<String>();
-	ResourceProvider ud_ = null;
+	ResourceProvider rp_ = null;
 	MongoCollection<Document> money;
 	Hashtable<Integer,JSONObject> pendingOperations = new Hashtable<Integer,JSONObject>();
 	
@@ -54,7 +55,7 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		       }
 			});
 		money = mongoClient.getDatabase(rp.getDbName()).getCollection("money");
-		ud_ = rp;
+		rp_ = rp;
 	}
 	public String money(JSONObject obj) throws ParseException, JSONException, ScriptException, AssistantBotException
 	{
@@ -85,16 +86,11 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		for(String tag:tags)
 			if(cats.contains(tag))
 				category = tag;
-//		HashSet<String> prefixedCats = new HashSet<String>();
-//		for(String cat:cats)
-//			prefixedCats.add(ParseCommentLine.getTagspref()+cat);
 		tags.removeAll(cats);
-//		System.err.format("prefixedCats=%s\ntags=%s\n", 
-//				prefixedCats.toString(),tags.toString());
 		obj.put("tags", new JSONArray(tags));
 		
 		if( category == null ) {
-			int msgid = ud_.sendMessageWithKeyBoard("which category?", new JSONArray(cats));
+			int msgid = rp_.sendMessageWithKeyBoard("which category?", new JSONArray(cats));
 			this.pendingOperations.put(msgid, obj);
 			return String.format("prepare to put %s",obj.toString());
 		} else {
@@ -134,13 +130,13 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		else
 			res.put("date", new Date());
 		res.put("comment", obj.getString("comment"));
+		res.put(USERNAME, rp_.getUserName());
 		res.put("tags", obj.getJSONArray("tags"));
 		money.insertOne(res);
 		return String.format("put %s in category %s",
 					obj.toString(),categoryName);
 	}
 	private String costs(int howMuch) {
-//		int howMuch = obj.getInt("num");
 		final com.github.nailbiter.util.TableBuilder tb = new com.github.nailbiter.util.TableBuilder();
 		tb.newRow();
 		tb.addToken("#");
@@ -151,7 +147,7 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		final com.github.nailbiter.util.TableBuilder tb1 = new com.github.nailbiter.util.TableBuilder();
 		
 		final JSONObject container = new JSONObject().put("i", 1);
-		money.find().sort(Sorts.descending("date")).limit(howMuch).forEach(new Block<Document>() {
+		money.find(new Document(USERNAME,rp_.getUserName())).sort(Sorts.descending("date")).limit(howMuch).forEach(new Block<Document>() {
 		       @Override
 		       public void apply(final Document doc) {
 		    	   	JSONObject obj = new JSONObject(doc.toJson());
@@ -185,8 +181,6 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 	}
 	public static JSONArray GetCommands() throws Exception {
 		JSONArray res = new JSONArray()
-//				.put(new ParseOrderedCmd("costs","show last NUM costs",
-//						Arrays.asList((JSONObject) new ParseOrderedArg("num", ArgTypes.integer).makeOpt().useDefault(5))))
 				.put(new ParseOrderedCmd("money", "spent money",
 						Arrays.asList((JSONObject)new ParseOrderedArg("amount",ParseOrdered.ArgTypes.string).makeOpt(),
 								(JSONObject)new ParseOrderedArg("comment", ParseOrdered.ArgTypes.remainder).makeOpt())))

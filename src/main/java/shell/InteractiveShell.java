@@ -32,6 +32,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import static util.parsers.StandardParserInterpreter.Create;
 
 public class InteractiveShell implements ResourceProvider,MyManager {
+	private static final String ALEX = "alex";
 	private static String PROMPT = "assistantbot> ";
 	private String fileToOutputTo_;
 	private StandardParserInterpreter parser_;
@@ -162,5 +163,10 @@ public class InteractiveShell implements ResourceProvider,MyManager {
 	@Override
 	public String getDbName() {
 		return MyAssistantUserData.LOGISTICS;
+	}
+	@Override
+	public String getUserName() {
+		//FIXME: parametrize
+		return ALEX;
 	}
 }

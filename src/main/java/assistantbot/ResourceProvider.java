@@ -36,4 +36,5 @@ public interface ResourceProvider {
 	 */
 	public abstract long getChatId();
 	public abstract String getDbName();
+	public abstract String getUserName();
 }

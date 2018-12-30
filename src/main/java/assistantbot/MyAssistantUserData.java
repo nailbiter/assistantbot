@@ -222,9 +222,10 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 	}
 	@Override
 	public String getDbName() {
-		if( userName_.equals(DEFAULTUSERNAME) )
-			return "logistics";
-		else
-			return userName_;
+		return LOGISTICS;
+	}
+	@Override
+	public String getUserName() {
+		return userName_;
 	}
 }
