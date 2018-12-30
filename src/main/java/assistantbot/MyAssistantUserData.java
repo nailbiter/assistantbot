@@ -45,14 +45,15 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 			logger_ = Logger.getLogger(this.getClass().getName());
 			scheduler_ = new Scheduler();
 			scheduler_.setTimeZone(Util.getTimezone());
-			managers_.add(this);
-			parser_ = StandardParserInterpreter.Create(managers_, names, this);
 			userName_ = (name != null)? 
 					name
 					:(( names == null ) ? 
 							null 
 							: DEFAULTUSERNAME
 							);
+			
+			managers_.add(this);
+			parser_ = StandardParserInterpreter.Create(managers_, names, this);
 		} catch(Exception e) {
 			e.printStackTrace(System.out);
 		}
