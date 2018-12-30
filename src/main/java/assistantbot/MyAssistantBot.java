@@ -33,7 +33,7 @@ public class MyAssistantBot extends MyBasicBot {
 			System.err.format("checking whether initialize \"%s\"\n", obj.getString("name"));
 			if(obj.has("port") && !obj.isNull("port")) {
 				System.err.format("initialize %s\n", obj.toString(2));
-				long port = obj.getInt("port");
+				long port = obj.getLong("port");
 				MyAssistantUserData ud = new MyAssistantUserData(port,this,
 						obj.getJSONArray("managers"));
 				userData.put(port, 
