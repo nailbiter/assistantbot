@@ -152,7 +152,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 			rp_.sendMessage(String.format("snoozing card \"%s\" to %s", 
 					card.getString("name"),date.toString()));
 		}
-		if(parsed.containsKey(ParseCommentLine.TAGS)) {
+		if( !((Set<String>)parsed.get(ParseCommentLine.TAGS)).isEmpty() ) {
 			Set<String> tags = (Set<String>)parsed.get(ParseCommentLine.TAGS);
 			for(String tagname:tags)
 				ta_.setLabelByName(card.getString("id"), tagname, card.getString("idList"));

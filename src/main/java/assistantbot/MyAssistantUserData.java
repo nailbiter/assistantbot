@@ -202,7 +202,6 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 		StringBuilder sb = new StringBuilder();
 		for(Object o:obj.getJSONArray("loginmessage"))
 			sb.append(((String)o)+"\n");
-//		return sb.toString();
 		sendMessage(sb.toString());
 		return "";
 	}
