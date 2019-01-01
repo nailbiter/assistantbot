@@ -128,14 +128,14 @@ public class TaskManagerBase extends AbstractManager {
 		
 	}
 
-	protected static String PrintTasks(ArrayList<JSONObject> arr, JSONObject po, ArrayList<String> recognizedCats) throws JSONException, ParseException, AssistantBotException {
+	protected static String PrintTasks(ArrayList<JSONObject> arr, JSONObject paramObj, ArrayList<String> recognizedCats) throws JSONException, ParseException, AssistantBotException {
 		TableBuilder tb = new TableBuilder()
 			.addTokens("#_","name_","labels_","due_");
 		
 		AssistantBotException isBad = null;
 		
 		boolean wasCut = false;
-		final int MAXSIZE = 40;
+		final int MAXSIZE = paramObj.getInt("maxsize");
 		if(arr.size() > MAXSIZE) {
 			wasCut = true;
 			arr = util.Util.GetArrayHead(arr,MAXSIZE);
@@ -145,7 +145,7 @@ public class TaskManagerBase extends AbstractManager {
 			JSONObject card = arr.get(i);
 			tb.newRow()
 			.addToken(i + 1)
-			.addToken(card.getString("name"),po.getJSONObject("sep").getInt("name"));
+			.addToken(card.getString("name"),paramObj.getJSONObject("sep").getInt("name"));
 			
 			HashSet<String> labelset = GetLabels(card.getJSONArray("labels")) ;
 			String mainLabel = null;
@@ -164,13 +164,13 @@ public class TaskManagerBase extends AbstractManager {
 						, mainLabel
 						,LABELJOINER
 						,String.join(LABELJOINER, labelset))
-					,po.getJSONObject("sep").getInt("labels"));
+					,paramObj.getJSONObject("sep").getInt("labels"));
 			} else {
 				tb.addToken(String.join(LABELJOINER, labelset)
-						,po.getJSONObject("sep").getInt("labels"));
+						,paramObj.getJSONObject("sep").getInt("labels"));
 			}
 			if( HasDue(card) ) {
-				tb.addToken(PrintDaysTill(DaysTill(card), "="),po.getJSONObject("sep").getInt("due"));
+				tb.addToken(PrintDaysTill(DaysTill(card), "="),paramObj.getJSONObject("sep").getInt("due"));
 			} else {
 				tb.addToken("∞");
 			}
