@@ -1,6 +1,8 @@
 package util.scripthelpers;
 
 import java.io.IOException;
+
+import util.UserCollection;
 import util.Util;
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
@@ -91,12 +93,14 @@ public class ScriptHelperImpl implements ScriptHelper {
 				TableEngine.TABLEBUILDER);
 	}
 	public String getDataFromDatabase(JSONObject jsonObject) {
-		System.err.format("%s was called with %s\n", "getDataFromDatabase",jsonObject.toString(2));
-		String[] split = jsonObject.getString("dbname").trim().split("\\.");
-		System.err.format("database name: %s\n", split[0]);
-		System.err.format("collection name: %s\n", split[1]);
+		System.err.format("%s was called with %s\n", 
+				"getDataFromDatabase",jsonObject.toString(2));
 		
-		MongoCollection<Document> col = mongoClient_.getDatabase(split[0]).getCollection(split[1]);
+		String name = jsonObject.getString("dbname");
+		MongoCollection<Document> col = 
+				rp_.getCollection(name.equals("money")
+						?UserCollection.MONEY
+						:UserCollection.TIME);
 		
 		FindIterable<Document> queryRes = col.find();
 		if(jsonObject.has("sort")) {

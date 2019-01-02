@@ -28,6 +28,7 @@ import assistantbot.ResourceProvider;
 import util.Util;
 import util.JsonUtil;
 import util.MongoUtil;
+import util.UserCollection;
 import util.parsers.ParseOrdered;
 
 import static java.util.Arrays.asList;
@@ -52,12 +53,12 @@ public class TimeManager extends AbstractManager implements Runnable, OptionRepl
 	
 	public TimeManager(ResourceProvider rp) {
 		super(GetCommands());
-		MongoClient mc = rp.getMongoClient();
+//		MongoClient mc = rp.getMongoClient();
 		rp_ = rp;
-		time_ = mc
-				.getDatabase(MongoUtil.LOGISTICS)
-				.getCollection("time");
-		categories_ = MongoUtil.GetJSONArrayFromDatabase(mc, MongoUtil.LOGISTICS, "timecats");
+		time_ = rp_.getCollection(UserCollection.TIME);
+		categories_ = 
+				MongoUtil
+				.GetJSONArrayFromDatabase(rp_.getCollection(UserCollection.TIMECATS));
 		for( int i = 0; i < categories_.length(); i++ ) {
 			if( !categories_.getJSONObject(i).optBoolean("isTimeCat",true) ) {
 				categories_.remove(i);
@@ -69,9 +70,7 @@ public class TimeManager extends AbstractManager implements Runnable, OptionRepl
 			System.err.println("\t"+categories_.getJSONObject(i).getString("name"));
 		}
 		rp.getScheduler().schedule(String.format("*/%d * * * *",DELAYMIN), this);
-		sleepingTimes_ = mc
-				.getDatabase(MongoUtil.LOGISTICS)
-				.getCollection("sleepingtimes");
+		sleepingTimes_ = rp_.getCollection(UserCollection.SLEEPINGTIMES);
 	}
 	public String timestat(JSONObject res) {
 		int num = res.optInt("num",48);

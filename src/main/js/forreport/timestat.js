@@ -86,13 +86,13 @@ function main(cmdline){
 	cmdLineObj.unit = cmdLineObj.unit.toUpperCase();
 	cmdLineObj.outputtype = cmdLineObj.outputtype.toUpperCase();
 
-    dataString = ScriptHelper.execute(JSON.stringify({
-        method:"getDataFromDatabase",
-        data:{
-            dbname:("logistics."+cmdLineObj.databaseName),
-            sort:{date:-1},
-        }
-    }));
+	dataString = ScriptHelper.execute(JSON.stringify({
+			method:"getDataFromDatabase",
+			data:{
+					dbname:cmdLineObj.databaseName,
+					sort:{date:-1},
+			}
+	}));
 	var data = JSON.parse(dataString);
     if(DEBUG)
 	    print("data.length: "+data.length);

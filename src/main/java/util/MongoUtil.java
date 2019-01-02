@@ -60,7 +60,23 @@ public class MongoUtil {
 		
 		return res;
 	}
-
+	public static JSONArray GetJSONArrayFromDatabase(MongoCollection<Document> coll) {
+		final JSONArray res = new JSONArray();
+		coll.find().forEach(new Block<Document>() {
+			@Override
+			public void apply(Document doc) {
+				res.put(new JSONObject(doc.toJson()));
+			}
+		});
+		return res;
+	}
+	/**
+	 * @deprecated
+	 * @param mc
+	 * @param databaseName
+	 * @param collectionName
+	 * @return
+	 */
 	public static JSONArray GetJSONArrayFromDatabase(MongoClient mc, String databaseName, String collectionName) {
 		final JSONArray res = new JSONArray();
 		Block<Document> printBlock = new Block<Document>() {
