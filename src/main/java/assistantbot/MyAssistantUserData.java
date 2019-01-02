@@ -21,6 +21,9 @@ import it.sauronsoftware.cron4j.Scheduler;
 import managers.MyManager;
 import managers.OptionReplier;
 import util.Util;
+import util.MongoUtil;
+import util.SettingCollection;
+import util.UserCollection;
 import util.UserData;
 import util.parsers.AbstractParser;
 import util.parsers.StandardParserInterpreter;
@@ -33,8 +36,7 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 	private Logger logger_;
 	private List<MyManager> managers_ = new ArrayList<MyManager>();
 	private String userName_ = null;
-	private static final String DEFAULTUSERNAME = "alex";
-	public static final String LOGISTICS = "logistics";
+//	private static final String DEFAULTUSERNAME = "alex";
 	MyAssistantUserData(Long chatID,MyAssistantBot bot, JSONArray names){
 		this(chatID,bot,names,null);
 	}
@@ -184,7 +186,8 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 		Document userDoc = new Document("name",username);
 		userDoc.put("pass", password);
 		MongoCollection<Document> coll = bot_.getMongoClient()
-				.getDatabase(LOGISTICS).getCollection("users");
+				.getDatabase(MongoUtil.LOGISTICS)
+				.getCollection(SettingCollection.USERS.toString());
 		Document doc = coll.find(userDoc).first();
 		if( doc == null ) {
 			return String.format("cannot log in \"%s\" (wrong username or password)", 
@@ -210,7 +213,8 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 			return String.format("not logged in");
 		}
 		MongoCollection<Document> coll = bot_.getMongoClient()
-				.getDatabase(LOGISTICS).getCollection("users");
+				.getDatabase(MongoUtil.LOGISTICS)
+				.getCollection(SettingCollection.USERS.toString());
 		
 		coll.findOneAndUpdate(new Document("name", userName_),Updates.unset("port"));
 		managers_.clear();
@@ -222,11 +226,8 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 		return res;
 	}
 	@Override
-	public String getDbName() {
-		return LOGISTICS;
-	}
-	@Override
-	public String getUserName() {
-		return userName_;
+	public MongoCollection<Document> getCollection(UserCollection name) {
+		return bot_.getMongoClient().getDatabase(MongoUtil.LOGISTICS)
+				.getCollection(String.format("%s.%s", userName_,name.toString()));
 	}
 }

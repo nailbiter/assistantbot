@@ -2,7 +2,7 @@ ASBOTSOURCES=MyAssistantUserData MyAssistantBot ResourceProvider
 MANAGERSOURCES=$(addsuffix Manager,Time Money Test MiscUtil Habit German Gym Abstract Report JShell Task \
 	       PerlScript Trello Bot)
 UTILSOURCES=StorageManager MyBasicBot MongoUtil Util TelegramUtil JsonUtil AssistantBotException \
-	    ParseCommentLine 
+	    ParseCommentLine UserCollection SettingCollection
 SCRIPTAPPS=JsApp ScriptApp
 SCRIPTHELPERSOURCES= $(addprefix ScriptHelper, Varkeeper Array Logger Impl Misc) ScriptHelper
 HABITMANAGERSOURCES=HabitManagerBase JSONObjectCallback Donep Constants

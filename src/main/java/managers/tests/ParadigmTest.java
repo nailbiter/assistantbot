@@ -13,10 +13,10 @@ import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 
-import assistantbot.MyAssistantUserData;
 import managers.MyManager;
 import managers.Replier;
 import managers.TestManager;
+import util.MongoUtil;
 import util.MyBasicBot;
 
 public class ParadigmTest extends JsonTest{
@@ -108,7 +108,7 @@ public class ParadigmTest extends JsonTest{
 	}
 	public static void AddTests(final ArrayList<JsonTest> testContainer, MongoClient mongoClient) throws Exception
 	{
-		MongoCollection<Document> tests = mongoClient.getDatabase(MyAssistantUserData.LOGISTICS).getCollection("paradigmTests");
+		MongoCollection<Document> tests = mongoClient.getDatabase(MongoUtil.LOGISTICS).getCollection("paradigmTests");
 		tests.find().forEach(new Block<Document>() {
 			@Override
 			public void apply(Document arg0) {

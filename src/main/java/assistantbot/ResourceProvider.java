@@ -2,12 +2,15 @@ package assistantbot;
 
 import java.util.List;
 
+import org.bson.Document;
 import org.json.JSONArray;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
 
 import it.sauronsoftware.cron4j.Scheduler;
 import managers.MyManager;
+import util.UserCollection;
 
 public interface ResourceProvider {
 	/**
@@ -17,6 +20,10 @@ public interface ResourceProvider {
 	 * @return message id
 	 */
 	abstract public int sendMessageWithKeyBoard(String msg, JSONArray categories);
+	/**
+	 * @deprecated
+	 * @return
+	 */
 	MongoClient getMongoClient();
 	int sendMessage(String msg);
 	Scheduler getScheduler();
@@ -30,11 +37,5 @@ public interface ResourceProvider {
 	 * @deprecated use {@link #sendMessageWithKeyBoard(String, JSONArray)} instead
 	 */
 	public abstract int sendMessageWithKeyBoard(String msg, List<List<InlineKeyboardButton>> makePerCatButtons);
-	/**
-	 * @deprecated
-	 * @return
-	 */
-	public abstract long getChatId();
-	public abstract String getDbName();
-	public abstract String getUserName();
+	public MongoCollection<Document> getCollection(UserCollection name);
 }

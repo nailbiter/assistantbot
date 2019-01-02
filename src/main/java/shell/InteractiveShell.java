@@ -15,7 +15,6 @@ import org.json.JSONObject;
 import com.github.nailbiter.util.TableBuilder;
 import com.mongodb.MongoClient;
 
-import assistantbot.MyAssistantUserData;
 import assistantbot.ResourceProvider;
 import managers.MyManager;
 import util.KeyRing;
@@ -162,7 +161,7 @@ public class InteractiveShell implements ResourceProvider,MyManager {
 	}
 	@Override
 	public String getDbName() {
-		return MyAssistantUserData.LOGISTICS;
+		return MongoUtil.LOGISTICS;
 	}
 	@Override
 	public String getUserName() {

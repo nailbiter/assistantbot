@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
+import com.mongodb.client.MongoCollection;
 
 public class MongoUtil {
 	public static JSONObject GetJsonObjectFromDatabase(MongoClient mc,String databasecollection) throws Exception {
@@ -86,4 +87,5 @@ public class MongoUtil {
 		}
 		return new MongoClient(uri);
 	}
+	public static final String LOGISTICS = "logistics";
 }

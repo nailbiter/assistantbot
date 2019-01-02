@@ -28,7 +28,7 @@ public class MyAssistantBot extends MyBasicBot {
 	}
 	private void initializeUserRecords() {
 		JSONArray array = MongoUtil.GetJSONArrayFromDatabase(mongoClient_, 
-				MyAssistantUserData.LOGISTICS, "users");
+				MongoUtil.LOGISTICS, "users");
 		for(Object o:array) {
 			JSONObject obj = (JSONObject)o;
 			System.err.format("checking whether initialize \"%s\"\n", obj.getString("name"));
