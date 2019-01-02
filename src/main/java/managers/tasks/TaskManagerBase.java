@@ -242,7 +242,7 @@ public class TaskManagerBase extends AbstractManager {
 		ArrayList<JSONObject> res = new ArrayList<JSONObject>();
 		for(Object o:reminders) {
 			JSONObject obj = (JSONObject)o;
-			Date d = util.Util.MongoDateStringToLocalDate(obj.getString("date"));
+			Date d = util.MongoUtil.MongoDateStringToLocalDate(obj.getString("date"));
 			if( d.after(now) ) {
 				JSONObject habitObj = JsonUtil.FindInJSONArray(tasks, SHORTURL, obj.getString(SHORTURL));
 				if(habitObj==null) {

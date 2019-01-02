@@ -16,7 +16,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -25,7 +24,6 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 import java.util.TimeZone;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import managers.MyManager;
@@ -38,7 +36,6 @@ import org.json.JSONObject;
 import com.github.nailbiter.util.TableBuilder;
 
 import assistantbot.ResourceProvider;
-import static java.lang.Integer.parseInt;
 
 /**
  * 
@@ -49,7 +46,7 @@ public class Util{
 	protected static boolean isInit = false;
 	private final static String ALPH = "abcdefghijklmnopqrstuvwxyz" +
 			"abcdefghijklmnopqrstuvwxyz".toUpperCase() + "01234567890";
-	private final static JSONObject MONTHNAMES = new JSONObject("{\"Jan\":1,"
+	final static JSONObject MONTHNAMES = new JSONObject("{\"Jan\":1,"
 			+ "\"Feb\":2,\"Mar\":3,\"Apr\":4,\"May\":5,"
 			+ "\"Jun\":6,\"Jul\":7,\"Aug\":8,\"Sep\":9,\"Oct\":10,\"Nov\":11,"
 			+ "\"Dec\":12}");
@@ -305,22 +302,6 @@ public class Util{
 			sb.append(s+"\n");
 		}
 		return sb.toString().trim();
-	}
-	public static Date MongoDateStringToLocalDate(String string) throws Exception {
-		Matcher m = null;
-		if((m = Pattern.compile("[A-Z][a-z]{2} ([A-Z][a-z]{2}) (\\d{2}) (\\d{2}):(\\d{2}):(\\d{2}) ([A-Z]{3}) (\\d{4})").matcher(string)).matches()) {
-			Calendar c = Calendar.getInstance(TimeZone.getTimeZone(m.group(6)));
-			c.set(parseInt(m.group(7)),
-					MONTHNAMES.getInt(m.group(1))-1,
-					parseInt(m.group(2)),
-					parseInt(m.group(3)),
-					parseInt(m.group(4)),
-					parseInt(m.group(5))
-					);
-			return c.getTime();
-		} else {
-			throw new Exception(String.format("cannot parse %s", string));
-		}
 	}
 	public static String PrintDaysTill(double daysTill, String filler) {
 		if(daysTill<0) {

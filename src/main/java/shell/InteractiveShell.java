@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jline.reader.Completer;
+import org.jline.reader.History;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.impl.completer.StringsCompleter;
+import org.jline.reader.impl.history.DefaultHistory;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -61,7 +63,11 @@ public class InteractiveShell implements ResourceProvider,MyManager {
 		System.out.format("commands: %s\n", commands.toString());
 		
 		Completer completer = new StringsCompleter(commands);
-        LineReader reader = LineReaderBuilder.builder().completer(completer).build();
+        LineReader reader = LineReaderBuilder
+        		.builder()
+        		.completer(completer)
+        		.history(new DefaultHistory())
+        		.build();
         String line = null;
         
         while (true) {
@@ -102,7 +108,7 @@ public class InteractiveShell implements ResourceProvider,MyManager {
 	}
 	@Override
 	public int sendMessage(String msg) {
-		msg = Util.CheckMessageLen(msg);
+//		msg = Util.CheckMessageLen(msg);
 		
 		System.out.println("\n"+msg);
 		return -1;

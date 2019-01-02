@@ -25,7 +25,6 @@ import util.AssistantBotException;
 import util.JsonUtil;
 import util.MongoUtil;
 import util.ParseCommentLine;
-import util.Util;
 import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
@@ -47,7 +46,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		for(Object o:reminders) {
 			JSONObject obj = (JSONObject)o;
 			System.err.format("set up %s\n", obj.toString(2));
-			Date d = Util.MongoDateStringToLocalDate(obj.getString("date"));
+			Date d = MongoUtil.MongoDateStringToLocalDate(obj.getString("date"));
 			System.err.format("date: %s\n", d.toString());
 			JSONObject habitObj = 
 					JsonUtil.FindInJSONArray(cards, SHORTURL, obj.getString(SHORTURL));

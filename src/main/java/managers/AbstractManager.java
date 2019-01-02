@@ -31,13 +31,9 @@ public abstract class AbstractManager implements MyManager {
 	@Override
 	public String getResultAndFormat(JSONObject res) throws Exception {
 		System.err.println(String.format("%s got: %s",this.getClass().getName(), res.toString()));
-//		if(res.has(CMD))
-//		{
 			System.err.println("dispatcher got: "+res.toString());
 			return (String)this.getClass().getMethod(res.getString(CMD),JSONObject.class)
 					.invoke(this,po_.parse(res));
-//		}
-//		return null;
 	}
 	protected JSONObject getParamObject(MongoClient mc) throws JSONException, Exception {
 		return GetParamObject(mc,this.getClass().getName());
