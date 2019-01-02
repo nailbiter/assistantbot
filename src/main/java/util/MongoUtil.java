@@ -1,5 +1,13 @@
 package util;
 
+import static java.lang.Integer.parseInt;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -88,4 +96,20 @@ public class MongoUtil {
 		return new MongoClient(uri);
 	}
 	public static final String LOGISTICS = "logistics";
+	public static Date MongoDateStringToLocalDate(String string) throws Exception {
+		Matcher m = null;
+		if((m = Pattern.compile("[A-Z][a-z]{2} ([A-Z][a-z]{2}) (\\d{2}) (\\d{2}):(\\d{2}):(\\d{2}) ([A-Z]{3}) (\\d{4})").matcher(string)).matches()) {
+			Calendar c = Calendar.getInstance(TimeZone.getTimeZone(m.group(6)));
+			c.set(parseInt(m.group(7)),
+					Util.MONTHNAMES.getInt(m.group(1))-1,
+					parseInt(m.group(2)),
+					parseInt(m.group(3)),
+					parseInt(m.group(4)),
+					parseInt(m.group(5))
+					);
+			return c.getTime();
+		} else {
+			throw new Exception(String.format("cannot parse %s", string));
+		}
+	}
 }

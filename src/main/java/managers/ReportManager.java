@@ -41,7 +41,7 @@ public class ReportManager extends AbstractManager {
 				.put(ParseOrdered.MakeCommand("reportshow", "masha reminder", asList(ParseOrdered.MakeCommandArg("type",ParseOrdered.ArgTypes.integer,true))));
 	}
 	public String telegramreport(JSONObject obj) throws Exception {
-		return String.format("chatid: %d", rp_.getChatId());
+		return String.format("chatid: %d", 0);
 	}
 	public String mashareport(JSONObject obj) throws Exception {
 		return MashaRemind.Remind(ta_,mc_);
@@ -60,13 +60,13 @@ public class ReportManager extends AbstractManager {
 	}
 	public String reportshow(JSONObject obj) throws Exception {
 		if(obj.has("type")) {
-			JSONObject oo = MongoUtil.GetJsonObjectFromDatabase(mc_, rp_.getDbName()+".reportDescriptions", new JSONObject().put("type", obj.getInt("type")));
+			JSONObject oo = MongoUtil.GetJsonObjectFromDatabase(mc_, MongoUtil.LOGISTICS+".reportDescriptions", new JSONObject().put("type", obj.getInt("type")));
 			return (String)this.getClass().getMethod(oo.getString("callback"),JSONObject.class)
 					.invoke(this,oo);
 		} else {
 			TableBuilder tb = new TableBuilder();
 			tb.addNewlineAndTokens("type", "description");
-			JSONArray reports = MongoUtil.GetJSONArrayFromDatabase(mc_, rp_.getDbName(), "reportDescriptions");
+			JSONArray reports = MongoUtil.GetJSONArrayFromDatabase(mc_, MongoUtil.LOGISTICS, "reportDescriptions");
 			for(Object o:reports) {
 				JSONObject oo = (JSONObject)o;
 				tb.newRow();

@@ -29,6 +29,10 @@ import util.parsers.AbstractParser;
 import util.parsers.StandardParserInterpreter;
 
 public class MyAssistantUserData extends UserData implements ResourceProvider,MyManager {
+	/**
+	 * @deprecated
+	 */
+	private static final String DEFAULTUSERNAME = "alex";
 	protected Scheduler scheduler_ = null; //FIXME: should it be a singleton?
 	protected StandardParserInterpreter parser_ = null;
 	protected long chatID_;
@@ -36,7 +40,6 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 	private Logger logger_;
 	private List<MyManager> managers_ = new ArrayList<MyManager>();
 	private String userName_ = null;
-//	private static final String DEFAULTUSERNAME = "alex";
 	MyAssistantUserData(Long chatID,MyAssistantBot bot, JSONArray names){
 		this(chatID,bot,names,null);
 	}
@@ -147,10 +150,6 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 		return parser_.getDispatchTable().get(res.getString(CMD)).getResultAndFormat(res);
 	}
 	@Override
-	public long getChatId() {
-		return chatID_;
-	}
-	@Override
 	public String processReply(int messageID, String msg) {
 		return null;
 	}
@@ -200,7 +199,7 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 		userName_ = obj.getString("name");
 		parser_ = StandardParserInterpreter
 				.Create(managers_, obj.getJSONArray("managers"), this);
-		coll.findOneAndUpdate(userDoc, Updates.set("port",getChatId()));
+		coll.findOneAndUpdate(userDoc, Updates.set("port",chatID_));
 		
 		StringBuilder sb = new StringBuilder();
 		for(Object o:obj.getJSONArray("loginmessage"))

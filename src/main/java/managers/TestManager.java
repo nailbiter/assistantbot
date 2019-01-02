@@ -27,6 +27,7 @@ import assistantbot.ResourceProvider;
 import managers.tests.JsonTest;
 import managers.tests.ParadigmTest;
 import managers.tests.UrlTest;
+import util.MongoUtil;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
 import static util.parsers.ParseOrdered.ArgTypes;
@@ -50,7 +51,8 @@ public class TestManager extends AbstractManager implements OptionReplier {
 		logger_ = Logger.getLogger(this.getClass().getName());
 		timer_ = new Timer();
 		AddTests(testContainer_,rp_.getMongoClient());
-		testScores_ = rp_.getMongoClient().getDatabase(rp.getDbName())
+		testScores_ = rp_.getMongoClient()
+				.getDatabase(MongoUtil.LOGISTICS)
 				.getCollection("scoresOfTests");
 	}
 	private static void AddTests(ArrayList<JsonTest> testContainer, MongoClient mongoClient) throws Exception {

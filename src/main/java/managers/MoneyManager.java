@@ -25,6 +25,7 @@ import com.mongodb.client.model.Sorts;
 
 import assistantbot.ResourceProvider;
 import util.AssistantBotException;
+import util.MongoUtil;
 import util.ParseCommentLine;
 import util.Util;
 import util.parsers.ParseOrdered;
@@ -42,14 +43,18 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 	{
 		super(GetCommands());
 		MongoClient mongoClient = rp.getMongoClient();
-		mongoClient.getDatabase(rp.getDbName()).getCollection("moneycats").find(Filters.eq(USERNAME,rp.getUserName()))
+		mongoClient
+			.getDatabase(MongoUtil.LOGISTICS)
+			.getCollection("moneycats")
+//			.find(Filters.eq(USERNAME,rp.getUserName()))
+			.find()
 			.forEach(new Block<Document>() {
 		       @Override
 		       public void apply(final Document doc) {
 		    	   cats.add(new JSONObject(doc.toJson()).getString("name"));
 		       }
 			});
-		money = mongoClient.getDatabase(rp.getDbName()).getCollection("money");
+		money = mongoClient.getDatabase(MongoUtil.LOGISTICS).getCollection("money");
 		rp_ = rp;
 	}
 	public String money(JSONObject obj) throws ParseException, JSONException, ScriptException, AssistantBotException
@@ -95,7 +100,10 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 	private static String ShowTags(MongoCollection<Document> money, ResourceProvider rp) {
 		final StringBuilder sb = new StringBuilder("tags: \n");
 		final HashSet<String> set = new HashSet<String> ();
-		money.find(Filters.eq(USERNAME,rp.getUserName())).forEach(new Block<Document>() {
+		money
+//		.find(Filters.eq(USERNAME,rp.getUserName()))
+		.find()
+		.forEach(new Block<Document>() {
 			@Override
 			public void apply(Document arg0) {
 				JSONArray arr;
@@ -125,7 +133,7 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		else
 			res.put("date", new Date());
 		res.put("comment", obj.getString("comment"));
-		res.put(USERNAME, rp_.getUserName());
+//		res.put(USERNAME, rp_.getUserName());
 		res.put("tags", obj.getJSONArray("tags"));
 		money.insertOne(res);
 		return String.format("put %s in category %s",
@@ -142,7 +150,10 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		final com.github.nailbiter.util.TableBuilder tb1 = new com.github.nailbiter.util.TableBuilder();
 		
 		final JSONObject container = new JSONObject().put("i", 1);
-		money.find(Filters.eq(USERNAME,rp_.getUserName())).sort(Sorts.descending("date")).limit(howMuch).forEach(new Block<Document>() {
+		money
+//		.find(Filters.eq(USERNAME,rp_.getUserName()))
+		.find()
+		.sort(Sorts.descending("date")).limit(howMuch).forEach(new Block<Document>() {
 		       @Override
 		       public void apply(final Document doc) {
 		    	   	JSONObject obj = new JSONObject(doc.toJson());

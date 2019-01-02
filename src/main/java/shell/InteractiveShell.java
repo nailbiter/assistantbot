@@ -5,20 +5,25 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bson.Document;
 import org.jline.reader.Completer;
+import org.jline.reader.History;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.impl.completer.StringsCompleter;
+import org.jline.reader.impl.history.DefaultHistory;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.github.nailbiter.util.TableBuilder;
 import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
 
 import assistantbot.ResourceProvider;
 import managers.MyManager;
 import util.KeyRing;
 import util.MongoUtil;
+import util.UserCollection;
 import util.Util;
 import util.parsers.StandardParserInterpreter;
 import ch.qos.logback.classic.Level;
@@ -35,6 +40,7 @@ public class InteractiveShell implements ResourceProvider,MyManager {
 	private static String PROMPT = "assistantbot> ";
 	private String fileToOutputTo_;
 	private StandardParserInterpreter parser_;
+	private String userName_ = "alex";
 	static MongoClient mc_;
 	public static void Start(JSONObject profileObj) throws Exception {
 		(new InteractiveShell(profileObj)).start(profileObj);
@@ -60,7 +66,11 @@ public class InteractiveShell implements ResourceProvider,MyManager {
 		System.out.format("commands: %s\n", commands.toString());
 		
 		Completer completer = new StringsCompleter(commands);
-        LineReader reader = LineReaderBuilder.builder().completer(completer).build();
+        LineReader reader = LineReaderBuilder
+        		.builder()
+        		.completer(completer)
+        		.history(new DefaultHistory())
+        		.build();
         String line = null;
         
         while (true) {
@@ -101,7 +111,7 @@ public class InteractiveShell implements ResourceProvider,MyManager {
 	}
 	@Override
 	public int sendMessage(String msg) {
-		msg = Util.CheckMessageLen(msg);
+//		msg = Util.CheckMessageLen(msg);
 		
 		System.out.println("\n"+msg);
 		return -1;
@@ -136,11 +146,6 @@ public class InteractiveShell implements ResourceProvider,MyManager {
 		rootLogger.setLevel(Level.OFF);
 	}
 	@Override
-	public long getChatId() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	@Override
 	public String processReply(int messageID, String msg) {
 		return null;
 	}
@@ -160,12 +165,8 @@ public class InteractiveShell implements ResourceProvider,MyManager {
 		throw new Exception(String.format("for res=%s", res.toString()));
 	}
 	@Override
-	public String getDbName() {
-		return MongoUtil.LOGISTICS;
-	}
-	@Override
-	public String getUserName() {
-		//FIXME: parametrize
-		return ALEX;
+	public MongoCollection<Document> getCollection(UserCollection name) {
+		return getMongoClient().getDatabase(MongoUtil.LOGISTICS)
+				.getCollection(String.format("%s.%s", userName_ ,name.toString()));
 	}
 }

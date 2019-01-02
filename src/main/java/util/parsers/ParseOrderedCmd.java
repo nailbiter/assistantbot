@@ -23,8 +23,8 @@ public class ParseOrderedCmd extends JSONObject {
 			array.put(arg);
 		put("args", array);
 	}
-	public ParseOrderedCmd(String string, String string2) {
-		this(string,string2,new ArrayList<JSONObject>());
+	public ParseOrderedCmd(String name, String help) {
+		this(name,help,new ArrayList<JSONObject>());
 	}
 	public ParseOrderedCmd makeDefaultHandler() {
 		put(StandardParserInterpreter.DEFMESSAGEHANDLERKEY, true);

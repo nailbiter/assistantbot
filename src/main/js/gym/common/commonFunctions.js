@@ -1,5 +1,24 @@
 function getProgram(){
-	AddRunning(program);
+	AddExercises([
+		{
+			obj: {
+				name:"running",
+				reps:"16 min",
+			},
+			index : 0,
+		},
+		{
+			obj: {
+				name:"back warmup",
+				reps:"10k*15x, 15k*15x, 20k*15x, 25k*15x",
+			},
+			index : 1,
+			filter:function(dayCount,weekCount){
+				return (dayCount != 2);
+			}
+		},
+	]);
+
 	for(var i = 0; i < program.length; i++){
 		for(var j = 0; j < program[i].program.length; j++){
 			if(program[i].program[j].reps instanceof Array){
@@ -9,13 +28,13 @@ function getProgram(){
 	}
 	return program;
 }
-function AddRunning(program){
-	var runObj = {
-		name:"running",
-		reps:"16 min",
-	};
-	for(var i = 0; i < program.length; i++){
-		program[i].program.splice(0,0,runObj);
+function AddExercises(exercises){
+	for(var index  = 0; index < exercises.length; index++){
+		var exercise = exercises[index];
+			for(var i = 0; i < program.length; i++){
+				if( !('filter' in exercise) || exercise.filter(program[i].dayCount,program[i].weekCount))
+					program[i].program.splice(exercise.index,0,exercise.obj);
+			}
 	}
 }
 function computeReps(reps,name,weekCount,dayCount){

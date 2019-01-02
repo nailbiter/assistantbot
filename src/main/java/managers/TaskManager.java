@@ -25,7 +25,6 @@ import util.AssistantBotException;
 import util.JsonUtil;
 import util.MongoUtil;
 import util.ParseCommentLine;
-import util.Util;
 import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
@@ -43,11 +42,11 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 	private void setUpReminders(ResourceProvider rp) throws Exception {
 		JSONArray cards = ta_.getCardsInList(comparators_.get(SNOOZED).middle);
 		JSONArray reminders = 
-				MongoUtil.GetJSONArrayFromDatabase(mc_, rp.getDbName(), POSTPONEDTASKS);
+				MongoUtil.GetJSONArrayFromDatabase(mc_, MongoUtil.LOGISTICS, POSTPONEDTASKS);
 		for(Object o:reminders) {
 			JSONObject obj = (JSONObject)o;
 			System.err.format("set up %s\n", obj.toString(2));
-			Date d = Util.MongoDateStringToLocalDate(obj.getString("date"));
+			Date d = MongoUtil.MongoDateStringToLocalDate(obj.getString("date"));
 			System.err.format("date: %s\n", d.toString());
 			JSONObject habitObj = 
 					JsonUtil.FindInJSONArray(cards, SHORTURL, obj.getString(SHORTURL));
@@ -98,7 +97,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		ArrayList<AssistantBotException> exs = 
 				new ArrayList<AssistantBotException>();
 		HashMap<String,Integer> stat = 
-				GetDoneTasksStat(ta_,mc_,comparators_,recognizedCatNames_,exs,rp_.getDbName());
+				GetDoneTasksStat(ta_,mc_,comparators_,recognizedCatNames_,exs,MongoUtil.LOGISTICS);
 		
 		if( !obj.has("num") ) {
 			return PrintDoneTasks(stat,exs);
@@ -126,7 +125,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 					,comparators_.get(SNOOZED).middle
 					,getParamObject(mc_)
 					,logger_
-					,rp_.getDbName());
+					,MongoUtil.LOGISTICS);
 		
 		JSONObject card = getTask(obj.getInt("num"));
 		

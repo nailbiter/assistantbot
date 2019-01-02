@@ -82,7 +82,7 @@ public class TaskManagerBase extends AbstractManager {
 					.add(new ScriptHelperMisc())
 					.add(varkeeper_));
 		FillTable(comparators_,ta_,sa_);
-		FillRecognizedCats(recognizedCatNames_,mc_.getDatabase(rp.getDbName()),varkeeper_,cats_);
+		FillRecognizedCats(recognizedCatNames_,mc_.getDatabase(MongoUtil.LOGISTICS),varkeeper_,cats_);
 	}
 	private static void FillRecognizedCats(final ArrayList<String> recognizedCats,MongoDatabase mongoDatabase, ScriptHelperVarkeeper varkeeper, final JSONArray cats){
 		mongoDatabase.getCollection("timecats").find().forEach(new Block<Document>() {
@@ -242,7 +242,7 @@ public class TaskManagerBase extends AbstractManager {
 		ArrayList<JSONObject> res = new ArrayList<JSONObject>();
 		for(Object o:reminders) {
 			JSONObject obj = (JSONObject)o;
-			Date d = util.Util.MongoDateStringToLocalDate(obj.getString("date"));
+			Date d = util.MongoUtil.MongoDateStringToLocalDate(obj.getString("date"));
 			if( d.after(now) ) {
 				JSONObject habitObj = JsonUtil.FindInJSONArray(tasks, SHORTURL, obj.getString(SHORTURL));
 				if(habitObj==null) {
@@ -358,7 +358,7 @@ public class TaskManagerBase extends AbstractManager {
 			
 	}
 	protected void saveSnoozeToDb(JSONObject card, Date date) {
-		mc_.getDatabase(rp_.getDbName()).getCollection(POSTPONEDTASKS)
+		mc_.getDatabase(MongoUtil.LOGISTICS).getCollection(POSTPONEDTASKS)
 		.insertOne(Document.parse(new JSONObject()
 				.put("date", date)
 				.put("shortUrl", card.getString("shortUrl"))
@@ -366,7 +366,7 @@ public class TaskManagerBase extends AbstractManager {
 	}
 
 	protected void logToDb(String msg, JSONObject obj) {
-		mc_.getDatabase(rp_.getDbName()).getCollection("taskLog")
+		mc_.getDatabase(MongoUtil.LOGISTICS).getCollection("taskLog")
 		.insertOne(new Document("date",new Date())
 					.append("message",msg)
 					.append("obj",Document.parse(obj.toString())));
