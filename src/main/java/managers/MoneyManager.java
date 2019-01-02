@@ -27,6 +27,7 @@ import assistantbot.ResourceProvider;
 import util.AssistantBotException;
 import util.MongoUtil;
 import util.ParseCommentLine;
+import util.UserCollection;
 import util.Util;
 import util.parsers.ParseOrdered;
 import util.parsers.ParseOrderedArg;
@@ -42,11 +43,12 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 	public MoneyManager(ResourceProvider rp) throws Exception
 	{
 		super(GetCommands());
-		MongoClient mongoClient = rp.getMongoClient();
-		mongoClient
-			.getDatabase(MongoUtil.LOGISTICS)
-			.getCollection("moneycats")
+//		MongoClient mongoClient = rp.getMongoClient();
+//		mongoClient
+//			.getDatabase(MongoUtil.LOGISTICS)
+//			.getCollection("moneycats")
 //			.find(Filters.eq(USERNAME,rp.getUserName()))
+		rp.getCollection(UserCollection.MONEYCATS)
 			.find()
 			.forEach(new Block<Document>() {
 		       @Override
@@ -54,7 +56,8 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		    	   cats.add(new JSONObject(doc.toJson()).getString("name"));
 		       }
 			});
-		money = mongoClient.getDatabase(MongoUtil.LOGISTICS).getCollection("money");
+//		money = mongoClient.getDatabase(MongoUtil.LOGISTICS).getCollection("money");
+		money = rp.getCollection(UserCollection.MONEY);
 		rp_ = rp;
 	}
 	public String money(JSONObject obj) throws ParseException, JSONException, ScriptException, AssistantBotException
