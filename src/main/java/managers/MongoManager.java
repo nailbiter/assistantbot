@@ -117,19 +117,32 @@ public class MongoManager extends AbstractManager {
 		final ArrayList<ImmutablePair<ObjectId, String>> arr = 
 				new ArrayList<ImmutablePair<ObjectId,String>>();
 		MongoCollection<Document> coll = db_.getCollection(split[0]);
+		String key = split[1];
 		coll.find().forEach(new Block<Document>() {
 			@Override
 			public void apply(Document arg0) {
-				if(arg0.containsKey(split[1]) && arg0.getString(split[1])!=null)
-					arr.add(new ImmutablePair<ObjectId,String>(arg0.getObjectId(IDFIELD), 
-							arg0.getString(split[1])));
+				if( arg0.containsKey(key) ) {
+					String res = null;
+					try {
+						res = arg0.getString(split[1]);
+					} catch(ClassCastException e) {
+					}
+					if( res != null )
+						arr
+						.add(
+								new ImmutablePair<ObjectId,String>(
+										arg0.getObjectId(IDFIELD), 
+										arg0.getString(split[1]))
+								);
+				}
+					
 			}
 		});
 		for(ImmutablePair<ObjectId, String> tuple:arr) {
 			Date d = MongoUtil.MongoDateStringToLocalDate(tuple.right);
 			coll.updateOne(Filters.eq(IDFIELD, tuple.left), Updates.set(split[1], d));
 		}
-		return arr.toString();
+		return String.format("fixed %d", arr.size());
 	}
 	@Override
 	public String processReply(int messageID, String msg) {

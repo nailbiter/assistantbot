@@ -90,27 +90,7 @@ public class GymManager extends AbstractManager {
 		if(exercisenum==0 || program_.length()<exercisenum) {
 			throw new Exception(String.format("(%d<=0 || %d<%d)", exercisenum,program_.length(),exercisenum));
 		} else if( exercisenum < 0 ) {
-			final TableBuilder tb = new TableBuilder();
-			tb.addTokens("#_","name_", "comment_");
-			final ArrayList<Integer> index = new ArrayList<Integer>();
-			index.add(0);
-			rp_.getCollection(UserCollection.GYMLOG)
-			.find().sort(Sorts.descending("_id")).limit(-exercisenum).forEach(new Block<Document>() {
-				@Override
-				public void apply(Document doc) {
-					JSONObject obj = new JSONObject(doc.toJson());
-					index.add(0, index.get(0)+1);
-					tb.addTokens(
-							Integer.toString(index.get(0)),
-							String.format("%d:%d:%s",
-								obj.getInt("weekCount"),
-								obj.getInt("dayCount"),
-								obj.getJSONObject("exercise").getString("name")),
-							obj.optString("comment", "")
-							);
-				}
-			});
-			return tb.toString();
+			return showExercises(exercisenum,paramObj);
 		} else {
 			exercisenum_ = exercisenum;
 			obj.remove("name");
@@ -119,10 +99,38 @@ public class GymManager extends AbstractManager {
 			obj.remove("exercisenum");
 			obj.put("exercise", program_.getJSONObject(exercisenum-1));
 			obj.getJSONObject("exercise").put("num", exercisenum);
-			obj.put("date", new Date());
-			rp_.getCollection(UserCollection.GYMLOG)
-				.insertOne(Document.parse(obj.toString()));
-			return String.format("added %s to %s",obj.toString(2) ,"logistics.gymLog");
+			
+			Document doc = Document.parse(obj.toString());
+			doc.put("date", new Date());
+			rp_.getCollection(UserCollection.GYMLOG).insertOne(doc);
+			return String.format("added %s to %s"
+					,new JSONObject(doc.toJson()).toString(2) 
+//					,"logistics.gymLog"
+					,UserCollection.GYMLOG.toString()
+					);
 		}
+	}
+	private String showExercises(int exercisenum, JSONObject paramObj) {
+		final TableBuilder tb = new TableBuilder();
+		tb.addTokens("#_","name_", "comment_");
+		final ArrayList<Integer> index = new ArrayList<Integer>();
+		index.add(0);
+		rp_.getCollection(UserCollection.GYMLOG)
+		.find().sort(Sorts.descending("_id")).limit(-exercisenum).forEach(new Block<Document>() {
+			@Override
+			public void apply(Document doc) {
+				JSONObject obj = new JSONObject(doc.toJson());
+				index.add(0, index.get(0)+1);
+				tb.addTokens(
+						Integer.toString(index.get(0)),
+						String.format("%d:%d:%s",
+							obj.getInt("weekCount"),
+							obj.getInt("dayCount"),
+							obj.getJSONObject("exercise").getString("name")),
+						obj.optString("comment", "")
+						);
+			}
+		});
+		return tb.toString();
 	}
 }
