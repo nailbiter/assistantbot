@@ -16,8 +16,18 @@ import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
+
+import assistantbot.ResourceProvider;
 
 public class MongoUtil {
+	/**
+	 * @deprecated
+	 * @param mc
+	 * @param databasecollection
+	 * @return
+	 * @throws Exception
+	 */
 	public static JSONObject GetJsonObjectFromDatabase(MongoClient mc,String databasecollection) throws Exception {
 		String[] split = databasecollection.split("\\.");
 		if(split.length != 2)
@@ -27,6 +37,14 @@ public class MongoUtil {
 		System.err.format("%s with databasecollection=\"%s\" got %s\n", "GetJsonObjectFromDatabase",databasecollection,res.toString(2));
 		return res;
 	}
+	/**
+	 * @deprecated
+	 * @param mc
+	 * @param databasecollection
+	 * @param keyValue
+	 * @return
+	 * @throws Exception
+	 */
 	public static JSONObject GetJsonObjectFromDatabase(MongoClient mc,String databasecollection,String keyValue) throws Exception {
 		String database, collection, keyName, valueName;
 		{
@@ -46,7 +64,14 @@ public class MongoUtil {
 				.find(new Document(keyName,valueName))
 				.first().toJson());
 	}
-
+	/**
+	 * @deprecated
+	 * @param mc
+	 * @param databaseName
+	 * @param collectionName
+	 * @param key
+	 * @return
+	 */
 	public static JSONArray GetJSONArrayFromDatabase(MongoClient mc, String databaseName, String collectionName, final String key) {
 		final JSONArray res = new JSONArray();
 		Block<Document> printBlock = new Block<Document>() {
@@ -90,7 +115,14 @@ public class MongoUtil {
 		
 		return res;
 	}
-
+	/**
+	 * @deprecated
+	 * @param mc
+	 * @param dc
+	 * @param fo
+	 * @return
+	 * @throws Exception
+	 */
 	public static JSONObject GetJsonObjectFromDatabase(MongoClient mc, String dc, JSONObject fo) throws Exception {
 		String[] split = dc.split("\\.");
 		if(split.length != 2)
@@ -127,5 +159,19 @@ public class MongoUtil {
 		} else {
 			throw new Exception(String.format("cannot parse %s", string));
 		}
+	}
+	@SuppressWarnings("deprecation")
+	public static MongoCollection<Document> GetSettingCollection(ResourceProvider rp,SettingCollection sc){
+		return rp.getMongoClient().getDatabase(LOGISTICS).getCollection(sc.toString());
+	}
+	public static JSONObject GetJsonObjectFromDatabase(MongoCollection<Document> coll, String key,Object val) {
+//		if(fo.keySet().size() != 1)
+//			throw new AssistantBotException(AssistantBotException.Type.MONGOUTIL
+//					,String.format("size=%d!=1", fo.keySet().size()));
+//		String key = fo.keys().next();
+		System.err.format("key=%s, val=%s\n", key,val.toString());
+		return new JSONObject(coll
+				.find(Filters.eq(key,val))
+				.first().toJson());
 	}
 }

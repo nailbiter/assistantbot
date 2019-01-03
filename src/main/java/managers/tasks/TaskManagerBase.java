@@ -29,6 +29,7 @@ import com.github.nailbiter.util.TableBuilder;
 import com.github.nailbiter.util.TrelloAssistant;
 import com.mongodb.Block;
 import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
 import assistantbot.ResourceProvider;
@@ -39,6 +40,7 @@ import util.JsonUtil;
 import util.KeyRing;
 import util.MongoUtil;
 import util.ParseCommentLine;
+import util.UserCollection;
 import util.scriptapps.JsApp;
 import util.scriptapps.ScriptApp;
 import util.scripthelpers.ScriptHelperArray;
@@ -49,12 +51,12 @@ import static util.Util.PrintDaysTill;
 
 public class TaskManagerBase extends AbstractManager {
 
-	protected static final String POSTPONEDTASKS = "postponedTasks";
+//	protected static final String POSTPONEDTASKS = "postponedTasks";
 	private static final String LABELJOINER = ", ";;
 	protected Timer timer = new Timer();
 	protected ResourceProvider rp_;
 	protected TrelloAssistant ta_;
-	protected MongoClient mc_;
+//	protected MongoClient mc_;
 	private ScriptApp sa_;
 	protected static int REMINDBEFOREMIN = 10;
 	protected static String TASKNAMELENLIMIT = "TASKNAMELENLIMIT";
@@ -74,18 +76,18 @@ public class TaskManagerBase extends AbstractManager {
 		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
 				KeyRing.getTrello().getString("token"));
 		rp_ = rp;
-		mc_ = rp.getMongoClient();
+//		mc_ = rp.getMongoClient();
 		varkeeper_ = new ScriptHelperVarkeeper();
-		sa_ = new JsApp(getParamObject(mc_).getString("scriptFolder"), 
+		sa_ = new JsApp(getParamObject(rp).getString("scriptFolder"), 
 				new ScriptHelperArray()
 					.add(new ScriptHelperLogger())
 					.add(new ScriptHelperMisc())
 					.add(varkeeper_));
 		FillTable(comparators_,ta_,sa_);
-		FillRecognizedCats(recognizedCatNames_,mc_.getDatabase(MongoUtil.LOGISTICS),varkeeper_,cats_);
+		FillRecognizedCats(recognizedCatNames_,rp,varkeeper_,cats_);
 	}
-	private static void FillRecognizedCats(final ArrayList<String> recognizedCats,MongoDatabase mongoDatabase, ScriptHelperVarkeeper varkeeper, final JSONArray cats){
-		mongoDatabase.getCollection("timecats").find().forEach(new Block<Document>() {
+	private static void FillRecognizedCats(final ArrayList<String> recognizedCats,ResourceProvider rp, ScriptHelperVarkeeper varkeeper, final JSONArray cats){
+		rp.getCollection(UserCollection.TIMECATS).find().forEach(new Block<Document>() {
 			@Override
 			public void apply(Document arg0) {
 				recognizedCats.add(arg0.getString("name"));
@@ -233,10 +235,11 @@ public class TaskManagerBase extends AbstractManager {
 		}
 		return res;
 	}
-	protected static String PrintSnoozed(TrelloAssistant ta, MongoClient mc, String listid, JSONObject po, Logger logger, String dbname) throws Exception {
+	protected static String PrintSnoozed(TrelloAssistant ta, ResourceProvider rp, String listid, JSONObject po, Logger logger, String dbname) throws Exception {
 		JSONArray tasks = ta.getCardsInList(listid);
-		JSONArray reminders = 
-				MongoUtil.GetJSONArrayFromDatabase(mc, dbname, POSTPONEDTASKS);
+		MongoCollection<Document> coll = 
+				rp.getCollection(UserCollection.POSTPONEDTASKS);
+		JSONArray reminders = MongoUtil.GetJSONArrayFromDatabase(coll);
 		
 		Date now = new Date();
 		ArrayList<JSONObject> res = new ArrayList<JSONObject>();
@@ -290,7 +293,7 @@ public class TaskManagerBase extends AbstractManager {
 		return tb.toString() + 
 				(exs.isEmpty()?"":String.format("\ne: %s", exs.get(0).getMessage()));
 	}
-	protected static HashMap<String, Integer> GetDoneTasksStat(TrelloAssistant ta, MongoClient mc,
+	protected static HashMap<String, Integer> GetDoneTasksStat(TrelloAssistant ta, ResourceProvider rp,
 			HashMap<String, ImmutableTriple<Comparator<JSONObject>, String, Integer>> c,
 			final ArrayList<String> recognizedCats, final ArrayList<AssistantBotException> exs, String dbname) throws Exception {
 		final JSONArray alltasks = ta.getAllCardsInList(c.get(INBOX).middle);
@@ -305,7 +308,8 @@ public class TaskManagerBase extends AbstractManager {
 		System.err.format("date: %s\n", d.toString());
 		
 		final HashMap<String,Integer> stat = new HashMap<String,Integer>();
-		mc.getDatabase(dbname).getCollection("taskLog")
+//		rp.getDatabase(dbname).getCollection("taskLog")
+		rp.getCollection(UserCollection.TASKLOG)
 		.find(and(eq("message","taskdone"),gte("date",d)))
 		.forEach(new Block<Document>() {
 					@Override
@@ -358,7 +362,8 @@ public class TaskManagerBase extends AbstractManager {
 			
 	}
 	protected void saveSnoozeToDb(JSONObject card, Date date) {
-		mc_.getDatabase(MongoUtil.LOGISTICS).getCollection(POSTPONEDTASKS)
+//		mc_.getDatabase(MongoUtil.LOGISTICS).getCollection(POSTPONEDTASKS)
+		rp_.getCollection(UserCollection.POSTPONEDTASKS)
 		.insertOne(Document.parse(new JSONObject()
 				.put("date", date)
 				.put("shortUrl", card.getString("shortUrl"))
@@ -366,7 +371,8 @@ public class TaskManagerBase extends AbstractManager {
 	}
 
 	protected void logToDb(String msg, JSONObject obj) {
-		mc_.getDatabase(MongoUtil.LOGISTICS).getCollection("taskLog")
+//		mc_.getDatabase(MongoUtil.LOGISTICS).getCollection("taskLog")
+		rp_.getCollection(UserCollection.TASKLOG)
 		.insertOne(new Document("date",new Date())
 					.append("message",msg)
 					.append("obj",Document.parse(obj.toString())));

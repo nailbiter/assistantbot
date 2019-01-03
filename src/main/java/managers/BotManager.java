@@ -23,7 +23,7 @@ public class BotManager extends AbstractManager {
 		return null;
 	}
 	protected static JSONObject GetParamObj(ResourceProvider rp) throws JSONException, Exception {
-		return AbstractManager.GetParamObject(rp.getMongoClient(), BotManager.class.getName());
+		return AbstractManager.GetParamObject(rp, BotManager.class.getName());
 	}
 	@Override
 	public String getResultAndFormat(JSONObject res) throws Exception {

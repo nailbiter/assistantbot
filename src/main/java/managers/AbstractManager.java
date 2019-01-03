@@ -4,13 +4,18 @@
 package managers;
 
 import java.util.logging.Logger;
+
+import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
 
+import assistantbot.ResourceProvider;
 import util.MongoUtil;
+import util.SettingCollection;
 import util.parsers.ParseOrdered;
 import static util.parsers.StandardParserInterpreter.CMD;
 
@@ -35,14 +40,16 @@ public abstract class AbstractManager implements MyManager {
 			return (String)this.getClass().getMethod(res.getString(CMD),JSONObject.class)
 					.invoke(this,po_.parse(res));
 	}
-	protected JSONObject getParamObject(MongoClient mc) throws JSONException, Exception {
-		return GetParamObject(mc,this.getClass().getName());
+	protected JSONObject getParamObject(ResourceProvider rp_) throws JSONException, Exception {
+		return GetParamObject(rp_,this.getClass().getName());
 	}
-	protected static JSONObject GetParamObject(MongoClient mc,String classname) throws JSONException, Exception {
+	public static JSONObject GetParamObject(ResourceProvider rp_,String classname) throws JSONException, Exception {
 		System.err.format("getting param object for %s\n", classname);
-		JSONObject parameters = MongoUtil.GetJsonObjectFromDatabase(mc, 
-				"logistics.params",
-				"name:"+classname).getJSONObject("parameter");
+		MongoCollection<Document> coll = 
+				MongoUtil.GetSettingCollection(rp_, SettingCollection.PARAMS);
+		JSONObject parameters = MongoUtil
+				.GetJsonObjectFromDatabase(coll,"name", classname)
+				.getJSONObject("parameter");
 		return parameters;
 	}
 	public JSONObject getCommands() {

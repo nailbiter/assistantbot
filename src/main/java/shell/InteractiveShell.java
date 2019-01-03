@@ -166,7 +166,7 @@ public class InteractiveShell implements ResourceProvider,MyManager {
 	}
 	@Override
 	public MongoCollection<Document> getCollection(UserCollection name) {
-		return getMongoClient().getDatabase(MongoUtil.LOGISTICS)
+		return mc_.getDatabase(MongoUtil.LOGISTICS)
 				.getCollection(String.format("%s.%s", userName_ ,name.toString()));
 	}
 }

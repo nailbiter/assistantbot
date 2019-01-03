@@ -22,7 +22,7 @@ public class PerlScriptManager extends AbstractManager {
 		return null;
 	}
 	protected static JSONObject GetParamObj(ResourceProvider rp) throws JSONException, Exception {
-		return AbstractManager.GetParamObject(rp.getMongoClient(), PerlScriptManager.class.getName());
+		return AbstractManager.GetParamObject(rp, PerlScriptManager.class.getName());
 	}
 	@Override
 	public String getResultAndFormat(JSONObject res) throws Exception {

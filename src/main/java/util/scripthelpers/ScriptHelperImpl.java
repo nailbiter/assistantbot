@@ -42,11 +42,11 @@ public class ScriptHelperImpl implements ScriptHelper {
 		ASCIITABLE, TABLEBUILDER,HTML
 	};
 	private Invocable inv_ = null;
-	private MongoClient mongoClient_;
+//	private MongoClient mongoClient_;
 	private ResourceProvider rp_;
 	private static JSONObject settings_;
 	public ScriptHelperImpl(ResourceProvider rp) {
-		mongoClient_ = rp.getMongoClient();
+//		mongoClient_ = rp.getMongoClient();
 		rp_ = rp;
 	}
 	@Override
@@ -64,24 +64,24 @@ public class ScriptHelperImpl implements ScriptHelper {
 	public void sendAsFile(JSONObject obj) throws JSONException, IOException, Exception {
 		rp_.sendFile(util.Util.saveToTmpFile(obj.getString("content")));
 	}
-	public void addToDatabase(JSONObject jsonObject) {
-		String[] split = jsonObject.getString("dbname").trim().split("\\.");
-		System.out.format("database name: %s\n", split[0]);
-		System.out.format("collection name: %s\n", split[1]);
-		MongoCollection<Document> col = mongoClient_.getDatabase(split[0]).getCollection(split[1]);
-		JSONArray array = jsonObject.getJSONArray("data");
-		for(Object o:array) {
-			JSONObject obj = (JSONObject)o;
-			Document doc = new Document(obj.toMap());
-			col.insertOne(doc);
-		}
-	}
-	public void dropCollection(JSONObject jsonObject) {
-		String[] split = jsonObject.getString("dbname").trim().split("\\.");
-		System.err.format("database name: %s\n", split[0]);
-		System.err.format("collection name: %s\n", split[1]);
-		mongoClient_.getDatabase(split[0]).getCollection(split[1]).drop();		
-	}
+//	public void addToDatabase(JSONObject jsonObject) {
+//		String[] split = jsonObject.getString("dbname").trim().split("\\.");
+//		System.out.format("database name: %s\n", split[0]);
+//		System.out.format("collection name: %s\n", split[1]);
+//		MongoCollection<Document> col = mongoClient_.getDatabase(split[0]).getCollection(split[1]);
+//		JSONArray array = jsonObject.getJSONArray("data");
+//		for(Object o:array) {
+//			JSONObject obj = (JSONObject)o;
+//			Document doc = new Document(obj.toMap());
+//			col.insertOne(doc);
+//		}
+//	}
+//	public void dropCollection(JSONObject jsonObject) {
+//		String[] split = jsonObject.getString("dbname").trim().split("\\.");
+//		System.err.format("database name: %s\n", split[0]);
+//		System.err.format("collection name: %s\n", split[1]);
+//		mongoClient_.getDatabase(split[0]).getCollection(split[1]).drop();		
+//	}
 	public String printStatTableHTML(JSONObject jsonObject) throws Exception {
 		System.err.format("%s was called with %s\n", "printStatTableHTML",jsonObject.toString(2));
 		return PrintTable(jsonObject.getJSONArray("data"),jsonObject.getString("colname"),inv_,"recordValueToString",

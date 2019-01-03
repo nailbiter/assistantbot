@@ -15,6 +15,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.model.Sorts;
 
 import assistantbot.ResourceProvider;
+import util.UserCollection;
 import util.Util;
 import util.parsers.ParseOrdered.ArgTypes;
 import util.scriptapps.JsApp;
@@ -25,7 +26,7 @@ import util.scripthelpers.ScriptHelperVarkeeper;
 
 public class GymManager extends AbstractManager {
 	private static final String FOLDERNAME = "gym/";
-	private MongoClient mc_;
+//	private MongoClient mc_;
 	private Logger logger_;
 	int dayCount_ = -1;
 	private JSONArray program_;
@@ -36,7 +37,7 @@ public class GymManager extends AbstractManager {
 
 	public GymManager(ResourceProvider rp) throws Exception {
 		super(GetCommands());
-		mc_ = rp.getMongoClient();
+//		mc_ = rp.getMongoClient();
 		logger_ = Logger.getLogger(this.getClass().getName());
 		rp_ = rp;
 		vh_ = new ScriptHelperVarkeeper();
@@ -77,7 +78,7 @@ public class GymManager extends AbstractManager {
 		return tb.toString();
 	}
 	private JSONArray getGymProgram(JSONObject args) throws JSONException, Exception {
-		JSONObject paramObj = getParamObject(mc_);
+		JSONObject paramObj = getParamObject(rp_);
 		String res = 
 				sa_.runCommand(String.format("getprogram %d %d", paramObj.getInt("weekCount"),args.getInt("dayCount")));
 		System.err.format("res=%s\n", res);
@@ -85,7 +86,7 @@ public class GymManager extends AbstractManager {
 	}
 	public String gymdone(JSONObject obj) throws Exception{
 		int exercisenum = obj.optInt("exercisenum",exercisenum_);
-		JSONObject paramObj = getParamObject(mc_);
+		JSONObject paramObj = getParamObject(rp_);
 		if(exercisenum==0 || program_.length()<exercisenum) {
 			throw new Exception(String.format("(%d<=0 || %d<%d)", exercisenum,program_.length(),exercisenum));
 		} else if( exercisenum < 0 ) {
@@ -93,7 +94,7 @@ public class GymManager extends AbstractManager {
 			tb.addTokens("#_","name_", "comment_");
 			final ArrayList<Integer> index = new ArrayList<Integer>();
 			index.add(0);
-			mc_.getDatabase("logistics").getCollection("gymLog")
+			rp_.getCollection(UserCollection.GYMLOG)
 			.find().sort(Sorts.descending("_id")).limit(-exercisenum).forEach(new Block<Document>() {
 				@Override
 				public void apply(Document doc) {
@@ -119,7 +120,7 @@ public class GymManager extends AbstractManager {
 			obj.put("exercise", program_.getJSONObject(exercisenum-1));
 			obj.getJSONObject("exercise").put("num", exercisenum);
 			obj.put("date", new Date());
-			mc_.getDatabase("logistics").getCollection("gymLog")
+			rp_.getCollection(UserCollection.GYMLOG)
 				.insertOne(Document.parse(obj.toString()));
 			return String.format("added %s to %s",obj.toString(2) ,"logistics.gymLog");
 		}

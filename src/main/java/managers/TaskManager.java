@@ -14,9 +14,12 @@ import java.util.TimerTask;
 import org.apache.commons.collections4.Closure;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.mongodb.client.MongoCollection;
 
 import assistantbot.ResourceProvider;
 import managers.tasks.TaskManagerBase;
@@ -25,6 +28,7 @@ import util.AssistantBotException;
 import util.JsonUtil;
 import util.MongoUtil;
 import util.ParseCommentLine;
+import util.UserCollection;
 import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
@@ -41,8 +45,9 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 	}
 	private void setUpReminders(ResourceProvider rp) throws Exception {
 		JSONArray cards = ta_.getCardsInList(comparators_.get(SNOOZED).middle);
-		JSONArray reminders = 
-				MongoUtil.GetJSONArrayFromDatabase(mc_, MongoUtil.LOGISTICS, POSTPONEDTASKS);
+		MongoCollection<Document> coll = 
+				rp_.getCollection(UserCollection.POSTPONEDTASKS);
+		JSONArray reminders = MongoUtil.GetJSONArrayFromDatabase(coll);
 		for(Object o:reminders) {
 			JSONObject obj = (JSONObject)o;
 			System.err.format("set up %s\n", obj.toString(2));
@@ -60,12 +65,12 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 	}
 	public String tasks(JSONObject res) throws Exception {
 		if( !res.has("tasknum") ) {
-			return PrintTasks(getTasks(INBOX),this.getParamObject(mc_),recognizedCatNames_);
+			return PrintTasks(getTasks(INBOX),this.getParamObject(rp_),recognizedCatNames_);
 		} else if(res.getInt("tasknum")>0){
 			rp_.sendMessage(PrintTask(getTasks(INBOX),res.getInt("tasknum"),ta_));
 			return "";
 		} else if(res.getInt("tasknum")==0) {
-			return PrintTasks(getTasks(SNOOZED),this.getParamObject(mc_),recognizedCatNames_);
+			return PrintTasks(getTasks(SNOOZED),this.getParamObject(rp_),recognizedCatNames_);
 		} else if( res.getInt("tasknum") < 0 ) {
 			rp_.sendMessage(PrintTask(getTasks(SNOOZED),-res.getInt("tasknum"), ta_));
 			return "";
@@ -97,7 +102,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		ArrayList<AssistantBotException> exs = 
 				new ArrayList<AssistantBotException>();
 		HashMap<String,Integer> stat = 
-				GetDoneTasksStat(ta_,mc_,comparators_,recognizedCatNames_,exs,MongoUtil.LOGISTICS);
+				GetDoneTasksStat(ta_,rp_,comparators_,recognizedCatNames_,exs,MongoUtil.LOGISTICS);
 		
 		if( !obj.has("num") ) {
 			return PrintDoneTasks(stat,exs);
@@ -121,9 +126,9 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 	public String taskmodify(JSONObject obj) throws JSONException, Exception {
 		if( !obj.has("num") )
 			return PrintSnoozed(ta_
-					,mc_
+					,rp_
 					,comparators_.get(SNOOZED).middle
-					,getParamObject(mc_)
+					,getParamObject(rp_)
 					,logger_
 					,MongoUtil.LOGISTICS);
 		
