@@ -13,11 +13,13 @@ import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 
+import assistantbot.ResourceProvider;
 import managers.MyManager;
 import managers.Replier;
 import managers.TestManager;
 import util.MongoUtil;
 import util.MyBasicBot;
+import util.UserCollection;
 
 public class ParadigmTest extends JsonTest{
 	private Logger logger_ = Logger.getLogger(this.getClass().getName());
@@ -106,9 +108,11 @@ public class ParadigmTest extends JsonTest{
 			.addCol(col, 0);
 		return tb.toString()+String.format("%d/%d", numOfCorrectAnswers,rowNum*colNum);
 	}
-	public static void AddTests(final ArrayList<JsonTest> testContainer, MongoClient mongoClient) throws Exception
+	public static void AddTests(final ArrayList<JsonTest> testContainer, ResourceProvider rp) throws Exception
 	{
-		MongoCollection<Document> tests = mongoClient.getDatabase(MongoUtil.LOGISTICS).getCollection("paradigmTests");
+		MongoCollection<Document> tests = 
+//				rp.getDatabase(MongoUtil.LOGISTICS).getCollection("paradigmTests");
+				rp.getCollection(UserCollection.PARADIGMTESTS);
 		tests.find().forEach(new Block<Document>() {
 			@Override
 			public void apply(Document arg0) {

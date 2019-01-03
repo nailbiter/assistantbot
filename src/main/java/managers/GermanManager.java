@@ -11,6 +11,7 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 
 import assistantbot.ResourceProvider;
+import util.UserCollection;
 import util.Util;
 import util.parsers.ParseOrdered;
 
@@ -26,7 +27,8 @@ public class GermanManager extends AbstractManager {
 	}
 	public GermanManager(ResourceProvider rp){
 		super(GetCommands());
-		genderCollection_ = rp.getMongoClient().getDatabase("logistics").getCollection("gender");
+//		genderCollection_ = rp.getMongoClient().getDatabase("logistics").getCollection("gender");
+		genderCollection_ = rp.getCollection(UserCollection.GENDER);
 	}
 	protected static String EmptyWrap(String repl) {
 		if(repl==null || repl.isEmpty())

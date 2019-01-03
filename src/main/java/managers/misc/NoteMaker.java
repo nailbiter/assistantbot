@@ -4,13 +4,15 @@ import java.util.Date;
 
 import org.bson.Document;
 
-import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
+
+import assistantbot.ResourceProvider;
+import util.UserCollection;
 
 public class NoteMaker {
 	MongoCollection<Document> notesCollection_ = null;
-	public NoteMaker(MongoClient mc) {
-		notesCollection_ = mc.getDatabase("logistics").getCollection("notes");
+	public NoteMaker(ResourceProvider rp) {
+		notesCollection_ = rp.getCollection(UserCollection.NOTES);
 	}
 	public void makeNote(String noteContent) {
 		Document doc = new Document();

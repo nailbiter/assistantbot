@@ -9,17 +9,20 @@ import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 
+import assistantbot.ResourceProvider;
 import util.MongoUtil;
+import util.UserCollection;
 
 public class UrlTest extends JsonTest {
 	public UrlTest(JSONObject obj) {
 		obj_ = obj;
 	}
 
-	public static void AddTests(final ArrayList<JsonTest> testContainer, MongoClient mongoClient) throws Exception
+	public static void AddTests(final ArrayList<JsonTest> testContainer, ResourceProvider rp) throws Exception
 	{
 		MongoCollection<Document> tests = 
-				mongoClient.getDatabase(MongoUtil.LOGISTICS).getCollection("urlTests");
+//				rp.getDatabase(MongoUtil.LOGISTICS).getCollection("urlTests");
+				rp.getCollection(UserCollection.URLTESTS);
 		tests.find().forEach(new Block<Document>() {
 			@Override
 			public void apply(Document arg0) {

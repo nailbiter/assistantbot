@@ -43,7 +43,7 @@ public class MiscUtilManager extends AbstractManager {
 	private Hashtable<String,Object> hash_ = new Hashtable<String,Object>();
 	TrelloAssistant ta_;
 	String tasklist_ = null;
-	private MongoClient mc_;
+//	private MongoClient mc_;
 	private static final String TASKLISTNAME = "todo";
 	NoteMaker nm_ = null;
 	private ResourceProvider rp_;
@@ -58,8 +58,8 @@ public class MiscUtilManager extends AbstractManager {
 		} catch(Exception e) {
 			e.printStackTrace(System.err);
 		}
-		mc_ = rp.getMongoClient();
-		nm_ = new NoteMaker(mc_);
+//		mc_ = rp.getMongoClient();
+		nm_ = new NoteMaker(rp);
 		rp_ = rp;
 		sa_ = new JsApp(Util.getScriptFolder()+"gendistrib",null, 
 				new ScriptHelper() {

@@ -26,6 +26,7 @@ import util.parsers.ParseOrderedCmd;
 public class MongoManager extends AbstractManager {
 	protected static final String IDFIELD = "_id";
 	private MongoDatabase db_;
+	@SuppressWarnings("deprecation")
 	public MongoManager(ResourceProvider rp) {
 		super(GetCommands());
 		db_ = rp.getMongoClient().getDatabase(MongoUtil.LOGISTICS);
