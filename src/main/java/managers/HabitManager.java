@@ -24,6 +24,7 @@ import managers.habits.HabitRunnable;
 import managers.habits.JSONObjectCallback;
 import util.JsonUtil;
 import util.KeyRing;
+import util.UserCollection;
 import util.Util;
 import util.parsers.FlagParser;
 
@@ -49,10 +50,12 @@ public class HabitManager extends HabitManagerBase
 	{
 		super(rp);
 		
-		streaks_ = rp.getMongoClient().getDatabase("logistics").getCollection("habitspunch");
+		streaks_ = rp
+//				.getMongoClient().getDatabase("logistics").getCollection("habitspunch");
+				.getCollection(UserCollection.HABITSPUNCH);
 		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
 				KeyRing.getTrello().getString("token"));
-		habits_ = FetchHabits(rp.getMongoClient());
+		habits_ = FetchHabits(rp);
 		failTimes = new Hashtable<String,Date>(habits_.length());
 		pendingListId_ = ta_.findListByName(HABITBOARDID, PENDINGLISTNAME);
 		failedListId_ = ta_.findListByName(HABITBOARDID, "FAILED");
@@ -77,9 +80,10 @@ public class HabitManager extends HabitManagerBase
 		}
 		donep_ = new Donep(ta_,ud_,optionMsgs_);
 	}
-	JSONArray FetchHabits(MongoClient mongoClient) {
+	JSONArray FetchHabits(ResourceProvider rp) {
 		final JSONArray habits = new JSONArray();
-		mongoClient.getDatabase("logistics").getCollection("habits")
+//		rp.getDatabase("logistics").getCollection("habits")
+		rp.getCollection(UserCollection.HABITS)
 			.find(Filters.eq("enabled",true)).forEach(new Block<Document>() {
 				@Override
 				public void apply(Document doc) {
