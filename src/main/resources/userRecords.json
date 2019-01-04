@@ -10,13 +10,14 @@
 			,"ReportManager"
 			,"GermanManager"
 			,"GymManager"
-		],
-		"loginmessage":[
+		]
+		,"loginmessage":[
 			"Tesime"
-		],
-		"restartmessage":[
+		]
+		,"restartmessage":[
 			"restart message"
 		]
+		,"timezone":"JST"
 	},
 	"father":{
 		"managers":[
@@ -26,5 +27,6 @@
 			"README:",
 			"https://github.com/nailbiter/assistantbot/blob/master/READMEs/MoneyBot.rus.md"
 		]
+		,"timezone":"EET"
 	}
 }

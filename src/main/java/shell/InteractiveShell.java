@@ -40,7 +40,7 @@ public class InteractiveShell implements ResourceProvider,MyManager {
 	private static String PROMPT = "assistantbot> ";
 	private String fileToOutputTo_;
 	private StandardParserInterpreter parser_;
-	private String userName_ = "alex";
+	private JSONObject userName_ = Util.GetDefaultUser();
 	static MongoClient mc_;
 	public static void Start(JSONObject profileObj) throws Exception {
 		(new InteractiveShell(profileObj)).start(profileObj);
@@ -168,6 +168,12 @@ public class InteractiveShell implements ResourceProvider,MyManager {
 	@Override
 	public MongoCollection<Document> getCollection(UserCollection name) {
 		return mc_.getDatabase(MongoUtil.getLogistics())
-				.getCollection(String.format("%s.%s", userName_ ,name.toString()));
+				.getCollection(String.format("%s.%s", 
+						userName_.getString(Util.NAMEFIELDNAME) ,
+						name.toString()));
+	}
+	@Override
+	public JSONObject getUserObject() {
+		return userName_;
 	}
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.bson.Document;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -38,4 +39,5 @@ public interface ResourceProvider {
 	 */
 	public abstract int sendMessageWithKeyBoard(String msg, List<List<InlineKeyboardButton>> makePerCatButtons);
 	public MongoCollection<Document> getCollection(UserCollection name);
+	public JSONObject getUserObject();
 }

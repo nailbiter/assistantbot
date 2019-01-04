@@ -29,29 +29,28 @@ import util.parsers.AbstractParser;
 import util.parsers.StandardParserInterpreter;
 
 public class MyAssistantUserData extends UserData implements ResourceProvider,MyManager {
-	private static final String DEFAULTUSERNAME = "alex";
 	protected Scheduler scheduler_ = null; //FIXME: should it be a singleton?
 	protected StandardParserInterpreter parser_ = null;
 	protected long chatID_;
 	MyAssistantBot bot_ = null;
 	private Logger logger_;
 	private List<MyManager> managers_ = new ArrayList<MyManager>();
-	private String userName_ = null;
+	private JSONObject userObject_ = null;
 	MyAssistantUserData(Long chatID,MyAssistantBot bot, JSONArray names){
 		this(chatID,bot,names,null);
 	}
-	MyAssistantUserData(Long chatID,MyAssistantBot bot, JSONArray names,String name){
+	MyAssistantUserData(Long chatID,MyAssistantBot bot, JSONArray names,JSONObject obj){
 		try {
 			chatID_ = chatID;
 			bot_ = bot;
 			logger_ = Logger.getLogger(this.getClass().getName());
 			scheduler_ = new Scheduler();
 			scheduler_.setTimeZone(Util.getTimezone());
-			userName_ = (name != null)? 
-					name
+			userObject_ = (obj != null)? 
+					obj
 					:(( names == null ) ? 
 							null 
-							: DEFAULTUSERNAME
+							: Util.GetDefaultUser()
 							);
 			
 			managers_.add(this);
@@ -185,8 +184,6 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 				MongoUtil.GetSettingCollection(
 				bot_.getMongoClient()
 				, SettingCollection.USERS);
-//				.getDatabase(MongoUtil.getLogistics())
-//				.getCollection(SettingCollection.USERS.toString());
 		Document doc = coll.find(userDoc).first();
 		if( doc == null ) {
 			return String.format("cannot log in \"%s\" (wrong username or password)", 
@@ -196,7 +193,9 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 		}
 		
 		JSONObject obj = new JSONObject(doc.toJson());
-		userName_ = obj.getString("name");
+		userObject_ = 
+//				obj.getString("name");
+				obj;
 		parser_ = StandardParserInterpreter
 				.Create(managers_, obj.getJSONArray("managers"), this);
 		coll.findOneAndUpdate(userDoc, Updates.set("port",chatID_));
@@ -208,22 +207,20 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 		return "";
 	}
 	private String unlogin() throws JSONException, Exception {
-		if( userName_ == null ) {
+		if( userObject_ == null ) {
 			return String.format("not logged in");
 		}
 		MongoCollection<Document> coll =
 				MongoUtil.GetSettingCollection(
 				bot_.getMongoClient()
-//				.getDatabase(MongoUtil.getLogistics())
-//				.getCollection(SettingCollection.USERS.toString());
 				,SettingCollection.USERS);
 		
-		coll.findOneAndUpdate(new Document("name", userName_),Updates.unset("port"));
+		coll.findOneAndUpdate(new Document("name", userObject_),Updates.unset("port"));
 		managers_.clear();
 		managers_.add(this);
 		parser_ = StandardParserInterpreter.Create(managers_, null, this);
-		String res = String.format("logging out \"%s\"",userName_);
-		userName_ = null;
+		String res = String.format("logging out \"%s\"",userObject_);
+		userObject_ = null;
 		
 		return res;
 	}
@@ -231,6 +228,13 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 	@Override
 	public MongoCollection<Document> getCollection(UserCollection name) {
 		return bot_.getMongoClient().getDatabase(MongoUtil.getLogistics())
-				.getCollection(String.format("%s.%s", userName_,name.toString()));
+				.getCollection(String
+						.format("%s.%s", 
+								userObject_.getString(Util.NAMEFIELDNAME),
+								name.toString()));
+	}
+	@Override
+	public JSONObject getUserObject() {
+		return userObject_;
 	}
 }

@@ -1,7 +1,9 @@
 package managers;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -9,6 +11,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.TimeZone;
 
 import javax.script.ScriptException;
 
@@ -18,9 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.mongodb.Block;
-import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 
 import assistantbot.ResourceProvider;
@@ -28,13 +29,12 @@ import util.AssistantBotException;
 import util.ParseCommentLine;
 import util.UserCollection;
 import util.Util;
-import util.db.MongoUtil;
 import util.parsers.ParseOrdered;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
 
 public class MoneyManager extends AbstractManager implements OptionReplier{
-	private static final String USERNAME = "username";
+//	private static final String USERNAME = "username";
 	HashSet<String> cats = new HashSet<String>();
 	ResourceProvider rp_ = null;
 	MongoCollection<Document> money;
@@ -162,7 +162,11 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 						totals.put(category, 0);
 					totals.put(category, totals.get(category) + amount);
 					tb.addToken(category);
-					tb.addToken(doc.getDate("date").toString());
+					DateFormat formatter = 
+							new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy");
+					formatter.setTimeZone(TimeZone.getTimeZone("EET"));
+					Date date = doc.getDate("date");
+					tb.addToken(formatter.format(date));
 		       }
 		});
 		

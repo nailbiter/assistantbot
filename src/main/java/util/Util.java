@@ -31,6 +31,7 @@ import util.AssistantBotException.Type;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.github.nailbiter.util.TableBuilder;
@@ -51,6 +52,7 @@ public class Util{
 			+ "\"Jun\":6,\"Jul\":7,\"Aug\":8,\"Sep\":9,\"Oct\":10,\"Nov\":11,"
 			+ "\"Dec\":12}");
 	private static final int MAXLINENUMINMESSAGE = 41;
+	public static final String NAMEFIELDNAME = "name";
 	private static Random rand_ = new Random();
 	private static JSONObject profileObj_;
 	protected static void init() throws Exception {
@@ -377,4 +379,12 @@ public class Util{
 			res.add(arr.get(i));
 		return res;
 	}
+	public static JSONObject GetDefaultUser() throws JSONException, Exception {
+		JSONObject res = new JSONObject(GetFile(Util.USERSFILE))
+				.getJSONObject(Util.DEFAULTUSERNAME);
+		res.put(NAMEFIELDNAME, Util.DEFAULTUSERNAME);
+		return res;
+	}
+	private static final String DEFAULTUSERNAME = "alex";
+	private static final String USERSFILE = "src/main/resources/userRecords.json";
 }
