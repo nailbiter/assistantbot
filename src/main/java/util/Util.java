@@ -318,7 +318,7 @@ public class Util{
 				"				</div> ", text,tip);
 	}
 	public static int SimpleEval(String expr) throws AssistantBotException {
-		if( !Pattern.matches("[0-9+*]+", expr)) {
+		if( !Pattern.matches("[0-9-+*]+", expr)) {
 			throw new AssistantBotException(AssistantBotException.Type.ARITHMETICPARSE,String.format("cannot eval \"%s\"", expr));
 		}
 		String[] split = expr.split("\\+");

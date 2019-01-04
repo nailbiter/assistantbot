@@ -60,16 +60,17 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 			return ShowTags(money,rp_);
 		}
 		
+		int am = 0;
 		try {
-			int am = Integer.parseInt(obj.getString("amount"));
-			if( am < 0 ) {
-				return costs( -am );
-			}
-		} catch(NumberFormatException e) {
+//			Integer.parseInt(obj.getString("amount"));
+			am = Util.SimpleEval(obj.getString("amount"));
+		} catch(AssistantBotException e) {
+		}
+		if( am < 0 ) {
+			return costs( -am );
 		}
 		
-		
-		obj.put("amount", Util.SimpleEval(obj.getString("amount")));
+		obj.put("amount", am);
 		
 		String comment = obj.optString("comment");
 		System.err.format("comment=\"%s\"\n", comment);
