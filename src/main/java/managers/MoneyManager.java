@@ -60,12 +60,8 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 			return ShowTags(money,rp_);
 		}
 		
-		int am = 0;
-		try {
-//			Integer.parseInt(obj.getString("amount"));
-			am = Util.SimpleEval(obj.getString("amount"));
-		} catch(AssistantBotException e) {
-		}
+		int am = Util.SimpleEval(obj.getString("amount"));
+		
 		if( am < 0 ) {
 			return costs( -am );
 		}
@@ -87,12 +83,16 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		tags.removeAll(cats);
 		obj.put("tags", new JSONArray(tags));
 		
-		if( category == null ) {
-			int msgid = rp_.sendMessageWithKeyBoard("which category?", new JSONArray(cats));
+		if( category != null ) {
+			return putMoney(obj,category);
+		} else if( cats.size()==1 ) {
+			return putMoney(obj, cats.iterator().next());
+		} else {
+			int msgid = 
+					rp_.sendMessageWithKeyBoard("which category?", 
+							new JSONArray(cats));
 			this.pendingOperations.put(msgid, obj);
 			return String.format("prepare to put %s",obj.toString());
-		} else {
-			return putMoney(obj,category);
 		}
 	}
 	private static String ShowTags(MongoCollection<Document> money, ResourceProvider rp) {
