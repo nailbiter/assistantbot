@@ -164,9 +164,13 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 					tb.addToken(category);
 					DateFormat formatter = 
 							new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy");
-					formatter.setTimeZone(TimeZone.getTimeZone("EET"));
+					String timezonename = 
+							rp_.getUserObject().getString("timezone");
+					formatter
+						.setTimeZone(TimeZone.getTimeZone(timezonename));
 					Date date = doc.getDate("date");
-					tb.addToken(formatter.format(date));
+					tb.addToken(String.format("%s %s", formatter.format(date)
+							,timezonename ));
 		       }
 		});
 		
