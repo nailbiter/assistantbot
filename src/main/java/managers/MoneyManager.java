@@ -20,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.github.nailbiter.util.TableBuilder;
 import com.mongodb.Block;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Sorts;
@@ -29,6 +30,7 @@ import util.AssistantBotException;
 import util.ParseCommentLine;
 import util.UserCollection;
 import util.Util;
+import util.parsers.FlagParser;
 import util.parsers.ParseOrdered;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
@@ -63,7 +65,7 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		int am = Util.SimpleEval(obj.getString("amount"));
 		
 		if( am < 0 ) {
-			return costs( -am );
+			return showCosts( -am ,obj.optString("comment", ""));
 		}
 		
 		obj.put("amount", am);
@@ -135,15 +137,21 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		return String.format("put %s in category %s",
 					obj.toString(),categoryName);
 	}
-	private String costs(int howMuch) {
-		final com.github.nailbiter.util.TableBuilder tb = new com.github.nailbiter.util.TableBuilder();
-		tb.newRow();
-		tb.addToken("#");
-		tb.addToken("amount");
-		tb.addToken("category");
-		tb.addToken("date");
+	private String showCosts(int howMuch, String flags) throws AssistantBotException {
+		final FlagParser fp = new FlagParser()
+				.addFlag('c', "show comments")
+				.parse(flags);
+		final TableBuilder tb = new TableBuilder();
+		tb.newRow()
+		.addToken("#")
+		.addToken("amount")
+		.addToken("category")
+		.addToken("date");
+		if( fp.contains('c') )
+			tb.addToken("comment");
 		final Hashtable<String,Integer> totals = new Hashtable<String,Integer>();
-		final com.github.nailbiter.util.TableBuilder tb1 = new com.github.nailbiter.util.TableBuilder();
+		final TableBuilder tb1 = new TableBuilder();
+		
 		
 		final JSONObject container = new JSONObject().put("i", 1);
 		money
@@ -171,6 +179,8 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 					Date date = doc.getDate("date");
 					tb.addToken(String.format("%s %s", formatter.format(date)
 							,timezonename ));
+					if( fp.contains('c') )
+						tb.addToken(obj.optString("comment",""));
 		       }
 		});
 		
@@ -186,7 +196,12 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 	       tb1.addToken(totals.get(key));
 	    }
 		
-		return tb.toString()+"\n------------------\n"+tb1.toString();
+		return 
+				tb
+				+"------------------"
+				+"\n"
+				+tb1
+				;
 	}
 	public static JSONArray GetCommands() throws Exception {
 		return new JSONArray()
