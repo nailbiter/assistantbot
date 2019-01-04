@@ -17,9 +17,9 @@ import assistantbot.ResourceProvider;
 import managers.MyManager;
 import managers.Replier;
 import managers.TestManager;
-import util.MongoUtil;
 import util.MyBasicBot;
 import util.UserCollection;
+import util.db.MongoUtil;
 
 public class ParadigmTest extends JsonTest{
 	private Logger logger_ = Logger.getLogger(this.getClass().getName());

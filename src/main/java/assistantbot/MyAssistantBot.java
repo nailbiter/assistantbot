@@ -1,15 +1,18 @@
 package assistantbot;
+import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
 
 import util.KeyRing;
-import util.MongoUtil;
 import util.MyBasicBot;
+import util.SettingCollection;
 import util.TelegramUtil;
 import util.UserData;
+import util.db.MongoUtil;
 
 public class MyAssistantBot extends MyBasicBot {
 	private JSONObject profileObj_;
@@ -27,8 +30,9 @@ public class MyAssistantBot extends MyBasicBot {
 		}
 	}
 	private void initializeUserRecords() {
-		JSONArray array = MongoUtil.GetJSONArrayFromDatabase(mongoClient_, 
-				MongoUtil.LOGISTICS, "users");
+		MongoCollection<Document> coll = 
+				MongoUtil.GetSettingCollection(mongoClient_, SettingCollection.USERS);
+		JSONArray array = MongoUtil.GetJSONArrayFromDatabase(coll);
 		for(Object o:array) {
 			JSONObject obj = (JSONObject)o;
 			System.err.format("checking whether initialize \"%s\"\n", obj.getString("name"));

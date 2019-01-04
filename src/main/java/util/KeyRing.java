@@ -5,13 +5,18 @@ import org.json.JSONObject;
 
 import com.mongodb.Block;
 import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+
+import util.db.MongoUtil;
 
 public class KeyRing {
 	static String token,passwd;
 	static JSONObject obj_ = null;
 	public static void init(String name, MongoClient mongoClient) throws Exception
 	{
-		obj_ = MongoUtil.GetJsonObjectFromDatabase(mongoClient, "logistics.keyring");
+		MongoCollection<Document> coll = 
+				MongoUtil.GetSettingCollection(mongoClient, SettingCollection.KEYRING);
+		obj_ = MongoUtil.GetJsonObjectFromDatabase(coll, null, null);
 		token = obj_.getJSONObject("telegramtokens").getString(name);
 		passwd = obj_.getString("passwd");
 	}

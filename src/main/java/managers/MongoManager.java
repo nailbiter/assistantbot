@@ -18,7 +18,7 @@ import com.mongodb.client.model.Updates;
 import assistantbot.MyAssistantUserData;
 import assistantbot.ResourceProvider;
 import util.AssistantBotException;
-import util.MongoUtil;
+import util.db.MongoUtil;
 import util.parsers.ParseOrdered;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
@@ -29,7 +29,7 @@ public class MongoManager extends AbstractManager {
 	@SuppressWarnings("deprecation")
 	public MongoManager(ResourceProvider rp) {
 		super(GetCommands());
-		db_ = rp.getMongoClient().getDatabase(MongoUtil.LOGISTICS);
+		db_ = rp.getMongoClient().getDatabase(MongoUtil.getLogistics());
 	}
 	private static JSONArray GetCommands() {
 		return new JSONArray()

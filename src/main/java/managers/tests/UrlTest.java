@@ -10,8 +10,8 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 
 import assistantbot.ResourceProvider;
-import util.MongoUtil;
 import util.UserCollection;
+import util.db.MongoUtil;
 
 public class UrlTest extends JsonTest {
 	public UrlTest(JSONObject obj) {

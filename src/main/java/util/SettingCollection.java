@@ -11,7 +11,6 @@ public enum SettingCollection {
 		name_ = name;
 	}
 	public String toString() {
-//		return "."+name_;
-		return name_;
+		return "_"+name_;
 	}
 }

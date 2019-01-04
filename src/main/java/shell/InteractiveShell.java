@@ -22,9 +22,9 @@ import com.mongodb.client.MongoCollection;
 import assistantbot.ResourceProvider;
 import managers.MyManager;
 import util.KeyRing;
-import util.MongoUtil;
 import util.UserCollection;
 import util.Util;
+import util.db.MongoUtil;
 import util.parsers.StandardParserInterpreter;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
@@ -164,9 +164,10 @@ public class InteractiveShell implements ResourceProvider,MyManager {
 		}
 		throw new Exception(String.format("for res=%s", res.toString()));
 	}
+	@SuppressWarnings("deprecation")
 	@Override
 	public MongoCollection<Document> getCollection(UserCollection name) {
-		return mc_.getDatabase(MongoUtil.LOGISTICS)
+		return mc_.getDatabase(MongoUtil.getLogistics())
 				.getCollection(String.format("%s.%s", userName_ ,name.toString()));
 	}
 }

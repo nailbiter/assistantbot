@@ -26,8 +26,8 @@ import com.mongodb.client.model.Updates;
 
 import assistantbot.ResourceProvider;
 import util.Util;
+import util.db.MongoUtil;
 import util.JsonUtil;
-import util.MongoUtil;
 import util.UserCollection;
 import util.parsers.ParseOrdered;
 

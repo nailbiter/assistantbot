@@ -38,9 +38,9 @@ import managers.TaskManager;
 import util.AssistantBotException;
 import util.JsonUtil;
 import util.KeyRing;
-import util.MongoUtil;
 import util.ParseCommentLine;
 import util.UserCollection;
+import util.db.MongoUtil;
 import util.scriptapps.JsApp;
 import util.scriptapps.ScriptApp;
 import util.scripthelpers.ScriptHelperArray;
@@ -235,7 +235,8 @@ public class TaskManagerBase extends AbstractManager {
 		}
 		return res;
 	}
-	protected static String PrintSnoozed(TrelloAssistant ta, ResourceProvider rp, String listid, JSONObject po, Logger logger, String dbname) throws Exception {
+	protected static String PrintSnoozed(TrelloAssistant ta, ResourceProvider rp, 
+			String listid, JSONObject po, Logger logger) throws Exception {
 		JSONArray tasks = ta.getCardsInList(listid);
 		MongoCollection<Document> coll = 
 				rp.getCollection(UserCollection.POSTPONEDTASKS);
@@ -245,7 +246,7 @@ public class TaskManagerBase extends AbstractManager {
 		ArrayList<JSONObject> res = new ArrayList<JSONObject>();
 		for(Object o:reminders) {
 			JSONObject obj = (JSONObject)o;
-			Date d = util.MongoUtil.MongoDateStringToLocalDate(obj.getString("date"));
+			Date d = util.db.MongoUtil.MongoDateStringToLocalDate(obj.getString("date"));
 			if( d.after(now) ) {
 				JSONObject habitObj = JsonUtil.FindInJSONArray(tasks, SHORTURL, obj.getString(SHORTURL));
 				if(habitObj==null) {
@@ -295,7 +296,8 @@ public class TaskManagerBase extends AbstractManager {
 	}
 	protected static HashMap<String, Integer> GetDoneTasksStat(TrelloAssistant ta, ResourceProvider rp,
 			HashMap<String, ImmutableTriple<Comparator<JSONObject>, String, Integer>> c,
-			final ArrayList<String> recognizedCats, final ArrayList<AssistantBotException> exs, String dbname) throws Exception {
+			final ArrayList<String> recognizedCats, 
+			final ArrayList<AssistantBotException> exs) throws Exception {
 		final JSONArray alltasks = ta.getAllCardsInList(c.get(INBOX).middle);
 		System.err.format("alltasks has %d cards\n", alltasks.length());
 		
@@ -308,7 +310,6 @@ public class TaskManagerBase extends AbstractManager {
 		System.err.format("date: %s\n", d.toString());
 		
 		final HashMap<String,Integer> stat = new HashMap<String,Integer>();
-//		rp.getDatabase(dbname).getCollection("taskLog")
 		rp.getCollection(UserCollection.TASKLOG)
 		.find(and(eq("message","taskdone"),gte("date",d)))
 		.forEach(new Block<Document>() {

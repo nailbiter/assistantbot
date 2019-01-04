@@ -26,9 +26,9 @@ import managers.tasks.TaskManagerBase;
 import managers.tasks.TrelloMover;
 import util.AssistantBotException;
 import util.JsonUtil;
-import util.MongoUtil;
 import util.ParseCommentLine;
 import util.UserCollection;
+import util.db.MongoUtil;
 import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
@@ -102,7 +102,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		ArrayList<AssistantBotException> exs = 
 				new ArrayList<AssistantBotException>();
 		HashMap<String,Integer> stat = 
-				GetDoneTasksStat(ta_,rp_,comparators_,recognizedCatNames_,exs,MongoUtil.LOGISTICS);
+				GetDoneTasksStat(ta_,rp_,comparators_,recognizedCatNames_,exs);
 		
 		if( !obj.has("num") ) {
 			return PrintDoneTasks(stat,exs);
@@ -129,8 +129,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 					,rp_
 					,comparators_.get(SNOOZED).middle
 					,getParamObject(rp_)
-					,logger_
-					,MongoUtil.LOGISTICS);
+					,logger_);
 		
 		JSONObject card = getTask(obj.getInt("num"));
 		

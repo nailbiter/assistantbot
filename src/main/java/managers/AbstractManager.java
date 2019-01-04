@@ -14,8 +14,8 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 
 import assistantbot.ResourceProvider;
-import util.MongoUtil;
 import util.SettingCollection;
+import util.db.MongoUtil;
 import util.parsers.ParseOrdered;
 import static util.parsers.StandardParserInterpreter.CMD;
 

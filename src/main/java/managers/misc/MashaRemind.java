@@ -16,7 +16,7 @@ import com.mongodb.MongoClient;
 
 import assistantbot.ResourceProvider;
 import managers.AbstractManager;
-import util.MongoUtil;
+import util.db.MongoUtil;
 
 public class MashaRemind {
 	private static final String MASHALISTID = "5b610f6d34d70854e769326d";

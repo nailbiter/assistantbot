@@ -25,10 +25,10 @@ import com.mongodb.client.model.Sorts;
 
 import assistantbot.ResourceProvider;
 import util.AssistantBotException;
-import util.MongoUtil;
 import util.ParseCommentLine;
 import util.UserCollection;
 import util.Util;
+import util.db.MongoUtil;
 import util.parsers.ParseOrdered;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;

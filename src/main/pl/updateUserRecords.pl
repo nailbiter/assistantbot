@@ -58,7 +58,8 @@ GetOptions(
 	"testflag=i" => \$Testflag,
 );
 my $client = MongoDB->connect(sprintf("mongodb://%s:%s\@ds149672.mlab.com:49672/logistics","nailbiter",$commandline{password}));
-my $coll = $client->ns('logistics.users');
+#my $coll = $client->ns('logistics.users');
+my $coll = $client->get_database('logistics')->get_collection('_users');
 my $json = loadJsonFromFile($commandline{json});
 for(keys(%$json)){
 	my $key = $_;

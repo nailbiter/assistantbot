@@ -21,7 +21,7 @@ import it.sauronsoftware.cron4j.Scheduler;
 import managers.MyManager;
 import managers.OptionReplier;
 import util.Util;
-import util.MongoUtil;
+import util.db.MongoUtil;
 import util.SettingCollection;
 import util.UserCollection;
 import util.UserData;
@@ -29,9 +29,6 @@ import util.parsers.AbstractParser;
 import util.parsers.StandardParserInterpreter;
 
 public class MyAssistantUserData extends UserData implements ResourceProvider,MyManager {
-	/**
-	 * @deprecated
-	 */
 	private static final String DEFAULTUSERNAME = "alex";
 	protected Scheduler scheduler_ = null; //FIXME: should it be a singleton?
 	protected StandardParserInterpreter parser_ = null;
@@ -184,9 +181,12 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 	private String login(String username, String password) throws JSONException, Exception {
 		Document userDoc = new Document("name",username);
 		userDoc.put("pass", password);
-		MongoCollection<Document> coll = bot_.getMongoClient()
-				.getDatabase(MongoUtil.LOGISTICS)
-				.getCollection(SettingCollection.USERS.toString());
+		MongoCollection<Document> coll =
+				MongoUtil.GetSettingCollection(
+				bot_.getMongoClient()
+				, SettingCollection.USERS);
+//				.getDatabase(MongoUtil.getLogistics())
+//				.getCollection(SettingCollection.USERS.toString());
 		Document doc = coll.find(userDoc).first();
 		if( doc == null ) {
 			return String.format("cannot log in \"%s\" (wrong username or password)", 
@@ -211,9 +211,12 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 		if( userName_ == null ) {
 			return String.format("not logged in");
 		}
-		MongoCollection<Document> coll = bot_.getMongoClient()
-				.getDatabase(MongoUtil.LOGISTICS)
-				.getCollection(SettingCollection.USERS.toString());
+		MongoCollection<Document> coll =
+				MongoUtil.GetSettingCollection(
+				bot_.getMongoClient()
+//				.getDatabase(MongoUtil.getLogistics())
+//				.getCollection(SettingCollection.USERS.toString());
+				,SettingCollection.USERS);
 		
 		coll.findOneAndUpdate(new Document("name", userName_),Updates.unset("port"));
 		managers_.clear();
@@ -224,9 +227,10 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 		
 		return res;
 	}
+	@SuppressWarnings("deprecation")
 	@Override
 	public MongoCollection<Document> getCollection(UserCollection name) {
-		return bot_.getMongoClient().getDatabase(MongoUtil.LOGISTICS)
+		return bot_.getMongoClient().getDatabase(MongoUtil.getLogistics())
 				.getCollection(String.format("%s.%s", userName_,name.toString()));
 	}
 }
