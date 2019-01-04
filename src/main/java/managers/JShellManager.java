@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import assistantbot.ResourceProvider;
 import jshell.JShell;
 import util.KeyRing;
+import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
 import static util.parsers.ParseOrdered.MakeCommand;
 import static util.parsers.ParseOrdered.MakeCommandArg;
@@ -43,13 +44,12 @@ public class JShellManager extends AbstractManager{
 	}
 	public static JSONArray GetCommands() {
 		return new JSONArray()
-				.put(MakeCommand("login", "login into shell",
-						asList(
-								MakeCommandArg("passwd",ArgTypes.string,false)
-								)))
+				.put(new ParseOrderedCmd("login", "login into shell",
+								new ParseOrderedArg("passwd",ArgTypes.string)))
 				.put(
-				new ParseOrderedCmd("cmd","execute command",asList(
-						MakeCommandArg("command",ArgTypes.remainder,false)))
+				new ParseOrderedCmd("cmd","execute command",
+						new ParseOrderedArg("command",ArgTypes.remainder)
+						.makeOpt())
 				.makeDefaultHandler());
 	}
 	@Override

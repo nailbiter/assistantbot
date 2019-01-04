@@ -43,11 +43,6 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 	public MoneyManager(ResourceProvider rp) throws Exception
 	{
 		super(GetCommands());
-//		MongoClient mongoClient = rp.getMongoClient();
-//		mongoClient
-//			.getDatabase(MongoUtil.LOGISTICS)
-//			.getCollection("moneycats")
-//			.find(Filters.eq(USERNAME,rp.getUserName()))
 		rp.getCollection(UserCollection.MONEYCATS)
 			.find()
 			.forEach(new Block<Document>() {
@@ -56,7 +51,6 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		    	   cats.add(new JSONObject(doc.toJson()).getString("name"));
 		       }
 			});
-//		money = mongoClient.getDatabase(MongoUtil.LOGISTICS).getCollection("money");
 		money = rp.getCollection(UserCollection.MONEY);
 		rp_ = rp;
 	}
@@ -104,7 +98,6 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		final StringBuilder sb = new StringBuilder("tags: \n");
 		final HashSet<String> set = new HashSet<String> ();
 		money
-//		.find(Filters.eq(USERNAME,rp.getUserName()))
 		.find()
 		.forEach(new Block<Document>() {
 			@Override
@@ -136,7 +129,6 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		else
 			res.put("date", new Date());
 		res.put("comment", obj.getString("comment"));
-//		res.put(USERNAME, rp_.getUserName());
 		res.put("tags", obj.getJSONArray("tags"));
 		money.insertOne(res);
 		return String.format("put %s in category %s",
@@ -154,7 +146,6 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		
 		final JSONObject container = new JSONObject().put("i", 1);
 		money
-//		.find(Filters.eq(USERNAME,rp_.getUserName()))
 		.find()
 		.sort(Sorts.descending("date")).limit(howMuch).forEach(new Block<Document>() {
 		       @Override
@@ -189,12 +180,16 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		return tb.toString()+"\n------------------\n"+tb1.toString();
 	}
 	public static JSONArray GetCommands() throws Exception {
-		JSONArray res = new JSONArray()
+		return new JSONArray()
 				.put(new ParseOrderedCmd("money", "spent money",
-						Arrays.asList((JSONObject)new ParseOrderedArg("amount",ParseOrdered.ArgTypes.string).makeOpt(),
-								(JSONObject)new ParseOrderedArg("comment", ParseOrdered.ArgTypes.remainder).makeOpt())))
+						new ParseOrderedArg("amount",
+								ParseOrdered.ArgTypes.string)
+						.makeOpt(),
+						new ParseOrderedArg("comment", 
+								ParseOrdered.ArgTypes.remainder)
+						.makeOpt())
+						.makeDefaultHandler())
 				;
-		return res;
 	}
 	@Override
 	public String processReply(int messageID,String msg) {

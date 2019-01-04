@@ -1,9 +1,15 @@
 {
 	"alex":{
 		"managers":[
-			"MoneyManager","PerlScriptManager","HabitManager",
-			"TaskManager","TestManager","TimeManager","MiscUtilManager","ReportManager",
-			"GermanManager","GymManager","JShellManager"
+			"MoneyManager","PerlScriptManager"
+			,"HabitManager"
+			,"TaskManager"
+			,"TestManager"
+			,"TimeManager"
+			,"MiscUtilManager"
+			,"ReportManager"
+			,"GermanManager"
+			,"GymManager"
 		],
 		"loginmessage":[
 			"Tesime"
@@ -18,7 +24,7 @@
 		],
 		"loginmessage":[
 			"README:",
-			"https://github.com/nailbiter/assistantbot/blob/master/README.father.md"
+			"https://github.com/nailbiter/assistantbot/blob/master/READMEs/MoneyBot.rus.md"
 		]
 	}
 }
