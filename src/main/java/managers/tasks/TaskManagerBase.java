@@ -138,7 +138,8 @@ public class TaskManagerBase extends AbstractManager {
 		
 		boolean wasCut = false;
 		final int MAXSIZE = paramObj.getInt("maxsize");
-		if(arr.size() > MAXSIZE) {
+		int size;
+		if((size=arr.size()) > MAXSIZE) {
 			wasCut = true;
 			arr = util.Util.GetArrayHead(arr,MAXSIZE);
 		}
@@ -180,7 +181,7 @@ public class TaskManagerBase extends AbstractManager {
 		
 		StringBuilder sb = new StringBuilder(tb.toString());
 		if( wasCut ) {
-			sb.append("...\n");
+			sb.append(String.format("...%d\n", size));
 		}
 		if( isBad != null ) {
 			sb.append(String.format("e: %s\n", isBad.getMessage()));
