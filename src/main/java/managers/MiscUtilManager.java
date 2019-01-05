@@ -104,8 +104,9 @@ public class MiscUtilManager extends AbstractManager {
 				timers_.put(timerkey, new Date());
 				return String.format("created timer \"%s\"", timerkey);
 			} else if(keys.equals("clear")) {
+				String res = String.format("%s timers cleared",timers_.size());
 				timers_.clear();
-				return String.format("timers cleared");
+				return res;
 			} else {
 				for( String k:timers_.keySet() )
 					if(k.startsWith(keys))
