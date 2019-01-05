@@ -57,4 +57,8 @@ public abstract class AbstractManager implements MyManager {
 		System.err.format("getCommands for %s got %s\n", this.getClass().getName(),res);
 		return res;
 	}
+	@Override
+	public String toString(){
+		return this.getClass().getSimpleName();
+	}
 }

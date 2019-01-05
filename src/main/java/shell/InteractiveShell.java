@@ -40,7 +40,7 @@ public class InteractiveShell extends BasicUserData implements ResourceProvider,
 	private String fileToOutputTo_;
 	static MongoClient mc_;
 	public static void Start(JSONObject profileObj) throws Exception {
-		(new InteractiveShell(profileObj)).start(profileObj);
+		(new InteractiveShell(profileObj)).startMe(profileObj);
 	}
 	protected InteractiveShell(JSONObject profileObj) throws Exception {
 		super(true);
@@ -58,7 +58,7 @@ public class InteractiveShell extends BasicUserData implements ResourceProvider,
 		
 		parser_ = Create(managers_, profileObj.getJSONArray("MANAGERS"),this);
 	}
-	protected void start(JSONObject profileObj) throws Exception {
+	protected void startMe(JSONObject profileObj) throws Exception {
 		ArrayList<String> commands = new ArrayList<String>(parser_.getDispatchTable().keySet());
 		System.out.format("commands: %s\n", commands.toString());
 		
@@ -145,21 +145,6 @@ public class InteractiveShell extends BasicUserData implements ResourceProvider,
 	@Override
 	public String processReply(int messageID, String msg) {
 		return null;
-	}
-	@Override
-	public JSONObject getCommands() {
-		return new JSONObject()
-				.put("help", "display this message");
-	}
-	@Override
-	public String getResultAndFormat(JSONObject res) throws Exception {
-		if(res.has(CMD))
-		{
-			System.err.println(this.getClass().getName()+" got comd: "+res.getString(CMD));
-			if(res.getString(CMD).compareTo("help")==0)
-				return parser_.getHelpMessage();
-		}
-		throw new Exception(String.format("for res=%s", res.toString()));
 	}
 	@SuppressWarnings("deprecation")
 	@Override
