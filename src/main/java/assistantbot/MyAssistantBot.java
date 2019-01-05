@@ -1,6 +1,7 @@
 package assistantbot;
 import org.bson.Document;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
@@ -29,7 +30,7 @@ public class MyAssistantBot extends MyBasicBot {
 			e.printStackTrace(System.out);
 		}
 	}
-	private void initializeUserRecords() {
+	private void initializeUserRecords() throws JSONException, Exception {
 		MongoCollection<Document> coll = 
 				MongoUtil.GetSettingCollection(mongoClient_, SettingCollection.USERS);
 		JSONArray array = MongoUtil.GetJSONArrayFromDatabase(coll);
@@ -71,7 +72,7 @@ public class MyAssistantBot extends MyBasicBot {
 	}
 
 	@Override
-	protected UserData createUserData(Long chatId) {
+	protected UserData createUserData(Long chatId) throws JSONException, Exception {
 		return new MyAssistantUserData(chatId,this,
 				profileObj_.optJSONArray("MANAGERS"));
 	}

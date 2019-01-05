@@ -1,4 +1,4 @@
-{
+var res = {
 	"alex":{
 		"managers":[
 			"MoneyManager","PerlScriptManager"
@@ -29,4 +29,5 @@
 		]
 		,"timezone":"EET"
 	}
-}
+};
+console.log(JSON.stringify(res));

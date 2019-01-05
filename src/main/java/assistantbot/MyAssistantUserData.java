@@ -16,7 +16,6 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Updates;
 
-import ch.qos.logback.core.filter.Filter;
 import it.sauronsoftware.cron4j.Scheduler;
 import managers.MyManager;
 import managers.OptionReplier;
@@ -28,18 +27,19 @@ import util.UserData;
 import util.parsers.AbstractParser;
 import util.parsers.StandardParserInterpreter;
 
-public class MyAssistantUserData extends UserData implements ResourceProvider,MyManager {
-	protected Scheduler scheduler_ = null; //FIXME: should it be a singleton?
-	protected StandardParserInterpreter parser_ = null;
+public class MyAssistantUserData extends BasicUserData implements UserData, ResourceProvider{
+	/**
+	 * FIXME: should it be a singleton?
+	 */
+	protected Scheduler scheduler_ = null;
 	protected long chatID_;
 	MyAssistantBot bot_ = null;
 	private Logger logger_;
-	private List<MyManager> managers_ = new ArrayList<MyManager>();
-	private JSONObject userObject_ = null;
-	MyAssistantUserData(Long chatID,MyAssistantBot bot, JSONArray names){
+	MyAssistantUserData(Long chatID,MyAssistantBot bot, JSONArray names) throws JSONException, Exception{
 		this(chatID,bot,names,null);
 	}
-	MyAssistantUserData(Long chatID,MyAssistantBot bot, JSONArray names,JSONObject obj){
+	MyAssistantUserData(Long chatID,MyAssistantBot bot, JSONArray names,JSONObject obj) throws JSONException, Exception{
+		super(false);
 		try {
 			chatID_ = chatID;
 			bot_ = bot;
@@ -150,34 +150,7 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 		return null;
 	}
 	@Override
-	public JSONObject getCommands() {
-		return new JSONObject()
-				.put("help", "display this message")
-				.put("start", "display this message")
-				;
-	}
-	@Override
-	public String getResultAndFormat(JSONObject res) throws Exception {
-		if(res.has(CMD))
-		{
-			System.err.println(this.getClass().getName()+" got comd: "+res.getString(CMD));
-			if(res.getString(CMD).equals("help"))
-				return parser_.getHelpMessage();
-			else if(res.getString(CMD).equals("start")) {
-				String[] split = res.optString(StandardParserInterpreter.REM,"")
-						.split(StandardParserInterpreter.SPLITPATTERN);
-				if( split.length==0 || split[0].isEmpty() ) {
-					return unlogin();
-				} else {
-					String username = split[0],
-							password = (split.length>=2) ? split[1] : "";
-					return login(username,password);
-				}
-			}
-		}
-		throw new Exception(String.format("for res=%s", res.toString()));
-	}
-	private String login(String username, String password) throws JSONException, Exception {
+	protected String login(String username, String password) throws JSONException, Exception {
 		Document userDoc = new Document("name",username);
 		userDoc.put("pass", password);
 		MongoCollection<Document> coll =
@@ -194,7 +167,6 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 		
 		JSONObject obj = new JSONObject(doc.toJson());
 		userObject_ = 
-//				obj.getString("name");
 				obj;
 		parser_ = StandardParserInterpreter
 				.Create(managers_, obj.getJSONArray("managers"), this);
@@ -206,7 +178,8 @@ public class MyAssistantUserData extends UserData implements ResourceProvider,My
 		sendMessage(sb.toString());
 		return "";
 	}
-	private String unlogin() throws JSONException, Exception {
+	@Override
+	protected String unlogin() throws JSONException, Exception {
 		if( userObject_ == null ) {
 			return String.format("not logged in");
 		}

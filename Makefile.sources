@@ -1,4 +1,4 @@
-ASBOTSOURCES=MyAssistantUserData MyAssistantBot ResourceProvider
+ASBOTSOURCES=MyAssistantUserData MyAssistantBot ResourceProvider BasicUserData
 MANAGERSOURCES=$(addsuffix Manager,Time Money Test MiscUtil Habit German Gym Abstract Report JShell Task \
 	       PerlScript Trello Bot Mongo)
 UTILSOURCES=StorageManager MyBasicBot Util TelegramUtil JsonUtil AssistantBotException \

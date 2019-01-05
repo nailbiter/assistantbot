@@ -25,7 +25,7 @@ botmanager: src/main/resources/profiles/botmanager.json target/$(JARNAME).jar
 	$(PERL) ./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>&1 | tee log/log.$@.txt
 habits:
 	make -C src/main/resources/habits
-	./src/main/pl/uploadJson.pl --file src/main/resources/habits/habits.json --colname alex.habits
+	cat src/main/resources/habits/habits.json|./src/main/pl/uploadJson.pl --colname alex.habits --dbname logistics
 trello: src/main/resources/profiles/trello.json target/$(JARNAME).jar
 	./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>log/log.$@.txt
 interactive: src/main/resources/profiles/interactive.json target/$(JARNAME).jar
@@ -41,8 +41,8 @@ pull:
 jar: $(addprefix src/main/java/,$(addsuffix .java,$(SOURCES))) pom.xml cp.txt
 	mvn compile
 	touch target/$(JARNAME).jar
-users: src/main/pl/updateUserRecords.pl src/main/resources/userRecords.json
-	$(PERL) src/main/pl/updateUserRecords.pl --json src/main/resources/userRecords.json $(KEYS)
+users:  src/main/resources/userRecords.js src/main/pl/uploadJson.pl
+	node $< | src/main/pl/uploadJson.pl --dbname logistics --colname '_users' --field 'name'
 
 #FILES
 cp.txt: src/main/pl/parseCp.pl pom.xml

@@ -27,7 +27,20 @@ use MongoDB;
 use JSON;
 
 
+#global var's
+my $Testflag = 0;
 #procedures
+sub my_update_one{
+	(my $coll,my @args) = @_;
+	printf("update_one(%s,%s)\n",Dumper($args[0],$args[1]));
+	$coll->update_one($args[0],$args[1]) unless($Testflag);
+}
+sub loadJsonFromStdin{
+	my $document;
+		$document = do { local $/; <> };
+	printf(STDERR "doc: %s\n",$document);
+	return from_json($document);
+}
 sub loadJsonFromFile{
 	(my $fn) = @_;
 	printf(STDERR "opening file %s\n",$fn);
@@ -46,22 +59,31 @@ sub loadJsonFromFile{
 #main
 my %cmdline;
 my %args;
-for(qw( file dbname colname )){
+for(qw( dbname colname field )){
     $args{$_.'=s'} = \$cmdline{$_};
 }
 
 GetOptions(%args);
-$cmdline{dbname} //= 'logistics';
 
-my $json = loadJsonFromFile($cmdline{file});
+my $json = loadJsonFromStdin($cmdline{file});
 
 my $client = MongoDB->connect();
 my $mongoPassword = $client->ns("admin.passwords")->find_one({key=>"MONGOMLAB"})->{value};
 $client = MongoDB->connect(sprintf("mongodb://%s:%s\@ds149672.mlab.com:49672/logistics","nailbiter",$mongoPassword));
 my $ns = sprintf("%s.%s",$cmdline{dbname},$cmdline{colname});
-$client->ns($ns)->drop();
+my $coll = $client->ns($ns);
 if(ref($json) eq 'ARRAY'){
-  $client->ns($ns)->insert_many($json);
+	$coll->drop();
+    $coll->insert_many($json);
+} elsif(exists $cmdline{field}) {
+	for(keys(%$json)){
+		my $key = $_;
+		my %val = %{$json->{$_}};
+		printf("key: %s\nval: %s\n",$key,Dumper(\%val));
+		for(keys %val){
+			my_update_one($coll,{$cmdline{field}=>$key},{'$set'=>{$_=>$val{$_}}});
+		}
+	}
 } else {
-  $client->ns($ns)->insert_one($json);
+	...
 }

@@ -15,9 +15,7 @@ import managers.OptionReplier;
  * @author nailbiter
  *
  */
-public abstract class UserData {
+public interface UserData {
 	abstract public void Update(JSONObject res);
-	public String processUpdateWithCallbackQuery(String call_data, int message_id) throws Exception  {
-		return null;
-	}
+	abstract public String processUpdateWithCallbackQuery(String call_data, int message_id) throws Exception;
 }

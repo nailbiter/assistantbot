@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
@@ -94,7 +95,7 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 		return reply;
 	}
 	abstract protected JSONObject interpret(Message msg,UserData ud) throws Exception;
-	abstract protected UserData createUserData(Long chatId); 
+	abstract protected UserData createUserData(Long chatId) throws JSONException, Exception; 
 	protected java.util.Hashtable<Long, UserData> userData = 
 			new Hashtable<Long,UserData>();
 	protected String reply(Message msg){

@@ -19,13 +19,13 @@ import com.github.nailbiter.util.TableBuilder;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 
+import assistantbot.BasicUserData;
 import assistantbot.ResourceProvider;
 import managers.MyManager;
 import util.KeyRing;
 import util.UserCollection;
 import util.Util;
 import util.db.MongoUtil;
-import util.parsers.StandardParserInterpreter;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import it.sauronsoftware.cron4j.Scheduler;
@@ -35,31 +35,28 @@ import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import static util.parsers.StandardParserInterpreter.Create;
 
-public class InteractiveShell implements ResourceProvider,MyManager {
-	private static final String ALEX = "alex";
+public class InteractiveShell extends BasicUserData implements ResourceProvider, MyManager {
 	private static String PROMPT = "assistantbot> ";
 	private String fileToOutputTo_;
-	private StandardParserInterpreter parser_;
-	private JSONObject userName_ = Util.GetDefaultUser();
 	static MongoClient mc_;
 	public static void Start(JSONObject profileObj) throws Exception {
 		(new InteractiveShell(profileObj)).start(profileObj);
 	}
 	protected InteractiveShell(JSONObject profileObj) throws Exception {
+		super(true);
 		boolean uselocaldb = profileObj.getBoolean("OFFLINE"); 
 		System.out.format("USELOCALDB=%s\n", Boolean.toString(uselocaldb));
 		Util.setProfileObj(profileObj.toString());
 		DisableLogging();
 		mc_ = uselocaldb ? new MongoClient() : MongoUtil.GetMongoClient( profileObj.getString("PASSWORD") );
 		fileToOutputTo_ = Util.AddTerminalSlash(profileObj.getString("TMPFOLDER")) + profileObj.getString("FILETOSENDTO");
-		ArrayList<MyManager> managers = new ArrayList<MyManager>();
-		managers.add(this);
+		managers_.add(this);
 		
 		System.setProperty("DEBUG.MONGO", "false");
 		System.setProperty("DB.TRACE", "false");
 		KeyRing.init(profileObj.getString("NAME"),mc_);
 		
-		parser_ = Create(managers, profileObj.getJSONArray("MANAGERS"),this);
+		parser_ = Create(managers_, profileObj.getJSONArray("MANAGERS"),this);
 	}
 	protected void start(JSONObject profileObj) throws Exception {
 		ArrayList<String> commands = new ArrayList<String>(parser_.getDispatchTable().keySet());
@@ -169,11 +166,11 @@ public class InteractiveShell implements ResourceProvider,MyManager {
 	public MongoCollection<Document> getCollection(UserCollection name) {
 		return mc_.getDatabase(MongoUtil.getLogistics())
 				.getCollection(String.format("%s.%s", 
-						userName_.getString(Util.NAMEFIELDNAME) ,
+						userObject_.getString(Util.NAMEFIELDNAME) ,
 						name.toString()));
 	}
 	@Override
 	public JSONObject getUserObject() {
-		return userName_;
+		return userObject_;
 	}
 }
