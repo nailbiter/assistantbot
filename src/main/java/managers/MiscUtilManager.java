@@ -81,6 +81,7 @@ public class MiscUtilManager extends AbstractManager {
 				))
 				.put(new ParseOrderedCmd("misc","misc"
 						,new ParseOrderedArg("command",ArgTypes.string)
+							.useDefault("help")
 						,new ParseOrderedArg("keys",ArgTypes.remainder)
 							.useDefault("")))
 				.put(new ParseOrderedCmd("randset","return randomly generated set",
