@@ -4,6 +4,7 @@ MANAGERSOURCES=$(addsuffix Manager,Time Money Test MiscUtil Habit German Gym Abs
 UTILSOURCES=StorageManager MyBasicBot Util TelegramUtil JsonUtil AssistantBotException \
 	    ParseCommentLine UserCollection SettingCollection
 DBSOURCES= MongoUtil
+MONGOMANAGERHELPER=MongoManagerHelper
 SCRIPTAPPS=JsApp ScriptApp
 SCRIPTHELPERSOURCES= $(addprefix ScriptHelper, Varkeeper Array Logger Impl Misc) ScriptHelper
 HABITMANAGERSOURCES=HabitManagerBase JSONObjectCallback Donep Constants
@@ -14,6 +15,7 @@ PARSERSOURCES=AbstractParser ParseOrdered StandardParserInterpreter ParseOrdered
 MANAGERTASKSOURCES=TaskManagerBase
 UNITTESTSOURCES=MainTest ParseCommentLineTest Test
 SOURCES=\
+ $(addprefix managers/mongomanager/,$(MONGOMANAGERHELPER))\
  $(addprefix util/db/,$(DBSOURCES))\
  $(addprefix util/parsers/,$(PARSERSOURCES))\
  $(addprefix assistantbot/,$(ASBOTSOURCES))\

@@ -62,14 +62,13 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 			return ShowTags(money,rp_);
 		}
 		
-		int am = Util.SimpleEval(obj.getString("amount"));
+		double am = Util.SimpleEval(obj.getString("amount"));
 		
 		if( am < 0 ) {
-			return showCosts( -am ,obj.optString("comment", ""));
+			return showCosts( (int)-am ,obj.optString("comment", ""));
 		}
 		
 		obj.put("amount", am);
-		
 		String comment = obj.optString("comment");
 		System.err.format("comment=\"%s\"\n", comment);
 		HashMap<String, Object> parsed = new ParseCommentLine(ParseCommentLine.Mode.FROMLEFT).parse(comment);
@@ -85,6 +84,7 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		tags.removeAll(cats);
 		obj.put("tags", new JSONArray(tags));
 		
+		System.err.format("obj=%s\n", obj.toString(2));
 		if( category != null ) {
 			return putMoney(obj,category);
 		} else if( cats.size()==1 ) {
@@ -125,7 +125,7 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 	private String putMoney(JSONObject obj,String categoryName)
 	{
 		Document res = new Document();
-		res.put("amount", obj.getInt("amount"));
+		res.put("amount", obj.getDouble("amount"));
 		res.put("category", categoryName);
 		if(obj.has("date"))
 			res.put("date", (Date)obj.get("date"));
@@ -149,7 +149,7 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		.addToken("date");
 		if( fp.contains('c') )
 			tb.addToken("comment");
-		final Hashtable<String,Integer> totals = new Hashtable<String,Integer>();
+		final Hashtable<String,Double> totals = new Hashtable<String,Double>();
 		final TableBuilder tb1 = new TableBuilder();
 		
 		
@@ -161,13 +161,13 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		       public void apply(final Document doc) {
 		    	   	JSONObject obj = new JSONObject(doc.toJson());
 		    	   	String category = obj.getString("category");
-					int amount = obj.getInt("amount");
+					double amount = obj.getDouble("amount");
 					tb.newRow();
 					tb.addToken(container.getInt("i"));
 					container.put("i", container.getInt("i")+1);
-					tb.addToken(amount);
+					tb.addToken(Double.toString(amount));
 					if(!totals.containsKey(category))
-						totals.put(category, 0);
+						totals.put(category, 0.0);
 					totals.put(category, totals.get(category) + amount);
 					tb.addToken(category);
 					DateFormat formatter = 
@@ -193,7 +193,7 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 	       String key = itr.next();
 	       tb1.newRow();
 	       tb1.addToken(key);
-	       tb1.addToken(totals.get(key));
+	       tb1.addToken(Double.toString(totals.get(key)));
 	    }
 		
 		return 

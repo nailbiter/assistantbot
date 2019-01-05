@@ -319,17 +319,17 @@ public class Util{
 				"				  <span class=\"tooltiptext\">%s</span>\n" + 
 				"				</div> ", text,tip);
 	}
-	public static int SimpleEval(String expr) throws AssistantBotException {
-		if( !Pattern.matches("[0-9-+*]+", expr)) {
+	public static double SimpleEval(String expr) throws AssistantBotException {
+		if( !Pattern.matches("[0-9-+*\\.]+", expr)) {
 			throw new AssistantBotException(AssistantBotException.Type.ARITHMETICPARSE,String.format("cannot eval \"%s\"", expr));
 		}
 		String[] split = expr.split("\\+");
-		int res = 0;
+		double res = 0.0;
 		for(String part:split) {
-			int res1 = 1;
+			double res1 = 1.0;
 			String[] split1 = part.split("\\*");
 			for(String part1:split1) {
-				res1 *= Integer.parseInt(part1); 
+				res1 *= Double.parseDouble(part1); 
 			}
 			res += res1;
 		}

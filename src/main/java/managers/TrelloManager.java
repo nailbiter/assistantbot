@@ -192,7 +192,7 @@ public class TrelloManager extends AbstractManager{
 	public String removecards(String rem) throws Exception {
 		String[] split = rem.split(" ",2);
 		String listId = ta_.findListByName(HABITBOARDID, "TODO");
-		int count = Util.SimpleEval(split[0]);
+		int count = (int) Util.SimpleEval(split[0]);
 		String name = split[1];
 		JSONArray array = ta_.getCardsInList(listId);
 		
