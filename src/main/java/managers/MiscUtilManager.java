@@ -6,6 +6,7 @@ import static util.Util.GetRebootFileName;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Random;
 
@@ -48,6 +49,7 @@ public class MiscUtilManager extends AbstractManager {
 	NoteMaker nm_ = null;
 	private ResourceProvider rp_;
 	private ScriptApp sa_;
+	private Hashtable<String,Date> timers_ = new Hashtable<String,Date>(); 
 	
 	public MiscUtilManager(ResourceProvider rp) throws Exception {
 		super(GetCommands());
@@ -97,13 +99,30 @@ public class MiscUtilManager extends AbstractManager {
 		String command = obj.getString("command")
 				,keys = obj.getString("keys");
 		if( command.equals("timer") ) {
-			return rand(new JSONObject()
-					.put("key", 10)
-					.put("charset", "aA0"));
-		} else {
-			throw new AssistantBotException(AssistantBotException.Type.MISCUTILMANAGER
-					,String.format("command \"%s\" unknown", command));
+			if( keys.isEmpty() ) {
+				String timerkey = createTimer();
+				timers_.put(timerkey, new Date());
+				return String.format("created timer \"%s\"", timerkey);
+			} else if(keys.equals("clear")) {
+				timers_.clear();
+				return String.format("timers cleared");
+			} else {
+				for( String k:timers_.keySet() )
+					if(k.startsWith(keys))
+						return String.format("elapsed: %s"
+								,Util.milisToTimeFormat(
+										System.currentTimeMillis()
+										-timers_.get(k).getTime()));
+				return String.format("no timer stating with \"%s\"", keys);
+			}
 		}
+		throw new AssistantBotException(AssistantBotException.Type.MISCUTILMANAGER
+				,String.format("command \"%s\" unknown", command));
+	}
+	private String createTimer() {
+		return rand(new JSONObject()
+				.put("key", 10)
+				.put("charset", "aA0"));
 	}
 	public String note(JSONObject obj) {
 		String noteContent = obj.getString("notecontent");
