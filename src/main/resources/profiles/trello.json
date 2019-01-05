@@ -6,5 +6,5 @@
 	"tmpfolder":"tmp",
 	"filetosendto":"test.html",
     	"scriptFolder":"src/main/js/",
-	"managers":["TrelloManager","MiscUtilManager"]
+	"managers":["TrelloManager","MiscUtilManager","PowerManager"]
 }

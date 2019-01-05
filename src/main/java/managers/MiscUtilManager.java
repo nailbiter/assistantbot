@@ -83,8 +83,6 @@ public class MiscUtilManager extends AbstractManager {
 				.put(new ParseOrderedCmd("note","make note",
 						new ParseOrderedArg("notecontent",
 								ParseOrdered.ArgTypes.remainder)))
-				.put(new ParseOrderedCmd("exit", "exit the bot"))
-				.put(new ParseOrderedCmd("restart","restart the bot"))
 				.put(new ParseOrderedCmd("ttask", "make new task", 
 						new ParseOrderedArg("task",
 								ParseOrdered.ArgTypes.remainder)));
@@ -93,10 +91,6 @@ public class MiscUtilManager extends AbstractManager {
 		String noteContent = obj.getString("notecontent");
 		nm_.makeNote(noteContent);
 		return String.format("made note \"%s\"", noteContent);
-	}
-	public String restart(JSONObject obj) throws Exception {
-		Util.SaveJSONObjectToFile(GetRebootFileName(), obj);
-		return exit(obj);	
 	}
 	@Override
 	public String processReply(int messageID, String msg) {
@@ -110,11 +104,6 @@ public class MiscUtilManager extends AbstractManager {
 		
 		ArrayList<String> res = RandomSetGenerator.MakeRandomSet(data,obj.getInt("size"));
 		return String.format("%s", res.toString());
-	}
-	
-	public String exit(JSONObject obj) {
-		System.exit(0);
-		return "";
 	}
 	public String rand(JSONObject obj){
 		int len;

@@ -41,8 +41,10 @@ pull:
 jar: $(addprefix src/main/java/,$(addsuffix .java,$(SOURCES))) pom.xml cp.txt
 	mvn compile
 	touch target/$(JARNAME).jar
-users:  src/main/resources/userRecords.js src/main/pl/uploadJson.pl
-	node $< | src/main/pl/uploadJson.pl --dbname logistics --colname '_users' --field 'name'
+src/main/resources/userRecords.json:src/main/resources/userRecords.js
+	node $< > $@
+users:  src/main/resources/userRecords.json src/main/pl/uploadJson.pl
+	cat $< | src/main/pl/uploadJson.pl --dbname logistics --colname '_users' --field 'name'
 
 #FILES
 cp.txt: src/main/pl/parseCp.pl pom.xml

@@ -4,5 +4,5 @@
 	"tmpfolder":"tmp",
 	"parserPrefix":"/",
 	"managers":["MiscUtilManager","BotManager",
-		"PerlScriptManager"]
+		"PerlScriptManager","PowerManager"]
 }

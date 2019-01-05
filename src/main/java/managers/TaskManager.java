@@ -105,7 +105,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 				GetDoneTasksStat(ta_,rp_,comparators_,recognizedCatNames_,exs);
 		
 		if( !obj.has("num") ) {
-			return PrintDoneTasks(stat,exs);
+			return PrintDoneTasks(stat,exs,this.cats_);
 		} else {
 			JSONObject card = getTask(obj.getInt("num"));
 			

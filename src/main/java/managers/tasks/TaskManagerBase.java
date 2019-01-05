@@ -51,12 +51,13 @@ import static util.Util.PrintDaysTill;
 
 public class TaskManagerBase extends AbstractManager {
 
-//	protected static final String POSTPONEDTASKS = "postponedTasks";
-	private static final String LABELJOINER = ", ";;
+	private static final String LABELJOINER = ", ";
+	private static final String MINDONE = "mindone";
+	private static final String MAXDONE = "maxdone";
+	private static final String INFTY = "∞";
 	protected Timer timer = new Timer();
 	protected ResourceProvider rp_;
 	protected TrelloAssistant ta_;
-//	protected MongoClient mc_;
 	private ScriptApp sa_;
 	protected static int REMINDBEFOREMIN = 10;
 	protected static String TASKNAMELENLIMIT = "TASKNAMELENLIMIT";
@@ -76,7 +77,6 @@ public class TaskManagerBase extends AbstractManager {
 		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
 				KeyRing.getTrello().getString("token"));
 		rp_ = rp;
-//		mc_ = rp.getMongoClient();
 		varkeeper_ = new ScriptHelperVarkeeper();
 		sa_ = new JsApp(getParamObject(rp).getString("scriptFolder"), 
 				new ScriptHelperArray()
@@ -90,8 +90,9 @@ public class TaskManagerBase extends AbstractManager {
 		rp.getCollection(UserCollection.TIMECATS).find().forEach(new Block<Document>() {
 			@Override
 			public void apply(Document arg0) {
-				recognizedCats.add(arg0.getString("name"));
-				cats.put(new JSONObject(arg0.toJson()));
+				JSONObject obj = new JSONObject(arg0.toJson());
+				recognizedCats.add(obj.getString("name"));
+				cats.put(obj);
 			}
 		});
 		varkeeper.set("recognizedCats", new JSONArray(recognizedCats).toString());
@@ -175,7 +176,7 @@ public class TaskManagerBase extends AbstractManager {
 			if( HasDue(card) ) {
 				tb.addToken(PrintDaysTill(DaysTill(card), "="),paramObj.getJSONObject("sep").getInt("due"));
 			} else {
-				tb.addToken("∞");
+				tb.addToken(INFTY);
 			}
 		}
 		
@@ -282,18 +283,37 @@ public class TaskManagerBase extends AbstractManager {
 		return tb.toString();
 	}
 
-	protected static String PrintDoneTasks(HashMap<String,Integer> stat, ArrayList<AssistantBotException> exs) throws Exception {
-		TableBuilder tb = new TableBuilder().addTokens("cat_","count_");
+	protected static String PrintDoneTasks(HashMap<String,Integer> stat, ArrayList<AssistantBotException> exs, JSONArray cats) throws Exception {
+		TableBuilder tb = new TableBuilder()
+				.addTokens("cat_","count_","min_","max_");
 		int total = 0;
-		for(String cat:stat.keySet()) {
-			tb.newRow().addToken(cat)
-			.addToken(stat.get(cat));
-			total += stat.get(cat);
+		for(Object o:cats) {
+			JSONObject cat = (JSONObject)o;
+			Integer num = stat.getOrDefault(cat.getString("name"),0)
+					,min = cat.optInt(MINDONE)
+					,max = cat.optInt(MAXDONE)
+					;
+			tb
+				.newRow()
+				.addToken(cat.getString("name"))
+				.addToken(num)
+				.addToken(NegToInf(min))
+				.addToken(NegToInf(max))
+				;
+			total += num;
 		}
+		tb.addTokens("--","--","--","--");
 		tb.newRow().addToken("TOTAL").addToken(total);
 		
 		return tb.toString() + 
 				(exs.isEmpty()?"":String.format("\ne: %s", exs.get(0).getMessage()));
+	}
+	private static String NegToInf(Integer min) {
+		if( min < 0 ) {
+			return INFTY;
+		} else {
+			return min.toString();
+		}
 	}
 	protected static HashMap<String, Integer> GetDoneTasksStat(TrelloAssistant ta, ResourceProvider rp,
 			HashMap<String, ImmutableTriple<Comparator<JSONObject>, String, Integer>> c,

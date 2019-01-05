@@ -1,15 +1,16 @@
 var res = {
-	"alex":{
-		"managers":[
-			"MoneyManager","PerlScriptManager"
-			,"HabitManager"
-			,"TaskManager"
-			,"TestManager"
-			,"TimeManager"
-			,"MiscUtilManager"
-			,"ReportManager"
-			,"GermanManager"
-			,"GymManager"
+	alex:{
+		managers:[
+			"MoneyManager","PerlScriptManager",
+			"HabitManager",
+			"TaskManager",
+			"TestManager",
+			"TimeManager",
+			"MiscUtilManager",
+			"ReportManager",
+			"GermanManager",
+			"GymManager",
+			"PowerManager",
 		]
 		,"loginmessage":[
 			"Tesime"
@@ -19,7 +20,7 @@ var res = {
 		]
 		,"timezone":"JST"
 	},
-	"father":{
+	father:{
 		"managers":[
 			"MoneyManager"
 		],
