@@ -7,6 +7,7 @@ public class AssistantBotException extends Exception {
 		NOTONEMAINLABEL,MONGOMANAGER,
 		NOTYETIMPLEMENTED,FAILEDTEST,NOMEMORIZEDARG,
 		FLAGPARSEREXCEPTION,CANNOTDOTASK,SCRIPTAPPEXCEPTION, MONGOUTIL
+		,MISCUTILMANAGER
 	};
 	private Type t_;
 	public AssistantBotException(Type t,String msg) {

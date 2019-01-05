@@ -22,6 +22,7 @@ import com.mongodb.MongoClient;
 import assistantbot.ResourceProvider;
 import managers.misc.NoteMaker;
 import managers.misc.RandomSetGenerator;
+import util.AssistantBotException;
 import util.JsonUtil;
 import util.KeyRing;
 import util.Util;
@@ -78,6 +79,10 @@ public class MiscUtilManager extends AbstractManager {
 					new ParseOrderedArg("charset",ParseOrdered.ArgTypes.string)
 						.useDefault("aA")
 				))
+				.put(new ParseOrderedCmd("misc","misc"
+						,new ParseOrderedArg("command",ArgTypes.string)
+						,new ParseOrderedArg("keys",ArgTypes.remainder)
+							.useDefault("")))
 				.put(new ParseOrderedCmd("randset","return randomly generated set",
 						new ParseOrderedArg("size",ArgTypes.integer)))
 				.put(new ParseOrderedCmd("note","make note",
@@ -86,6 +91,18 @@ public class MiscUtilManager extends AbstractManager {
 				.put(new ParseOrderedCmd("ttask", "make new task", 
 						new ParseOrderedArg("task",
 								ParseOrdered.ArgTypes.remainder)));
+	}
+	public String misc(JSONObject obj) throws AssistantBotException {
+		String command = obj.getString("command")
+				,keys = obj.getString("keys");
+		if( command.equals("timer") ) {
+			return rand(new JSONObject()
+					.put("key", 10)
+					.put("charset", "aA0"));
+		} else {
+			throw new AssistantBotException(AssistantBotException.Type.MISCUTILMANAGER
+					,String.format("command \"%s\" unknown", command));
+		}
 	}
 	public String note(JSONObject obj) {
 		String noteContent = obj.getString("notecontent");
