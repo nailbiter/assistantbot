@@ -110,14 +110,13 @@ public class MiscUtilManager extends AbstractManager {
 		if( keys.isEmpty() ) {
 			TableBuilder tb = new TableBuilder()
 					.addTokens("name_","time_");
-			for( String k:timers_.keySet() ) {
+			for( String k:timers_.keySet() )
 				tb
-					.addToken(k)
-					.addToken(String.format("%s"
-						,Util.milisToTimeFormat(
-								System.currentTimeMillis()
-								-timers_.get(k).getTime())));
-			}
+					.addTokens(k
+							,String.format("%s"
+									,Util.milisToTimeFormat(
+											System.currentTimeMillis()
+											-timers_.get(k).getTime())));
 			rp_.sendMessage(tb.toString());
 		} else if(keys.equals("clear")) {
 			String res = String.format("%s timers cleared",timers_.size());
