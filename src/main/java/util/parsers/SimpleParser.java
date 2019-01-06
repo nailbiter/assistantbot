@@ -59,7 +59,7 @@ public class SimpleParser implements AbstractParser {
 	public String getHelpMessage() {
 		TableBuilder tb = new TableBuilder()
 				.addTokens("name_","help_");
-		for(ImmutableTriple<String, String, String> t:cmds_)
+		for(ImmutableTriple<String, String, ImmutablePair<String, Object>> t:cmds_)
 			tb.addTokens(t.left,t.middle);
 		
 		return tb.toString();
