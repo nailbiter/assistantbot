@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import util.AssistantBotException;
 import util.JsonUtil;
+
 import static util.parsers.StandardParserInterpreter.CMD;
 import static util.parsers.StandardParserInterpreter.REM;
 
@@ -19,6 +20,7 @@ public class ParseOrdered {
 	private JSONArray cmds_;
 	private String name_;
 	private JSONObject memoTable_;
+	public final static String SPLITPAT = " +";
 
 	public ParseOrdered(JSONArray commands,String name) {
 		cmds_ = commands;
@@ -97,7 +99,7 @@ public class ParseOrdered {
 		int j = 0;
 		for( ; j < args.length() && line != null; j++ ) {
 			System.err.format("line: \"%s\"\n", line);
-			String[] split = line.split(" +",2);
+			String[] split = line.split(ParseOrdered.SPLITPAT,2);
 			System.err.format("split[0]=\"%s\"\nsplit[1]=\"%s\"\n",(split.length>=1)?split[0]:"null",(split.length>=2)?split[1]:"null");
 			/**
 			 *FIXME: use StandardParser.ArgTypes here in place of string literals

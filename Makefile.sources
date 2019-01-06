@@ -11,7 +11,8 @@ HABITMANAGERSOURCES=HabitManagerBase JSONObjectCallback Donep Constants
 SHELLSOURCES=InteractiveShell
 TESTSOURCES=UrlTest JsonTest ParadigmTest
 MISCSOURCES=MashaRemind RandomSetGenerator NoteMaker
-PARSERSOURCES=AbstractParser ParseOrdered StandardParserInterpreter ParseOrderedArg ParseOrderedCmd
+PARSERSOURCES=AbstractParser ParseOrdered StandardParserInterpreter ParseOrderedArg ParseOrderedCmd \
+	      SimpleParser
 MANAGERTASKSOURCES=TaskManagerBase
 UNITTESTSOURCES=MainTest ParseCommentLineTest Test
 SOURCES=\

@@ -8,6 +8,7 @@ public class AssistantBotException extends Exception {
 		NOTYETIMPLEMENTED,FAILEDTEST,NOMEMORIZEDARG,
 		FLAGPARSEREXCEPTION,CANNOTDOTASK,SCRIPTAPPEXCEPTION, MONGOUTIL
 		,MISCUTILMANAGER
+		,SIMPLEPARSER
 	};
 	private Type t_;
 	public AssistantBotException(Type t,String msg) {

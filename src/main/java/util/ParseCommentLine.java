@@ -13,6 +13,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 
+import util.parsers.ParseOrdered;
+
 public class ParseCommentLine {
 	public static enum Mode{
 		FROMLEFT,FROMRIGHT
@@ -20,7 +22,6 @@ public class ParseCommentLine {
 	private Mode m_;
 	private static final String PATTERN = "yyyyMMddHHmm";
 	private static SimpleDateFormat SDF = new SimpleDateFormat(PATTERN);
-	private final String SPLITPAT = " +";
 	public final static String TAGS = "tags";
 	public final static String REM = "rem";
 	public final static String DATE = "date";
@@ -74,7 +75,7 @@ public class ParseCommentLine {
 			if(h.right==TOKENTYPE.STRING)
 				res.put(h.left, new HashSet<String>());
 		
-		for( String[] split = SplitInTwo(line,SPLITPAT,m_) ;  ; line = split[1], split = SplitInTwo(line,SPLITPAT,m_) ) {
+		for( String[] split = SplitInTwo(line,ParseOrdered.SPLITPAT,m_) ;  ; line = split[1], split = SplitInTwo(line,ParseOrdered.SPLITPAT,m_) ) {
 			System.err.format("starting new iteration with line=\"%s\"\n", line);
 			
 			if( split.length == 0 ) {

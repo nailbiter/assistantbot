@@ -1,7 +1,5 @@
 package assistantbot;
 
-import static util.parsers.StandardParserInterpreter.CMD;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,11 +10,10 @@ import org.json.JSONObject;
 import managers.AbstractManager;
 import managers.MyManager;
 import util.Util;
-import util.parsers.ParseOrdered;
+import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
 import util.parsers.StandardParserInterpreter;
-import static util.parsers.ParseOrdered.ArgTypes;
 
 public class BasicUserData extends AbstractManager {
 	protected List<MyManager> managers_ = new ArrayList<MyManager>();
