@@ -17,6 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.github.nailbiter.util.TableBuilder;
 import com.github.nailbiter.util.TrelloAssistant;
 import com.mongodb.MongoClient;
 
@@ -107,13 +108,25 @@ public class MiscUtilManager extends AbstractManager {
 	}
 	public void timer(String keys) {
 		if( keys.isEmpty() ) {
-			String timerkey = createTimer();
-			timers_.put(timerkey, new Date());
-			rp_.sendMessage(String.format("created timer \"%s\"", timerkey)) ;
+			TableBuilder tb = new TableBuilder()
+					.addToken("name_","time_");
+			for( String k:timers_.keySet() ) {
+				tb
+					.addToken(k)
+					.addToken(String.format("%s"
+						,Util.milisToTimeFormat(
+								System.currentTimeMillis()
+								-timers_.get(k).getTime())));
+			}
+			rp_.sendMessage(tb.toString());
 		} else if(keys.equals("clear")) {
 			String res = String.format("%s timers cleared",timers_.size());
 			timers_.clear();
 			rp_.sendMessage(res);
+		} else if(keys.equals("new")) {
+			String timerkey = createTimer();
+			timers_.put(timerkey, new Date());
+			rp_.sendMessage(String.format("created timer \"%s\"", timerkey)) ;
 		} else {
 			for( String k:timers_.keySet() )
 				if(k.startsWith(keys))
@@ -121,7 +134,7 @@ public class MiscUtilManager extends AbstractManager {
 							,Util.milisToTimeFormat(
 									System.currentTimeMillis()
 									-timers_.get(k).getTime())));
-			rp_.sendMessage(String.format("no timer stating with \"%s\"", keys));
+//			rp_.sendMessage(String.format("no timer stating with \"%s\"", keys));
 		}
 	}
 	public String misc(JSONObject obj) throws JSONException, Exception {
