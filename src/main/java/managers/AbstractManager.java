@@ -3,6 +3,7 @@
  */
 package managers;
 
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import org.bson.Document;
@@ -37,8 +38,20 @@ public abstract class AbstractManager implements MyManager {
 	public String getResultAndFormat(JSONObject res) throws Exception {
 		System.err.println(String.format("%s got: %s",this.getClass().getName(), res.toString()));
 			System.err.println("dispatcher got: "+res.toString());
-			return (String)this.getClass().getMethod(res.getString(CMD),JSONObject.class)
-					.invoke(this,po_.parse(res));
+			Object parsed = po_.parse(res);
+			Class<? extends AbstractManager> classInstance = this.getClass();
+			
+			if( parsed instanceof JSONObject ) {
+				return (String) classInstance
+						.getMethod(res.getString(CMD),JSONObject.class)
+						.invoke(this,parsed);
+			} else if (parsed instanceof JSONArray ){
+				return (String) classInstance
+						.getMethod(res.getString(CMD),JSONArray.class)
+						.invoke(this,parsed);
+			}
+			throw new Exception(String.format("unknown class \"%s\"", 
+					parsed.getClass().getName()));
 	}
 	protected JSONObject getParamObject(ResourceProvider rp_) throws JSONException, Exception {
 		return GetParamObject(rp_,this.getClass().getName());

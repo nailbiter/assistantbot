@@ -27,7 +27,7 @@ public class PerlScriptManager extends AbstractManager {
 	@Override
 	public String getResultAndFormat(JSONObject res) throws Exception {
 		System.err.println(String.format("%s got: %s",this.getClass().getName(), res.toString()));
-		res = po_.parse(res);
+		res = (JSONObject) po_.parse(res);
 		System.err.println("dispatcher got: "+res.toString());
 		return pa_.runCommand(String.format("%s %s"
 						,res.getString("name").substring(CMDPREFIX.length())

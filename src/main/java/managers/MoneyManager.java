@@ -36,7 +36,6 @@ import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
 
 public class MoneyManager extends AbstractManager implements OptionReplier{
-//	private static final String USERNAME = "username";
 	HashSet<String> cats = new HashSet<String>();
 	ResourceProvider rp_ = null;
 	MongoCollection<Document> money;
@@ -56,46 +55,54 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		money = rp.getCollection(UserCollection.MONEY);
 		rp_ = rp;
 	}
-	public String money(JSONObject obj) throws ParseException, JSONException, ScriptException, AssistantBotException
+	public String money(JSONArray array) throws Exception
 	{
-		if( !obj.has("amount") ) {
-			return ShowTags(money,rp_);
+		for(Object o:array) {
+			JSONObject obj = (JSONObject)o;
+			if( !obj.has("amount") ) {
+				if( array.length()==1 )
+					return ShowTags(money,rp_);
+				else
+					continue;
+			}
+			
+			double am = Util.SimpleEval(obj.getString("amount"));
+			if( am < 0 ) {
+				if( array.length()==1 )
+					return showCosts( (int)-am ,obj.optString("comment", ""));
+				else continue;
+			}
+			
+			obj.put("amount", am);
+			String comment = obj.optString("comment");
+			System.err.format("comment=\"%s\"\n", comment);
+			HashMap<String, Object> parsed = new ParseCommentLine(ParseCommentLine.Mode.FROMLEFT).parse(comment);
+			if( parsed.containsKey(ParseCommentLine.DATE) )
+				obj.put("date", (Date)parsed.get(ParseCommentLine.DATE));
+			obj.put("comment", (String)parsed.getOrDefault(ParseCommentLine.REM,""));
+			
+			Set<String> tags = (Set<String>)parsed.get(ParseCommentLine.TAGS);
+			String category = null;
+			for(String tag:tags)
+				if(cats.contains(tag))
+					category = tag;
+			tags.removeAll(cats);
+			obj.put("tags", new JSONArray(tags));
+			
+			System.err.format("obj=%s\n", obj.toString(2));
+			if( category != null ) {
+				rp_.sendMessage(putMoney(obj,category));
+			} else if( cats.size()==1 ) {
+				rp_.sendMessage(putMoney(obj, cats.iterator().next()));
+			} else {
+				int msgid = 
+						rp_.sendMessageWithKeyBoard("which category?", 
+								new JSONArray(cats));
+				this.pendingOperations.put(msgid, obj);
+				return String.format("prepare to put %s",obj.toString());
+			}
 		}
-		
-		double am = Util.SimpleEval(obj.getString("amount"));
-		
-		if( am < 0 ) {
-			return showCosts( (int)-am ,obj.optString("comment", ""));
-		}
-		
-		obj.put("amount", am);
-		String comment = obj.optString("comment");
-		System.err.format("comment=\"%s\"\n", comment);
-		HashMap<String, Object> parsed = new ParseCommentLine(ParseCommentLine.Mode.FROMLEFT).parse(comment);
-		if( parsed.containsKey(ParseCommentLine.DATE) )
-			obj.put("date", (Date)parsed.get(ParseCommentLine.DATE));
-		obj.put("comment", (String)parsed.getOrDefault(ParseCommentLine.REM,""));
-		
-		Set<String> tags = (Set<String>)parsed.get(ParseCommentLine.TAGS);
-		String category = null;
-		for(String tag:tags)
-			if(cats.contains(tag))
-				category = tag;
-		tags.removeAll(cats);
-		obj.put("tags", new JSONArray(tags));
-		
-		System.err.format("obj=%s\n", obj.toString(2));
-		if( category != null ) {
-			return putMoney(obj,category);
-		} else if( cats.size()==1 ) {
-			return putMoney(obj, cats.iterator().next());
-		} else {
-			int msgid = 
-					rp_.sendMessageWithKeyBoard("which category?", 
-							new JSONArray(cats));
-			this.pendingOperations.put(msgid, obj);
-			return String.format("prepare to put %s",obj.toString());
-		}
+		return "";
 	}
 	private static String ShowTags(MongoCollection<Document> money, ResourceProvider rp) {
 		final StringBuilder sb = new StringBuilder("tags: \n");
@@ -212,8 +219,9 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 						new ParseOrderedArg("comment", 
 								ParseOrdered.ArgTypes.remainder)
 						.makeOpt())
-						.makeDefaultHandler())
-				;
+						.makeDefaultHandler()
+						.makeMultiline()
+						);
 	}
 	@Override
 	public String processReply(int messageID,String msg) {

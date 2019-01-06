@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class ParseOrderedCmd extends JSONObject {
+	private static final String MULTILINEKEY = "ISMULTILINE";
 	public ParseOrderedCmd(String name,String help,List<JSONObject> args) {
 		put("name", name);
 		put("help", (help==null)?"(null)":help);
@@ -32,6 +33,13 @@ public class ParseOrderedCmd extends JSONObject {
 	}
 	public static boolean IsDefaultHandler(JSONObject cmd) {
 		return cmd.optBoolean(StandardParserInterpreter.DEFMESSAGEHANDLERKEY, false);
+	}
+	public ParseOrderedCmd makeMultiline() {
+		put(MULTILINEKEY,true);
+		return this;
+	}
+	public static boolean IsMultiline(JSONObject cmd) {
+		return cmd.optBoolean(MULTILINEKEY,false);
 	}
 	public ParseOrderedCmd addArgument(JSONObject arg) {
 		getJSONArray("args").put(arg);

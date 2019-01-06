@@ -1,5 +1,6 @@
 package util.parsers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections4.Transformer;
@@ -88,13 +89,11 @@ public class ParseOrdered {
 		sb.append(": ");
 		return sb.toString();
 	}
-	public JSONObject parse(JSONObject obj) throws Exception {
-		System.err.format("parse of %s got %s\n", name_,obj.toString(2));
-
-		String line = obj.optString(REM,null);
-		JSONArray args = JsonUtil.FindInJSONArray(cmds_, "name", obj.getString(CMD)).getJSONArray("args");
+	private JSONObject parse(JSONObject command,String line) throws Exception {
+		JSONArray args = command.getJSONArray("args");
+		String name = command.getString("name");
+		JSONObject obj = new JSONObject().put(CMD, name);
 		JSONObject res = new JSONObject().put("name", obj.getString(CMD));
-		
 		int j = 0;
 		for( ; j < args.length() && line != null; j++ ) {
 			System.err.format("line: \"%s\"\n", line);
@@ -146,6 +145,25 @@ public class ParseOrdered {
 		}
 			
 		return res;
+	}
+	public Object parse(JSONObject obj) throws Exception {
+		System.err.format("parse of %s got %s\n", name_,obj.toString(2));
+		JSONObject command = 
+				JsonUtil.FindInJSONArray(cmds_, "name", obj.getString(CMD));
+		String line = obj.optString(REM,null);
+		if( ParseOrderedCmd.IsMultiline(command) ) {
+			JSONArray res = new JSONArray();
+			if( line == null ) {
+				res.put(parse(command,line));
+			} else {
+				String[] split = line.split("\n");
+				for(String l:split)
+					res.put(parse(command,l));
+			}
+			return res;
+		} else {
+			return parse(command,line);
+		}
 	}
 	private static String GetMemoKey(String cmd, String arg) {
 		return cmd+"."+arg;
