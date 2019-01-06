@@ -99,7 +99,7 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 						rp_.sendMessageWithKeyBoard("which category?", 
 								new JSONArray(cats));
 				this.pendingOperations.put(msgid, obj);
-				return String.format("prepare to put %s",obj.toString());
+				rp_.sendMessage(String.format("prepare to put %s",obj.toString()));
 			}
 		}
 		return "";
