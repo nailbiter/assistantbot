@@ -109,7 +109,7 @@ public class MiscUtilManager extends AbstractManager {
 	public void timer(String keys) {
 		if( keys.isEmpty() ) {
 			TableBuilder tb = new TableBuilder()
-					.addToken("name_","time_");
+					.addTokens("name_","time_");
 			for( String k:timers_.keySet() ) {
 				tb
 					.addToken(k)
