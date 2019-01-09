@@ -321,4 +321,26 @@ var program = [
 			},
 		]
 	},
+	{
+		weekCount:2+2,
+		dayCount:2,
+		program:[
+			{
+				name:"brus",
+				reps:"2*12, 3*27.5k*8x"
+			},
+			{
+				name:"rsid",
+				reps:"2*15, 3*10"
+			},
+			{
+				name:"bic",
+				reps:"2*15, 3*10"
+			},
+			{
+				name:"molot",
+				reps:"2*15*15k, 3*12*22.5k"
+			}
+		]
+	},
 ]
