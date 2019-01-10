@@ -15,6 +15,7 @@ import java.util.TimeZone;
 
 import javax.script.ScriptException;
 
+import org.apache.commons.collections4.Transformer;
 import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -236,7 +237,23 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 	}
 	@Override
 	public void set() {
-		rp_.sendMessage(addCategory("test"));
+		final String NEWCATEGORY = "new category";
+		final String REMOVECATEGORY = "remove category";
+		rp_.sendMessageWithKeyBoard("choose the setting:", Util.IdentityMap(new JSONArray()
+				.put(NEWCATEGORY)
+				.put(REMOVECATEGORY)), new Transformer<Object,String>(){
+			@Override
+			public String transform(Object arg0) {
+				String cmd = (String) arg0;
+				if(cmd.equals(NEWCATEGORY)) {
+					return NEWCATEGORY;
+				} else if(cmd.equalsIgnoreCase(REMOVECATEGORY)) {
+					return REMOVECATEGORY;
+				} else {
+					return null;
+				}
+			}
+		});
 	}
 	private String addCategory(String catname) {
 		cats_.add(catname);

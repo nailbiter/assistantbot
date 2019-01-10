@@ -2,9 +2,14 @@ package assistantbot;
 import static util.parsers.StandardParserInterpreter.CMD;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
+import org.apache.commons.collections4.Closure;
+import org.apache.commons.collections4.Transformer;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -68,9 +73,20 @@ public class MyAssistantUserData extends BasicUserData implements UserData, Reso
 			}
 		}
 	}
+	protected Hashtable<Integer, ImmutablePair<Transformer<Object, String>, Map<String, Object>>> pendingKeyboardMessages_ = new Hashtable<Integer, ImmutablePair< Transformer<Object,String>,Map<String,Object> >>();
 	@Override
-	public String processUpdateWithCallbackQuery(String call_data, int message_id) throws Exception{
+	public String processUpdateWithCallbackQuery(String call_data, int message_id) throws Exception {
 		String res = null;
+		
+		if(pendingKeyboardMessages_.containsKey(message_id)) {
+			ImmutablePair<Transformer<Object, String>, Map<String, Object>> obj = pendingKeyboardMessages_.remove(message_id);
+			Map<String, Object> map = obj.right;
+			if( !map.containsKey(call_data) )
+				throw new Exception(String.format("no call_data \"%s\"", call_data));
+			else
+				return obj.left.transform(map.get(call_data));
+		}
+		
 		List<OptionReplier> repliers = this.getOptionRepliers();
 		System.out.format("got %d repliers\n", repliers.size());
 		for(int i = 0; i < repliers.size(); i++)
@@ -120,10 +136,6 @@ public class MyAssistantUserData extends BasicUserData implements UserData, Reso
 	public int sendMessage(String msg) {
 		return bot_.sendMessage(msg, chatID_);
 	}
-//	@Override
-//	public Scheduler getScheduler() {
-//		return scheduler_;
-//	}
 	@Override
 	public int sendMessage(String msg, MyManager whom) throws Exception {
 		return bot_.sendMessage(msg, chatID_, whom);
@@ -200,8 +212,10 @@ public class MyAssistantUserData extends BasicUserData implements UserData, Reso
 								userObject_.getString(Util.NAMEFIELDNAME),
 								name.toString()));
 	}
-//	@Override
-//	public JSONObject getUserObject() {
-//		return userObject_;
-//	}
+	@Override
+	public int sendMessageWithKeyBoard(String msg, Map<String, Object> map, Transformer<Object,String> me) {
+		int res = sendMessageWithKeyBoard(msg, new JSONArray(map.keySet()));
+		pendingKeyboardMessages_.put(res, new ImmutablePair<Transformer<Object,String>, Map<String,Object>>(me,map));
+		return res;
+	}
 }

@@ -2,8 +2,11 @@ package assistantbot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
+import org.apache.commons.collections4.Closure;
+import org.apache.commons.collections4.Transformer;
 import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -181,5 +184,9 @@ public class BasicUserData extends AbstractManager implements ResourceProvider {
 		coll.updateOne(Filters.eq("name",classname), Updates.set("parameter", Document.parse(parameter.toString())));
 		
 		return this;
+	}
+	@Override
+	public int sendMessageWithKeyBoard(String msg, Map<String, Object> map, Transformer<Object,String> me) {
+		return sendMessageWithKeyBoard(msg,new JSONArray(map.keySet()));
 	}
 }

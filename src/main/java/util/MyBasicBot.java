@@ -105,19 +105,19 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 			JSONObject res = interpret(msg,userData.get(msg.getChatId()));
 			userData.get(msg.getChatId()).Update(res);
 			return this.getResultAndFormat(res,userData.get(msg.getChatId()));
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 	            BotLogger.error(this.getLogString(), e);
 	            e.printStackTrace(System.err);
 	            return String.format("e: %s", ExceptionUtils.getStackTrace(e));
 	    }
 	}
 	abstract protected String getResultAndFormat(JSONObject res,UserData ud) throws Exception;	
-	protected String getHelpMessage()
-	{
+	protected String getHelpMessage() {
 		return "help";
 	}
-	public String getLogString() {return getBotUsername();}
+	public String getLogString() {
+		return getBotUsername();
+	}
 	public abstract String getBotUsername();
 	public abstract String getBotToken();
 	Hashtable<Long,Hashtable<Integer,MyManager>> waitingForReply_ = new Hashtable<Long,Hashtable<Integer,MyManager>>();
@@ -168,8 +168,7 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 	public int sendMessageWithKeyBoard(String msg,Long chatID_,
 			List<List<InlineKeyboardButton>> buttons)
 	{
-		try 
-		{
+		try {
 			SendMessage message = new SendMessage()
 					.setChatId(chatID_)
 							.setText(msg);
@@ -181,9 +180,7 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 			int id = res.getMessageId();
 			logger_.info(String.format("return id=%d", id));
 			return id;
-		}
-		catch(Exception e)
-		{ 
+		} catch(Exception e) { 
 			e.printStackTrace(System.out);
 			return -1;
 		}

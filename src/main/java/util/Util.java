@@ -17,10 +17,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.TimeZone;
@@ -387,4 +390,10 @@ public class Util{
 	}
 	private static final String DEFAULTUSERNAME = "alex";
 	private static final String USERSFILE = "src/main/resources/userRecords.json";
+	public static Map<String, Object> IdentityMap(JSONArray jsonArray) {
+		Map<String, Object> res = new Hashtable<String, Object>();
+		for(Object o:jsonArray)
+			res.put((String)o, (String)o);
+		return res;
+	}
 }

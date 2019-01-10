@@ -1,7 +1,10 @@
 package assistantbot;
 
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.collections4.Closure;
+import org.apache.commons.collections4.Transformer;
 import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -19,6 +22,7 @@ public interface ResourceProvider {
 	 * @param msg
 	 * @param categories
 	 * @return message id
+	 * @deprecated
 	 */
 	abstract public int sendMessageWithKeyBoard(String msg, JSONArray categories);
 	/**
@@ -46,4 +50,5 @@ public interface ResourceProvider {
 	public JSONObject getUserObject();
 	public JSONObject getManagerSettingsObject(String classname);
 	public ResourceProvider setManagerSettingsObject(String classname,String key, Object val);
+	abstract public int sendMessageWithKeyBoard(String msg, Map<String, Object> map, Transformer<Object,String> me);
 }
