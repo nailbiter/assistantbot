@@ -40,7 +40,7 @@ public class MyAssistantBot extends MyBasicBot {
 			if(obj.has("port") && !obj.isNull("port")) {
 				System.err.format("initialize %s\n", obj.toString(2));
 				long port = (long) obj.getJSONObject("port").getInt("$numberLong");
-				MyAssistantUserData ud = new MyAssistantUserData(port,this,
+				BasicUserData ud = new MyAssistantUserData(port,this,
 						obj.getJSONArray("managers"),obj);
 				userData.put(port, 
 						(UserData)ud);

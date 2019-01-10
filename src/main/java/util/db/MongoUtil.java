@@ -70,14 +70,25 @@ public class MongoUtil {
 	public static MongoCollection<Document> GetSettingCollection(MongoClient cli,SettingCollection sc){
 		return cli.getDatabase(LOGISTICS).getCollection(sc.toString());
 	}
+	/**
+	 * 
+	 * @param coll
+	 * @param key
+	 * @param val
+	 * @return JSONObject representation of found object, if it was found and null otherwise
+	 */
 	public static JSONObject GetJsonObjectFromDatabase(MongoCollection<Document> coll, String key,Object val) {
 		if( key == null || val == null ) {
 			return new JSONObject(coll.find().first().toJson());
 		} else {
 			System.err.format("key=%s, val=%s\n", key,val.toString());
-			return new JSONObject(coll
+			Document first = coll
 					.find(Filters.eq(key,val))
-					.first().toJson());
+					.first();
+			if(first==null)
+				return null;
+			else
+				return new JSONObject(first.toJson());
 		}
 		
 	}

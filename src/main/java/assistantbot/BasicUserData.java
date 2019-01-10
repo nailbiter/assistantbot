@@ -2,27 +2,44 @@ package assistantbot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
+import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+
+import it.sauronsoftware.cron4j.Scheduler;
 import managers.AbstractManager;
 import managers.MyManager;
+import util.JsonUtil;
+import util.SettingCollection;
+import util.UserCollection;
 import util.Util;
+import util.db.MongoUtil;
 import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
 import util.parsers.StandardParserInterpreter;
 
-public class BasicUserData extends AbstractManager {
+public class BasicUserData extends AbstractManager implements ResourceProvider {
 	protected List<MyManager> managers_ = new ArrayList<MyManager>();
 	protected StandardParserInterpreter parser_;
 	protected JSONObject userObject_ = null;
 	protected final boolean isSingleUser_;
+	/**
+	 * FIXME: should it be a singleton?
+	 */
+	protected Scheduler scheduler_ = null;
+	protected Logger logger_;
 	protected BasicUserData(boolean isSingleUser) throws JSONException, Exception {
 		super(GetCommands(isSingleUser));
 		isSingleUser_ = isSingleUser;
+		logger_ = Logger.getLogger(this.getClass().getName());
 		if(isSingleUser)
 			userObject_ = Util.GetDefaultUser();
 	}
@@ -60,8 +77,15 @@ public class BasicUserData extends AbstractManager {
 			if( manager == null ) {
 				return String.format("no manager starting with \"%s\"", pref);
 			} else {
-				return String.format("will call command \"%s\" on \"%s\"", 
-						obj.getString("command"),manager.toString());
+				
+				String command = obj.getString("command");
+				if( command.equals("set") ) {
+					manager.set();
+					return "";
+				} else {
+					return String.format("no command \"%s\" on \"%s\"", 
+							obj.getString("command"),manager.toString());
+				}
 			}
 		}
 	}
@@ -87,5 +111,59 @@ public class BasicUserData extends AbstractManager {
 	protected String login(String username, String password) throws JSONException, Exception {
 		return null;
 	}
-
+	@Override
+	public int sendMessageWithKeyBoard(String msg, JSONArray categories) {
+		return 0;
+	}
+	@Override
+	public MongoClient getMongoClient() {
+		return null;
+	}
+	@Override
+	public int sendMessage(String msg) {
+		return 0;
+	}
+	@Override
+	public Scheduler getScheduler() {
+		return scheduler_;
+	}
+	@Override
+	public int sendMessage(String string, MyManager testManager) throws Exception {
+		return 0;
+	}
+	@Override
+	public int sendFile(String fn) throws Exception {
+		return 0;
+	}
+	@Override
+	public int sendMessageWithKeyBoard(String msg, List<List<InlineKeyboardButton>> makePerCatButtons) {
+		return 0;
+	}
+	@Override
+	public MongoCollection<Document> getCollection(UserCollection name) {
+		return null;
+	}
+	@Override
+	public JSONObject getUserObject() {
+		return userObject_;
+	}
+	@Override
+	public JSONObject getManagerSettingsObject(String classname) {
+		System.err.format("getting param object for %s\n", classname);
+		
+		JSONObject res = new JSONObject();
+		ArrayList<MongoCollection<Document>> colls = new ArrayList<MongoCollection<Document>>();
+			colls.add(MongoUtil.GetSettingCollection(this, SettingCollection.PARAMS));
+			colls.add(getCollection(UserCollection.PARAMS));
+			
+		for(MongoCollection<Document> coll:colls) {
+			JSONObject obj = MongoUtil.GetJsonObjectFromDatabase(coll, "name", classname),
+					parameters = new JSONObject();
+			if(obj != null)
+				parameters = obj.getJSONObject("parameter");
+			JsonUtil.CopyIntoJson(res, parameters);
+		}
+		
+		return res;
+	}
 }

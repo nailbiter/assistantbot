@@ -238,4 +238,8 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		else
 			return null;
 	}
+	@Override
+	public void set() {
+		//TODO
+	}
 }

@@ -1,4 +1,4 @@
-.PHONY: all offline pull jar add trello interactive habits users botmanager
+.PHONY: all offline pull jar add trello interactive habits users botmanager readme
 
 #JARSUFF=-jar-with-dependencies
 JARNAME=assistantBot-0.0.1-SNAPSHOT$(JARSUFF)
@@ -51,3 +51,5 @@ cp.txt: src/main/pl/parseCp.pl pom.xml
 	mvn exec:exec -Dexec.executable="echo" -Dexec.args="%classpath" | perl  $< --bogus $(BOGUS) > $@
 README.html: README.md
 	markdown $< > $@
+readme:
+	make -C READMEs/

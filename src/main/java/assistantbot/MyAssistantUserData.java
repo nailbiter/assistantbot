@@ -28,13 +28,8 @@ import util.parsers.AbstractParser;
 import util.parsers.StandardParserInterpreter;
 
 public class MyAssistantUserData extends BasicUserData implements UserData, ResourceProvider{
-	/**
-	 * FIXME: should it be a singleton?
-	 */
-	protected Scheduler scheduler_ = null;
 	protected long chatID_;
 	MyAssistantBot bot_ = null;
-	private Logger logger_;
 	MyAssistantUserData(Long chatID,MyAssistantBot bot, JSONArray names) throws JSONException, Exception{
 		this(chatID,bot,names,null);
 	}
@@ -43,7 +38,6 @@ public class MyAssistantUserData extends BasicUserData implements UserData, Reso
 		try {
 			chatID_ = chatID;
 			bot_ = bot;
-			logger_ = Logger.getLogger(this.getClass().getName());
 			scheduler_ = new Scheduler();
 			scheduler_.setTimeZone(Util.getTimezone());
 			userObject_ = (obj != null)? 
@@ -126,10 +120,10 @@ public class MyAssistantUserData extends BasicUserData implements UserData, Reso
 	public int sendMessage(String msg) {
 		return bot_.sendMessage(msg, chatID_);
 	}
-	@Override
-	public Scheduler getScheduler() {
-		return scheduler_;
-	}
+//	@Override
+//	public Scheduler getScheduler() {
+//		return scheduler_;
+//	}
 	@Override
 	public int sendMessage(String msg, MyManager whom) throws Exception {
 		return bot_.sendMessage(msg, chatID_, whom);
@@ -206,8 +200,8 @@ public class MyAssistantUserData extends BasicUserData implements UserData, Reso
 								userObject_.getString(Util.NAMEFIELDNAME),
 								name.toString()));
 	}
-	@Override
-	public JSONObject getUserObject() {
-		return userObject_;
-	}
+//	@Override
+//	public JSONObject getUserObject() {
+//		return userObject_;
+//	}
 }

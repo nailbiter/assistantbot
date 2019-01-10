@@ -3,7 +3,6 @@
  */
 package managers;
 
-import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import org.bson.Document;
@@ -11,7 +10,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 
 import assistantbot.ResourceProvider;
@@ -57,13 +55,7 @@ public abstract class AbstractManager implements MyManager {
 		return GetParamObject(rp_,this.getClass().getName());
 	}
 	public static JSONObject GetParamObject(ResourceProvider rp_,String classname) throws JSONException, Exception {
-		System.err.format("getting param object for %s\n", classname);
-		MongoCollection<Document> coll = 
-				MongoUtil.GetSettingCollection(rp_, SettingCollection.PARAMS);
-		JSONObject parameters = MongoUtil
-				.GetJsonObjectFromDatabase(coll,"name", classname)
-				.getJSONObject("parameter");
-		return parameters;
+		return rp_.getManagerSettingsObject(classname);
 	}
 	public JSONObject getCommands() {
 		JSONObject res = po_.getCommands();
@@ -73,5 +65,9 @@ public abstract class AbstractManager implements MyManager {
 	@Override
 	public String toString(){
 		return this.getClass().getSimpleName();
+	}
+	@Override
+	public void set() {
+		
 	}
 }

@@ -20,15 +20,25 @@ var res = {
 		]
 		,"timezone":"JST"
 	},
-	father:{
-		"managers":[
+	mariia:{
+		managers:[
 			"MoneyManager"
 		],
-		"loginmessage":[
+		loginmessage:[
 			"README:",
 			"https://github.com/nailbiter/assistantbot/blob/master/READMEs/MoneyBot.rus.md"
-		]
-		,"timezone":"EET"
+		],
+		timezone:"EET",
+	}
+	father:{
+		managers:[
+			"MoneyManager"
+		],
+		loginmessage:[
+			"README:",
+			"https://github.com/nailbiter/assistantbot/blob/master/READMEs/MoneyBot.rus.md"
+		],
+		timezone:"EET",
 	}
 };
 console.log(JSON.stringify(res));

@@ -113,11 +113,11 @@ public class InteractiveShell extends BasicUserData implements ResourceProvider,
 		System.out.println("\n"+msg);
 		return -1;
 	}
-	@Override
-	public Scheduler getScheduler() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	@Override
+//	public Scheduler getScheduler() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 	@Override
 	public int sendMessage(String string, MyManager testManager) throws Exception {
 		//FIXME
@@ -154,8 +154,8 @@ public class InteractiveShell extends BasicUserData implements ResourceProvider,
 						userObject_.getString(Util.NAMEFIELDNAME) ,
 						name.toString()));
 	}
-	@Override
-	public JSONObject getUserObject() {
-		return userObject_;
-	}
+//	@Override
+//	public JSONObject getUserObject() {
+//		return userObject_;
+//	}
 }

@@ -39,5 +39,10 @@ public interface ResourceProvider {
 	 */
 	public abstract int sendMessageWithKeyBoard(String msg, List<List<InlineKeyboardButton>> makePerCatButtons);
 	public MongoCollection<Document> getCollection(UserCollection name);
+	/**
+	 * @deprecated should be replaced with corresponding call to getManagerSettingsObject()
+	 * @return
+	 */
 	public JSONObject getUserObject();
+	public JSONObject getManagerSettingsObject(String classname);
 }

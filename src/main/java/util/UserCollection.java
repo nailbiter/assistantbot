@@ -18,6 +18,7 @@ public enum UserCollection {
 	,GYMPROGRAM("gymProgram")
 	,GYMLOG("gymLog")
 	,GENDER("gender")
+	,PARAMS("params")
 	;
 	
 	private final String name_;
