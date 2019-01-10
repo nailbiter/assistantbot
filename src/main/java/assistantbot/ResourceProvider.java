@@ -45,4 +45,5 @@ public interface ResourceProvider {
 	 */
 	public JSONObject getUserObject();
 	public JSONObject getManagerSettingsObject(String classname);
+	public ResourceProvider setManagerSettingsObject(String classname,String key, Object val);
 }

@@ -36,7 +36,8 @@ import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
 
 public class MoneyManager extends AbstractManager implements OptionReplier{
-	HashSet<String> cats = new HashSet<String>();
+	private static final String CATEGORIES = "categories";
+	HashSet<String> cats_ = new HashSet<String>();
 	ResourceProvider rp_ = null;
 	MongoCollection<Document> money;
 	Hashtable<Integer,JSONObject> pendingOperations = new Hashtable<Integer,JSONObject>();
@@ -44,8 +45,8 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 	public MoneyManager(ResourceProvider rp) throws Exception
 	{
 		super(GetCommands());
-		for(Object o:this.getParamObject(rp).getJSONArray("categories")) {
-			cats.add((String) o);
+		for(Object o:this.getParamObject(rp).getJSONArray(CATEGORIES)) {
+			cats_.add((String) o);
 		}
 		money = rp.getCollection(UserCollection.MONEY);
 		rp_ = rp;
@@ -79,20 +80,20 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 			Set<String> tags = (Set<String>)parsed.get(ParseCommentLine.TAGS);
 			String category = null;
 			for(String tag:tags)
-				if(cats.contains(tag))
+				if(cats_.contains(tag))
 					category = tag;
-			tags.removeAll(cats);
+			tags.removeAll(cats_);
 			obj.put("tags", new JSONArray(tags));
 			
 			System.err.format("obj=%s\n", obj.toString(2));
 			if( category != null ) {
 				rp_.sendMessage(putMoney(obj,category));
-			} else if( cats.size()==1 ) {
-				rp_.sendMessage(putMoney(obj, cats.iterator().next()));
+			} else if( cats_.size()==1 ) {
+				rp_.sendMessage(putMoney(obj, cats_.iterator().next()));
 			} else {
 				int msgid = 
 						rp_.sendMessageWithKeyBoard("which category?", 
-								new JSONArray(cats));
+								new JSONArray(cats_));
 				this.pendingOperations.put(msgid, obj);
 				rp_.sendMessage(String.format("prepare to put %s",obj.toString()));
 			}
@@ -235,6 +236,12 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 	}
 	@Override
 	public void set() {
-		//TODO
+		rp_.sendMessage(addCategory("test"));
+	}
+	private String addCategory(String catname) {
+		cats_.add(catname);
+		JSONArray cats = new JSONArray(cats_);
+		rp_.setManagerSettingsObject(this.getClass().getName(), CATEGORIES, cats);
+		return String.format("added category \"%s\"", catname);
 	}
 }
