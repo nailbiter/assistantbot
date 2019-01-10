@@ -44,14 +44,9 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 	public MoneyManager(ResourceProvider rp) throws Exception
 	{
 		super(GetCommands());
-		rp.getCollection(UserCollection.MONEYCATS)
-			.find()
-			.forEach(new Block<Document>() {
-		       @Override
-		       public void apply(final Document doc) {
-		    	   cats.add(new JSONObject(doc.toJson()).getString("name"));
-		       }
-			});
+		for(Object o:this.getParamObject(rp).getJSONArray("categories")) {
+			cats.add((String) o);
+		}
 		money = rp.getCollection(UserCollection.MONEY);
 		rp_ = rp;
 	}

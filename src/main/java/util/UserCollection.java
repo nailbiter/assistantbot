@@ -11,7 +11,7 @@ public enum UserCollection {
 	,POSTPONEDTASKS ("postponedTasks")
 	,PARADIGMTESTS ("paradigmTests")
 	,NOTES("notes")
-	,MONEYCATS("moneycats")
+//	,MONEYCATS("moneycats")
 	,MONEY("money")
 	,HABITSPUNCH("habitspunch")
 	,HABITS("habits")
