@@ -24,7 +24,7 @@ import util.scripthelpers.ScriptHelperImpl;
 import static java.util.Arrays.asList;
 
 /**
- * @deprecated 
+ * @deprecated migrate money report to MoneyManager, masha report to TrelloManager
  * @author oleksiileontiev
  *
  */

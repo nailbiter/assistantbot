@@ -1,33 +1,33 @@
 {
-   "urlnames" : {
-      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
-      "write_gymdone_num" : "https://trello.com/c/pvXRhy3L",
-      "replace_gym_with_js" : "https://trello.com/c/TnjMxInQ",
-      "limit_to_40" : "https://trello.com/c/fkFYN06v",
-      "auto_check_mult_main_labels" : "https://trello.com/c/cexmj2vA",
-      "label_in_task" : "https://trello.com/c/tqUrbAOy",
-      "donep" : "https://trello.com/c/4rTjnXHm",
-      "check_exclamation" : "https://trello.com/c/I2UZf4ds",
-      "sort order" : "https://trello.com/c/ofzAma1H",
-      "json table" : "https://trello.com/c/gfyEEt3o",
-      "print_only_taskdone_stat" : "https://trello.com/c/XrVeN6rK",
-      "parser" : "https://trello.com/c/hkuY0OBL",
-      "done_tast_limit" : "https://trello.com/c/fy6l2nbZ",
-      "add_run" : "https://trello.com/c/HsN2IoqH",
-      "remove_costs" : "https://trello.com/c/PmEunKmi",
-      "distrib_gen_js" : "https://trello.com/c/3R83mhwS",
-      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
-      "plus_snooze" : "https://trello.com/c/zBFzhL2R",
-      "dad_task" : "https://trello.com/c/l4X6a80c",
-      "plbuild_pull_jar" : "https://trello.com/c/QfGjg1UR",
-      "indicator" : "https://trello.com/c/FMIlCbXE",
-      "autoCheckLabel" : "https://trello.com/c/cexmj2vA"
-   },
-   "pulledData" : {
-      "trelloTitle" : "По поводу бота"
-   },
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
    ],
-   "cardurl" : "https://trello.com/c/gFc5qq5C"
+   "urlnames" : {
+      "auto_check_mult_main_labels" : "https://trello.com/c/cexmj2vA",
+      "parser" : "https://trello.com/c/hkuY0OBL",
+      "sort order" : "https://trello.com/c/ofzAma1H",
+      "json table" : "https://trello.com/c/gfyEEt3o",
+      "limit_to_40" : "https://trello.com/c/fkFYN06v",
+      "indicator" : "https://trello.com/c/FMIlCbXE",
+      "add_run" : "https://trello.com/c/HsN2IoqH",
+      "done_tast_limit" : "https://trello.com/c/fy6l2nbZ",
+      "label_in_task" : "https://trello.com/c/tqUrbAOy",
+      "distrib_gen_js" : "https://trello.com/c/3R83mhwS",
+      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
+      "check_exclamation" : "https://trello.com/c/I2UZf4ds",
+      "print_only_taskdone_stat" : "https://trello.com/c/XrVeN6rK",
+      "remove_costs" : "https://trello.com/c/PmEunKmi",
+      "replace_gym_with_js" : "https://trello.com/c/TnjMxInQ",
+      "plus_snooze" : "https://trello.com/c/zBFzhL2R",
+      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
+      "plbuild_pull_jar" : "https://trello.com/c/QfGjg1UR",
+      "write_gymdone_num" : "https://trello.com/c/pvXRhy3L",
+      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
+      "donep" : "https://trello.com/c/4rTjnXHm",
+      "dad_task" : "https://trello.com/c/l4X6a80c"
+   },
+   "cardurl" : "https://trello.com/c/gFc5qq5C",
+   "pulledData" : {
+      "trelloTitle" : "По поводу бота"
+   }
 }

@@ -53,7 +53,6 @@ public class TimeManager extends AbstractManager implements Runnable, OptionRepl
 	
 	public TimeManager(ResourceProvider rp) {
 		super(GetCommands());
-//		MongoClient mc = rp.getMongoClient();
 		rp_ = rp;
 		time_ = rp_.getCollection(UserCollection.TIME);
 		categories_ = 
@@ -146,7 +145,7 @@ public class TimeManager extends AbstractManager implements Runnable, OptionRepl
 			while(j < ROWNUM && i < categories.length())
 			{
 				JSONObject obj = categories.getJSONObject(i);
-				if(!obj.getString("canBePersistent").equals("no")) {
+				if( !obj.getString("canBePersistent").equals("no") ) {
 					buttons.get(buttons.size()-1).add(new InlineKeyboardButton()
 							.setText(obj.getString("name"))
 							.setCallbackData(obj.getString("name")));
