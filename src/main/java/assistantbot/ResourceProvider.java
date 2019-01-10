@@ -32,7 +32,7 @@ public interface ResourceProvider {
 	MongoClient getMongoClient();
 	int sendMessage(String msg);
 	Scheduler getScheduler();
-	public abstract int sendMessage(String string, MyManager testManager) throws Exception;
+	public abstract int sendMessage(String msg, Transformer<String,String> t) throws Exception;
 	public abstract int sendFile(String fn) throws Exception;
 	/**
 	 * 

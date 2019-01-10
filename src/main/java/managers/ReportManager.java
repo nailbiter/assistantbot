@@ -23,6 +23,11 @@ import util.scripthelpers.ScriptHelperImpl;
 
 import static java.util.Arrays.asList;
 
+/**
+ * @deprecated 
+ * @author oleksiileontiev
+ *
+ */
 public class ReportManager extends AbstractManager {
 	private static final String FOLDERNAME = "forreport/";
 //	private MongoClient mc_;

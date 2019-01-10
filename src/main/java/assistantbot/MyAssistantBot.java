@@ -1,13 +1,23 @@
 package assistantbot;
+import java.io.File;
+import java.util.Hashtable;
+import java.util.List;
+
 import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 
+import managers.MyManager;
 import util.KeyRing;
 import util.MyBasicBot;
 import util.SettingCollection;
@@ -55,7 +65,7 @@ public class MyAssistantBot extends MyBasicBot {
 		}
 	}
 	@Override
-	protected JSONObject interpret(Message msg, UserData ud) throws Exception {
+	public JSONObject interpret(Message msg, UserData ud) throws Exception {
 		JSONObject res = new JSONObject();
 		if(msg.hasDocument()) {
 			System.out.println("we have document " + msg.getDocument());
@@ -72,13 +82,13 @@ public class MyAssistantBot extends MyBasicBot {
 	}
 
 	@Override
-	protected UserData createUserData(Long chatId) throws JSONException, Exception {
+	public UserData createUserData(Long chatId) throws JSONException, Exception {
 		return new MyAssistantUserData(chatId,this,
 				profileObj_.optJSONArray("MANAGERS"));
 	}
 
 	@Override
-	protected String getResultAndFormat(JSONObject res,UserData ud) throws Exception {
+	public String getResultAndFormat(JSONObject res,UserData ud) throws Exception {
 		return ((MyAssistantUserData)ud).interpret(res);
 	}
 
@@ -93,5 +103,56 @@ public class MyAssistantBot extends MyBasicBot {
 	}
 	public MongoClient getMongoClient() {
 		return mongoClient_;
+	}
+	public int sendFile(String fn, Long chatId) throws TelegramApiException {
+		logger_.info(String.format("fn=%s", fn));
+		SendDocument message = new SendDocument()
+				.setChatId(chatId)
+				.setDocument(new File(fn));
+		return execute(message).getMessageId();
+	}
+	public int sendMessage(String msg, Long chatID_) {
+		try 
+		{
+			SendMessage message = new SendMessage()
+					.setChatId(chatID_)
+							.setText(msg);
+			return execute(message).getMessageId();
+		}
+		catch(Exception e){ 
+			e.printStackTrace(System.out);
+			return -1;
+		}
+	}
+	/**
+	 * 
+	 * @param msg
+	 * @param chatID_
+	 * @param whom
+	 * @param buttons
+	 * @return message id
+	 */
+	public int sendMessageWithKeyBoard(String msg, Long chatID_, List<List<InlineKeyboardButton>> buttons) {
+		try {
+			SendMessage message = new SendMessage()
+					.setChatId(chatID_)
+							.setText(msg);
+			
+			InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
+			markupInline.setKeyboard(buttons);
+			message.setReplyMarkup(markupInline);
+			Message res = execute(message); 
+			int id = res.getMessageId();
+			logger_.info(String.format("return id=%d", id));
+			return id;
+		} catch(Exception e) { 
+			e.printStackTrace(System.out);
+			return -1;
+		}
+	}
+	@Override
+	protected String interpretReply(int replyID, String message, UserData userData2) {
+		MyAssistantUserData ud = (MyAssistantUserData) userData2;
+		return ud.processReply(replyID, message);
 	}
 }

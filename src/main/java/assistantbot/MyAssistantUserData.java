@@ -74,6 +74,7 @@ public class MyAssistantUserData extends BasicUserData implements UserData, Reso
 		}
 	}
 	protected Hashtable<Integer, ImmutablePair<Transformer<Object, String>, Map<String, Object>>> pendingKeyboardMessages_ = new Hashtable<Integer, ImmutablePair< Transformer<Object,String>,Map<String,Object> >>();
+	private Hashtable<Integer, Transformer<String, String>> messageRepliers_ = new Hashtable<Integer,Transformer<String, String>>();
 	@Override
 	public String processUpdateWithCallbackQuery(String call_data, int message_id) throws Exception {
 		String res = null;
@@ -137,10 +138,6 @@ public class MyAssistantUserData extends BasicUserData implements UserData, Reso
 		return bot_.sendMessage(msg, chatID_);
 	}
 	@Override
-	public int sendMessage(String msg, MyManager whom) throws Exception {
-		return bot_.sendMessage(msg, chatID_, whom);
-	}
-	@Override
 	public int sendMessageWithKeyBoard(String msg, List<List<InlineKeyboardButton>> buttons) {
 		return bot_.sendMessageWithKeyBoard(msg, chatID_, buttons);
 	}
@@ -150,10 +147,6 @@ public class MyAssistantUserData extends BasicUserData implements UserData, Reso
 	}
 	public String interpret(JSONObject res) throws JSONException, Exception {
 		return parser_.getDispatchTable().get(res.getString(CMD)).getResultAndFormat(res);
-	}
-	@Override
-	public String processReply(int messageID, String msg) {
-		return null;
 	}
 	@Override
 	protected String login(String username, String password) throws JSONException, Exception {
@@ -217,5 +210,16 @@ public class MyAssistantUserData extends BasicUserData implements UserData, Reso
 		int res = sendMessageWithKeyBoard(msg, new JSONArray(map.keySet()));
 		pendingKeyboardMessages_.put(res, new ImmutablePair<Transformer<Object,String>, Map<String,Object>>(me,map));
 		return res;
+	}
+	
+	@Override
+	public int sendMessage(String msg, Transformer<String, String> t) throws Exception {
+		int res = sendMessage(msg);
+		messageRepliers_.put(res, t);
+		return res;
+	}
+	@Override
+	public String processReply(int messageID, String msg) {
+		return messageRepliers_.get(messageID).transform(msg);
 	}
 }

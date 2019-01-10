@@ -119,11 +119,6 @@ public class InteractiveShell extends BasicUserData implements ResourceProvider,
 //		return null;
 //	}
 	@Override
-	public int sendMessage(String string, MyManager testManager) throws Exception {
-		//FIXME
-		return sendMessage(string);
-	}
-	@Override
 	public int sendMessageWithKeyBoard(String msg, List<List<InlineKeyboardButton>> makePerCatButtons) {
 		// TODO Auto-generated method stub
 		return 0;
@@ -154,8 +149,4 @@ public class InteractiveShell extends BasicUserData implements ResourceProvider,
 						userObject_.getString(Util.NAMEFIELDNAME) ,
 						name.toString()));
 	}
-//	@Override
-//	public JSONObject getUserObject() {
-//		return userObject_;
-//	}
 }

@@ -36,6 +36,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import com.github.nailbiter.util.TableBuilder;
 
@@ -396,4 +400,27 @@ public class Util{
 			res.put((String)o, (String)o);
 		return res;
 	}
+	protected static String ToHTML(String arg)
+	{
+		return 
+				"<code>"
+				+arg
+					.replaceAll("&", "&amp")
+					.replaceAll("<", "&lt;")
+					.replaceAll(">", "&gt;")
+				+"</code>";
+	}
+	static void SendHtmlMessage(TelegramLongPollingBot bot,SendMessage message, Update update, String reply) throws TelegramApiException {
+	//		reply = Util.CheckMessageLen(reply);
+			
+			if(reply.isEmpty())
+				return;
+			
+			message.setText(ToHTML(reply));
+			message.setChatId(update.getMessage().getChatId());								
+			message.setParseMode("HTML");
+			
+	//		if(reply.length()>0)
+			bot.execute(message);
+		}
 }

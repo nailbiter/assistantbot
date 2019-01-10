@@ -141,7 +141,12 @@ public class TestManager extends AbstractManager implements OptionReplier {
 			logger_.info("bad");
 		if(res.length == 1)
 		{
-			id = rp_.sendMessage(res[0], this);
+			id = rp_.sendMessage(res[0], new Transformer<String,String>(){
+				@Override
+				public String transform(String msg) {
+					return testContainer_.get(lastUsedTestIndex).processReply(msg);
+				}
+			});
 			logger_.info(String.format("index=%d", id));
 			this.waitingForReply.put(id, index);
 		}

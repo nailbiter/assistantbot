@@ -133,10 +133,6 @@ public class BasicUserData extends AbstractManager implements ResourceProvider {
 		return scheduler_;
 	}
 	@Override
-	public int sendMessage(String string, MyManager testManager) throws Exception {
-		return 0;
-	}
-	@Override
 	public int sendFile(String fn) throws Exception {
 		return 0;
 	}
@@ -188,5 +184,9 @@ public class BasicUserData extends AbstractManager implements ResourceProvider {
 	@Override
 	public int sendMessageWithKeyBoard(String msg, Map<String, Object> map, Transformer<Object,String> me) {
 		return sendMessageWithKeyBoard(msg,new JSONArray(map.keySet()));
+	}
+	@Override
+	public int sendMessage(String msg, Transformer<String, String> t) throws Exception {
+		return sendMessage(msg);
 	}
 }

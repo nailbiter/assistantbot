@@ -239,6 +239,8 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 	public void set() {
 		final String NEWCATEGORY = "new category";
 		final String REMOVECATEGORY = "remove category";
+		final String CHOOSETOREMOVE = "choose category to remove";
+		
 		rp_.sendMessageWithKeyBoard("choose the setting:", Util.IdentityMap(new JSONArray()
 				.put(NEWCATEGORY)
 				.put(REMOVECATEGORY)), new Transformer<Object,String>(){
@@ -246,19 +248,41 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 			public String transform(Object arg0) {
 				String cmd = (String) arg0;
 				if(cmd.equals(NEWCATEGORY)) {
+					try {
+						rp_.sendMessage("reply to this message with a name of new category", new Transformer<String,String>(){
+							@Override
+							public String transform(String arg0) {
+								return addCategory(arg0);
+							}
+						});
+					} catch (Exception e) {
+						e.printStackTrace();
+						return String.format("%s e:%s", NEWCATEGORY,e.getMessage());
+					}
 					return NEWCATEGORY;
 				} else if(cmd.equalsIgnoreCase(REMOVECATEGORY)) {
-					return REMOVECATEGORY;
+					rp_.sendMessageWithKeyBoard(CHOOSETOREMOVE, Util.IdentityMap(new JSONArray(cats_)),
+							new Transformer<Object,String>(){
+								@Override
+								public String transform(Object arg0) {
+									return removeCategory((String) arg0);
+								}
+					});
+					return CHOOSETOREMOVE;
 				} else {
 					return null;
 				}
 			}
 		});
 	}
+	private String removeCategory(String catname) {
+		cats_.remove(catname);
+		rp_.setManagerSettingsObject(this.getClass().getName(), CATEGORIES, new JSONArray(cats_));
+		return String.format("removed category \"%s\"", catname);
+	}
 	private String addCategory(String catname) {
 		cats_.add(catname);
-		JSONArray cats = new JSONArray(cats_);
-		rp_.setManagerSettingsObject(this.getClass().getName(), CATEGORIES, cats);
+		rp_.setManagerSettingsObject(this.getClass().getName(), CATEGORIES, new JSONArray(cats_));
 		return String.format("added category \"%s\"", catname);
 	}
 }

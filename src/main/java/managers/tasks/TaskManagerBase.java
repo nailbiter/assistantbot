@@ -285,7 +285,11 @@ public class TaskManagerBase extends AbstractManager {
 
 	protected static String PrintDoneTasks(HashMap<String,Integer> stat, ArrayList<AssistantBotException> exs, JSONArray cats) throws Exception {
 		TableBuilder tb = new TableBuilder()
-				.addTokens("cat_","count_","min_","max_");
+				.addTokens("cat_"
+						,"min_"
+						,"count_"
+						,"max_"
+						);
 		int total = 0;
 		for(Object o:cats) {
 			JSONObject cat = (JSONObject)o;
@@ -296,8 +300,8 @@ public class TaskManagerBase extends AbstractManager {
 			tb
 				.newRow()
 				.addToken(cat.getString("name"))
-				.addToken(num)
 				.addToken(NegToInf(min))
+				.addToken(num)
 				.addToken(NegToInf(max))
 				;
 			total += num;
