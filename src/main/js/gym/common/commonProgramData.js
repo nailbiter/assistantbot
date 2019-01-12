@@ -378,4 +378,29 @@ var program = [
 			}
 		]
 	},
+	{
+		weekCount:4,
+		dayCount:4,
+		program:[
+			{
+				name:"bench",
+				reps:[
+					['5',62.5],
+					['2',72.5],
+					['1*',75],
+					['2',77.5],
+					['2',82.5],
+					['2x3',85],
+				]
+			},
+			{
+				"name":"fly",
+				"reps":"3*10"
+			},
+			{
+				"name":"stand press",
+				"reps":"3*6"
+			},
+		]
+	},
 ]
