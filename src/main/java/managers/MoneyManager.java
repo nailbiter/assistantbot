@@ -14,6 +14,7 @@ import java.util.TimeZone;
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,6 +22,7 @@ import org.json.JSONObject;
 import com.github.nailbiter.util.TableBuilder;
 import com.mongodb.Block;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 
 import assistantbot.ResourceProvider;
@@ -37,10 +39,12 @@ import util.parsers.ParseOrderedCmd;
 public class MoneyManager extends AbstractManager{
 	private static final String CATEGORIES = "categories";
 	private static final String DECSIGNS = "decsigns";
+	private static final String AMOUNT = "amount";
+	private static final String COMMENT = "comment";
 	HashSet<String> cats_ = new HashSet<String>();
 	ResourceProvider rp_ = null;
 	MongoCollection<Document> money;
-//	Hashtable<Integer,JSONObject> pendingOperations = new Hashtable<Integer,JSONObject>();
+	private String oldRemoveCostsValue_;
 	
 	public MoneyManager(ResourceProvider rp) throws Exception
 	{
@@ -60,6 +64,10 @@ public class MoneyManager extends AbstractManager{
 					return ShowTags(money,rp_);
 				else
 					continue;
+			}
+			
+			if( obj.getString(AMOUNT).toLowerCase().equals("r") || obj.getString(AMOUNT).toLowerCase().equals("у") ) {
+				return removeCosts(obj.optString(COMMENT, ""));
 			}
 			
 			double am = new ArithmeticExpressionParser(getParamObject(rp_).getInt(DECSIGNS))
@@ -93,9 +101,6 @@ public class MoneyManager extends AbstractManager{
 			} else if( cats_.size()==1 ) {
 				rp_.sendMessage(putMoney(obj, cats_.iterator().next()));
 			} else {
-//				int msgid = 
-//						rp_.sendMessageWithKeyBoard("which category?", 
-//								new JSONArray(cats_));
 				rp_.sendMessageWithKeyBoard("which category?", Util.AppendObjectMap(new JSONArray(cats_),obj), 
 						new Transformer<Object,String>(){
 							@Override
@@ -104,11 +109,51 @@ public class MoneyManager extends AbstractManager{
 								return putMoney((JSONObject) pair.right,pair.left);
 							}
 				});
-//				this.pendingOperations.put(msgid, obj);
 				rp_.sendMessage(String.format("prepare to put %s",obj.toString()));
 			}
 		}
 		return "";
+	}
+	private String removeCosts(String optString) {
+		if(optString.isEmpty())
+			optString = oldRemoveCostsValue_;
+		oldRemoveCostsValue_ = optString;
+		
+		int pos = -1;
+		final String SEPARATOR = "-";
+		if( (pos = optString.indexOf(SEPARATOR))>=0 ) {
+			String split1 = optString.substring(0, pos),
+					split2 = optString.substring(pos+SEPARATOR.length());
+			return removeCosts(Integer.parseInt(split1),Integer.parseInt(split2)+1);
+		} else {
+			int x = Integer.parseInt(optString);
+			return removeCosts(x,x+1);
+		}
+	}
+	private String removeCosts(final int from, final int till) {
+		final HashSet<ObjectId> ids = new HashSet<ObjectId>();
+		final JSONObject obj = new JSONObject()
+				.put("i", 0);
+		money
+		.find()
+		.sort(Sorts.descending("date"))
+		.forEach(new Block<Document>() {
+			@Override
+			public void apply(Document arg0) {
+				int i = obj.getInt("i")+1;
+				obj.put("i", i);
+				if(from<=i && i<till)
+					ids.add(arg0.getObjectId("_id"));
+			}
+		});
+		
+		StringBuilder sb = new StringBuilder();
+		for(ObjectId id:ids) {
+			sb.append(String.format("%s\n", id));
+			money.deleteOne(Filters.eq("_id", id));
+		}
+//		rp_.sendMessage(sb.toString());
+		return String.format("removed costs #%d..#%d", from,till-1);
 	}
 	private static String ShowTags(MongoCollection<Document> money, ResourceProvider rp) {
 		final StringBuilder sb = new StringBuilder("tags: \n");

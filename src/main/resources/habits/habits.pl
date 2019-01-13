@@ -10,9 +10,9 @@ makeHabit "0 10 * * *", "einsoch6 SET", 1080, category=> "german", info=> "http:
 	onFailed=>'move2';
 makeHabit "30 15 * * fri", "mom talk", 1080, category=> "social" ;
 makeHabit "0 22 * * fri", "granny talk", 1080, category=> "social" ;
-makeHabit "30 23 * * sat", "masha report", 1080, category=> "social", onFailed=>"remove";
-makeHabit "30 23 * * mon", "masha deadline", 1080, category=> "social" ;
-makeHabit "0 16 * * *", "masha remind", 1080, category=> "social" ;
+#makeHabit "30 23 * * sat", "masha report", 1080, category=> "social", onFailed=>"remove";
+#makeHabit "30 23 * * mon", "masha deadline", 1080, category=> "social" ;
+#makeHabit "0 16 * * *", "masha remind", 1080, category=> "social" ;
 #makeHabit "0 15 * * *", "pevzner 1h", 1080, onFailed=> "move" ;
 makeHabit "0 15 * * *", "uncle vanya project", 1080, onFailed=> "move",info=>'https://trello.com/c/qGE98nSa';
 makeHabit "0 16 * * mon", "dad english", 1080  ;
