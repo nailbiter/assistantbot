@@ -1,9 +1,7 @@
 package managers;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -13,9 +11,8 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TimeZone;
 
-import javax.script.ScriptException;
-
 import org.apache.commons.collections4.Transformer;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,6 +24,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Sorts;
 
 import assistantbot.ResourceProvider;
+import util.ArithmeticExpressionParser;
 import util.AssistantBotException;
 import util.ParseCommentLine;
 import util.UserCollection;
@@ -36,12 +34,13 @@ import util.parsers.ParseOrdered;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
 
-public class MoneyManager extends AbstractManager implements OptionReplier{
+public class MoneyManager extends AbstractManager{
 	private static final String CATEGORIES = "categories";
+	private static final String DECSIGNS = "decsigns";
 	HashSet<String> cats_ = new HashSet<String>();
 	ResourceProvider rp_ = null;
 	MongoCollection<Document> money;
-	Hashtable<Integer,JSONObject> pendingOperations = new Hashtable<Integer,JSONObject>();
+//	Hashtable<Integer,JSONObject> pendingOperations = new Hashtable<Integer,JSONObject>();
 	
 	public MoneyManager(ResourceProvider rp) throws Exception
 	{
@@ -63,7 +62,9 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 					continue;
 			}
 			
-			double am = Util.SimpleEval(obj.getString("amount"));
+			double am = new ArithmeticExpressionParser(getParamObject(rp_).getInt(DECSIGNS))
+					.simpleEvalDouble(obj.getString("amount"));
+			
 			if( am < 0 ) {
 				if( array.length()==1 )
 					return showCosts( (int)-am ,obj.optString("comment", ""));
@@ -92,10 +93,18 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 			} else if( cats_.size()==1 ) {
 				rp_.sendMessage(putMoney(obj, cats_.iterator().next()));
 			} else {
-				int msgid = 
-						rp_.sendMessageWithKeyBoard("which category?", 
-								new JSONArray(cats_));
-				this.pendingOperations.put(msgid, obj);
+//				int msgid = 
+//						rp_.sendMessageWithKeyBoard("which category?", 
+//								new JSONArray(cats_));
+				rp_.sendMessageWithKeyBoard("which category?", Util.AppendObjectMap(new JSONArray(cats_),obj), 
+						new Transformer<Object,String>(){
+							@Override
+							public String transform(Object arg0) {
+								ImmutablePair<String,Object> pair = (ImmutablePair<String, Object>) arg0;
+								return putMoney((JSONObject) pair.right,pair.left);
+							}
+				});
+//				this.pendingOperations.put(msgid, obj);
 				rp_.sendMessage(String.format("prepare to put %s",obj.toString()));
 			}
 		}
@@ -141,7 +150,7 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		return String.format("put %s in category %s",
 					obj.toString(),categoryName);
 	}
-	private String showCosts(int howMuch, String flags) throws AssistantBotException {
+	private String showCosts(int howMuch, String flags) throws JSONException, Exception {
 		final FlagParser fp = new FlagParser()
 				.addFlag('c', "show comments")
 				.parse(flags);
@@ -155,7 +164,7 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 			tb.addToken("comment");
 		final Hashtable<String,Double> totals = new Hashtable<String,Double>();
 		final TableBuilder tb1 = new TableBuilder();
-		
+		final String PRINTFLINE = String.format("%%.%df", getParamObject(rp_).getInt(DECSIGNS));
 		
 		final JSONObject container = new JSONObject().put("i", 1);
 		money
@@ -169,7 +178,7 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 					tb.newRow();
 					tb.addToken(container.getInt("i"));
 					container.put("i", container.getInt("i")+1);
-					tb.addToken(Double.toString(amount));
+					tb.addToken(String.format(PRINTFLINE, amount));
 					if(!totals.containsKey(category))
 						totals.put(category, 0.0);
 					totals.put(category, totals.get(category) + amount);
@@ -197,7 +206,8 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 	       String key = itr.next();
 	       tb1.newRow();
 	       tb1.addToken(key);
-	       tb1.addToken(Double.toString(totals.get(key)));
+	       tb1.addToken(String.format(String.format("%%.%df", getParamObject(rp_).getInt(DECSIGNS)), 
+	    		   totals.get(key)));
 	    }
 		
 		return 
@@ -225,17 +235,6 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 		return null;
 	}
 	@Override
-	public String optionReply(String option, Integer msgID) {
-		if(this.pendingOperations.containsKey(msgID))
-		{
-			String res = this.putMoney(this.pendingOperations.get(msgID), option);
-			this.pendingOperations.remove(msgID);
-			return res;
-		}
-		else
-			return null;
-	}
-	@Override
 	public void set() {
 		final String NEWCATEGORY = "new category";
 		final String REMOVECATEGORY = "remove category";
@@ -249,7 +248,8 @@ public class MoneyManager extends AbstractManager implements OptionReplier{
 				String cmd = (String) arg0;
 				if(cmd.equals(NEWCATEGORY)) {
 					try {
-						rp_.sendMessage("reply to this message with a name of new category", new Transformer<String,String>(){
+						rp_.sendMessage("reply to this message with a name of new category", 
+								new Transformer<String,String>(){
 							@Override
 							public String transform(String arg0) {
 								return addCategory(arg0);

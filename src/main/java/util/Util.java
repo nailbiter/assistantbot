@@ -27,12 +27,12 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.TimeZone;
-import java.util.regex.Pattern;
 
 import managers.MyManager;
 import util.AssistantBotException.Type;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -326,23 +326,6 @@ public class Util{
 				"				  <span class=\"tooltiptext\">%s</span>\n" + 
 				"				</div> ", text,tip);
 	}
-	public static double SimpleEval(String expr) throws AssistantBotException {
-		if( !Pattern.matches("[0-9-+*\\.]+", expr)) {
-			throw new AssistantBotException(AssistantBotException.Type.ARITHMETICPARSE,String.format("cannot eval \"%s\"", expr));
-		}
-		String[] split = expr.split("\\+");
-		double res = 0.0;
-		for(String part:split) {
-			double res1 = 1.0;
-			String[] split1 = part.split("\\*");
-			for(String part1:split1) {
-				res1 *= Double.parseDouble(part1); 
-			}
-			res += res1;
-		}
-			
-		return res;
-	}
 	public static double DaysTill(String string) throws ParseException {
 		SimpleDateFormat DF = com.github.nailbiter.util.Util.GetTrelloDateFormat();
 		Date due = DF.parse(string),
@@ -394,10 +377,19 @@ public class Util{
 	}
 	private static final String DEFAULTUSERNAME = "alex";
 	private static final String USERSFILE = "src/main/resources/userRecords.json";
-	public static Map<String, Object> IdentityMap(JSONArray jsonArray) {
+	public static Map<String, Object> IdentityMap(JSONArray names) {
 		Map<String, Object> res = new Hashtable<String, Object>();
-		for(Object o:jsonArray)
+		for(Object o:names)
 			res.put((String)o, (String)o);
+		return res;
+	}
+	public static Map<String, Object> AppendObjectMap(JSONArray names,Object obj){
+		Map<String, Object> res = new Hashtable<String, Object>();
+		for(Object o:names) {
+			ImmutablePair<String,Object> pair = new ImmutablePair<String,Object>((String)o,obj); 
+			res.put((String)o, pair);
+		}
+			
 		return res;
 	}
 	protected static String ToHTML(String arg)

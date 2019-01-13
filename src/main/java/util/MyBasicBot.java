@@ -48,7 +48,7 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 		
 		System.out.println("got call_data="+call_data);
 		
-		String reply = Util.ToHTML(ud.processUpdateWithCallbackQuery(call_data, message_id));
+		String reply = Util.ToHTML(processUpdateWithCallbackQuery(ud,call_data, message_id));
 		EditMessageText emt = new EditMessageText()
 				.setChatId(chat_id)
 				.setMessageId(message_id)
@@ -56,6 +56,7 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 				.setParseMode("HTML");
 		execute(emt);
 	}
+	protected abstract String processUpdateWithCallbackQuery(UserData ud,String call_data,int message_id) throws Exception;
 	private String processReply(Update update) throws Exception {
 		int replyID = update.getMessage().getReplyToMessage().getMessageId();
 		System.out.println("reply id: "+replyID);

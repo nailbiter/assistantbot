@@ -15,9 +15,9 @@ import com.github.nailbiter.util.TableBuilder;
 import com.github.nailbiter.util.TrelloAssistant;
 
 import assistantbot.ResourceProvider;
+import util.ArithmeticExpressionParser;
 import util.KeyRing;
 import util.ParseCommentLine;
-import util.Util;
 import util.parsers.AbstractParser;
 import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseOrderedArg;
@@ -192,7 +192,7 @@ public class TrelloManager extends AbstractManager{
 	public String removecards(String rem) throws Exception {
 		String[] split = rem.split(" ",2);
 		String listId = ta_.findListByName(HABITBOARDID, "TODO");
-		int count = (int) Util.SimpleEval(split[0]);
+		int count = ArithmeticExpressionParser.SimpleEvalInt(split[0]);
 		String name = split[1];
 		JSONArray array = ta_.getCardsInList(listId);
 		
@@ -216,7 +216,7 @@ public class TrelloManager extends AbstractManager{
 		String listId = ta_.findListByName(HABITBOARDID, "TODO");
 		JSONObject obj = new JSONObject()
 				.put("name", split[1])
-				.put("count", Util.SimpleEval(split[0])),
+				.put("count", ArithmeticExpressionParser.SimpleEvalInt(split[0])),
 				clone = new JSONObject(obj.toString());
 		
 		clone.remove("count");

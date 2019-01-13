@@ -307,7 +307,7 @@ public class TaskManagerBase extends AbstractManager {
 			total += num;
 		}
 		tb.addTokens("--","--","--","--");
-		tb.newRow().addToken("TOTAL").addToken(total);
+		tb.newRow().addToken("TOTAL").addToken("").addToken(total);
 		
 		return tb.toString() + 
 				(exs.isEmpty()?"":String.format("\ne: %s", exs.get(0).getMessage()));

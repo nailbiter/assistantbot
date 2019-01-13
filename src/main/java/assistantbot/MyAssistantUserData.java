@@ -75,10 +75,7 @@ public class MyAssistantUserData extends BasicUserData implements UserData, Reso
 	}
 	protected Hashtable<Integer, ImmutablePair<Transformer<Object, String>, Map<String, Object>>> pendingKeyboardMessages_ = new Hashtable<Integer, ImmutablePair< Transformer<Object,String>,Map<String,Object> >>();
 	private Hashtable<Integer, Transformer<String, String>> messageRepliers_ = new Hashtable<Integer,Transformer<String, String>>();
-	@Override
 	public String processUpdateWithCallbackQuery(String call_data, int message_id) throws Exception {
-		String res = null;
-		
 		if(pendingKeyboardMessages_.containsKey(message_id)) {
 			ImmutablePair<Transformer<Object, String>, Map<String, Object>> obj = pendingKeyboardMessages_.remove(message_id);
 			Map<String, Object> map = obj.right;
@@ -88,6 +85,13 @@ public class MyAssistantUserData extends BasicUserData implements UserData, Reso
 				return obj.left.transform(map.get(call_data));
 		}
 		
+		return iterateThroughRepliers(call_data,message_id);
+	}
+	/**
+	 * @deprecated
+	 */
+	private String iterateThroughRepliers(String call_data, int message_id) throws Exception {
+		String res = null;
 		List<OptionReplier> repliers = this.getOptionRepliers();
 		System.out.format("got %d repliers\n", repliers.size());
 		for(int i = 0; i < repliers.size(); i++)
@@ -95,6 +99,10 @@ public class MyAssistantUserData extends BasicUserData implements UserData, Reso
 				return res;
 		return res;
 	}
+	/**
+	 * @deprecated
+	 * @return
+	 */
 	private List<OptionReplier> getOptionRepliers()
 	{
 		ArrayList<OptionReplier> res = new ArrayList<OptionReplier>();

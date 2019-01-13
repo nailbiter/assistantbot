@@ -155,4 +155,8 @@ public class MyAssistantBot extends MyBasicBot {
 		MyAssistantUserData ud = (MyAssistantUserData) userData2;
 		return ud.processReply(replyID, message);
 	}
+	@Override
+	protected String processUpdateWithCallbackQuery(UserData ud, String call_data, int message_id) throws Exception {
+		return ((MyAssistantUserData)ud).processUpdateWithCallbackQuery(call_data, message_id);
+	}
 }
