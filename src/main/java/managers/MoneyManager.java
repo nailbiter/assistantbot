@@ -142,8 +142,11 @@ public class MoneyManager extends AbstractManager{
 			public void apply(Document arg0) {
 				int i = obj.getInt("i")+1;
 				obj.put("i", i);
-				if(from<=i && i<till)
-					ids.add(arg0.getObjectId("_id"));
+				if(from<=i && i<till) {
+					ObjectId id = arg0.getObjectId("_id");
+					ids.add(id);
+					System.err.format("adding id \"%s\" to deletion\n", id);
+				}
 			}
 		});
 		
