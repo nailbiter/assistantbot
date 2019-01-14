@@ -118,7 +118,6 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 			FlagParser fp = new FlagParser()
 					.addFlag('l', "leave (do not archive)")
 					.parse(obj.getString("flags"));
-//			if(true) return fp.getHelp();
 			if(fp.contains('h'))
 				return fp.getHelp();
 			

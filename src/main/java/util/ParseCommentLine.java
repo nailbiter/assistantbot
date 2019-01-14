@@ -148,11 +148,18 @@ public class ParseCommentLine {
 		Matcher m = null;
 		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("JST"));
 		
-		if((m = Pattern.compile("(\\d{2})(\\d{2})(\\d{2})(\\d{2})").matcher(string)).matches()) {
+		if((m = Pattern.compile("(\\d{2})(\\d{2})(\\d{2})(\\d{2})")
+				.matcher(string)).matches()) {
 			c.set(Calendar.MONTH, Integer.parseInt(m.group(1))-1);
 			c.set(Calendar.DATE, Integer.parseInt(m.group(2)));
 			c.set(Calendar.HOUR_OF_DAY, Integer.parseInt(m.group(3)));
 			c.set(Calendar.MINUTE, Integer.parseInt(m.group(4)));
+			return c.getTime();
+		} if((m = Pattern.compile("(\\d{2})(\\d{2})(\\d{2})").matcher(string))
+				.matches()) {
+			c.set(Calendar.DATE, Integer.parseInt(m.group(1)));
+			c.set(Calendar.HOUR_OF_DAY, Integer.parseInt(m.group(2)));
+			c.set(Calendar.MINUTE, Integer.parseInt(m.group(3)));
 			return c.getTime();
 		} if((m = Pattern.compile("\\+(\\d*)([h])").matcher(string)).matches()) {
 			String unit = m.group(2);
