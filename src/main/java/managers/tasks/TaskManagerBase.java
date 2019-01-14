@@ -36,6 +36,7 @@ import assistantbot.ResourceProvider;
 import managers.AbstractManager;
 import managers.TaskManager;
 import util.AssistantBotException;
+import util.AssistantBotException.Type;
 import util.JsonUtil;
 import util.KeyRing;
 import util.ParseCommentLine;
@@ -392,7 +393,6 @@ public class TaskManagerBase extends AbstractManager {
 			
 	}
 	protected void saveSnoozeToDb(JSONObject card, Date date) {
-//		mc_.getDatabase(MongoUtil.LOGISTICS).getCollection(POSTPONEDTASKS)
 		rp_.getCollection(UserCollection.POSTPONEDTASKS)
 		.insertOne(Document.parse(new JSONObject()
 				.put("date", date)
@@ -401,7 +401,6 @@ public class TaskManagerBase extends AbstractManager {
 	}
 
 	protected void logToDb(String msg, JSONObject obj) {
-//		mc_.getDatabase(MongoUtil.LOGISTICS).getCollection("taskLog")
 		rp_.getCollection(UserCollection.TASKLOG)
 		.insertOne(new Document("date",new Date())
 					.append("message",msg)
@@ -414,5 +413,16 @@ public class TaskManagerBase extends AbstractManager {
 		else
 			card = getTasks(SNOOZED).get(-num-1);
 		return card;
+	}
+	protected static boolean CannotDoTask(JSONArray cats_, String mc, HashMap<String, Integer> stat) throws AssistantBotException {
+		JSONObject cat = JsonUtil.FindInJSONArray(cats_, "name", mc);
+		int a = stat.getOrDefault(mc, 0),
+				b = cat.optInt("maxdone", 0);
+		boolean res = a >= b && b >= 0;
+		if ( res ) {
+			throw new AssistantBotException(AssistantBotException.Type.CANNOTDOTASK,
+					String.format("main cat: %s, %d >= %d", mc,a,b));
+		}
+		return res;
 	}
 }

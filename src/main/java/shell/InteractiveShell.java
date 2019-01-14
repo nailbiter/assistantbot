@@ -39,7 +39,6 @@ public class InteractiveShell extends BasicUserData implements ResourceProvider,
 	private static String PROMPT = "assistantbot> ";
 	private String fileToOutputTo_;
 	static MongoClient mc_;
-//	private Scheduler scheduler_ = new Scheduler();
 	public static void Start(JSONObject profileObj) throws Exception {
 		(new InteractiveShell(profileObj)).startMe(profileObj);
 	}

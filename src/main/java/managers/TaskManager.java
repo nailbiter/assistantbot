@@ -29,6 +29,7 @@ import util.JsonUtil;
 import util.ParseCommentLine;
 import util.UserCollection;
 import util.db.MongoUtil;
+import util.parsers.FlagParser;
 import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
@@ -109,18 +110,27 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		} else {
 			JSONObject card = getTask(obj.getInt("num"));
 			
-			String mc = GetMainLabel(GetLabels(card.getJSONArray("labels")),
-					recognizedCatNames_);
-			JSONObject cat = JsonUtil.FindInJSONArray(cats_, "name", mc);
-			int a = stat.getOrDefault(mc, 0),
-					b = cat.optInt("maxdone", 0);
-			if( a >= b && b >= 0 )
-				throw new AssistantBotException(AssistantBotException.Type.CANNOTDOTASK,
-						String.format("main cat: %s, %d >= %d", mc,a,b));
+			TaskManagerBase.CannotDoTask(cats_
+					,GetMainLabel(GetLabels(card.getJSONArray("labels")), recognizedCatNames_)
+					,stat);
+			
+			
+			FlagParser fp = new FlagParser()
+					.addFlag('l', "leave (do not archive)")
+					.parse(obj.getString("flags"));
+//			if(true) return fp.getHelp();
+			if(fp.contains('h'))
+				return fp.getHelp();
 			
 			logToDb("taskdone",card);
-			ta_.archiveCard(card.getString("id"));
-			return String.format("archived task \"%s\"", card.getString("name"));
+			String code;
+			if( fp.contains('l') ) {
+				code = "done";
+			} else {
+				code = "archived";
+				ta_.archiveCard( card.getString("id") );
+			}
+			return String.format("%s task \"%s\"", code,card.getString("name"));
 		}
 	}
 	public String taskmodify(JSONObject obj) throws JSONException, Exception {
@@ -179,9 +189,10 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 				.put(new ParseOrderedCmd("tasknew","create new task",
 								new ParseOrderedArg("name",ArgTypes.remainder).makeOpt().j()
 								))
-				.put(new ParseOrderedCmd("taskdone", "mark as done", 
-						new ParseOrderedArg("num",ArgTypes.integer)
-								.makeOpt()))
+				.put(new ParseOrderedCmd("taskdone", "mark as done" 
+						,new ParseOrderedArg("num",ArgTypes.integer).makeOpt()
+						,new ParseOrderedArg("flags",ArgTypes.string).useDefault("")
+								))
 				;
 		return res;
 	}

@@ -1,6 +1,5 @@
 package util.parsers;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections4.Transformer;
