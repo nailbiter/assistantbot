@@ -298,10 +298,11 @@ public class TaskManagerBase extends AbstractManager {
 					,min = cat.optInt(MINDONE)
 					,max = cat.optInt(MAXDONE)
 					;
-			res = res && (min<=num && (max<0 || num<=max));
+			boolean localres = min<=num && (max<0 || num<=max);
+			res = res && localres;
 			tb
 				.newRow()
-				.addToken(cat.getString("name"))
+				.addToken(String.format(localres?"%s":"[%s]", cat.getString("name")))
 				.addToken(NegToInf(min))
 				.addToken(num)
 				.addToken(NegToInf(max))
