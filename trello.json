@@ -1,33 +1,33 @@
 {
-   "pulledData" : {
-      "trelloTitle" : "taskdone without archiving"
-   },
    "cardurl" : "https://trello.com/c/E4Ei2Mbz",
    "urlnames" : {
-      "label_in_task" : "https://trello.com/c/tqUrbAOy",
-      "done_tast_limit" : "https://trello.com/c/fy6l2nbZ",
-      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
+      "write_gymdone_num" : "https://trello.com/c/pvXRhy3L",
+      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
+      "add_run" : "https://trello.com/c/HsN2IoqH",
+      "dad_task" : "https://trello.com/c/l4X6a80c",
       "limit_to_40" : "https://trello.com/c/fkFYN06v",
-      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
+      "plbuild_pull_jar" : "https://trello.com/c/QfGjg1UR",
+      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
+      "donep" : "https://trello.com/c/4rTjnXHm",
+      "label_in_task" : "https://trello.com/c/tqUrbAOy",
+      "remove_costs" : "https://trello.com/c/PmEunKmi",
+      "plus_snooze" : "https://trello.com/c/zBFzhL2R",
       "sort order" : "https://trello.com/c/ofzAma1H",
       "json table" : "https://trello.com/c/gfyEEt3o",
-      "dad_task" : "https://trello.com/c/l4X6a80c",
-      "plus_snooze" : "https://trello.com/c/zBFzhL2R",
-      "add_run" : "https://trello.com/c/HsN2IoqH",
-      "donep" : "https://trello.com/c/4rTjnXHm",
-      "auto_check_mult_main_labels" : "https://trello.com/c/cexmj2vA",
-      "plbuild_pull_jar" : "https://trello.com/c/QfGjg1UR",
-      "remove_costs" : "https://trello.com/c/PmEunKmi",
-      "distrib_gen_js" : "https://trello.com/c/3R83mhwS",
       "replace_gym_with_js" : "https://trello.com/c/TnjMxInQ",
-      "print_only_taskdone_stat" : "https://trello.com/c/XrVeN6rK",
+      "done_tast_limit" : "https://trello.com/c/fy6l2nbZ",
+      "distrib_gen_js" : "https://trello.com/c/3R83mhwS",
+      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
       "indicator" : "https://trello.com/c/FMIlCbXE",
+      "auto_check_mult_main_labels" : "https://trello.com/c/cexmj2vA",
+      "print_only_taskdone_stat" : "https://trello.com/c/XrVeN6rK",
       "parser" : "https://trello.com/c/hkuY0OBL",
-      "write_gymdone_num" : "https://trello.com/c/pvXRhy3L",
-      "check_exclamation" : "https://trello.com/c/I2UZf4ds",
-      "autoCheckLabel" : "https://trello.com/c/cexmj2vA"
+      "check_exclamation" : "https://trello.com/c/I2UZf4ds"
    },
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
-   ]
+   ],
+   "pulledData" : {
+      "trelloTitle" : "gym program"
+   }
 }

@@ -403,4 +403,26 @@ var program = [
 			},
 		]
 	},
+	{
+		weekCount:5,
+		dayCount:1,
+		program:[
+			{
+				"name":"bench",
+				"reps":[
+					['8x3',62.5],
+					['8x4',70],
+					['1*',77.5],
+				]
+			},
+			{
+				"name":"fly",
+				"reps":"3*10-12"
+			},
+			{
+				"name":"stand press",
+				"reps":"3*6"
+			},
+		]
+	},
 ]
