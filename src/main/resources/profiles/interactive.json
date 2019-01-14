@@ -10,5 +10,5 @@
 		"MiscUtilManager","ReportManager",
 		"JShellManager","TaskManager",
 		"MoneyManager","TestManager",
-		"PerlScriptManager","GymManager","MongoManager","PowerManager"]
+		"PerlScriptManager","GymManager","MongoManager","PowerManager","BirthdayManager"]
 }

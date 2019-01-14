@@ -11,6 +11,7 @@ var res = {
 			"GermanManager",
 			"GymManager",
 			"PowerManager",
+			"BirthdayManager",
 		]
 		,"loginmessage":[
 			"Tesime"
@@ -29,7 +30,7 @@ var res = {
 			"https://github.com/nailbiter/assistantbot/blob/master/READMEs/MoneyBot.rus.md"
 		],
 		timezone:"EET",
-	}
+	},
 	father:{
 		managers:[
 			"MoneyManager"
@@ -39,6 +40,6 @@ var res = {
 			"https://github.com/nailbiter/assistantbot/blob/master/READMEs/MoneyBot.rus.md"
 		],
 		timezone:"EET",
-	}
+	},
 };
 console.log(JSON.stringify(res));

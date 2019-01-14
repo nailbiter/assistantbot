@@ -39,7 +39,7 @@ public class BasicUserData extends AbstractManager implements ResourceProvider {
 	/**
 	 * FIXME: should it be a singleton?
 	 */
-	protected Scheduler scheduler_ = null;
+	protected Scheduler scheduler_ = new Scheduler();
 	protected Logger logger_;
 	protected BasicUserData(boolean isSingleUser) throws JSONException, Exception {
 		super(GetCommands(isSingleUser));

@@ -1,4 +1,7 @@
-.PHONY: all offline pull jar add trello interactive habits users botmanager readme
+.PHONY: all offline  botmanager trello interactive\
+	 pull jar add \
+	 habits users \
+	 readme
 
 #JARSUFF=-jar-with-dependencies
 JARNAME=assistantBot-0.0.1-SNAPSHOT$(JARSUFF)
@@ -16,16 +19,14 @@ all: src/main/resources/profiles/telegram.json target/$(JARNAME).jar
 	mkdir -p tmp
 	rm -rf $(REBOOTFILE)
 	$(PERL) ./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>&1 | tee log/log.telegram.txt
-include Makefile.sources
 
 #PHONY
+include Makefile.sources
+include Makefile.dbdata
 botmanager: src/main/resources/profiles/botmanager.json target/$(JARNAME).jar
 	mkdir -p tmp
 	rm -rf $(REBOOTFILE)
 	$(PERL) ./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>&1 | tee log/log.$@.txt
-habits:
-	make -C src/main/resources/habits
-	cat src/main/resources/habits/habits.json|./src/main/pl/uploadJson.pl --colname alex.habits --dbname logistics
 trello: src/main/resources/profiles/trello.json target/$(JARNAME).jar
 	./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>log/log.$@.txt
 interactive: src/main/resources/profiles/interactive.json target/$(JARNAME).jar
@@ -41,10 +42,6 @@ pull:
 jar: $(addprefix src/main/java/,$(addsuffix .java,$(SOURCES))) pom.xml cp.txt
 	mvn compile
 	touch target/$(JARNAME).jar
-src/main/resources/userRecords.json:src/main/resources/userRecords.js
-	node $< > $@
-users:  src/main/resources/userRecords.json src/main/pl/uploadJson.pl
-	cat $< | src/main/pl/uploadJson.pl --dbname logistics --colname '_users' --field 'name'
 
 #FILES
 cp.txt: src/main/pl/parseCp.pl pom.xml

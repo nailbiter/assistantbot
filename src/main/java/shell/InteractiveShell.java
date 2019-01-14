@@ -39,6 +39,7 @@ public class InteractiveShell extends BasicUserData implements ResourceProvider,
 	private static String PROMPT = "assistantbot> ";
 	private String fileToOutputTo_;
 	static MongoClient mc_;
+//	private Scheduler scheduler_ = new Scheduler();
 	public static void Start(JSONObject profileObj) throws Exception {
 		(new InteractiveShell(profileObj)).startMe(profileObj);
 	}
@@ -57,6 +58,7 @@ public class InteractiveShell extends BasicUserData implements ResourceProvider,
 		KeyRing.init(profileObj.getString("NAME"),mc_);
 		
 		parser_ = Create(managers_, profileObj.getJSONArray("MANAGERS"),this);
+		scheduler_.start();
 	}
 	protected void startMe(JSONObject profileObj) throws Exception {
 		ArrayList<String> commands = new ArrayList<String>(parser_.getDispatchTable().keySet());
@@ -113,11 +115,6 @@ public class InteractiveShell extends BasicUserData implements ResourceProvider,
 		System.out.println("\n"+msg);
 		return -1;
 	}
-//	@Override
-//	public Scheduler getScheduler() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
 	@Override
 	public int sendMessageWithKeyBoard(String msg, List<List<InlineKeyboardButton>> makePerCatButtons) {
 		// TODO Auto-generated method stub

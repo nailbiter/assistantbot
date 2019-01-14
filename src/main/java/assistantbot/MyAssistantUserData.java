@@ -43,7 +43,7 @@ public class MyAssistantUserData extends BasicUserData implements UserData, Reso
 		try {
 			chatID_ = chatID;
 			bot_ = bot;
-			scheduler_ = new Scheduler();
+//			scheduler_ = new Scheduler();
 			scheduler_.setTimeZone(Util.getTimezone());
 			userObject_ = (obj != null)? 
 					obj

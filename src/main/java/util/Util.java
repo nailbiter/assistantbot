@@ -376,7 +376,10 @@ public class Util{
 		return res;
 	}
 	private static final String DEFAULTUSERNAME = "alex";
-	private static final String USERSFILE = "src/main/resources/userRecords.json";
+	/**
+	 * @deprecated move to environment
+	 */
+	private static final String USERSFILE = "src/main/resources/params/userRecords.json";
 	public static Map<String, Object> IdentityMap(JSONArray names) {
 		Map<String, Object> res = new Hashtable<String, Object>();
 		for(Object o:names)

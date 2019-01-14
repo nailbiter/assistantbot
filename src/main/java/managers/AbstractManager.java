@@ -70,4 +70,8 @@ public abstract class AbstractManager implements MyManager {
 	public void set() {
 		
 	}
+	@Override
+	public String processReply(int messageID, String msg) {
+		return null;
+	}
 }
