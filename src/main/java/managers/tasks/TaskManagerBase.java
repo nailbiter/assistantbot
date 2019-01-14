@@ -291,12 +291,14 @@ public class TaskManagerBase extends AbstractManager {
 						,"max_"
 						);
 		int total = 0;
+		boolean res = true;
 		for(Object o:cats) {
 			JSONObject cat = (JSONObject)o;
 			Integer num = stat.getOrDefault(cat.getString("name"),0)
 					,min = cat.optInt(MINDONE)
 					,max = cat.optInt(MAXDONE)
 					;
+			res = res && (min<=num && (max<0 || num<=max));
 			tb
 				.newRow()
 				.addToken(cat.getString("name"))
@@ -309,8 +311,9 @@ public class TaskManagerBase extends AbstractManager {
 		tb.addTokens("--","--","--","--");
 		tb.newRow().addToken("TOTAL").addToken("").addToken(total);
 		
-		return tb.toString() + 
-				(exs.isEmpty()?"":String.format("\ne: %s", exs.get(0).getMessage()));
+		return tb.toString()
+				+ (String.format("%s\n", res))
+				+ (exs.isEmpty()?"":String.format("\ne: %s", exs.get(0).getMessage()));
 	}
 	private static String NegToInf(Integer min) {
 		if( min < 0 ) {

@@ -132,17 +132,14 @@ public class MoneyManager extends AbstractManager{
 	}
 	private String removeCosts(final int from, final int till) {
 		final HashSet<ObjectId> ids = new HashSet<ObjectId>();
-		final JSONObject obj = new JSONObject()
-				.put("i", 0);
-		money
-		.find()
-		.sort(Sorts.descending("date"))
+		final JSONObject obj = new JSONObject().put("i", 0);
+		money.find().sort(Sorts.descending("date"))
 		.forEach(new Block<Document>() {
 			@Override
 			public void apply(Document arg0) {
-				int i = obj.getInt("i")+1;
-				obj.put("i", i);
-				if(from<=i && i<till) {
+				int ipp = obj.getInt("i")+1;
+				obj.put("i", ipp);
+				if(from<=ipp && ipp<till) {
 					ObjectId id = arg0.getObjectId("_id");
 					ids.add(id);
 					System.err.format("adding id \"%s\" to deletion\n", id);
