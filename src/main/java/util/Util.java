@@ -403,7 +403,7 @@ public class Util{
 			
 		return res;
 	}
-	protected static String ToHTML(String arg)
+	public static String ToHTML(String arg)
 	{
 		return 
 				"<code>"
@@ -413,7 +413,7 @@ public class Util{
 					.replaceAll(">", "&gt;")
 				+"</code>";
 	}
-	static void SendHtmlMessage(TelegramLongPollingBot bot,SendMessage message, Update update, String reply) throws TelegramApiException {
+	public static void SendHtmlMessage(TelegramLongPollingBot bot,SendMessage message, Update update, String reply) throws TelegramApiException {
 	//		reply = Util.CheckMessageLen(reply);
 			
 			if(reply.isEmpty())

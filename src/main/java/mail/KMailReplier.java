@@ -4,11 +4,11 @@ import java.util.Hashtable;
 
 import org.json.JSONObject;
 
+import assistantbot.MyBasicBot;
 import assistantbot.ResourceProvider;
 import managers.MailManager;
 import managers.OptionReplier;
 import managers.Replier;
-import util.MyBasicBot;
 
 public class KMailReplier implements MailReplier{
 	String tmail_ = null;

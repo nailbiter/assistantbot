@@ -7,13 +7,13 @@ package managers;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import assistantbot.MyBasicBot;
 import assistantbot.ResourceProvider;
 import it.sauronsoftware.cron4j.Scheduler;
 import mail.KMailReplier;
 import mail.MailReplier;
 import mail.MyMail;
 import util.KeyRing;
-import util.MyBasicBot;
 import util.parsers.ParseOrdered;
 
 import java.io.IOException;

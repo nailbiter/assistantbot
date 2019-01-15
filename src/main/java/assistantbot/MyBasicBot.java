@@ -1,4 +1,4 @@
-package util;
+package assistantbot;
 import java.util.Hashtable;
 import java.util.logging.Logger;
 
@@ -11,6 +11,9 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.logging.BotLogger;
+
+import util.UserData;
+import util.Util;
 
 public abstract class MyBasicBot extends TelegramLongPollingBot {
 	protected Logger logger_; 

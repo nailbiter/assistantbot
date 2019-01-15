@@ -30,18 +30,27 @@ public class ArithmeticExpressionParser {
 		String[] split = expr.split("\\+");
 		double res = 0.0;
 		for(String part:split) {
+			System.err.format("part=%s\n", part);
 			double res1 = 1.0;
 			String[] split1 = part.split("\\*");
 			for(String part1:split1) {
-				res1 *= parseDouble(part1);
+				double d = parseDouble(part1);
+				System.err.format("part1=\"%s\", d=%f\n", part,d);
+				res1 *= d;
 			}
 			res += res1;
 		}
 			
+		if(maximalNumberOfDecimalSigns_>=0)
+			res = Truncate(res,maximalNumberOfDecimalSigns_);
 		return res;
 	}
+	private static double Truncate(double res, int num) {
+		int pow = (int) Math.pow(10, num);
+		return Math.floor(res*pow)/pow;
+	}
 	private double parseDouble(String what) throws AssistantBotException {
-		if( this.maximalNumberOfDecimalSigns_ < 0 ) {
+		if( maximalNumberOfDecimalSigns_ < 0 ) {
 			return Double.parseDouble(what);
 		} else {
 			for(String sep:decimalalSeparators_) {
@@ -69,7 +78,7 @@ public class ArithmeticExpressionParser {
 		if(num<0)
 			throw new AssistantBotException(AssistantBotException.Type.ARITHMETICEXPRESSIONPARSER,
 					String.format("cannot DigitNum on negative %d", num));
-		for(int power = 1; num > power; power*=10,res++);
+		for(int power = 1; num >= power; power*=10,res++);
 		return res;
 	}
 	public static double SimpleEvalDouble(String expr) throws AssistantBotException {

@@ -13,11 +13,11 @@ import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 
+import assistantbot.MyBasicBot;
 import assistantbot.ResourceProvider;
 import managers.MyManager;
 import managers.Replier;
 import managers.TestManager;
-import util.MyBasicBot;
 import util.UserCollection;
 import util.db.MongoUtil;
 

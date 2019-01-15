@@ -7,9 +7,9 @@ import java.util.TimerTask;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import assistantbot.MyBasicBot;
 import managers.TaskManager;
 import util.Util;
-import util.MyBasicBot;
 
 public class Task
 {
