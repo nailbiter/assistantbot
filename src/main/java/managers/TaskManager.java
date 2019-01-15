@@ -122,7 +122,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		HashMap<String, Object> parsed = new ParseCommentLine(ParseCommentLine.Mode.FROMLEFT)
 				.addHandler(SNOOZEDATE, "%%", ParseCommentLine.TOKENTYPE.DATE)
 				.parse(remainder);
-		fp_.parse((String) parsed.get(ParseCommentLine.REM));
+		fp_.parse((String) parsed.getOrDefault(ParseCommentLine.REM,""));
 		
 		if(fp_.contains('h'))
 			return fp_.getHelp();

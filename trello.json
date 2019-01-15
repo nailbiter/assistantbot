@@ -3,31 +3,31 @@
       "trelloTitle" : "1 candy pass Analyse and ?buy"
    },
    "urlnames" : {
-      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
-      "label_in_task" : "https://trello.com/c/tqUrbAOy",
-      "plbuild_pull_jar" : "https://trello.com/c/QfGjg1UR",
-      "remove_costs" : "https://trello.com/c/PmEunKmi",
-      "print_only_taskdone_stat" : "https://trello.com/c/XrVeN6rK",
       "plus_snooze" : "https://trello.com/c/zBFzhL2R",
-      "sort order" : "https://trello.com/c/ofzAma1H",
-      "write_gymdone_num" : "https://trello.com/c/pvXRhy3L",
-      "dad_task" : "https://trello.com/c/l4X6a80c",
       "done_tast_limit" : "https://trello.com/c/fy6l2nbZ",
-      "parser" : "https://trello.com/c/hkuY0OBL",
-      "limit_to_40" : "https://trello.com/c/fkFYN06v",
-      "indicator" : "https://trello.com/c/FMIlCbXE",
-      "auto_check_mult_main_labels" : "https://trello.com/c/cexmj2vA",
-      "check_exclamation" : "https://trello.com/c/I2UZf4ds",
-      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
-      "donep" : "https://trello.com/c/4rTjnXHm",
-      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
-      "replace_gym_with_js" : "https://trello.com/c/TnjMxInQ",
-      "json table" : "https://trello.com/c/gfyEEt3o",
       "add_run" : "https://trello.com/c/HsN2IoqH",
-      "distrib_gen_js" : "https://trello.com/c/3R83mhwS"
+      "distrib_gen_js" : "https://trello.com/c/3R83mhwS",
+      "print_only_taskdone_stat" : "https://trello.com/c/XrVeN6rK",
+      "indicator" : "https://trello.com/c/FMIlCbXE",
+      "write_gymdone_num" : "https://trello.com/c/pvXRhy3L",
+      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
+      "sort order" : "https://trello.com/c/ofzAma1H",
+      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
+      "donep" : "https://trello.com/c/4rTjnXHm",
+      "parser" : "https://trello.com/c/hkuY0OBL",
+      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
+      "plbuild_pull_jar" : "https://trello.com/c/QfGjg1UR",
+      "check_exclamation" : "https://trello.com/c/I2UZf4ds",
+      "replace_gym_with_js" : "https://trello.com/c/TnjMxInQ",
+      "remove_costs" : "https://trello.com/c/PmEunKmi",
+      "dad_task" : "https://trello.com/c/l4X6a80c",
+      "auto_check_mult_main_labels" : "https://trello.com/c/cexmj2vA",
+      "limit_to_40" : "https://trello.com/c/fkFYN06v",
+      "label_in_task" : "https://trello.com/c/tqUrbAOy",
+      "json table" : "https://trello.com/c/gfyEEt3o"
    },
+   "cardurl" : "https://trello.com/c/oKoDZD5Q",
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
-   ],
-   "cardurl" : "https://trello.com/c/oKoDZD5Q"
+   ]
 }
