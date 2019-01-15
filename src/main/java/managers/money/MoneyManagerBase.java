@@ -27,6 +27,7 @@ import util.ArithmeticExpressionParser;
 import util.AssistantBotException;
 import util.UserCollection;
 import util.Util;
+import util.parsers.FlagParser;
 
 public class MoneyManagerBase extends AbstractManager {
 
@@ -96,6 +97,7 @@ public class MoneyManagerBase extends AbstractManager {
 	protected ResourceProvider rp_;
 	protected HashSet<String> cats_ = new HashSet<String>();
 	protected MongoCollection<Document> money_;
+	protected FlagParser fp_;
 
 	protected MoneyManagerBase(JSONArray commands,ResourceProvider rp) throws JSONException, Exception {
 		super(commands);
@@ -104,6 +106,9 @@ public class MoneyManagerBase extends AbstractManager {
 			cats_.add((String) o);
 		}
 		money_ = rp.getCollection(UserCollection.MONEY);
+		fp_ = new FlagParser()
+				.addFlag('t', "show tags")
+				.addFlag('c', "show comments");
 	}
 
 	protected String removeCategory(String catname) {

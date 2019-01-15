@@ -120,9 +120,9 @@ public class MoneyManager extends MoneyManagerBase{
 		final HashMap<String, Object> parsed = new ParseCommentLine(ParseCommentLine.Mode.FROMLEFT)
 				.addHandler(PREDICATE, "j:", ParseCommentLine.TOKENTYPE.STRING)
 				.parse(comment);
-		final FlagParser fp = new FlagParser()
-				.addFlag('c', "show comments")
-				.parse((String) parsed.getOrDefault(ParseCommentLine.REM,""));
+		fp_.parse((String) parsed.getOrDefault(ParseCommentLine.REM,""));
+		if(fp_.contains('h'))
+			return fp_.getHelp();
 		
 		ScriptEngineManager factory = new ScriptEngineManager();
 		final ScriptEngine engine = factory.getEngineByName("JavaScript");
@@ -133,8 +133,10 @@ public class MoneyManager extends MoneyManagerBase{
 			.addToken("amount")
 			.addToken("category")
 			.addToken("date");
-		if( fp.contains('c') )
+		if( fp_.contains('c') )
 			tb.addToken("comment");
+		if( fp_.contains('t') )
+			tb.addToken("tags");
 		final Hashtable<String,Double> totals = new Hashtable<String,Double>();
 		final TableBuilder tb1 = new TableBuilder();
 		final String PRINTFLINE = String.format("%%.%df", getParamObject(rp_).getInt(DECSIGNS));
@@ -167,8 +169,17 @@ public class MoneyManager extends MoneyManagerBase{
 					Date date = doc.getDate("date");
 					tb.addToken(String.format("%s %s", formatter.format(date)
 							,timezonename ));
-					if( fp.contains('c') )
+					if( fp_.contains('c') )
 						tb.addToken(obj.optString("comment",""));
+					if( fp_.contains('t') ) 
+						tb.addToken(String.join(", "
+								, Util.Map((obj.has("tags")?obj.getJSONArray("tags"):new JSONArray()).toList()
+										,new Transformer<Object,String>(){
+											@Override
+											public String transform(Object arg0) {
+												return arg0.toString();
+											}
+								})));
 		       }
 			private boolean filter(JSONObject obj) {
 				for(String tag:(Set<String>)parsed.get(ParseCommentLine.TAGS)) {

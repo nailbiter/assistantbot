@@ -32,6 +32,7 @@ import java.util.TimeZone;
 import managers.MyManager;
 import util.AssistantBotException.Type;
 
+import org.apache.commons.collections4.Transformer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.json.JSONArray;
@@ -368,6 +369,12 @@ public class Util{
 		ArrayList<T> res = new ArrayList<T>();
 		for(int i = 0; i < maxsize && i < arr.size(); i++)
 			res.add(arr.get(i));
+		return res;
+	}
+	public static <A,B> List<B> Map(List<A> l,Transformer<A,B> t){
+		ArrayList<B> res = new ArrayList<B>();
+		for(A a:l)
+			res.add(t.transform(a));
 		return res;
 	}
 	public static JSONObject GetDefaultUser() throws JSONException, Exception {
