@@ -12,6 +12,7 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.json.JSONObject;
 
 import util.parsers.ParseOrdered;
 
@@ -115,7 +116,7 @@ public class ParseCommentLine {
 				if(Pattern.matches(String.format("\\d{%s}", PATTERN.length()), dateline))
 					d = SDF.parse(dateline);
 				else
-					d = ParseCommentLine.ComputePostponeDate(dateline);
+					d = ParseCommentLine.ParseDate(dateline);
 				res.put(h.left, d);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -142,10 +143,14 @@ public class ParseCommentLine {
 			throw new AssistantBotException(AssistantBotException.Type.COMMENTPARSE, 
 					String.format("cannot parse \"%s\" with mode %s", src,m.toString()));			
 	}
-	private static Date ComputePostponeDate(String string) throws Exception {
-		Matcher m = null;
+	private static Date ParseDate(String string) throws Exception {
 		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("JST"));
+		final JSONObject PLUSDATE = new JSONObject()
+				.put("h", Calendar.HOUR)
+				.put("d", Calendar.DATE)
+				;
 		
+		Matcher m = null;
 		if((m = Pattern.compile("(\\d{2})(\\d{2})(\\d{2})(\\d{2})")
 				.matcher(string)).matches()) {
 			c.set(Calendar.MONTH, Integer.parseInt(m.group(1))-1);
@@ -159,14 +164,16 @@ public class ParseCommentLine {
 			c.set(Calendar.HOUR_OF_DAY, Integer.parseInt(m.group(2)));
 			c.set(Calendar.MINUTE, Integer.parseInt(m.group(3)));
 			return c.getTime();
-		} if((m = Pattern.compile("\\+(\\d*)([h])").matcher(string)).matches()) {
+//		} if((m = Pattern.compile("\\+(\\d*)([h])").matcher(string)).matches()) {
+		} if((m = Pattern.compile(String.format("\\+(\\d*)([%s])",Util.CharSetToRegex(PLUSDATE.keySet())))
+				.matcher(string)).matches()) {
 			String unit = m.group(2);
 			int num = Integer.parseInt(m.group(1));
 			System.err.format("unit=%s, num=%d\n", unit,num);
-			if(unit.equals("h")) {
-				c.add(Calendar.HOUR, num);
-			} else
-				throw new Exception(String.format("cannot + parse %h", string));
+//			if(unit.equals("h")) {
+				c.add(PLUSDATE.getInt(unit), num);
+//			} else
+//				throw new Exception(String.format("cannot + parse %h", string));
 			return c.getTime();
 		} if((m = Pattern.compile("(\\d{2})(\\d{2})").matcher(string)).matches()) {
 			c.set(Calendar.HOUR_OF_DAY, Integer.parseInt(m.group(1)));
