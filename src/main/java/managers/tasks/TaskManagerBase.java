@@ -307,6 +307,8 @@ public class TaskManagerBase extends AbstractManager {
 					,min = cat.optInt(MINDONE)
 					,max = cat.optInt(MAXDONE)
 					;
+			if(max==0)
+				continue;
 			boolean localres = min<=num && (max<0 || num<=max);
 			res = res && localres;
 			tb

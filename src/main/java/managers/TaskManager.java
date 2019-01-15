@@ -175,16 +175,10 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 								.makeOpt()
 								,new ParseOrderedArg("remainder",ArgTypes.remainder)
 								.makeOpt()
-//								new ParseOrderedArg("moveToSnoozed?",ArgTypes.string)
-//								.makeOpt().useDefault("t")
 								))
 				.put(new ParseOrderedCmd("tasknew","create new task",
 								new ParseOrderedArg("name",ArgTypes.remainder).makeOpt().j()
 								))
-//				.put(new ParseOrderedCmd("taskdone", "mark as done" 
-//						,new ParseOrderedArg("num",ArgTypes.integer).makeOpt()
-//						,new ParseOrderedArg("flags",ArgTypes.string).useDefault("")
-//								))
 				;
 		return res;
 	}
