@@ -153,6 +153,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 					,GetMainLabel(GetLabels(card.getJSONArray("labels")), recognizedCatNames_)
 					,stat);
 			String code;
+			logToDb("taskdone",card);
 			if( fp_.contains('a') ) {
 				code = "archived";
 				ta_.archiveCard( card.getString("id") );
