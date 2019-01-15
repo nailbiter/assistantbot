@@ -42,6 +42,7 @@ import util.KeyRing;
 import util.ParseCommentLine;
 import util.UserCollection;
 import util.db.MongoUtil;
+import util.parsers.FlagParser;
 import util.scriptapps.JsApp;
 import util.scriptapps.ScriptApp;
 import util.scripthelpers.ScriptHelperArray;
@@ -72,6 +73,7 @@ public class TaskManagerBase extends AbstractManager {
 	 */
 	protected ArrayList<String> recognizedCatNames_ = new ArrayList<String>();
 	protected JSONArray cats_ = new JSONArray();
+	protected FlagParser fp_;
 
 	protected TaskManagerBase(JSONArray commands, ResourceProvider rp) throws Exception {
 		super(commands);
@@ -86,6 +88,12 @@ public class TaskManagerBase extends AbstractManager {
 					.add(varkeeper_));
 		FillTable(comparators_,ta_,sa_);
 		FillRecognizedCats(recognizedCatNames_,rp,varkeeper_,cats_);
+		
+		fp_ = new FlagParser()
+//			.addFlag('l', "leave (do not archive)")
+			.addFlag('a', "archive task")
+			.addFlag('d', "done task")
+			;
 	}
 	private static void FillRecognizedCats(final ArrayList<String> recognizedCats,ResourceProvider rp, ScriptHelperVarkeeper varkeeper, final JSONArray cats){
 		rp.getCollection(UserCollection.TIMECATS).find().forEach(new Block<Document>() {

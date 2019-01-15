@@ -99,47 +99,22 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		rp_.sendMessage(String.format("created new card %s",res.getString("shortUrl")));
 		return "";
 	}
-	public String taskdone(JSONObject obj) throws JSONException, Exception,AssistantBotException {
+	public String taskmodify(JSONObject obj) throws JSONException, Exception {
 		ArrayList<AssistantBotException> exs = 
 				new ArrayList<AssistantBotException>();
 		HashMap<String,Integer> stat = 
 				GetDoneTasksStat(ta_,rp_,comparators_,recognizedCatNames_,exs);
 		
 		if( !obj.has("num") ) {
-			return PrintDoneTasks(stat,exs,cats_);
-		} else {
-			JSONObject card = getTask(obj.getInt("num"));
-			
-			TaskManagerBase.CannotDoTask(cats_
-					,GetMainLabel(GetLabels(card.getJSONArray("labels")), recognizedCatNames_)
-					,stat);
-			
-			
-			FlagParser fp = new FlagParser()
-					.addFlag('l', "leave (do not archive)")
-					.parse(obj.getString("flags"));
-			if(fp.contains('h'))
-				return fp.getHelp();
-			
-			logToDb("taskdone",card);
-			String code;
-			if( fp.contains('l') ) {
-				code = "done";
-			} else {
-				code = "archived";
-				ta_.archiveCard( card.getString("id") );
-			}
-			return String.format("%s task \"%s\"", code,card.getString("name"));
-		}
-	}
-	public String taskmodify(JSONObject obj) throws JSONException, Exception {
-		if( !obj.has("num") )
 			return PrintSnoozed(ta_
 					,rp_
 					,comparators_.get(SNOOZED).middle
 					,getParamObject(rp_)
 					,logger_);
-		
+		} else if( obj.getInt("num") == 0 ) {
+			return PrintDoneTasks(stat,exs,cats_);
+		}
+			
 		JSONObject card = getTask(obj.getInt("num"));
 		
 		String remainder = obj.getString("remainder");
@@ -147,7 +122,10 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		HashMap<String, Object> parsed = new ParseCommentLine(ParseCommentLine.Mode.FROMLEFT)
 				.addHandler(SNOOZEDATE, "%%", ParseCommentLine.TOKENTYPE.DATE)
 				.parse(remainder);
+		fp_.parse((String) parsed.get(ParseCommentLine.REM));
 		
+		if(fp_.contains('h'))
+			return fp_.getHelp();
 		if(parsed.containsKey(ParseCommentLine.DATE)) {
 			Date due = (Date)parsed.get(ParseCommentLine.DATE);
 			ta_.setCardDue(card.getString("id"), due);
@@ -170,6 +148,20 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 				ta_.setLabelByName(card.getString("id"), tagname, card.getString("idList"));
 			rp_.sendMessage(String.format("tagging \"%s\" with %s",card.getString("name"), tags.toString()));
 		}
+		if(fp_.contains('d')) {
+			TaskManagerBase.CannotDoTask(cats_
+					,GetMainLabel(GetLabels(card.getJSONArray("labels")), recognizedCatNames_)
+					,stat);
+			String code;
+			if( fp_.contains('a') ) {
+				code = "archived";
+				ta_.archiveCard( card.getString("id") );
+			} else {
+				code = "done";
+			}
+			return String.format("%s task \"%s\"", code,card.getString("name"));
+		}
+		
 		return "";
 	}
 	public static JSONArray GetCommands() throws Exception {
@@ -179,19 +171,19 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 								.makeOpt()))
 				.put(new ParseOrderedCmd("taskmodify","change task's due",
 						new ParseOrderedArg("num",ArgTypes.integer)
-								.makeOpt(),
-								new ParseOrderedArg("remainder",ArgTypes.string)
-								.makeOpt(),
-								new ParseOrderedArg("moveToSnoozed?",ArgTypes.string)
-								.makeOpt().useDefault("t")
+								.makeOpt()
+								,new ParseOrderedArg("remainder",ArgTypes.remainder)
+								.makeOpt()
+//								new ParseOrderedArg("moveToSnoozed?",ArgTypes.string)
+//								.makeOpt().useDefault("t")
 								))
 				.put(new ParseOrderedCmd("tasknew","create new task",
 								new ParseOrderedArg("name",ArgTypes.remainder).makeOpt().j()
 								))
-				.put(new ParseOrderedCmd("taskdone", "mark as done" 
-						,new ParseOrderedArg("num",ArgTypes.integer).makeOpt()
-						,new ParseOrderedArg("flags",ArgTypes.string).useDefault("")
-								))
+//				.put(new ParseOrderedCmd("taskdone", "mark as done" 
+//						,new ParseOrderedArg("num",ArgTypes.integer).makeOpt()
+//						,new ParseOrderedArg("flags",ArgTypes.string).useDefault("")
+//								))
 				;
 		return res;
 	}

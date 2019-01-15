@@ -13,9 +13,12 @@ public class FlagParser {
 	HashSet<Character> flags_ = new HashSet<Character>();
 	Logger logger_ = Logger.getLogger(FlagParser.class.getName());
 	boolean isStrict_ = false;
+	public FlagParser() throws AssistantBotException {
+		addFlag('h',"show this message");
+	}
 	public FlagParser addFlag(char f,String description) throws AssistantBotException {
-		if(f == 'h')
-			throw new AssistantBotException(AssistantBotException.Type.FLAGPARSEREXCEPTION,"cannot use 'h'");
+//		if(f == 'h')
+//			throw new AssistantBotException(AssistantBotException.Type.FLAGPARSEREXCEPTION,"cannot use 'h'");
 		if(flagDescriptions_.containsKey(f))
 			throw new AssistantBotException(AssistantBotException.Type.FLAGPARSEREXCEPTION,
 					String.format("already has key '%s': \"%s\"", 
@@ -33,7 +36,7 @@ public class FlagParser {
 		for(Character c:flagDescriptions_.keySet()) {
 			tb.addTokens(c.toString(),flagDescriptions_.get(c));
 		}
-		tb.addTokens("h","show this message");
+//		tb.addTokens("h","show this message");
 		return tb.toString();
 	}
 	public FlagParser parse(String flagline) throws AssistantBotException {
