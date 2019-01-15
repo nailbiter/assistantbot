@@ -30,14 +30,12 @@ import static java.util.Arrays.asList;
  */
 public class ReportManager extends AbstractManager {
 	private static final String FOLDERNAME = "forreport/";
-//	private MongoClient mc_;
 	private TrelloAssistant ta_;
 	private ResourceProvider rp_;
 	private ScriptApp sa_;
 	private ScriptHelperImpl sih_;
 	public ReportManager(ResourceProvider rp) {
 		super(GetCommands());
-//		mc_ = rp.getMongoClient();
 		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
 				KeyRing.getTrello().getString("token"));
 		rp_ = rp;
@@ -54,6 +52,12 @@ public class ReportManager extends AbstractManager {
 	public String mashareport(JSONObject obj) throws Exception {
 		return MashaRemind.Remind(ta_,rp_);
 	}
+	/**
+	 * @deprecated move to MoneyManager, TimeManager
+	 * @param obj
+	 * @return
+	 * @throws Exception
+	 */
 	public String myreport(JSONObject obj) throws Exception {
 		JSONObject settings = getParamObject(rp_);
 		System.err.format("got object %s\n", settings.toString(2));

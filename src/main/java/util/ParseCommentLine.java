@@ -106,8 +106,6 @@ public class ParseCommentLine {
 	}
 	private static void Handle(ImmutableTriple<String, String, TOKENTYPE> h, String token, HashMap<String, Object> res) throws AssistantBotException {
 		if( h.right == TOKENTYPE.STRING ) {
-//			if( !res.containsKey(h.left) )
-//				res.put(h.left, new HashSet<String>());
 			((HashSet<String>)res.get(h.left))
 				.add(token.substring(h.middle.length()));
 		} else if( h.right == TOKENTYPE.DATE) {

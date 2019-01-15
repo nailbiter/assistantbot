@@ -1,6 +1,5 @@
 package util;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.regex.Pattern;
 
@@ -23,18 +22,8 @@ public class ArithmeticExpressionParser {
 		this();
 		maximalNumberOfDecimalSigns_ = maximalNumberOfDecimalSigns;
 	}
-	String CharSetToRegex(Collection<String> s) {
-		StringBuilder sb = new StringBuilder();
-		for(String str:s) {
-			String ss = str;
-			if(str.equals("."))
-				ss = "\\.";
-			sb.append(ss);
-		}
-		return sb.toString();
-	}
 	public double simpleEvalDouble(String expr) throws AssistantBotException {
-		if( !Pattern.matches(String.format("[0-9-+*%s]+", CharSetToRegex(decimalalSeparators_)), expr)) {
+		if( !Pattern.matches(String.format("[0-9-+*%s]+", Util.CharSetToRegex(decimalalSeparators_)), expr)) {
 			throw new AssistantBotException(AssistantBotException.Type.ARITHMETICEXPRESSIONPARSER,
 					String.format("cannot eval \"%s\"", expr));
 		}

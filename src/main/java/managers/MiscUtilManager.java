@@ -195,6 +195,12 @@ public class MiscUtilManager extends AbstractManager {
 		
 		return sb.toString();
 	}
+	/**
+	 * @deprecated move to NewTrelloManager
+	 * @param obj
+	 * @return
+	 * @throws Exception
+	 */
 	public String ttask(JSONObject obj) throws Exception {
 		String task = obj.getString("task");
 		JSONObject card = ta_.addCard(tasklist_, new JSONObject().put("name", task));

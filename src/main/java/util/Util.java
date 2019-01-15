@@ -16,6 +16,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -418,4 +419,14 @@ public class Util{
 	//		if(reply.length()>0)
 			bot.execute(message);
 		}
+	public static String CharSetToRegex(Collection<String> s) {
+		StringBuilder sb = new StringBuilder();
+		for(String str:s) {
+			String ss = str;
+			if(str.equals("."))
+				ss = "\\.";
+			sb.append(ss);
+		}
+		return sb.toString();
+	}
 }
