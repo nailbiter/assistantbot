@@ -1,5 +1,11 @@
 var res = [
 	{
+		name:"managers.GymManager",
+		parameter:{
+			weekCount:5,
+		},
+	},
+	{
 		name:"managers.MoneyManager",
 		parameter:{
 			categories:["food","fun"],
