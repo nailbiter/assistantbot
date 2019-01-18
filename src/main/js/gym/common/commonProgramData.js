@@ -448,4 +448,26 @@ var program = [
 			},
 		]
 	},
+	{
+		weekCount:weekShift(3),
+		dayCount:2,
+		program:[
+			{
+				name:"brus",
+				reps:"2*12, 3*27.5k*10x"
+			},
+			{
+				name:"razg",
+				reps:"2*15*12,5x, 3*10*17.5k"
+			},
+			{
+				name:"bic",
+				reps:"2*15*12.5k, 3*10*15.k"
+			},
+			{
+				name:"molot",
+				reps:"2*15*15k, 3*12*22.5k"
+			}
+		]
+	},
 ]
