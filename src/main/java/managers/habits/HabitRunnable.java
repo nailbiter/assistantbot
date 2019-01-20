@@ -17,6 +17,6 @@ public class HabitRunnable extends TimerTask
 	}
 	@Override
 	public void run() { 
-		hm_.HabitRunnableDispatch(name_,code_); 
+		hm_.habitRunnableDispatch(name_,code_); 
 	}
 }

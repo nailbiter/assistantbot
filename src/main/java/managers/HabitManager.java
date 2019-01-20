@@ -5,6 +5,9 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Set;
 import java.util.TimeZone;
+
+import org.apache.commons.collections4.Closure;
+import org.apache.commons.collections4.Transformer;
 import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,7 +24,7 @@ import it.sauronsoftware.cron4j.Predictor;
 import managers.habits.Donep;
 import managers.habits.HabitManagerBase;
 import managers.habits.HabitRunnable;
-import managers.habits.JSONObjectCallback;
+import util.AssistantBotException;
 import util.JsonUtil;
 import util.KeyRing;
 import util.UserCollection;
@@ -51,7 +54,6 @@ public class HabitManager extends HabitManagerBase
 		super(rp);
 		
 		streaks_ = rp
-//				.getMongoClient().getDatabase("logistics").getCollection("habitspunch");
 				.getCollection(UserCollection.HABITSPUNCH);
 		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
 				KeyRing.getTrello().getString("token"));
@@ -78,11 +80,10 @@ public class HabitManager extends HabitManagerBase
 				e.printStackTrace(System.err);
 			}
 		}
-		donep_ = new Donep(ta_,ud_,optionMsgs_);
+		donep_ = new Donep(ta_,rp_,optionMsgs_);
 	}
 	JSONArray FetchHabits(ResourceProvider rp) {
 		final JSONArray habits = new JSONArray();
-//		rp.getDatabase("logistics").getCollection("habits")
 		rp.getCollection(UserCollection.HABITS)
 			.find(Filters.eq("enabled",true)).forEach(new Block<Document>() {
 				@Override
@@ -171,19 +172,33 @@ public class HabitManager extends HabitManagerBase
 	static boolean IsHabitPending(JSONObject habit) {
 		return !habit.optBoolean("dueComplete",false);
 	}
-	public String doneg(JSONObject res) {
+	public String doneg(JSONObject res) throws AssistantBotException {
 		logger_.info("in doneg!");
+		final FlagParser fp = new FlagParser()
+				.addFlag('f', "fail the task")
+				.parse(res.getString("flags"));
 		
 		try {
 			JSONArray habits = this.getPendingHabitNames();
 			if(habits.length() > 1)
 			{
-				int id = ud_.sendMessageWithKeyBoard("which habbit?", habits);
-				optionMsgs_.put(id, "done");
+				rp_.sendMessageWithKeyBoard("which habit?"
+						,Util.IdentityMap(habits) 
+						,new Transformer<Object,String>() {
+							@Override
+							public String transform(Object arg0) {
+								if(fp.contains('f')) {
+									habitRunnableDispatch((String) arg0, HabitRunnableEnum.SETFAILURE);
+									return "fail";
+								} else {
+									return done((String) arg0);
+								}
+							}
+						});
 				return "";
+			} else {
+				return done(habits.getString(0));
 			}
-			else
-				return this.done(habits.getString(0));
 		}
 		catch(Exception e)
 		{
@@ -238,7 +253,7 @@ public class HabitManager extends HabitManagerBase
 		return String.format("you failed the task %s !", name);
 	}
 	@Override
-	protected void IfWaitingForHabit(String name,JSONObjectCallback cb) {
+	protected void IfWaitingForHabit(String name,Closure<JSONObject> cb) {
 		JSONArray cards = new JSONArray();
 		try {
 			cards = ta_.getCardsInList(pendingListId_);
@@ -249,7 +264,7 @@ public class HabitManager extends HabitManagerBase
 			JSONObject obj = (JSONObject)o;
 			if(obj.getString("name").equals(name)) {
 				if(IsHabitPending(obj)) {
-					cb.run(obj);
+					cb.execute(obj);
 					return;
 				}
 			}
