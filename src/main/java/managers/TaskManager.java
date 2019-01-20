@@ -148,19 +148,22 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 				ta_.setLabelByName(card.getString("id"), tagname, card.getString("idList"));
 			rp_.sendMessage(String.format("tagging \"%s\" with %s",card.getString("name"), tags.toString()));
 		}
+		
+		if( fp_.contains('h') ) {
+			return fp_.getHelp();
+		}
 		if(fp_.contains('d')) {
 			TaskManagerBase.CannotDoTask(cats_
 					,GetMainLabel(GetLabels(card.getJSONArray("labels")), recognizedCatNames_)
 					,stat);
-			String code;
 			logToDb("taskdone",card);
-			if( fp_.contains('a') ) {
-				code = "archived";
-				ta_.archiveCard( card.getString("id") );
-			} else {
-				code = "done";
-			}
-			return String.format("%s task \"%s\"", code,card.getString("name"));
+			rp_.sendMessage(String.format("%s task \"%s\""
+					, "done",card.getString("name")));
+		}
+		if( fp_.contains('a') ) {
+			ta_.archiveCard( card.getString("id") );
+			rp_.sendMessage(String.format("%s task \"%s\""
+					, "archived",card.getString("name")));
 		}
 		
 		return "";
