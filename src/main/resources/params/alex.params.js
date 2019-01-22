@@ -1,3 +1,5 @@
+const program = require('./gym/getprogram');
+
 var res = [
 	{
 		name:"managers.OcrManager",
@@ -9,6 +11,7 @@ var res = [
 		name:"managers.GymManager",
 		parameter:{
 			weekCount:5,
+			program,
 		},
 	},
 	{

@@ -26,23 +26,23 @@ import util.parsers.ParseOrderedCmd;
 import util.scripthelpers.ScriptHelperVarkeeper;
 
 public class GymManager extends AbstractManager {
-	private static final String FOLDERNAME = "gym/";
+//	private static final String FOLDERNAME = "gym/";
 //	private MongoClient mc_;
-	private Logger logger_;
+//	private Logger logger_;
 	int dayCount_ = -1;
 	private JSONArray program_;
 	private int exercisenum_;
 	private ResourceProvider rp_;
-	private ScriptApp sa_;
-	private ScriptHelperVarkeeper vh_;
+//	private ScriptApp sa_;
+//	private ScriptHelperVarkeeper vh_;
 
 	public GymManager(ResourceProvider rp) throws Exception {
 		super(GetCommands());
 //		mc_ = rp.getMongoClient();
 		logger_ = Logger.getLogger(this.getClass().getName());
 		rp_ = rp;
-		vh_ = new ScriptHelperVarkeeper();
-		sa_ = new JsApp(Util.getScriptFolder()+FOLDERNAME, vh_);
+//		vh_ = new ScriptHelperVarkeeper();
+//		sa_ = new JsApp(Util.getScriptFolder()+FOLDERNAME, vh_);
 	}
 	public static JSONArray GetCommands() throws AssistantBotException {
 		return new JSONArray()
@@ -80,10 +80,15 @@ public class GymManager extends AbstractManager {
 	}
 	private JSONArray getGymProgram(JSONObject args) throws JSONException, Exception {
 		JSONObject paramObj = getParamObject(rp_);
-		String res = 
-				sa_.runCommand(String.format("getprogram %d %d", paramObj.getInt("weekCount"),args.getInt("dayCount")));
-		System.err.format("res=%s\n", res);
-		return new JSONArray(res);
+		JSONArray program = paramObj.getJSONArray("program");
+		int weekCount = paramObj.getInt("weekCount"),
+				dayCount = args.getInt("dayCount");
+		for(Object o:program) {
+			JSONObject p = (JSONObject) o;
+			if(p.getInt("dayCount")==dayCount && p.getInt("weekCount")==weekCount)
+				return p.getJSONArray("program");
+		}
+		return null;
 	}
 	public String gymdone(JSONObject obj) throws Exception{
 		int exercisenum = obj.optInt("exercisenum",exercisenum_);

@@ -1,4 +1,4 @@
-.PHONY: all
+.PHONY: all gym
 UPLOADJSONPL=../../pl/uploadJson.pl
 
 all: userRecords.json alex.params.json
@@ -6,4 +6,12 @@ all: userRecords.json alex.params.json
 	cat alex.params.json | ./$(UPLOADJSONPL) --dbname logistics --colname 'alex.params'
 
 %.json:%.js
+	node $< > $@
+
+COMMON=\
+	commonBenchSquat\
+	commonFunctions\
+	commonProgramData
+ALEXSRC=$(addprefix gym/,getprogram $(addprefix common/,$(COMMON)))
+alex.params.json: alex.params.js $(addsuffix .js,$(ALEXSRC))
 	node $< > $@

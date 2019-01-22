@@ -1,3 +1,6 @@
+const program = require('./commonProgramData');
+var {BENCHWEIGHTS,SQUATWEIGHTS,} = require('./commonBenchSquat');
+
 function getProgram(){
 	AddExercises([
 		{
@@ -61,3 +64,5 @@ function getMax(array,weekCount){
 function FloorUnit(x,unit){
 	return (Math.floor(x/unit))*unit;
 }
+
+module.exports = getProgram;
