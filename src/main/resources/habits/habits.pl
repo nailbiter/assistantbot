@@ -1,7 +1,7 @@
 #makehabits "08:00", "10:00", 2, "read main 1 1page", 1080, category => "reading";
 #makehabits "08:00", "10:00", 1, "read main 2 1page", 1080, category=> "reading";
 #makehabits "08:00", "14:00", 3, "do main task", 1080, category=>"tasks", onFailed=>"move";
-makeHabit "30 23 * * *", "check main task", 1080, category=>"tasks", onFailed=>"remove";
+makeHabit "30 23 * * *", "check/plan tasks", 1080, category=>"tasks", onFailed=>"remove";
 
 makeHabit "0 10 * * *", "math reading", 1080, items=>["main1 1 page","main1 1 page","main2 1 page",], onFailed=>'move2';
 makeHabit "0 11 * * *", "talk to someone in person",  1080,  category=>"social", onFailed=>"remove";
