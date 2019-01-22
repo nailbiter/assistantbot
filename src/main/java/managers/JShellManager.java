@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import assistantbot.ResourceProvider;
 import jshell.JShell;
+import util.AssistantBotException;
 import util.KeyRing;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
@@ -42,7 +43,7 @@ public class JShellManager extends AbstractManager{
 	public String login(JSONObject res) throws Exception{
 		return (this.unLock(res.getString("passwd")) ? "still locked" : "unlocked");
 	}
-	public static JSONArray GetCommands() {
+	public static JSONArray GetCommands() throws AssistantBotException {
 		return new JSONArray()
 				.put(new ParseOrderedCmd("login", "login into shell",
 								new ParseOrderedArg("passwd",ArgTypes.string)))

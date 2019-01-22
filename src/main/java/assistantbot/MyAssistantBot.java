@@ -1,17 +1,30 @@
 package assistantbot;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Objects;
 
 import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import com.mongodb.MongoClient;
@@ -22,6 +35,7 @@ import util.KeyRing;
 import util.SettingCollection;
 import util.TelegramUtil;
 import util.UserData;
+import util.Util;
 import util.db.MongoUtil;
 
 public class MyAssistantBot extends MyBasicBot {
@@ -72,18 +86,27 @@ public class MyAssistantBot extends MyBasicBot {
 			
 			res.put("filepath",TelegramUtil.getFilePath(msg.getDocument(), this));
 			res.put("filename", msg.getDocument().getFileName());
-			return res;
+			
+		} else if( msg.hasPhoto() ) {
+			File file = this.downloadPhotoByFilePath(GetFilePath(Util.GetPhoto(msg),this));
+			
+			String fn = 
+					Util.GetTmpFilePath(".jpg")
+					;
+			File file2 = new File(fn);
+			util.Util.copyFileUsingStream(file, file2);
+			res = ((MyAssistantUserData)ud).getParser()
+					.processImage(fn)
+					;
 		} else {
 			res = ((MyAssistantUserData)ud).getParser().parse(msg.getText());
-			return res;
-		}
-			
+		}	
+		return res;
 	}
 
 	@Override
 	public UserData createUserData(Long chatId) throws JSONException, Exception {
-		return new MyAssistantUserData(chatId,this,
-				profileObj_.optJSONArray("MANAGERS"));
+		return new MyAssistantUserData(chatId, this, profileObj_.optJSONArray("MANAGERS"));
 	}
 
 	@Override
@@ -157,5 +180,36 @@ public class MyAssistantBot extends MyBasicBot {
 	@Override
 	protected String processUpdateWithCallbackQuery(UserData ud, String call_data, int message_id) throws Exception {
 		return ((MyAssistantUserData)ud).processUpdateWithCallbackQuery(call_data, message_id);
+	}
+	public static String GetFilePath(PhotoSize photo,AbsSender s) {
+	    Objects.requireNonNull(photo);
+
+	    if (photo.hasFilePath()) { // If the file_path is already present, we are done!
+	        return photo.getFilePath();
+	    } else { // If not, let find it
+	        // We create a GetFile method and set the file_id from the photo
+	        GetFile getFileMethod = new GetFile();
+	        getFileMethod.setFileId( photo.getFileId() );
+	        try {
+	            // We execute the method using AbsSender::getFile method.
+	            org.telegram.telegrambots.meta.api.objects.File file = s.execute(getFileMethod);
+	            // We now have the file_path
+	            return file.getFilePath();
+	        } catch (TelegramApiException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    
+	    return null; // Just in case
+	}
+	public java.io.File downloadPhotoByFilePath(String filePath) {
+	    try {
+	        // Download the file calling AbsSender::downloadFile method
+	        return downloadFile(filePath);
+	    } catch (TelegramApiException e) {
+	        e.printStackTrace();
+	    }
+
+	    return null;
 	}
 }

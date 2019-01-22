@@ -68,8 +68,12 @@ public class ParseOrdered {
 		for(Object o:cmds_) {
 			JSONObject cmd = (JSONObject)o;
 			String pref = "";
-			if(cmd.optBoolean(StandardParserInterpreter.DEFMESSAGEHANDLERKEY, false))
+//			if(cmd.optBoolean(StandardParserInterpreter.DEFMESSAGEHANDLERKEY, false))
+			if(ParseOrderedCmd.IsDefaultHandler(cmd))
 				pref = StandardParserInterpreter.DEFMESSAGEHANDLERPREF;
+//			if(cmd.optBoolean(StandardParserInterpreter.DEFPHOTOHANDLERKEY, false))
+			if(ParseOrderedCmd.IsDefaultPhotoHandler(cmd))
+				pref = StandardParserInterpreter.DEFPHOTOHANDLERPREF;
 			res.put(pref+cmd.getString("name"), String.format("%s%s", PrintArgs(cmd),cmd.optString("help","(none)")));
 		}
 		return res;

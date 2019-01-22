@@ -50,7 +50,7 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 			});
 		}
 	}
-	public static JSONArray GetCommands() {
+	public static JSONArray GetCommands() throws AssistantBotException {
 		JSONArray res = new JSONArray()
 			.put(new ParseOrderedCmd("habits", "list all habits and info",
 				new ParseOrderedArg("key", ArgTypes.string).useDefault("s")))

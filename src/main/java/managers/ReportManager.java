@@ -11,6 +11,7 @@ import com.mongodb.client.MongoCollection;
 
 import assistantbot.ResourceProvider;
 import managers.misc.MashaRemind;
+import util.AssistantBotException;
 import util.JsonUtil;
 import util.KeyRing;
 import util.UserCollection;
@@ -35,13 +36,13 @@ public class ReportManager extends AbstractManager {
 	private ResourceProvider rp_;
 	private ScriptApp sa_;
 	private ScriptHelperImpl sih_;
-	public ReportManager(ResourceProvider rp) {
+	public ReportManager(ResourceProvider rp) throws AssistantBotException {
 		super(GetCommands());
 		rp_ = rp;
 		sih_ = new ScriptHelperImpl(rp);
 		sa_ = new JsApp(Util.getScriptFolder()+JSFOLDERNAME, sih_);
 	}
-	public static JSONArray GetCommands() {
+	public static JSONArray GetCommands() throws AssistantBotException {
 		return new JSONArray()
 				.put(new ParseOrderedCmd("reportshow", "show report"
 						, new ParseOrderedArg("type",ParseOrdered.ArgTypes.integer).makeOpt()));

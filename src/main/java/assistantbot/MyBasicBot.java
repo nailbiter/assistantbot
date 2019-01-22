@@ -78,11 +78,13 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 	public abstract String getBotToken();
 	protected String reply(Message msg) {
 		try{
-			if(!this.userData.containsKey(msg.getChatId()))
-				userData.put(msg.getChatId(), this.createUserData(msg.getChatId())); 
-			JSONObject res = interpret(msg,userData.get(msg.getChatId()));
-			userData.get(msg.getChatId()).Update(res);
-			return this.getResultAndFormat(res,userData.get(msg.getChatId()));
+			if( !this.userData.containsKey(msg.getChatId()) ) {
+				userData.put(msg.getChatId(), this.createUserData(msg.getChatId()));
+			}
+			UserData ud = userData.get(msg.getChatId());
+			JSONObject res = interpret(msg,ud);
+			ud.Update(res);
+			return getResultAndFormat(res,ud);
 		} catch (Exception e) {
 	            BotLogger.error(this.getLogString(), e);
 	            e.printStackTrace(System.err);

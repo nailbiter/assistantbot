@@ -12,6 +12,7 @@ var res = {
 			"GymManager",
 			"PowerManager",
 			"BirthdayManager",
+			"OcrManager",
 		]
 		,"loginmessage":[
 			"Tesime"

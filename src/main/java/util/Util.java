@@ -17,6 +17,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,6 +41,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -250,11 +253,14 @@ public class Util{
 		}
 		return res;
 	}
-	public static String saveToTmpFile(String content) throws IOException {
+	public static String GetTmpFilePath(String ext) {
 		StringBuilder sb = new StringBuilder();
 		for(int i = 0 ; i < 10;i++)
 			sb.append(ALPH.charAt(rand_.nextInt(ALPH.length())));
-		String filePath = String.format("%s/%s.%s", profileObj_.getString("TMPFOLDER"),sb.toString(),"html");
+		return String.format("%s/%s%s", profileObj_.getString("TMPFOLDER"),sb.toString(),ext);
+	}
+	public static String saveToTmpFile(String content) throws IOException {
+		String filePath = GetTmpFilePath(".html");
 		BufferedWriter writer = null;
 		try
 		{
@@ -295,6 +301,12 @@ public class Util{
 	        os.close();
 	    }
 	}
+	/**
+	 * @deprecated use RunScript instead
+	 * @param command
+	 * @return
+	 * @throws IOException
+	 */
 	public static String ExecuteCommand(String command) throws IOException{
 		Runtime rt = Runtime.getRuntime();
 		Process proc = rt.exec(command);
@@ -306,7 +318,7 @@ public class Util{
 //		     InputStreamReader(proc.getErrorStream()));
 	
 		// read the output from the command
-		System.out.println(String.format("Here is the standard output of the command \"%s\":\n",command));
+		System.err.println(String.format("Here is the standard output of the command \"%s\":\n",command));
 		String s = null;
 		StringBuilder sb = new StringBuilder();
 		while ((s = stdInput.readLine()) != null) {
@@ -435,5 +447,29 @@ public class Util{
 			sb.append(ss);
 		}
 		return sb.toString();
+	}
+	public static PhotoSize GetPhoto(Message msg) {
+	    // Check that the update contains a message and the message has a photo
+	    if (msg.hasPhoto()) {
+	        // When receiving a photo, you usually get different sizes of it
+	        List<PhotoSize> photos = msg.getPhoto();
+	
+	        // We fetch the bigger photo
+	        return photos.stream()
+	                .sorted(
+	                		new Comparator<PhotoSize>() {
+								@Override
+								public int compare(PhotoSize o1, PhotoSize o2) {
+									return Integer.compare(o1.getFileSize(), o2.getFileSize());
+								}
+	                		}
+	        		.reversed())
+	                .findFirst()
+	                .orElse(null);
+	    }
+	    
+	
+	    // Return null if not found
+	    return null;
 	}
 }

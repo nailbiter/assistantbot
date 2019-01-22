@@ -59,7 +59,7 @@ public class MyAssistantUserData extends BasicUserData implements UserData, Reso
 		if(scheduler_!=null) 
 			scheduler_.start();
 	}
-	public AbstractParser getParser() {return parser_;}
+	public StandardParserInterpreter getParser() {return parser_;}
 	public void Update(JSONObject res)  {
 		if(res.has("name"))
 		{

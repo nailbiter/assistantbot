@@ -1,5 +1,11 @@
 var res = [
 	{
+		name:"managers.OcrManager",
+		parameter:{
+			lang:"chi_tra",
+		},
+	},
+	{
 		name:"managers.GymManager",
 		parameter:{
 			weekCount:5,

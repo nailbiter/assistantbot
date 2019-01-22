@@ -15,6 +15,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.model.Sorts;
 
 import assistantbot.ResourceProvider;
+import util.AssistantBotException;
 import util.UserCollection;
 import util.Util;
 import util.parsers.ParseOrdered.ArgTypes;
@@ -43,7 +44,7 @@ public class GymManager extends AbstractManager {
 		vh_ = new ScriptHelperVarkeeper();
 		sa_ = new JsApp(Util.getScriptFolder()+FOLDERNAME, vh_);
 	}
-	public static JSONArray GetCommands() {
+	public static JSONArray GetCommands() throws AssistantBotException {
 		return new JSONArray()
 				.put(new ParseOrderedCmd("gymlist","list gym exercises",
 						new ParseOrderedArg("dayCount",ArgTypes.integer)))

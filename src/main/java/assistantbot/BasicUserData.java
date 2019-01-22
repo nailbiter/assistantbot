@@ -21,6 +21,7 @@ import com.mongodb.client.model.Updates;
 import it.sauronsoftware.cron4j.Scheduler;
 import managers.AbstractManager;
 import managers.MyManager;
+import util.AssistantBotException;
 import util.JsonUtil;
 import util.SettingCollection;
 import util.UserCollection;
@@ -48,7 +49,7 @@ public class BasicUserData extends AbstractManager implements ResourceProvider {
 		if(isSingleUser)
 			userObject_ = Util.GetDefaultUser();
 	}
-	private static JSONArray GetCommands(boolean isSingleUser) {
+	private static JSONArray GetCommands(boolean isSingleUser) throws AssistantBotException {
 		JSONArray res = new JSONArray()
 				.put(new ParseOrderedCmd("help", "display this help message"))
 				.put(new ParseOrderedCmd("managers", "operations on managers"

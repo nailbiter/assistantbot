@@ -16,6 +16,7 @@ import com.github.nailbiter.util.TrelloAssistant;
 
 import assistantbot.ResourceProvider;
 import util.ArithmeticExpressionParser;
+import util.AssistantBotException;
 import util.KeyRing;
 import util.ParseCommentLine;
 import util.parsers.AbstractParser;
@@ -29,12 +30,12 @@ public class TrelloManager extends AbstractManager{
 	protected static final String HABITBOARDID = "kDCITi9O";
 	protected static final String INBOXBOARDID = "foFETfOx";
 	private TrelloAssistant ta_;
-	public TrelloManager(ResourceProvider rp) {
+	public TrelloManager(ResourceProvider rp) throws AssistantBotException {
 		super(GetCommands());
 		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
 				KeyRing.getTrello().getString("token"));
 	}
-	private static JSONArray GetCommands() {
+	private static JSONArray GetCommands() throws AssistantBotException {
 		ArrayList<String> commands = new ArrayList<String>();
 		JSONArray res = new JSONArray();
 		

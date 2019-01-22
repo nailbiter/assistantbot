@@ -25,11 +25,11 @@ import util.parsers.ParseOrderedCmd;
 public class MongoManager extends AbstractManager {
 	private MongoDatabase db_;
 	@SuppressWarnings("deprecation")
-	public MongoManager(ResourceProvider rp) {
+	public MongoManager(ResourceProvider rp) throws AssistantBotException {
 		super(GetCommands());
 		db_ = rp.getMongoClient().getDatabase(MongoUtil.getLogistics());
 	}
-	private static JSONArray GetCommands() {
+	private static JSONArray GetCommands() throws AssistantBotException {
 		return new JSONArray()
 				.put(new ParseOrderedCmd("mongocv", "fix date",
 						new ParseOrderedArg("collfield", ParseOrdered.ArgTypes.string)

@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import assistantbot.ResourceProvider;
+import util.AssistantBotException;
 import util.Util;
 import util.parsers.ParseOrderedCmd;
 
@@ -17,7 +18,7 @@ public class PowerManager extends AbstractManager {
 		rp_ = rp;
 	}
 
-	private static JSONArray GetCommands() {
+	private static JSONArray GetCommands() throws AssistantBotException {
 		return new JSONArray()
 				.put(new ParseOrderedCmd("exit", "exit the bot"))
 				.put(new ParseOrderedCmd("restart","restart the bot"))

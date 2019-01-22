@@ -15,3 +15,4 @@ Prerequisites
 6. [git](https://git-scm.com/)
 7. [GNU Make](https://www.gnu.org/software/make/)
 8. [node.js](https://nodejs.org/en/) (for running .js scripts)
+9. [https://github.com/tesseract-ocr/tesseract](tesseract)

@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import assistantbot.ResourceProvider;
 import managers.MyManager;
+import util.AssistantBotException;
 import util.JsonUtil;
 import util.Util;
 import static util.Util.PopulateManagers;
@@ -22,6 +23,8 @@ public class StandardParserInterpreter implements AbstractParser{
 	public static final String REM = "rem";
 	public static final String DEFMESSAGEHANDLERKEY =  "DEFMESSAGEHANDLER";
 	public static final String DEFMESSAGEHANDLERPREF =  "_";
+	public static final String DEFPHOTOHANDLERKEY =  "DEFPHOTOHANDLER";
+	public static final String DEFPHOTOHANDLERPREF =  "*";
 	public static final String SPLITPATTERN = " +";
 	private List<MyManager> managers_ = null;
 	private HashMap<String,MyManager> dispatchTable_ = 
@@ -37,7 +40,7 @@ public class StandardParserInterpreter implements AbstractParser{
 	public String getHelpMessage() {
 		JSONObject cmds = GetCommands(managers_,getDispatchTable(),defHandlers_);
 		System.err.format("got cmds: %s\n", cmds.toString(2));
-		return getTelegramHelpMessage(cmds);
+		return getTelegramHelpMessage(cmds,defHandlers_);
 	}
 	private static void SetDefaultHandlers(JSONObject dh, JSONObject cmds) {
 		ArrayList<String> keys = new ArrayList<String>(cmds.keySet());
@@ -46,6 +49,12 @@ public class StandardParserInterpreter implements AbstractParser{
 				cmds.put(cmdname.substring(DEFMESSAGEHANDLERPREF.length()), cmds.getString(cmdname));
 				cmds.remove(cmdname);
 				dh.put(DEFMESSAGEHANDLERKEY, cmdname.substring(DEFMESSAGEHANDLERPREF.length()));
+			}
+			if(cmdname.startsWith(DEFPHOTOHANDLERPREF)) {
+				cmds.put(cmdname.substring(DEFPHOTOHANDLERPREF.length()), cmds.getString(cmdname));
+				cmds.remove(cmdname);
+				dh.put(DEFPHOTOHANDLERKEY, 
+						cmdname.substring(DEFPHOTOHANDLERPREF.length()));
 			}
 		}
 	}
@@ -62,7 +71,7 @@ public class StandardParserInterpreter implements AbstractParser{
 		}
 		return cmds;
 	}
-	protected static String getTelegramHelpMessage(JSONObject cmds)
+	protected static String getTelegramHelpMessage(JSONObject cmds, JSONObject defHandlers)
 	{
 		ArrayList<String> keys = new ArrayList<String>(cmds.keySet());
 		keys.sort(new Comparator<String>() {
@@ -73,8 +82,12 @@ public class StandardParserInterpreter implements AbstractParser{
 		});
 		StringBuilder res = new StringBuilder();
 //		res.append("\tthe following commands are known:\n");
-		for(String key:keys)
+		for(String key:keys) {
+			if( defHandlers.has(DEFPHOTOHANDLERKEY) && key.startsWith(defHandlers.getString(DEFPHOTOHANDLERKEY)) )
+				continue;
 			res.append(String.format("%s - %s\n", key,cmds.getString(key)));
+		}
+			
 		return res.toString();
 	}
 	@Override
@@ -123,5 +136,12 @@ public class StandardParserInterpreter implements AbstractParser{
 	}
 	public HashMap<String,MyManager> getDispatchTable() {
 		return dispatchTable_;
+	}
+	public JSONObject processImage(String fn) throws AssistantBotException {
+		if( !defHandlers_.has(DEFPHOTOHANDLERKEY) )
+			throw new AssistantBotException(AssistantBotException.Type.STANDARDPARSER,String.format("no default image handler!"));
+		return new JSONObject()
+				.put(CMD, defHandlers_.getString(DEFPHOTOHANDLERKEY))
+				.put(REM, fn);
 	}
 }
