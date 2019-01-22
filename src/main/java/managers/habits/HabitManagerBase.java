@@ -45,8 +45,7 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 			IfWaitingForHabit(name,new Closure<JSONObject>() {
 				@Override
 				public void execute(JSONObject obj) {
-					rp_.sendMessage(getFailureMessage(obj.getString("name")));
-					processFailure(obj);					
+					rp_.sendMessage( processFailure(obj) );
 				}
 			});
 		}
@@ -77,7 +76,7 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 	abstract public String done(JSONObject res);
 	abstract public String habits(JSONObject res) throws Exception;
 	abstract protected void IfWaitingForHabit(String name,Closure<JSONObject> cb);
-	abstract protected void processFailure(JSONObject obj);
+	abstract protected String processFailure(JSONObject obj);
 	abstract protected void processSetReminder(String name);
 	abstract protected String getFailureMessage(String name);
 	abstract protected String getReminderMessage(String name);

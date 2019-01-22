@@ -182,16 +182,29 @@ public class HabitManager extends HabitManagerBase
 			JSONArray habits = this.getPendingHabitNames();
 			if(habits.length() > 1)
 			{
-				rp_.sendMessageWithKeyBoard("which habit?"
+				rp_.sendMessageWithKeyBoard(fp.contains('f')?"which habit to fail?":"which habit?"
 						,Util.IdentityMap(habits) 
 						,new Transformer<Object,String>() {
 							@Override
-							public String transform(Object arg0) {
+							public String transform(Object name) {
 								if(fp.contains('f')) {
-									habitRunnableDispatch((String) arg0, HabitRunnableEnum.SETFAILURE);
-									return "fail";
+									JSONArray cards = new JSONArray();
+									try {
+										cards = ta_.getCardsInList(pendingListId_);
+									} catch (Exception e) {
+										e.printStackTrace();
+									}
+									for(Object o:cards) {
+										JSONObject obj = (JSONObject)o;
+										if(obj.getString("name").equals(name)) {
+											if(IsHabitPending(obj)) {
+												return processFailure(obj);
+											}
+										}
+									}
+									return String.format("no habit %s", name);
 								} else {
-									return done((String) arg0);
+									return done((String) name);
 								}
 							}
 						});
@@ -271,7 +284,7 @@ public class HabitManager extends HabitManagerBase
 		}
 	}
 	@Override
-	protected void processFailure(JSONObject obj) {
+	protected String processFailure(JSONObject obj) {
 		String name = obj.getString("name"), id = obj.getString("id");
 		JSONObject habitObj = JsonUtil.FindInJSONArray(this.habits_,"name",name);
 		String onFailed = habitObj.getString("onFailed");
@@ -290,6 +303,7 @@ public class HabitManager extends HabitManagerBase
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return this.getFailureMessage( obj.getString("name") );
 	}
 	@Override
 	protected void processSetReminder(String name) {
