@@ -45,9 +45,7 @@ public class MiscUtilManager extends AbstractManager {
 			"0123456789"
 	};
 	private Hashtable<String,Object> hash_ = new Hashtable<String,Object>();
-	TrelloAssistant ta_;
 	String tasklist_ = null;
-	private static final String TASKLISTNAME = "todo";
 	NoteMaker nm_ = null;
 	private ResourceProvider rp_;
 	private ScriptApp sa_;
@@ -56,13 +54,6 @@ public class MiscUtilManager extends AbstractManager {
 	
 	public MiscUtilManager(ResourceProvider rp) throws Exception {
 		super(GetCommands());
-		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
-				KeyRing.getTrello().getString("token"));
-		try{
-			tasklist_ = ta_.findListByName(managers.habits.Constants.HABITBOARDID, TASKLISTNAME);
-		} catch(Exception e) {
-			e.printStackTrace(System.err);
-		}
 		nm_ = new NoteMaker(rp);
 		rp_ = rp;
 		sa_ = new JsApp(Util.getScriptFolder()+"gendistrib",null, 
@@ -99,9 +90,7 @@ public class MiscUtilManager extends AbstractManager {
 				.put(new ParseOrderedCmd("note","make note",
 						new ParseOrderedArg("notecontent",
 								ParseOrdered.ArgTypes.remainder)))
-				.put(new ParseOrderedCmd("ttask", "make new task", 
-						new ParseOrderedArg("task",
-								ParseOrdered.ArgTypes.remainder)));
+				;
 	}
 	public void help(String x) {
 		rp_.sendMessage(sp_.getHelpMessage());
@@ -194,18 +183,5 @@ public class MiscUtilManager extends AbstractManager {
 			sb.append(alphabet.charAt(rand_.nextInt(alphabet.length())));
 		
 		return sb.toString();
-	}
-	/**
-	 * @deprecated move to NewTrelloManager
-	 * @param obj
-	 * @return
-	 * @throws Exception
-	 */
-	public String ttask(JSONObject obj) throws Exception {
-		String task = obj.getString("task");
-		JSONObject card = ta_.addCard(tasklist_, new JSONObject().put("name", task));
-		JsonUtil.FilterJsonKeys(card, new JSONArray().put("name").put("shortUrl"));
-		rp_.sendMessage(String.format("added task\n%s", Util.JsonObjectToTable(card)));
-		return "";
 	}
 }

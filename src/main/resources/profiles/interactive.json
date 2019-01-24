@@ -8,6 +8,7 @@
     	"scriptFolder":"src/main/js/",
 	"managers":["GermanManager","BotManager",
 		"MiscUtilManager","ReportManager",
+		"NewTrelloManager",
 		"JShellManager","TaskManager",
 		"MoneyManager","TestManager",
 		"PerlScriptManager","GymManager","MongoManager","PowerManager","BirthdayManager"]

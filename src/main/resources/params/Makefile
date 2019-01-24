@@ -12,6 +12,7 @@ COMMON=\
 	commonBenchSquat\
 	commonFunctions\
 	commonProgramData
-ALEXSRC=$(addprefix gym/,getprogram $(addprefix common/,$(COMMON)))
-alex.params.json: alex.params.js $(addsuffix .js,$(ALEXSRC))
+GYMSRC=$(addprefix gym/,getprogram $(addprefix common/,$(COMMON)))
+SRC=alex.params birthday $(GYMSRC)
+alex.params.json: $(addsuffix .js,$(SRC))
 	node $< > $@

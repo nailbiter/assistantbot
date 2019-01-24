@@ -13,6 +13,7 @@ var res = {
 			"PowerManager",
 			"BirthdayManager",
 			"OcrManager",
+			"NewTrelloManager",
 		]
 		,"loginmessage":[
 			"Tesime"
@@ -43,4 +44,5 @@ var res = {
 		timezone:"EET",
 	},
 };
+
 console.log(JSON.stringify(res));
