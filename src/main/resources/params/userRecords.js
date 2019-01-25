@@ -14,6 +14,7 @@ var res = {
 			"BirthdayManager",
 			"OcrManager",
 			"NewTrelloManager",
+			"NutritionManager",
 		]
 		,"loginmessage":[
 			"Tesime"

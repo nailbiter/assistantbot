@@ -1,6 +1,6 @@
 ASBOTSOURCES=MyAssistantUserData MyAssistantBot ResourceProvider BasicUserData MyBasicBot
 MANAGERSOURCES=$(addsuffix Manager,Time Money Test MiscUtil Habit German Gym Abstract Report JShell Task \
-	       PerlScript Trello Bot Mongo Power Birthday Ocr NewTrello)
+	       PerlScript Trello Bot Mongo Power Birthday Ocr NewTrello Nutrition)
 UTILSOURCES=StorageManager Util TelegramUtil JsonUtil AssistantBotException \
 	    ParseCommentLine UserCollection SettingCollection ArithmeticExpressionParser
 DBSOURCES= MongoUtil
