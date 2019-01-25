@@ -12,5 +12,10 @@
 		"NewTrelloManager",
 		"JShellManager","TaskManager",
 		"MoneyManager","TestManager",
-		"PerlScriptManager","GymManager","MongoManager","PowerManager","BirthdayManager"]
+		"PerlScriptManager","GymManager"
+		,"MongoManager"
+		,"PowerManager"
+		,"BirthdayManager"
+		,"OcrManager"
+	]
 }

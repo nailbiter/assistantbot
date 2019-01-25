@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import util.AssistantBotException;
+import util.parsers.StandardParserInterpreter.DefaultHandlers;
 
 public class ParseOrderedCmd extends JSONObject {
 	private static final String MULTILINEKEY = "ISMULTILINE";
@@ -21,14 +22,13 @@ public class ParseOrderedCmd extends JSONObject {
 		put("args", array);
 	}
 	private void putName(String name) throws AssistantBotException {
-		final Set<String> unallowed = new HashSet<String>();
-		unallowed.add(StandardParserInterpreter.DEFMESSAGEHANDLERPREF);
-		unallowed.add(StandardParserInterpreter.DEFPHOTOHANDLERPREF);
-		
-		for(String s:unallowed)
+		for(DefaultHandlers dh: StandardParserInterpreter.DefaultHandlers.values()) {
+			String s = dh.getPref();
 			if(name.startsWith(s))
 				throw new AssistantBotException(AssistantBotException.Type.PARSEORDEREDCMD
 						,String.format("command cannot start with \"%s\"", s));
+		}
+			
 		put("name",name);
 	}
 	public ParseOrderedCmd(String name,String help,JSONObject ...args) throws AssistantBotException {
@@ -44,18 +44,18 @@ public class ParseOrderedCmd extends JSONObject {
 		this(name,help,new ArrayList<JSONObject>());
 	}
 	public ParseOrderedCmd makeDefaultHandler() {
-		put(StandardParserInterpreter.DEFMESSAGEHANDLERKEY, true);
+		put(StandardParserInterpreter.DefaultHandlers.MESSAGE.getKey(), true);
 		return this;
 	}
 	public static boolean IsDefaultHandler(JSONObject cmd) {
-		return cmd.optBoolean(StandardParserInterpreter.DEFMESSAGEHANDLERKEY, false);
+		return cmd.optBoolean(StandardParserInterpreter.DefaultHandlers.MESSAGE.getKey(), false);
 	}
 	public ParseOrderedCmd makeDefaultPhotoHandler() {
-		put(StandardParserInterpreter.DEFPHOTOHANDLERKEY, true);
+		put(StandardParserInterpreter.DefaultHandlers.PHOTO.getKey(), true);
 		return this;
 	}
 	public static boolean IsDefaultPhotoHandler(JSONObject cmd) {
-		return cmd.optBoolean(StandardParserInterpreter.DEFPHOTOHANDLERKEY, false);
+		return cmd.optBoolean(StandardParserInterpreter.DefaultHandlers.PHOTO.getKey(), false);
 	}
 	public ParseOrderedCmd makeMultiline() {
 		put(MULTILINEKEY,true);

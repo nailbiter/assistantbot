@@ -21,10 +21,31 @@ import static util.Util.PopulateManagers;
 public class StandardParserInterpreter implements AbstractParser{
 	public static final String CMD = "cmd";
 	public static final String REM = "rem";
-	public static final String DEFMESSAGEHANDLERKEY =  "DEFMESSAGEHANDLER";
-	public static final String DEFMESSAGEHANDLERPREF =  "_";
-	public static final String DEFPHOTOHANDLERKEY =  "DEFPHOTOHANDLER";
-	public static final String DEFPHOTOHANDLERPREF =  "*";
+	public static enum DefaultHandlers{
+		MESSAGE("DEFMESSAGEHANDLER","_",false)
+		, PHOTO("DEFPHOTOHANDLER","*",true)
+		;
+		private String key_, prefix_; 
+		private boolean removeFromCommandList_;
+		DefaultHandlers(String key,String prefix,boolean removeFromCommandList){
+			key_ = key;
+			prefix_ = prefix;
+			removeFromCommandList_ = removeFromCommandList;
+		}
+		public String getKey() {
+			return key_;
+		}
+		public String getPref() {
+			return prefix_;
+		}
+		public boolean isRemoveFromCommandList() {
+			return removeFromCommandList_;
+		}
+	};
+//	public static final String DEFMESSAGEHANDLERKEY =  "DEFMESSAGEHANDLER";
+//	public static final String DEFMESSAGEHANDLERPREF =  "_";
+//	public static final String DEFPHOTOHANDLERKEY =  "DEFPHOTOHANDLER";
+//	public static final String DEFPHOTOHANDLERPREF =  "*";
 	public static final String SPLITPATTERN = " +";
 	private List<MyManager> managers_ = null;
 	private HashMap<String,MyManager> dispatchTable_ = 
@@ -45,16 +66,24 @@ public class StandardParserInterpreter implements AbstractParser{
 	private static void SetDefaultHandlers(JSONObject dh, JSONObject cmds) {
 		ArrayList<String> keys = new ArrayList<String>(cmds.keySet());
 		for(String cmdname:keys) {
-			if(cmdname.startsWith(DEFMESSAGEHANDLERPREF)) {
-				cmds.put(cmdname.substring(DEFMESSAGEHANDLERPREF.length()), cmds.getString(cmdname));
-				cmds.remove(cmdname);
-				dh.put(DEFMESSAGEHANDLERKEY, cmdname.substring(DEFMESSAGEHANDLERPREF.length()));
-			}
-			if(cmdname.startsWith(DEFPHOTOHANDLERPREF)) {
-				cmds.put(cmdname.substring(DEFPHOTOHANDLERPREF.length()), cmds.getString(cmdname));
-				cmds.remove(cmdname);
-				dh.put(DEFPHOTOHANDLERKEY, 
-						cmdname.substring(DEFPHOTOHANDLERPREF.length()));
+//			if(cmdname.startsWith(DEFMESSAGEHANDLERPREF)) {
+//				cmds.put(cmdname.substring(DEFMESSAGEHANDLERPREF.length()), cmds.getString(cmdname));
+//				cmds.remove(cmdname);
+//				dh.put(DEFMESSAGEHANDLERKEY, cmdname.substring(DEFMESSAGEHANDLERPREF.length()));
+//			}
+//			if(cmdname.startsWith(DEFPHOTOHANDLERPREF)) {
+//				cmds.put(cmdname.substring(DEFPHOTOHANDLERPREF.length()), cmds.getString(cmdname));
+//				cmds.remove(cmdname);
+//				dh.put(DEFPHOTOHANDLERKEY, 
+//						cmdname.substring(DEFPHOTOHANDLERPREF.length()));
+//			}
+			for(DefaultHandlers h:DefaultHandlers.values()) {
+				if( cmdname.startsWith(h.getPref()) ) {
+					cmds.put(cmdname.substring(h.getPref().length()), cmds.getString(cmdname));
+					cmds.remove(cmdname);
+					dh.put(h.getKey(), 
+							cmdname.substring(h.getPref().length()));
+				}
 			}
 		}
 	}
@@ -81,9 +110,15 @@ public class StandardParserInterpreter implements AbstractParser{
 			}
 		});
 		StringBuilder res = new StringBuilder();
-//		res.append("\tthe following commands are known:\n");
 		for(String key:keys) {
-			if( defHandlers.has(DEFPHOTOHANDLERKEY) && key.startsWith(defHandlers.getString(DEFPHOTOHANDLERKEY)) )
+			boolean toContinue = false;
+			for(DefaultHandlers dh:DefaultHandlers.values()) {
+				if( dh.isRemoveFromCommandList() && defHandlers.has(dh.getKey()) && key.equals(dh.getKey()) ) {
+					toContinue = true;
+					break;
+				}
+			}
+			if( toContinue )
 				continue;
 			res.append(String.format("%s - %s\n", key,cmds.getString(key)));
 		}
@@ -109,7 +144,7 @@ public class StandardParserInterpreter implements AbstractParser{
 				res.put(REM, tokens[1]);
 			return res;
 		} else {
-			if(defHandlers_.has(DEFMESSAGEHANDLERKEY))
+			if(defHandlers_.has(DefaultHandlers.MESSAGE.getKey()))
 				res = defaultHandle(line);
 			else
 				throw new Exception(String.format("no default handler given and we got %s", line));
@@ -119,7 +154,7 @@ public class StandardParserInterpreter implements AbstractParser{
 	}
 	private JSONObject defaultHandle(String line) {
 		return new JSONObject()
-				.put(CMD, defHandlers_.getString(DEFMESSAGEHANDLERKEY))
+				.put(CMD, defHandlers_.getString(DefaultHandlers.MESSAGE.getKey()))
 				.put(REM, line);
 	}
 	public static StandardParserInterpreter Create(List<MyManager> managers,JSONArray names,ResourceProvider rp) throws JSONException, Exception {
@@ -138,10 +173,10 @@ public class StandardParserInterpreter implements AbstractParser{
 		return dispatchTable_;
 	}
 	public JSONObject processImage(String fn) throws AssistantBotException {
-		if( !defHandlers_.has(DEFPHOTOHANDLERKEY) )
+		if( !defHandlers_.has(DefaultHandlers.PHOTO.getKey()) )
 			throw new AssistantBotException(AssistantBotException.Type.STANDARDPARSER,String.format("no default image handler!"));
 		return new JSONObject()
-				.put(CMD, defHandlers_.getString(DEFPHOTOHANDLERKEY))
+				.put(CMD, defHandlers_.getString(DefaultHandlers.PHOTO.getKey()))
 				.put(REM, fn);
 	}
 }
