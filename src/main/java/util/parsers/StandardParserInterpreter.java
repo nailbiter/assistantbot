@@ -42,10 +42,6 @@ public class StandardParserInterpreter implements AbstractParser{
 			return removeFromCommandList_;
 		}
 	};
-//	public static final String DEFMESSAGEHANDLERKEY =  "DEFMESSAGEHANDLER";
-//	public static final String DEFMESSAGEHANDLERPREF =  "_";
-//	public static final String DEFPHOTOHANDLERKEY =  "DEFPHOTOHANDLER";
-//	public static final String DEFPHOTOHANDLERPREF =  "*";
 	public static final String SPLITPATTERN = " +";
 	private List<MyManager> managers_ = null;
 	private HashMap<String,MyManager> dispatchTable_ = 
@@ -66,23 +62,11 @@ public class StandardParserInterpreter implements AbstractParser{
 	private static void SetDefaultHandlers(JSONObject dh, JSONObject cmds) {
 		ArrayList<String> keys = new ArrayList<String>(cmds.keySet());
 		for(String cmdname:keys) {
-//			if(cmdname.startsWith(DEFMESSAGEHANDLERPREF)) {
-//				cmds.put(cmdname.substring(DEFMESSAGEHANDLERPREF.length()), cmds.getString(cmdname));
-//				cmds.remove(cmdname);
-//				dh.put(DEFMESSAGEHANDLERKEY, cmdname.substring(DEFMESSAGEHANDLERPREF.length()));
-//			}
-//			if(cmdname.startsWith(DEFPHOTOHANDLERPREF)) {
-//				cmds.put(cmdname.substring(DEFPHOTOHANDLERPREF.length()), cmds.getString(cmdname));
-//				cmds.remove(cmdname);
-//				dh.put(DEFPHOTOHANDLERKEY, 
-//						cmdname.substring(DEFPHOTOHANDLERPREF.length()));
-//			}
 			for(DefaultHandlers h:DefaultHandlers.values()) {
 				if( cmdname.startsWith(h.getPref()) ) {
 					cmds.put(cmdname.substring(h.getPref().length()), cmds.getString(cmdname));
 					cmds.remove(cmdname);
-					dh.put(h.getKey(), 
-							cmdname.substring(h.getPref().length()));
+					dh.put(h.getKey(), cmdname.substring(h.getPref().length()));
 				}
 			}
 		}
@@ -100,8 +84,7 @@ public class StandardParserInterpreter implements AbstractParser{
 		}
 		return cmds;
 	}
-	protected static String getTelegramHelpMessage(JSONObject cmds, JSONObject defHandlers)
-	{
+	protected static String getTelegramHelpMessage(JSONObject cmds, JSONObject defHandlers) {
 		ArrayList<String> keys = new ArrayList<String>(cmds.keySet());
 		keys.sort(new Comparator<String>() {
 			@Override
@@ -113,7 +96,7 @@ public class StandardParserInterpreter implements AbstractParser{
 		for(String key:keys) {
 			boolean toContinue = false;
 			for(DefaultHandlers dh:DefaultHandlers.values()) {
-				if( dh.isRemoveFromCommandList() && defHandlers.has(dh.getKey()) && key.equals(dh.getKey()) ) {
+				if( dh.isRemoveFromCommandList() && key.equals( defHandlers.optString( dh.getKey(), "" ) ) ) {
 					toContinue = true;
 					break;
 				}
