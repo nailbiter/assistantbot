@@ -1,7 +1,9 @@
 package managers;
 
+import static managers.habits.Constants.HABITBOARDID;
+import static managers.habits.Constants.INBOXBOARDID;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -15,20 +17,19 @@ import com.github.nailbiter.util.TableBuilder;
 import com.github.nailbiter.util.TrelloAssistant;
 
 import assistantbot.ResourceProvider;
+import managers.habits.Constants;
 import util.ArithmeticExpressionParser;
 import util.AssistantBotException;
 import util.KeyRing;
 import util.ParseCommentLine;
-import util.parsers.AbstractParser;
 import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
-import util.parsers.StandardParserInterpreter;
+import util.parsers.StandardParserInterpreter;;
 
 public class TrelloManager extends AbstractManager{
-	protected static final String INBOXBOARDIDLONG = "5a83f33d7c047209445249dd";
-	protected static final String HABITBOARDID = "kDCITi9O";
-	protected static final String INBOXBOARDID = "foFETfOx";
+	//	protected static final String HABITBOARDID = "kDCITi9O";
+//	protected static final String INBOXBOARDID = "foFETfOx";
 	private TrelloAssistant ta_;
 	public TrelloManager(ResourceProvider rp) throws AssistantBotException {
 		super(GetCommands());
@@ -116,7 +117,7 @@ public class TrelloManager extends AbstractManager{
 		System.err.format("old=%s\nnew=%s\n", oldlistid,newlistid);
 		JSONArray arr = ta_.getCardsInList(oldlistid);
 		String cardid = arr.getJSONObject(arr.length()-1).getString("id");
-		ta_.moveCard(cardid, INBOXBOARDIDLONG+"."+newlistid,"top");
+		ta_.moveCard(cardid, Constants.INBOXBOARDIDLONG+"."+newlistid,"top");
 		
 		if( arg.has( StandardParserInterpreter.REM ) ) {
 			String rem = arg.optString(StandardParserInterpreter.REM).trim();

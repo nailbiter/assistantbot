@@ -4,7 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.collections4.Transformer;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.bson.Document;
 import org.jline.reader.Completer;
 import org.jline.reader.History;
@@ -38,6 +41,7 @@ import static util.parsers.StandardParserInterpreter.Create;
 public class InteractiveShell extends BasicUserData implements ResourceProvider, MyManager {
 	private static String PROMPT = "assistantbot> ";
 	private String fileToOutputTo_;
+	private ImmutablePair<Map<String, Object>, Transformer<Object, String>> lastKeyboard_;
 	static MongoClient mc_;
 	public static void Start(JSONObject profileObj) throws Exception {
 		(new InteractiveShell(profileObj)).startMe(profileObj);
@@ -144,5 +148,22 @@ public class InteractiveShell extends BasicUserData implements ResourceProvider,
 				.getCollection(String.format("%s.%s", 
 						userObject_.getString(Util.NAMEFIELDNAME) ,
 						name.toString()));
+	}
+	@Override
+	public int sendMessageWithKeyBoard(String msg, Map<String, Object> map, Transformer<Object,String> me) {
+//		return sendMessageWithKeyBoard(msg,new JSONArray(map.keySet()));
+		lastKeyboard_ = new ImmutablePair<Map<String, Object>, Transformer<Object,String>>(map,me);
+		TableBuilder tb = new TableBuilder();
+		int i = 0;
+		for(String s:map.keySet().toArray(new String[] {})) {
+			tb.addTokens(Integer.toString(i++),s);
+		}
+		sendMessage(tb.toString());
+		return 0;
+	}
+	public String keyboard(JSONObject arg) {
+		int num = arg.getInt("num");
+		String[] keys = lastKeyboard_.left.keySet().toArray(new String[] {});
+		return lastKeyboard_.right.transform(lastKeyboard_.left.get(keys[num]));
 	}
 }

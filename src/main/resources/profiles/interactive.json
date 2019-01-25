@@ -5,6 +5,7 @@
 	"offline":false,
 	"tmpfolder":"tmp",
 	"filetosendto":"test.html",
+	"client":"terminal",
     	"scriptFolder":"src/main/js/",
 	"managers":["GermanManager","BotManager",
 		"MiscUtilManager","ReportManager",

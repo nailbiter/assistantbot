@@ -8,4 +8,5 @@ public class Constants {
 	public static final String INBOXBOARDID = "foFETfOx";
 	public static final String INBOXLISTNAME = "inbox";
 	public static final String SEPARATOR = "------------------------------";
+	public static final String INBOXBOARDIDLONG = "5a83f33d7c047209445249dd";
 }

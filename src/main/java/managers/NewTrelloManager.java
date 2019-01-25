@@ -1,6 +1,7 @@
 package managers;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
 
@@ -21,6 +22,7 @@ import util.Util;
 import util.parsers.ParseOrdered;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
+import util.parsers.StandardParserInterpreter;
 
 public class NewTrelloManager extends AbstractManager {
 	private static final String TASKLISTNAME = "todo";
@@ -50,12 +52,50 @@ public class NewTrelloManager extends AbstractManager {
 							ta.archiveCard(obj.getString("id"));
 						} catch (Exception e) {
 							e.printStackTrace();
-							return String.format("e: %s", e.getMessage());
+							Util.ExceptionToString(e);
 						}
 						return String.format("archived task \"%s\"", obj.getString("name"));
 					}
 				}));
+		
+		String[] cats = getCats();
+		for(String cat:cats)
+			res.put(cat, MoveToTodoAndPutLabel(cat,ta));
 		return res;
+	}
+	/**
+	 * @deprecated get from database (timecats data)
+	 * @return
+	 */
+	private static String[] getCats() {
+		return new String[] {"logistics","social"};
+	}
+	private static ImmutablePair<String, Transformer<Object, String>> MoveToTodoAndPutLabel(final String cat, final TrelloAssistant ta) {
+		return new ImmutablePair<String, Transformer<Object, String>>(cat,
+				new Transformer<Object,String>(){
+					@Override
+					public String transform(Object arg0) {
+						JSONObject card = (JSONObject) arg0;
+						String oldlistid, newlistid;
+						try {
+							oldlistid = ta.findListByName(managers.habits.Constants.HABITBOARDID, "todo");
+							newlistid = ta.findListByName(managers.habits.Constants.INBOXBOARDID, "inbox");
+
+							System.err.format("old=%s\nnew=%s\n", oldlistid,newlistid);
+							String cardid = card.getString("id");
+							ta.moveCard(cardid, managers.habits.Constants.INBOXBOARDIDLONG+"."+newlistid,"bottom");
+							
+							ta.setLabelByName(cardid, cat,newlistid);
+							
+							return String.format("moved \"%s\"\n", 
+									card.getString("name")
+									);
+						} catch (Exception e) {
+							e.printStackTrace();
+							return Util.ExceptionToString(e);
+						}
+					}
+		});
 	}
 	private static JSONArray GetCommands() throws AssistantBotException {
 		return new JSONArray()

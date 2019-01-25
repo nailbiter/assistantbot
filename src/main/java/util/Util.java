@@ -69,30 +69,68 @@ public class Util{
 	private static JSONObject profileObj_;
 	protected static void init() throws Exception {
 	}
+	public static enum EnvironmentParameter {
+		TMPFOLDER("TMPFOLDER")
+		,TMPFILE("TMPFILE")
+		,PARSERPREFIX("PARSERPREFIX")
+		,SCRIPTFOLDER("SCRIPTFOLDER")
+		,CLIENT("CLIENT")
+		;
+		private final String name_;
+		private EnvironmentParameter(String name) {
+			name_ = name;
+		}
+		public String toString() {
+			return name_;
+		}
+	};
 	public static void setProfileObj(String string) throws Exception {
 		profileObj_ = new JSONObject(string);
-		JSONArray keys = new JSONArray()
-//				.put("RESFOLDER")
-				.put("TMPFOLDER")
-				.put("TMPFILE")
-				.put("PARSERPREFIX")
-				.put("SCRIPTFOLDER")
-				;
+		JSONArray keys = new JSONArray();
+		for(EnvironmentParameter ep:EnvironmentParameter.values())
+			keys.put(ep.toString());
 		JsonUtil.FilterJsonKeys(profileObj_,keys);
 		for(Object key:keys) {
 			if(null==profileObj_.getString((String)key))
 				throw new Exception();
 		}
 	}
+	public static String Gss(EnvironmentParameter ep) {
+		return Gss(ep.toString());
+	}
+	/**
+	 * @deprecated
+	 * @param name
+	 * @return
+	 */
 	protected static String Gss(String name) {
 		return profileObj_.getString(name.toUpperCase());
 	}
+	/**
+	 * @deprecated
+	 * @return
+	 */
+	public static String GetClientType() {
+		return Gss("CLIENT");
+	}
+	/**
+	 * @deprecated
+	 * @return
+	 */
 	public static String getScriptFolder() {
 		return Gss("SCRIPTFOLDER");
 	}
+	/**
+	 * @deprecated
+	 * @return
+	 */
 	public static String getParsePrefix() {
 		return Gss("PARSERPREFIX");
 	}
+	/**
+	 * @deprecated
+	 * @return
+	 */
 	public static String getJarFolder(){ 
 		return Gss("RESFOLDER");
 	}
@@ -114,6 +152,10 @@ public class Util{
 		df.setTimeZone(Util.getTimezone());
 		return df.format(d);
 	}
+	/**
+	 * @deprecated
+	 * @return
+	 */
 	public static String GetRebootFileName() {
 		return Gss("TMPFILE");
 	}
@@ -257,7 +299,7 @@ public class Util{
 		StringBuilder sb = new StringBuilder();
 		for(int i = 0 ; i < 10;i++)
 			sb.append(ALPH.charAt(rand_.nextInt(ALPH.length())));
-		return String.format("%s/%s%s", profileObj_.getString("TMPFOLDER"),sb.toString(),ext);
+		return String.format("%s/%s%s", Gss("TMPFOLDER"), sb.toString(), ext);
 	}
 	public static String saveToTmpFile(String content) throws IOException {
 		String filePath = GetTmpFilePath(".html");
@@ -471,5 +513,8 @@ public class Util{
 	
 	    // Return null if not found
 	    return null;
+	}
+	public static String ExceptionToString(Exception e) {
+		return String.format("e: %s", e.getMessage());
 	}
 }

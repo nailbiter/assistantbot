@@ -64,6 +64,10 @@ public class BasicUserData extends AbstractManager implements ResourceProvider {
 						.makeOpt()
 					,new ParseOrderedArg("pass",ArgTypes.string)
 						.useDefault("")));
+		if( Util.Gss(Util.EnvironmentParameter.CLIENT).equals("terminal") ) {
+			res.put(new ParseOrderedCmd("keyboard","answer to last keyboard"
+					,new ParseOrderedArg("num",ArgTypes.integer)));
+		}
 		return res;
 	}
 	public String managers(JSONObject obj) throws Exception {

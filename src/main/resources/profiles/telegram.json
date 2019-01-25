@@ -3,5 +3,6 @@
 	"resfolder":"src/main/resources/assistantBotFiles/",
 	"scriptFolder":"src/main/js/",
 	"tmpfolder":"tmp",
+	"client":"telegram",
 	"parserPrefix":"/"
 }
