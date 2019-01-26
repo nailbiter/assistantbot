@@ -2,32 +2,32 @@
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
    ],
-   "urlnames" : {
-      "print_only_taskdone_stat" : "https://trello.com/c/XrVeN6rK",
-      "plus_snooze" : "https://trello.com/c/zBFzhL2R",
-      "plbuild_pull_jar" : "https://trello.com/c/QfGjg1UR",
-      "json table" : "https://trello.com/c/gfyEEt3o",
-      "add_run" : "https://trello.com/c/HsN2IoqH",
-      "limit_to_40" : "https://trello.com/c/fkFYN06v",
-      "donep" : "https://trello.com/c/4rTjnXHm",
-      "remove_costs" : "https://trello.com/c/PmEunKmi",
-      "check_exclamation" : "https://trello.com/c/I2UZf4ds",
-      "distrib_gen_js" : "https://trello.com/c/3R83mhwS",
-      "parser" : "https://trello.com/c/hkuY0OBL",
-      "replace_gym_with_js" : "https://trello.com/c/TnjMxInQ",
-      "dad_task" : "https://trello.com/c/l4X6a80c",
-      "auto_check_mult_main_labels" : "https://trello.com/c/cexmj2vA",
-      "indicator" : "https://trello.com/c/FMIlCbXE",
-      "sort order" : "https://trello.com/c/ofzAma1H",
-      "write_gymdone_num" : "https://trello.com/c/pvXRhy3L",
-      "done_tast_limit" : "https://trello.com/c/fy6l2nbZ",
-      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
-      "label_in_task" : "https://trello.com/c/tqUrbAOy",
-      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
-      "compare deadlines" : "https://trello.com/c/W4CSDHPl"
+   "pulledData" : {
+      "trelloTitle" : "reorganize, habits"
    },
    "cardurl" : "https://trello.com/c/T5i2sPh8",
-   "pulledData" : {
-      "trelloTitle" : "NutritionManager"
+   "urlnames" : {
+      "auto_check_mult_main_labels" : "https://trello.com/c/cexmj2vA",
+      "limit_to_40" : "https://trello.com/c/fkFYN06v",
+      "parser" : "https://trello.com/c/hkuY0OBL",
+      "write_gymdone_num" : "https://trello.com/c/pvXRhy3L",
+      "print_only_taskdone_stat" : "https://trello.com/c/XrVeN6rK",
+      "donep" : "https://trello.com/c/4rTjnXHm",
+      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
+      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
+      "dad_task" : "https://trello.com/c/l4X6a80c",
+      "done_tast_limit" : "https://trello.com/c/fy6l2nbZ",
+      "plbuild_pull_jar" : "https://trello.com/c/QfGjg1UR",
+      "check_exclamation" : "https://trello.com/c/I2UZf4ds",
+      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
+      "json table" : "https://trello.com/c/gfyEEt3o",
+      "plus_snooze" : "https://trello.com/c/zBFzhL2R",
+      "label_in_task" : "https://trello.com/c/tqUrbAOy",
+      "indicator" : "https://trello.com/c/FMIlCbXE",
+      "distrib_gen_js" : "https://trello.com/c/3R83mhwS",
+      "remove_costs" : "https://trello.com/c/PmEunKmi",
+      "add_run" : "https://trello.com/c/HsN2IoqH",
+      "sort order" : "https://trello.com/c/ofzAma1H",
+      "replace_gym_with_js" : "https://trello.com/c/TnjMxInQ"
    }
 }
