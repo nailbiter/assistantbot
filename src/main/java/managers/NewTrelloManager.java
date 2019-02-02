@@ -1,7 +1,7 @@
 package managers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
 
@@ -18,11 +18,12 @@ import util.AssistantBotException;
 import util.JsonUtil;
 import util.KeyRing;
 import util.ParseCommentLine;
+import util.UserCollection;
 import util.Util;
+import util.db.MongoUtil;
 import util.parsers.ParseOrdered;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
-import util.parsers.StandardParserInterpreter;
 
 public class NewTrelloManager extends AbstractManager {
 	private static final String TASKLISTNAME = "todo";
@@ -36,9 +37,9 @@ public class NewTrelloManager extends AbstractManager {
 				KeyRing.getTrello().getString("token"));
 		tasklist_ = ta_.findListByName(managers.habits.Constants.HABITBOARDID, TASKLISTNAME);
 		rp_ = rp;
-		dispatch_ = FillDispatch(ta_); 
+		dispatch_ = FillDispatch(ta_,rp_); 
 	}
-	private static Hashtable<String, ImmutablePair<String, Transformer<Object, String>>> FillDispatch(final TrelloAssistant ta) {
+	private static Hashtable<String, ImmutablePair<String, Transformer<Object, String>>> FillDispatch(final TrelloAssistant ta, ResourceProvider rp) {
 		Hashtable<String, ImmutablePair<String, Transformer<Object, String>>> res = 
 				new Hashtable<String, ImmutablePair<String, Transformer<Object, String>>>();
 		
@@ -58,17 +59,17 @@ public class NewTrelloManager extends AbstractManager {
 					}
 				}));
 		
-		String[] cats = getCats();
+		String[] cats = getCats(rp);
 		for(String cat:cats)
 			res.put(cat, MoveToTodoAndPutLabel(cat,ta));
 		return res;
 	}
-	/**
-	 * @deprecated get from database (timecats data)
-	 * @return
-	 */
-	private static String[] getCats() {
-		return new String[] {"logistics","social"};
+	private static String[] getCats(ResourceProvider rp) {
+		ArrayList<String> res = new ArrayList<String>();
+		for(Object o:MongoUtil.GetJSONArrayFromDatabase(rp.getCollection(UserCollection.TIMECATS))) {
+			res.add(((JSONObject)o).getString("name"));
+		}
+		return res.toArray(new String[] {});
 	}
 	private static ImmutablePair<String, Transformer<Object, String>> MoveToTodoAndPutLabel(final String cat, final TrelloAssistant ta) {
 		return new ImmutablePair<String, Transformer<Object, String>>(cat,
@@ -85,7 +86,7 @@ public class NewTrelloManager extends AbstractManager {
 							String cardid = card.getString("id");
 							ta.moveCard(cardid, managers.habits.Constants.INBOXBOARDIDLONG+"."+newlistid,"bottom");
 							
-							ta.setLabelByName(cardid, cat,newlistid);
+							ta.setLabelByName(cardid, cat,newlistid,TrelloAssistant.SetUnset.SET);
 							
 							return String.format("moved \"%s\"\n", 
 									card.getString("name")

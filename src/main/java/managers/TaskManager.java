@@ -19,6 +19,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.github.nailbiter.util.TrelloAssistant;
 import com.mongodb.client.MongoCollection;
 
 import assistantbot.ResourceProvider;
@@ -116,8 +117,8 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		}
 			
 		JSONObject card = getTask(obj.getInt("num"));
-		
 		String remainder = obj.getString("remainder");
+		ArrayList<String> res = new ArrayList<String>();
 		final String SNOOZEDATE = "SNOOZEDATE";
 		HashMap<String, Object> parsed = new ParseCommentLine(ParseCommentLine.Mode.FROMLEFT)
 				.addHandler(SNOOZEDATE, "%%", ParseCommentLine.TOKENTYPE.DATE)
@@ -129,7 +130,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		if(parsed.containsKey(ParseCommentLine.DATE)) {
 			Date due = (Date)parsed.get(ParseCommentLine.DATE);
 			ta_.setCardDue(card.getString("id"), due);
-			rp_.sendMessage(String.format("set due %s to \"%s\"", due.toString(),card.getString("name")));
+			res.add(String.format("set due %s to \"%s\"", due.toString(),card.getString("name")));
 		}
 		if(parsed.containsKey(SNOOZEDATE)) {
 			new TrelloMover(ta_,comparators_.get(INBOX).middle,SEPARATOR)
@@ -139,14 +140,26 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 			System.err.format("date: %s\n", date.toString());
 			setUpReminder(card,date);
 			saveSnoozeToDb(card,date);
-			rp_.sendMessage(String.format("snoozing card \"%s\" to %s", 
+			res.add(String.format("snoozing card \"%s\" to %s", 
 					card.getString("name"),date.toString()));
 		}
 		if( !((Set<String>)parsed.get(ParseCommentLine.TAGS)).isEmpty() ) {
 			Set<String> tags = (Set<String>)parsed.get(ParseCommentLine.TAGS);
-			for(String tagname:tags)
-				ta_.setLabelByName(card.getString("id"), tagname, card.getString("idList"));
-			rp_.sendMessage(String.format("tagging \"%s\" with %s",card.getString("name"), tags.toString()));
+			System.err.format("card: %s\n", card.toString(2));
+			JSONArray labels = 
+					card.has("labels") ? card.getJSONArray("labels") : new JSONArray();
+			for(String tagname:tags) {
+				if(JsonUtil.FindInJSONArray(card.getJSONArray("labels"), "name", tagname) == null) {
+					ta_.setLabelByName(card.getString("id"), tagname, card.getString("idList")
+							,TrelloAssistant.SetUnset.SET);
+					res.add(String.format("adding tag \"%s\"", tagname));
+				} else {
+					ta_.setLabelByName(card.getString("id"), tagname, card.getString("idList")
+							,TrelloAssistant.SetUnset.UNSET);
+					res.add(String.format("removing tag \"%s\"", tagname));
+				}
+			}
+//			res.add(String.format("tagging \"%s\" with %s",card.getString("name"), tags.toString()));
 		}
 		
 		if( fp_.contains('h') ) {
@@ -157,16 +170,16 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 					,GetMainLabel(GetLabels(card.getJSONArray("labels")), recognizedCatNames_)
 					,stat);
 			logToDb("taskdone",card);
-			rp_.sendMessage(String.format("%s task \"%s\""
+			res.add(String.format("%s task \"%s\""
 					, "done",card.getString("name")));
 		}
 		if( fp_.contains('a') ) {
 			ta_.archiveCard( card.getString("id") );
-			rp_.sendMessage(String.format("%s task \"%s\""
+			res.add(String.format("%s task \"%s\""
 					, "archived",card.getString("name")));
 		}
 		
-		return "";
+		return String.join("\n", res);
 	}
 	public static JSONArray GetCommands() throws Exception {
 		JSONArray res = new JSONArray()

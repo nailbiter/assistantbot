@@ -2,6 +2,9 @@ package util;
 
 public enum UserCollection {
 	URLTESTS ("urlTests")
+	/**
+	 * @deprecated move to param object of TimeManager
+	 */
 	,TIMECATS ("timecats")
 	,TIME ("time")
 	,TASKLOG ("taskLog")

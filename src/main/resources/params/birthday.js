@@ -96,6 +96,10 @@ var birthdays = [
 					info:'https://www.facebook.com/ira.ansi',
 				},
 				{
+					name:'grandmother',
+					month:01, date:28,
+				},
+				{
 					name:'Константин Грицак',
 					month:01,date:24,
 					info:'https://www.facebook.com/kostiantyn.gritsak/',

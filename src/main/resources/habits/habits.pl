@@ -1,6 +1,7 @@
 #makehabits "08:00", "10:00", 2, "read main 1 1page", 1080, category => "reading";
 #makehabits "08:00", "10:00", 1, "read main 2 1page", 1080, category=> "reading";
 #makehabits "08:00", "14:00", 3, "do main task", 1080, category=>"tasks", onFailed=>"move";
+makeHabit "30 23 * * *", "take pills", 30, category=>"logistics", onFailed=>"remove";
 makeHabit "30 23 * * *", "check/plan tasks", 30, category=>"tasks", onFailed=>"remove";
 makeHabit "00 23 * * *", "good day", 30 , category=>"logistics", info=>"https://trello.com/c/ilo6JlQO", onFailed=>"remove";
 
@@ -42,6 +43,6 @@ makeHabit "15 22 * * Fri", "confucius 1h: 1", 960, onFailed=>'move2';
 makeHabit "30 22 * * Fri", "confucius 1h: 2", 960, onFailed=>'move2';
 makeHabit "00 22 13 * *", "inflate bike", 960 , category=>"atschool";
 makeHabit "00 10 * * mon", "check week stat (money, time)", 960 , category=>"logistics";
-makeHabit "00 10 */15 * *", "fix test.pl", 960 , category=>"logistics";
+#makeHabit "00 10 */15 * *", "fix test.pl", 960 , category=>"logistics";
 makeHabit "0 8 27 * *", "odaiba payment", 960, info=>"amount = 35119";
 makeHabit "*/2 * * * *", "test", 1, enabled=> 0 ;

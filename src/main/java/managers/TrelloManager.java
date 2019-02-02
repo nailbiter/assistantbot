@@ -28,8 +28,6 @@ import util.parsers.ParseOrderedCmd;
 import util.parsers.StandardParserInterpreter;;
 
 public class TrelloManager extends AbstractManager{
-	//	protected static final String HABITBOARDID = "kDCITi9O";
-//	protected static final String INBOXBOARDID = "foFETfOx";
 	private TrelloAssistant ta_;
 	public TrelloManager(ResourceProvider rp) throws AssistantBotException {
 		super(GetCommands());
@@ -41,7 +39,6 @@ public class TrelloManager extends AbstractManager{
 		JSONArray res = new JSONArray();
 		
 		
-//		commands.add("rename");
 		for(String cmd:commands) {
 			res.put(new ParseOrderedCmd(cmd,cmd));
 		}
@@ -127,7 +124,7 @@ public class TrelloManager extends AbstractManager{
 			HashSet<String> tags = 
 					(HashSet<String>) parsed.get(ParseCommentLine.TAGS);
 			for(String tag:tags)
-				ta_.setLabelByName(cardid, tag,newlistid);
+				ta_.setLabelByName(cardid, tag,newlistid, TrelloAssistant.SetUnset.SET);
 		}
 		
 		
