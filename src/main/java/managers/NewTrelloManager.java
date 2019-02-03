@@ -6,6 +6,7 @@ import java.util.Hashtable;
 import java.util.Set;
 
 import org.apache.commons.collections4.Transformer;
+import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -132,10 +133,24 @@ public class NewTrelloManager extends AbstractManager {
 		
 		JSONArray cards = ta_.getCardsInList(tasklist_);
 		if( !parsed.containsKey(ParseCommentLine.REM) ) {
-			HashMap<String, Object> map = new HashMap<String,Object>();
+			HashMap<String, ImmutablePair<JSONObject, MutableInt>> count = 
+					new HashMap<String,ImmutablePair<JSONObject,MutableInt>>();
 			for(Object o:cards) {
 				JSONObject json = (JSONObject) o;
-				map.put(json.getString("name"), o);
+				String name = json.getString("name");
+				if( count.containsKey(name) ) {
+					count.get(name).right.increment();
+				} else {
+					count.put(name
+							, new ImmutablePair<JSONObject,MutableInt>(json
+									,new MutableInt(1)));
+				}
+			}
+			HashMap<String, Object> map = new HashMap<String,Object>();
+			for(String key:count.keySet()) {
+				int keycount = count.get(key).right.intValue();
+				map.put(String.format((keycount>1)?"%s:%d":"%s", key,keycount)
+						,count.get(key).left);
 			}
 			rp_.sendMessageWithKeyBoard("which card?", map, dispatch_.get(tag).right);
 			return "";
