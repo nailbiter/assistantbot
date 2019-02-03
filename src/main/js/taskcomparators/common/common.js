@@ -3,6 +3,7 @@ var recognizedCats = getVar('recognizedCats');
 var EXCLAMATION = "!";
 //global var's
 var recognizedCats = getVar('recognizedCats');
+//TODO: write to DB
 var catWeights = {
 	//sleeping : 1,
 	parttime: -5,
@@ -48,7 +49,8 @@ function compareExclamation(o1,o2){
 	return res;
 }
 function compareDate(o1,o2){
-	var b = [o1.due==null,o2.due==null];
+	var b = [o1.due==null || o1.dueComplete,
+		o2.due==null || o2.dueComplete];
 	if( b[0] && b[1]){
 		return 0;
 	} else if(b[0] && !b[1]) {
@@ -110,11 +112,11 @@ function compareName(o1,o2){
 	return strcmp(o1.name,o2.name)
 }
 function strcmp(a, b)
-{   
-    return (a<b?-1:(a>b?1:0));  
+{
+    return (a<b?-1:(a>b?1:0));
 }
 function numcmp(a,b){
-    return (a<b?-1:(a>b?1:0));  
+    return (a<b?-1:(a>b?1:0));
 }
 function getVar(key){
 	return JSON.parse(ScriptHelper.execute(key));
