@@ -112,73 +112,78 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 					,comparators_.get(SNOOZED).middle
 					,getParamObject(rp_)
 					,logger_);
-		} else if( obj.getInt("num") == 0 ) {
+		}
+		ArrayList<Integer> nums = TaskManagerBase.ParseIntList(obj.getString("num"));
+		if( nums.size()==1 && nums.get(0)==0 ) {
 			return PrintDoneTasks(stat,exs,cats_);
 		}
 			
-		JSONObject card = getTask(obj.getInt("num"));
+		
 		String remainder = obj.getString("remainder");
-		ArrayList<String> res = new ArrayList<String>();
 		final String SNOOZEDATE = "SNOOZEDATE";
 		HashMap<String, Object> parsed = new ParseCommentLine(ParseCommentLine.Mode.FROMLEFT)
 				.addHandler(SNOOZEDATE, "%%", ParseCommentLine.TOKENTYPE.DATE)
 				.parse(remainder);
 		fp_.parse((String) parsed.getOrDefault(ParseCommentLine.REM,""));
 		
-		if(fp_.contains('h'))
-			return fp_.getHelp();
-		if(parsed.containsKey(ParseCommentLine.DATE)) {
-			Date due = (Date)parsed.get(ParseCommentLine.DATE);
-			ta_.setCardDue(card.getString("id"), due);
-			res.add(String.format("set due %s to \"%s\"", due.toString(),card.getString("name")));
-		}
-		if(parsed.containsKey(SNOOZEDATE)) {
-			new TrelloMover(ta_,comparators_.get(INBOX).middle,SEPARATOR)
-			.moveTo(card,comparators_.get(SNOOZED).middle,comparators_.get(SNOOZED).right);
-			Date date = (Date) parsed.get(SNOOZEDATE);
-			logToDb(String.format("%s to %s", "taskpostpone",date.toString()),card);
-			System.err.format("date: %s\n", date.toString());
-			setUpReminder(card,date);
-			saveSnoozeToDb(card,date);
-			res.add(String.format("snoozing card \"%s\" to %s", 
-					card.getString("name"),date.toString()));
-		}
-		if( !((Set<String>)parsed.get(ParseCommentLine.TAGS)).isEmpty() ) {
-			Set<String> tags = (Set<String>)parsed.get(ParseCommentLine.TAGS);
-			System.err.format("card: %s\n", card.toString(2));
-			JSONArray labels = 
-					card.has("labels") ? card.getJSONArray("labels") : new JSONArray();
-			for(String tagname:tags) {
-				if(JsonUtil.FindInJSONArray(card.getJSONArray("labels"), "name", tagname) == null) {
-					ta_.setLabelByName(card.getString("id"), tagname, card.getString("idList")
-							,TrelloAssistant.SetUnset.SET);
-					res.add(String.format("adding tag \"%s\"", tagname));
-				} else {
-					ta_.setLabelByName(card.getString("id"), tagname, card.getString("idList")
-							,TrelloAssistant.SetUnset.UNSET);
-					res.add(String.format("removing tag \"%s\"", tagname));
+		ArrayList<String> res = new ArrayList<String>();
+		ArrayList<JSONObject> cards = new ArrayList<JSONObject>();
+		for(Integer num:nums) cards.add(getTask(num));
+		for(JSONObject card:cards) {
+			if(fp_.contains('h'))
+				return fp_.getHelp();
+			if(parsed.containsKey(ParseCommentLine.DATE)) {
+				Date due = (Date)parsed.get(ParseCommentLine.DATE);
+				ta_.setCardDue(card.getString("id"), due);
+				res.add(String.format("set due %s to \"%s\"", due.toString(),card.getString("name")));
+			}
+			if(parsed.containsKey(SNOOZEDATE)) {
+				new TrelloMover(ta_,comparators_.get(INBOX).middle,SEPARATOR)
+				.moveTo(card,comparators_.get(SNOOZED).middle,comparators_.get(SNOOZED).right);
+				Date date = (Date) parsed.get(SNOOZEDATE);
+				logToDb(String.format("%s to %s", "taskpostpone",date.toString()),card);
+				System.err.format("date: %s\n", date.toString());
+				setUpReminder(card,date);
+				saveSnoozeToDb(card,date);
+				res.add(String.format("snoozing card \"%s\" to %s", 
+						card.getString("name"),date.toString()));
+			}
+			if( !((Set<String>)parsed.get(ParseCommentLine.TAGS)).isEmpty() ) {
+				Set<String> tags = (Set<String>)parsed.get(ParseCommentLine.TAGS);
+				System.err.format("card: %s\n", card.toString(2));
+				JSONArray labels = 
+						card.has("labels") ? card.getJSONArray("labels") : new JSONArray();
+				for(String tagname:tags) {
+					if(JsonUtil.FindInJSONArray(card.getJSONArray("labels"), "name", tagname) == null) {
+						ta_.setLabelByName(card.getString("id"), tagname, card.getString("idList")
+								,TrelloAssistant.SetUnset.SET);
+						res.add(String.format("adding tag \"%s\"", tagname));
+					} else {
+						ta_.setLabelByName(card.getString("id"), tagname, card.getString("idList")
+								,TrelloAssistant.SetUnset.UNSET);
+						res.add(String.format("removing tag \"%s\"", tagname));
+					}
 				}
 			}
-//			res.add(String.format("tagging \"%s\" with %s",card.getString("name"), tags.toString()));
+			
+			if( fp_.contains('h') ) {
+				return fp_.getHelp();
+			}
+			if(fp_.contains('d')) {
+				TaskManagerBase.CannotDoTask(cats_
+						,GetMainLabel(GetLabels(card.getJSONArray("labels"))
+								, recognizedCatNames_)
+						,stat);
+				logToDb("taskdone",card);
+				res.add(String.format("%s task \"%s\""
+						, "done",card.getString("name")));
+			}
+			if( fp_.contains('a') ) {
+				ta_.archiveCard( card.getString("id") );
+				res.add(String.format("%s task \"%s\""
+						, "archived",card.getString("name")));
+			}
 		}
-		
-		if( fp_.contains('h') ) {
-			return fp_.getHelp();
-		}
-		if(fp_.contains('d')) {
-			TaskManagerBase.CannotDoTask(cats_
-					,GetMainLabel(GetLabels(card.getJSONArray("labels")), recognizedCatNames_)
-					,stat);
-			logToDb("taskdone",card);
-			res.add(String.format("%s task \"%s\""
-					, "done",card.getString("name")));
-		}
-		if( fp_.contains('a') ) {
-			ta_.archiveCard( card.getString("id") );
-			res.add(String.format("%s task \"%s\""
-					, "archived",card.getString("name")));
-		}
-		
 		return String.join("\n", res);
 	}
 	public static JSONArray GetCommands() throws Exception {
@@ -187,7 +192,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 						new ParseOrderedArg("tasknum",ArgTypes.integer)
 								.makeOpt()))
 				.put(new ParseOrderedCmd("taskmodify","change task's due",
-						new ParseOrderedArg("num",ArgTypes.integer)
+						new ParseOrderedArg("num",ArgTypes.string)
 								.makeOpt()
 								,new ParseOrderedArg("remainder",ArgTypes.remainder)
 								.makeOpt()

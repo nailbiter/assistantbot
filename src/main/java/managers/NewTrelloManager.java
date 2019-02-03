@@ -44,7 +44,6 @@ public class NewTrelloManager extends AbstractManager {
 		Hashtable<String, ImmutablePair<String, Transformer<Object, String>>> res = 
 				new Hashtable<String, ImmutablePair<String, Transformer<Object, String>>>();
 		
-		
 		res.put("done", new ImmutablePair<String, Transformer<Object, String>>("archive task"
 				,new Transformer<Object,String>(){
 					@Override

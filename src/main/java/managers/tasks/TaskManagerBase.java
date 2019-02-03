@@ -424,6 +424,12 @@ public class TaskManagerBase extends AbstractManager {
 			card = getTasks(SNOOZED).get(-num-1);
 		return card;
 	}
+	protected static ArrayList<Integer> ParseIntList(String s){
+		ArrayList<Integer> res = new ArrayList<Integer>();
+		for( String split:s.split(",") )
+			res.add( Integer.parseInt(split) );
+		return res;
+	}
 	protected static boolean CannotDoTask(JSONArray cats_, String mc, HashMap<String, Integer> stat) throws AssistantBotException {
 		JSONObject cat = JsonUtil.FindInJSONArray(cats_, "name", mc);
 		int a = stat.getOrDefault(mc, 0),
