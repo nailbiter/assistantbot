@@ -1,33 +1,33 @@
 {
-   "cardurl" : "https://trello.com/c/UE73tlKP",
+   "urlnames" : {
+      "label_in_task" : "https://trello.com/c/tqUrbAOy",
+      "plus_snooze" : "https://trello.com/c/zBFzhL2R",
+      "auto_check_mult_main_labels" : "https://trello.com/c/cexmj2vA",
+      "indicator" : "https://trello.com/c/FMIlCbXE",
+      "parser" : "https://trello.com/c/hkuY0OBL",
+      "limit_to_40" : "https://trello.com/c/fkFYN06v",
+      "plbuild_pull_jar" : "https://trello.com/c/QfGjg1UR",
+      "add_run" : "https://trello.com/c/HsN2IoqH",
+      "print_only_taskdone_stat" : "https://trello.com/c/XrVeN6rK",
+      "remove_costs" : "https://trello.com/c/PmEunKmi",
+      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
+      "distrib_gen_js" : "https://trello.com/c/3R83mhwS",
+      "dad_task" : "https://trello.com/c/l4X6a80c",
+      "done_tast_limit" : "https://trello.com/c/fy6l2nbZ",
+      "json table" : "https://trello.com/c/gfyEEt3o",
+      "sort order" : "https://trello.com/c/ofzAma1H",
+      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
+      "check_exclamation" : "https://trello.com/c/I2UZf4ds",
+      "replace_gym_with_js" : "https://trello.com/c/TnjMxInQ",
+      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
+      "write_gymdone_num" : "https://trello.com/c/pvXRhy3L",
+      "donep" : "https://trello.com/c/4rTjnXHm"
+   },
    "dependencies" : [
       "src/main/java/com/github/nailbiter/util/"
    ],
    "pulledData" : {
-      "trelloTitle" : "several tasks in taskmodify"
+      "trelloTitle" : "gym program"
    },
-   "urlnames" : {
-      "add_run" : "https://trello.com/c/HsN2IoqH",
-      "plbuild_pull_jar" : "https://trello.com/c/QfGjg1UR",
-      "distrib_gen_js" : "https://trello.com/c/3R83mhwS",
-      "write_gymdone_num" : "https://trello.com/c/pvXRhy3L",
-      "plus_snooze" : "https://trello.com/c/zBFzhL2R",
-      "donep" : "https://trello.com/c/4rTjnXHm",
-      "check_exclamation" : "https://trello.com/c/I2UZf4ds",
-      "done_tast_limit" : "https://trello.com/c/fy6l2nbZ",
-      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
-      "sort order" : "https://trello.com/c/ofzAma1H",
-      "remove_costs" : "https://trello.com/c/PmEunKmi",
-      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
-      "replace_gym_with_js" : "https://trello.com/c/TnjMxInQ",
-      "auto_check_mult_main_labels" : "https://trello.com/c/cexmj2vA",
-      "label_in_task" : "https://trello.com/c/tqUrbAOy",
-      "dad_task" : "https://trello.com/c/l4X6a80c",
-      "print_only_taskdone_stat" : "https://trello.com/c/XrVeN6rK",
-      "limit_to_40" : "https://trello.com/c/fkFYN06v",
-      "indicator" : "https://trello.com/c/FMIlCbXE",
-      "parser" : "https://trello.com/c/hkuY0OBL",
-      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
-      "json table" : "https://trello.com/c/gfyEEt3o"
-   }
+   "cardurl" : "https://trello.com/c/UE73tlKP"
 }

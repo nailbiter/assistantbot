@@ -11,7 +11,7 @@ var res = [
 	{
 		name:"managers.GymManager",
 		parameter:{
-			weekCount:6,
+			weekCount:4,
 			program,
 		},
 	},
