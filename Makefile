@@ -1,6 +1,6 @@
 .PHONY: all offline  botmanager trello interactive\
 	 pull jar add \
-	 habits users \
+	 habits params \
 	 readme
 
 #JARSUFF=-jar-with-dependencies

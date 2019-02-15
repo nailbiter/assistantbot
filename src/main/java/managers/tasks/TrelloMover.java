@@ -16,6 +16,7 @@ import com.github.nailbiter.util.TrelloAssistant;
  * based on {@link com.github.nailbiter.util.TrelloAssistant}.
  * In future this class may be integrated into 
  * {@link com.github.nailbiter.util.TrelloAssistant} 	
+ * @deprecated
  */
 public class TrelloMover {
 	private TrelloAssistant ta_;

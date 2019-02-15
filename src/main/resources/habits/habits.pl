@@ -1,7 +1,7 @@
 #makehabits "08:00", "10:00", 2, "read main 1 1page", 1080, category => "reading";
 #makehabits "08:00", "10:00", 1, "read main 2 1page", 1080, category=> "reading";
 #makehabits "08:00", "14:00", 3, "do main task", 1080, category=>"tasks", onFailed=>"move";
-makeHabit "30 23 * * *", "take pills", 30, category=>"logistics", onFailed=>"remove";
+#makeHabit "30 23 * * *", "take pills", 30, category=>"logistics", onFailed=>"remove";
 makeHabit "30 23 * * *", "check/plan tasks", 30, category=>"tasks", onFailed=>"remove";
 makeHabit "00 23 * * *", "good day", 30 , category=>"logistics", info=>"https://trello.com/c/ilo6JlQO", onFailed=>"remove";
 
