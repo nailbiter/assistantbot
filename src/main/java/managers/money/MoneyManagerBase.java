@@ -113,13 +113,13 @@ public class MoneyManagerBase extends AbstractManager {
 
 	protected String removeCategory(String catname) {
 		cats_.remove(catname);
-		rp_.setManagerSettingsObject(this.getClass().getName(), CATEGORIES, new JSONArray(cats_));
+		rp_.setManagerSettingsObject(getName(), CATEGORIES, new JSONArray(cats_));
 		return String.format("removed category \"%s\"", catname);
 	}
 
 	protected String addCategory(String catname) {
 		cats_.add(catname);
-		rp_.setManagerSettingsObject(this.getClass().getName(), CATEGORIES, new JSONArray(cats_));
+		rp_.setManagerSettingsObject(getName(), CATEGORIES, new JSONArray(cats_));
 		return String.format("added category \"%s\"", catname);
 	}
 

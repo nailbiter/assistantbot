@@ -9,12 +9,14 @@ import org.apache.commons.collections4.Transformer;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.github.nailbiter.util.TableBuilder;
 import com.github.nailbiter.util.TrelloAssistant;
 
 import assistantbot.ResourceProvider;
+import managers.habits.Constants;
 import util.AssistantBotException;
 import util.JsonUtil;
 import util.KeyRing;
@@ -26,18 +28,18 @@ import util.parsers.ParseOrdered;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
 
-public class NewTrelloManager extends AbstractManager {
-	private static final String TASKLISTNAME = "todo";
-	private TrelloAssistant ta_;
-	private ResourceProvider rp_;
-	private String tasklist_;
+public class NewTrelloManager extends WithSettingsManager{
+	private TrelloAssistant ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
+			KeyRing.getTrello().getString("token"));
 	private Hashtable<String, ImmutablePair<String,Transformer<Object,String>>> dispatch_;
 	public NewTrelloManager(ResourceProvider rp) throws Exception {
-		super(GetCommands());
-		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
-				KeyRing.getTrello().getString("token"));
-		tasklist_ = ta_.findListByName(managers.habits.Constants.HABITBOARDID, TASKLISTNAME);
-		rp_ = rp;
+		super(GetCommands(),rp);
+		this.addSettingEnum("tasklist", new String[] {
+				ta_.findListByName(Constants.BOARDIDS.HABITS.toString()
+						,Constants.LISTNAMES.todo.toString() )
+				,ta_.findListByName(Constants.BOARDIDS.DREAMPIRATES.toString()
+						,Constants.LISTNAMES.TODOcode.toString() )
+		}, 0);
 		dispatch_ = FillDispatch(ta_,rp_); 
 	}
 	private static Hashtable<String, ImmutablePair<String, Transformer<Object, String>>> FillDispatch(final TrelloAssistant ta, ResourceProvider rp) {
@@ -118,7 +120,7 @@ public class NewTrelloManager extends AbstractManager {
 				.parse(obj.getString("task"));
 		Set<String> tags = (Set<String>) parsed.get(ParseCommentLine.TAGS);
 		if( tags.isEmpty() ) {
-			JSONObject card = ta_.addCard(tasklist_, new JSONObject().put("name", parsed.get(ParseCommentLine.REM)));
+			JSONObject card = ta_.addCard(getTasklist_(), new JSONObject().put("name", parsed.get(ParseCommentLine.REM)));
 			JsonUtil.FilterJsonKeys(card, new JSONArray().put("name").put("shortUrl"));
 			return String.format("added task %s", card.toString(2));
 		} else if (tags.size()>1) {
@@ -130,7 +132,7 @@ public class NewTrelloManager extends AbstractManager {
 			return String.format("cannot process tag \"%s\"", tag);
 		}
 		
-		JSONArray cards = ta_.getCardsInList(tasklist_);
+		JSONArray cards = ta_.getCardsInList(getTasklist_());
 		if( !parsed.containsKey(ParseCommentLine.REM) ) {
 			HashMap<String, ImmutablePair<JSONObject, MutableInt>> count = 
 					new HashMap<String,ImmutablePair<JSONObject,MutableInt>>();
@@ -154,9 +156,12 @@ public class NewTrelloManager extends AbstractManager {
 			rp_.sendMessageWithKeyBoard("which card?", map, dispatch_.get(tag).right);
 			return "";
 		} else {
-			JSONObject card = ta_.addCard(tasklist_, new JSONObject().put("name", parsed.get(ParseCommentLine.REM)));
+			JSONObject card = ta_.addCard(getTasklist_(), new JSONObject().put("name", parsed.get(ParseCommentLine.REM)));
 			JsonUtil.FilterJsonKeys(card, new JSONArray().put("name").put("shortUrl"));
 			return String.format("%s\nadded task %s with tag \"%s\"",dispatch_.get(tag).right.transform(card), card.toString(2),tag);
 		}
+	}
+	private String getTasklist_() throws JSONException, Exception {
+		return (String) this.getSetting("tasklist");
 	}
 }

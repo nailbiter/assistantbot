@@ -16,6 +16,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
 
 import it.sauronsoftware.cron4j.Scheduler;
@@ -182,7 +183,9 @@ public class BasicUserData extends AbstractManager implements ResourceProvider {
 			parameter = obj.getJSONObject("parameter");
 		parameter.put(key, val);
 		
-		coll.updateOne(Filters.eq("name",classname), Updates.set("parameter", Document.parse(parameter.toString())));
+		coll.updateOne(Filters.eq("name",classname)
+				, Updates.set("parameter", Document.parse(parameter.toString()))
+				,new UpdateOptions().upsert(true));
 		
 		return this;
 	}

@@ -517,4 +517,16 @@ public class Util{
 	public static String ExceptionToString(Exception e) {
 		return String.format("e: %s", e.getMessage());
 	}
+	public static Map<String,Object> IdentityMapWithSuffix(JSONArray names, int indexOf, String suffix) {
+		Map<String, Object> res = new Hashtable<String, Object>();
+		for(int i = 0; i < names.length(); i++) {
+			String o = names.getString(i);
+			if( i == indexOf )
+				res.put((String)o+suffix, (String)o);
+			else
+				res.put((String)o, (String)o);
+		}
+			
+		return res;
+	}
 }

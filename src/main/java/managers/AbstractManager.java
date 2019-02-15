@@ -22,7 +22,7 @@ import static util.parsers.StandardParserInterpreter.CMD;
  * @author nailbiter
  *
  */
-public abstract class AbstractManager implements MyManager {
+public class AbstractManager implements MyManager {
 	protected ParseOrdered po_ = null;
 	protected Logger logger_;
 	protected AbstractManager(JSONArray commands) {
@@ -52,7 +52,10 @@ public abstract class AbstractManager implements MyManager {
 					parsed.getClass().getName()));
 	}
 	protected JSONObject getParamObject(ResourceProvider rp_) throws JSONException, Exception {
-		return GetParamObject(rp_,this.getClass().getName());
+		return GetParamObject(rp_,getName());
+	}
+	protected String getName() {
+		return this.getClass().getName();
 	}
 	public static JSONObject GetParamObject(ResourceProvider rp_,String classname) throws JSONException, Exception {
 		return rp_.getManagerSettingsObject(classname);

@@ -235,6 +235,9 @@ public class MoneyManager extends MoneyManagerBase{
 						.makeMultiline()
 						);
 	}
+	/**
+	 * @deprecated use {@link WithSettingsManager}
+	 */
 	@Override
 	public void set() {
 		final String NEWCATEGORY = "new category";
