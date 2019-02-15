@@ -4,6 +4,7 @@ public class Constants {
 	public static enum BOARDIDS {
 		DREAMPIRATES("nqI8xwIu")
 		,HABITS("kDCITi9O")
+		,INBOX("foFETfOx")
 		;
 		private String name_;
 		BOARDIDS(String name){

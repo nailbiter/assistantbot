@@ -99,7 +99,8 @@ public class NewTrelloManager extends WithSettingsManager{
 						try {
 							oldlistid = ta.findListByName(Constants.BOARDIDS.HABITS.toString()
 									, Constants.LISTNAMES.todo.toString());
-							newlistid = ta.findListByName(Constants.BOARDIDS.HABITS.toString(), "inbox");
+							newlistid = ta.findListByName(Constants.BOARDIDS.INBOX.toString()
+									, "inbox");
 
 							System.err.format("old=%s\nnew=%s\n", oldlistid,newlistid);
 							String cardid = card.getString("id");

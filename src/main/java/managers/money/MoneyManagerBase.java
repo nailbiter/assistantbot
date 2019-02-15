@@ -37,6 +37,7 @@ public class MoneyManagerBase extends AbstractManager {
 	protected static final String COMMENT = "comment";
 	protected static double StringToAm(String amountString, JSONObject paramObject, MongoCollection<Document> money) throws JSONException, AssistantBotException {
 		final JSONObject dispatch = new JSONObject()
+			.put("d", Calendar.DATE)
 			.put("m", Calendar.MONTH);
 		Matcher m;
 		if((m = Pattern.compile(String.format("(\\d*)([%s])", Util.CharSetToRegex(dispatch.keySet())))
@@ -52,11 +53,17 @@ public class MoneyManagerBase extends AbstractManager {
 					if(lim.intValue()>0) {
 						Calendar c = Calendar.getInstance();
 						c.setTime(arg0.getDate("date"));
+						System.err.format("(%d vs %d) for %f\n"
+								, now.intValue()
+								, c.get(field)
+								, arg0.getDouble("amount")
+								);
 						if( now.intValue() == c.get(field) ) {
 							mi.increment();
 						} else {
 							lim.decrement();
-							mi.increment();
+							if( lim.intValue()>0 )
+								mi.increment();
 							now.setValue(c.get(field));
 						}
 					}

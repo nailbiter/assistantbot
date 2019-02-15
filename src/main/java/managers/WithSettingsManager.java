@@ -43,7 +43,6 @@ public class WithSettingsManager extends AbstractManager {
 					e.printStackTrace();
 					return;
 				}
-//				Map<String, Object> mmap = Util.IdentityMapWithSuffix(new JSONArray(val.left),index,"_");
 				Map<String, Object> mmap = new Hashtable<String, Object>();
 				for(int i = 0; i < val.left.length;i++) {
 					mmap.put(val.left[i]+((i==index)?"_":""), val.middle[i]);
