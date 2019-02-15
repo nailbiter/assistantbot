@@ -1,6 +1,7 @@
 package managers;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Set;
@@ -120,9 +121,17 @@ public class NewTrelloManager extends WithSettingsManager{
 				.parse(obj.getString("task"));
 		Set<String> tags = (Set<String>) parsed.get(ParseCommentLine.TAGS);
 		if( tags.isEmpty() ) {
-			JSONObject card = ta_.addCard(getTasklist_(), new JSONObject().put("name", parsed.get(ParseCommentLine.REM)));
+			ArrayList<String> res = new ArrayList<String>();
+			JSONObject card = ta_.addCard(getTasklist_()
+					, new JSONObject().put("name", parsed.get(ParseCommentLine.REM)));
+			if( parsed.containsKey(ParseCommentLine.DATE) ) {
+				Date d = (Date) parsed.get(ParseCommentLine.DATE);
+				ta_.setCardDue(card.getString("id"), d);
+				res.add(String.format("due %s", d));
+			}
 			JsonUtil.FilterJsonKeys(card, new JSONArray().put("name").put("shortUrl"));
-			return String.format("added task %s", card.toString(2));
+			res.add(String.format("added task %s", card.toString(2)));
+			return String.join("\n", res);
 		} else if (tags.size()>1) {
 			return String.format("cannot be more than one tag: %s", tags.toString());
 		}
