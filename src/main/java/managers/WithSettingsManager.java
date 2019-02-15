@@ -34,21 +34,27 @@ public class WithSettingsManager extends AbstractManager {
 		for(final String key:settings_.keySet()) {
 			JSONObject setting = settings_.get(key);
 			if(setting.get(TYPE)==SettingsType.ENUM) {
-				ImmutablePair<Object[],Integer> val = 
-						(ImmutablePair<Object[], Integer>) setting.get(VAL);
+				ImmutableTriple<String[], Object[], Integer> val = 
+						(ImmutableTriple<String[],Object[],Integer>) setting.get(VAL);
 				int index;
 				try {
-					index = ArrayUtils.indexOf(val.left, getSetting(key));
+					index = ArrayUtils.indexOf(val.middle, getSetting(key));
 				} catch (Exception e) {
 					e.printStackTrace();
 					return;
 				}
+//				Map<String, Object> mmap = Util.IdentityMapWithSuffix(new JSONArray(val.left),index,"_");
+				Map<String, Object> mmap = new Hashtable<String, Object>();
+				for(int i = 0; i < val.left.length;i++) {
+					mmap.put(val.left[i]+((i==index)?"_":""), val.middle[i]);
+				}
+				
 				map.put(String.format("change \"%s\"", key), new JSONObject()
 						.put(TYPE, MessageType.BUTTONS)
 						.put(VAL
 								, new ImmutableTriple<String,Map<String,Object>,Transformer<Object,String>>(
 								String.format("pick your \"%s\"", key)
-								, Util.IdentityMapWithSuffix(new JSONArray(val.left),index,"_")
+								, mmap
 								, new Transformer<Object,String>() {
 									@Override
 									public String transform(Object arg0) {
@@ -94,19 +100,19 @@ public class WithSettingsManager extends AbstractManager {
 	protected static enum SettingsType{
 		ENUM;
 	}
-	public void addSettingEnum(String name, Object[] values, int defaultIndex) {
+	public void addSettingEnum(String name, String[] names,Object[] values, int defaultIndex) {
 		settings_.put(name, new JSONObject()
 				.put(TYPE, SettingsType.ENUM)
-				.put(VAL, new ImmutablePair<Object[],Integer>(values,defaultIndex))
+				.put(VAL, new ImmutableTriple<String[],Object[],Integer>(names,values,defaultIndex))
 				);
 	}
 	private Object getDefault(String name) {
 		JSONObject setting = settings_.get(name);
 		SettingsType type = (SettingsType) setting.get(TYPE);
 		if( type == SettingsType.ENUM ) {
-			ImmutablePair<Object[],Integer> val = 
-					(ImmutablePair<Object[], Integer>) setting.get(VAL);
-			return val.left[val.right];
+			ImmutableTriple<String[],Object[],Integer> val = 
+					(ImmutableTriple<String[], Object[], Integer>) setting.get(VAL);
+			return val.middle[val.right];
 		} else
 			return null;
 	}

@@ -35,13 +35,28 @@ public class NewTrelloManager extends WithSettingsManager{
 	private Hashtable<String, ImmutablePair<String,Transformer<Object,String>>> dispatch_;
 	public NewTrelloManager(ResourceProvider rp) throws Exception {
 		super(GetCommands(),rp);
-		this.addSettingEnum("tasklist", new String[] {
-				ta_.findListByName(Constants.BOARDIDS.HABITS.toString()
-						,Constants.LISTNAMES.todo.toString() )
-				,ta_.findListByName(Constants.BOARDIDS.DREAMPIRATES.toString()
-						,Constants.LISTNAMES.TODOcode.toString() )
-		}, 0);
+		ImmutablePair<String[],Object[]> namesAndObjects = GetNamesAndObjects(ta_);
+		this.addSettingEnum("tasklist", namesAndObjects.left, namesAndObjects.right, 0);
 		dispatch_ = FillDispatch(ta_,rp_); 
+	}
+	private static ImmutablePair<String[], Object[]> GetNamesAndObjects(TrelloAssistant ta) throws Exception {
+		ArrayList<ImmutablePair<String,String>> pairs = 
+				new ArrayList<ImmutablePair<String,String>> ();
+		pairs.add(new ImmutablePair<String,String>(Constants.BOARDIDS.HABITS.toString()
+						,Constants.LISTNAMES.todo.toString() ));
+		pairs.add(new ImmutablePair<String,String>(
+			Constants.BOARDIDS.DREAMPIRATES.toString()
+			,Constants.LISTNAMES.TODOcode.toString() ));
+		
+		ArrayList<String> names = new ArrayList<String> ();
+		ArrayList<Object> objects = new ArrayList<Object> ();
+		for(ImmutablePair<String, String> pair:pairs) {
+			names.add(String.format("%s/%s", pair.left,pair.right));
+			objects.add(ta.findListByName(pair.left,pair.right));
+		}
+		
+		return new ImmutablePair<String[], Object[]>(names.toArray(new String[] {})
+				,objects.toArray(new Object[] {}));
 	}
 	private static Hashtable<String, ImmutablePair<String, Transformer<Object, String>>> FillDispatch(final TrelloAssistant ta, ResourceProvider rp) {
 		Hashtable<String, ImmutablePair<String, Transformer<Object, String>>> res = 
@@ -82,8 +97,9 @@ public class NewTrelloManager extends WithSettingsManager{
 						JSONObject card = (JSONObject) arg0;
 						String oldlistid, newlistid;
 						try {
-							oldlistid = ta.findListByName(managers.habits.Constants.HABITBOARDID, "todo");
-							newlistid = ta.findListByName(managers.habits.Constants.INBOXBOARDID, "inbox");
+							oldlistid = ta.findListByName(Constants.BOARDIDS.HABITS.toString()
+									, Constants.LISTNAMES.todo.toString());
+							newlistid = ta.findListByName(Constants.BOARDIDS.HABITS.toString(), "inbox");
 
 							System.err.format("old=%s\nnew=%s\n", oldlistid,newlistid);
 							String cardid = card.getString("id");
@@ -129,6 +145,7 @@ public class NewTrelloManager extends WithSettingsManager{
 				ta_.setCardDue(card.getString("id"), d);
 				res.add(String.format("due %s", d));
 			}
+			
 			JsonUtil.FilterJsonKeys(card, new JSONArray().put("name").put("shortUrl"));
 			res.add(String.format("added task %s", card.toString(2)));
 			return String.join("\n", res);
