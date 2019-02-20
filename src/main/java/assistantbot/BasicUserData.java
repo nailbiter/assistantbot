@@ -1,6 +1,7 @@
 package assistantbot;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -43,6 +44,7 @@ public class BasicUserData extends AbstractManager implements ResourceProvider {
 	 */
 	protected Scheduler scheduler_ = new Scheduler();
 	protected Logger logger_;
+	private Hashtable<Integer, Transformer<String, String>> messageRepliers_ = new Hashtable<Integer,Transformer<String, String>>();
 	protected BasicUserData(boolean isSingleUser) throws JSONException, Exception {
 		super(GetCommands(isSingleUser));
 		isSingleUser_ = isSingleUser;
@@ -66,8 +68,13 @@ public class BasicUserData extends AbstractManager implements ResourceProvider {
 					,new ParseOrderedArg("pass",ArgTypes.string)
 						.useDefault("")));
 		if( Util.Gss(Util.EnvironmentParameter.CLIENT).equals("terminal") ) {
-			res.put(new ParseOrderedCmd("keyboard","answer to last keyboard"
-					,new ParseOrderedArg("num",ArgTypes.integer)));
+			res
+				.put(new ParseOrderedCmd("keyboard","answer to last keyboard"
+					,new ParseOrderedArg("num",ArgTypes.integer)))
+				.put(new ParseOrderedCmd("msgreply","answer to message"
+					,new ParseOrderedArg("msgid",ArgTypes.integer)
+					,new ParseOrderedArg("msgcontent",ArgTypes.remainder)))
+			;
 		}
 		return res;
 	}
@@ -88,7 +95,6 @@ public class BasicUserData extends AbstractManager implements ResourceProvider {
 			if( manager == null ) {
 				return String.format("no manager starting with \"%s\"", pref);
 			} else {
-				
 				String command = obj.getString("command");
 				if( command.equals("set") ) {
 					manager.set();
@@ -111,10 +117,6 @@ public class BasicUserData extends AbstractManager implements ResourceProvider {
 	}
 	public String help(JSONObject obj) {
 		return parser_.getHelpMessage();
-	}
-	@Override
-	public String processReply(int messageID, String msg) {
-		return null;
 	}
 	protected String unlogin() throws JSONException, Exception {
 		return null;
@@ -195,6 +197,12 @@ public class BasicUserData extends AbstractManager implements ResourceProvider {
 	}
 	@Override
 	public int sendMessage(String msg, Transformer<String, String> t) throws Exception {
-		return sendMessage(msg);
+		int res = sendMessage(msg);
+		messageRepliers_.put(res, t);
+		return res;
+	}
+	@Override
+	public String processReply(int messageID, String msg) {
+		return messageRepliers_.get(messageID).transform(msg);
 	}
 }

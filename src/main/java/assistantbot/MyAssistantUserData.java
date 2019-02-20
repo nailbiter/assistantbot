@@ -73,7 +73,6 @@ public class MyAssistantUserData extends BasicUserData implements UserData, Reso
 		}
 	}
 	protected Hashtable<Integer, ImmutablePair<Transformer<Object, String>, Map<String, Object>>> pendingKeyboardMessages_ = new Hashtable<Integer, ImmutablePair< Transformer<Object,String>,Map<String,Object> >>();
-	private Hashtable<Integer, Transformer<String, String>> messageRepliers_ = new Hashtable<Integer,Transformer<String, String>>();
 	public String processUpdateWithCallbackQuery(String call_data, int message_id) throws Exception {
 		if(pendingKeyboardMessages_.containsKey(message_id)) {
 			ImmutablePair<Transformer<Object, String>, Map<String, Object>> obj = pendingKeyboardMessages_.remove(message_id);
@@ -217,16 +216,5 @@ public class MyAssistantUserData extends BasicUserData implements UserData, Reso
 		int res = sendMessageWithKeyBoard(msg, new JSONArray(map.keySet()));
 		pendingKeyboardMessages_.put(res, new ImmutablePair<Transformer<Object,String>, Map<String,Object>>(me,map));
 		return res;
-	}
-	
-	@Override
-	public int sendMessage(String msg, Transformer<String, String> t) throws Exception {
-		int res = sendMessage(msg);
-		messageRepliers_.put(res, t);
-		return res;
-	}
-	@Override
-	public String processReply(int messageID, String msg) {
-		return messageRepliers_.get(messageID).transform(msg);
 	}
 }

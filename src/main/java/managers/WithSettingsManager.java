@@ -97,7 +97,7 @@ public class WithSettingsManager extends AbstractManager {
 		return res;
 	}
 	protected static enum SettingsType{
-		ENUM;
+		ENUM, STRING;
 	}
 	public void addSettingEnum(String name, String[] names,Object[] values, int defaultIndex) {
 		settings_.put(name, new JSONObject()
@@ -105,14 +105,34 @@ public class WithSettingsManager extends AbstractManager {
 				.put(VAL, new ImmutableTriple<String[],Object[],Integer>(names,values,defaultIndex))
 				);
 	}
+	/**
+	 * TODO
+	 * @param name
+	 * @param defValue
+	 */
+	public void addSettingString(String name, String defValue) {
+		settings_.put(name, new JSONObject()
+				.put(TYPE, SettingsType.STRING)
+				.put(VAL, defValue)
+				);
+	}
 	private Object getDefault(String name) {
 		JSONObject setting = settings_.get(name);
 		SettingsType type = (SettingsType) setting.get(TYPE);
-		if( type == SettingsType.ENUM ) {
+		switch(type) {
+		case ENUM:
+		{
 			ImmutableTriple<String[],Object[],Integer> val = 
 					(ImmutableTriple<String[], Object[], Integer>) setting.get(VAL);
-			return val.middle[val.right];
-		} else
+				return val.middle[val.right];
+		}
+		case STRING:
+		{
+			String val = (String) setting.get(VAL);
+			return val;
+		}
+		default:
 			return null;
+		}
 	}
 }

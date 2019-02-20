@@ -2,6 +2,8 @@ package managers;
 
 import java.util.ArrayList;
 
+import org.apache.commons.collections4.Transformer;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.json.JSONArray;
@@ -9,7 +11,9 @@ import org.json.JSONObject;
 
 import com.mongodb.Block;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoIterable;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 
@@ -19,15 +23,25 @@ import managers.mongomanager.MongoManagerHelper;
 import util.AssistantBotException;
 import util.db.MongoUtil;
 import util.parsers.ParseOrdered;
+import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
 
-public class MongoManager extends AbstractManager {
+public class MongoManager extends WithSettingsManager {
 	private MongoDatabase db_;
 	@SuppressWarnings("deprecation")
 	public MongoManager(ResourceProvider rp) throws AssistantBotException {
-		super(GetCommands());
+		super(GetCommands(),rp);
 		db_ = rp.getMongoClient().getDatabase(MongoUtil.getLogistics());
+		String[] collList = GetCollList(db_);
+		addSettingEnum("collection",collList,collList,0);
+	}
+	private static String[] GetCollList(MongoDatabase db) {
+		MongoCursor<String> names = db.listCollectionNames().iterator();
+		ArrayList<String> res = new ArrayList<String>();
+		for(String name = names.next();names.hasNext();name = names.next() )
+			res.add(name);
+		return res.toArray(new String[] {}); 
 	}
 	private static JSONArray GetCommands() throws AssistantBotException {
 		return new JSONArray()
@@ -46,7 +60,33 @@ public class MongoManager extends AbstractManager {
 						,new ParseOrderedArg("dest",ParseOrdered.ArgTypes.string)))
 				.put(new ParseOrderedCmd("mongormfield","remove field in collection"
 						,new ParseOrderedArg("collfield",ParseOrdered.ArgTypes.string)))
+				.put(new ParseOrderedCmd("mongols","list"
+						,new ParseOrderedArg("remainder",ArgTypes.remainder)))
 				;
+	}
+	public String mongols(JSONObject obj)  {
+		/*
+		 * sort: #sort key (#sortrev key) 
+		 * listsize: #size 20
+		 * ... search
+		 */
+		ArrayList<ImmutablePair<String, Transformer<String, Object>>> dispatch = 
+				new ArrayList<ImmutablePair<String,Transformer<String,Object>>>();
+		dispatch.add(new ImmutablePair<String,Transformer<String,Object>>("sort"
+				,new Transformer<String,Object>(){
+					@Override
+					public Object transform(String arg0) {
+						// TODO Auto-generated method stub
+						return null;
+					}
+				}));
+		
+		String message = obj.getString("remainder");
+		final String TAGPREFIX = "#";
+		while(message.startsWith(TAGPREFIX)) {
+			
+		}
+		return "mongols";
 	}
 	public String mongormfield(JSONObject obj) throws Exception {
 		final String[] split = obj.getString("collfield").split("/",2);

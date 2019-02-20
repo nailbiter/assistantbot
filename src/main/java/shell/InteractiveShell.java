@@ -42,12 +42,14 @@ public class InteractiveShell extends BasicUserData implements ResourceProvider,
 	private static String PROMPT = "assistantbot> ";
 	private String fileToOutputTo_;
 	private ImmutablePair<Map<String, Object>, Transformer<Object, String>> lastKeyboard_;
+	private int messageId_;
 	static MongoClient mc_;
 	public static void Start(JSONObject profileObj) throws Exception {
 		(new InteractiveShell(profileObj)).startMe(profileObj);
 	}
 	protected InteractiveShell(JSONObject profileObj) throws Exception {
 		super(true);
+		messageId_ = 0;
 		boolean uselocaldb = profileObj.getBoolean("OFFLINE"); 
 		System.out.format("USELOCALDB=%s\n", Boolean.toString(uselocaldb));
 		Util.setProfileObj(profileObj.toString());
@@ -115,12 +117,11 @@ public class InteractiveShell extends BasicUserData implements ResourceProvider,
 	public int sendMessage(String msg) {
 //		msg = Util.CheckMessageLen(msg);
 		
-		System.out.println("\n"+msg);
-		return -1;
+		System.out.format("%03d: %s\n",messageId_,msg);
+		return messageId_++;
 	}
 	@Override
 	public int sendMessageWithKeyBoard(String msg, List<List<InlineKeyboardButton>> makePerCatButtons) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 	@Override
@@ -137,10 +138,6 @@ public class InteractiveShell extends BasicUserData implements ResourceProvider,
 		ch.qos.logback.classic.Logger rootLogger = loggerContext.getLogger("org.mongodb.driver");
 		rootLogger.setLevel(Level.OFF);
 	}
-	@Override
-	public String processReply(int messageID, String msg) {
-		return null;
-	}
 	@SuppressWarnings("deprecation")
 	@Override
 	public MongoCollection<Document> getCollection(UserCollection name) {
@@ -151,7 +148,6 @@ public class InteractiveShell extends BasicUserData implements ResourceProvider,
 	}
 	@Override
 	public int sendMessageWithKeyBoard(String msg, Map<String, Object> map, Transformer<Object,String> me) {
-//		return sendMessageWithKeyBoard(msg,new JSONArray(map.keySet()));
 		lastKeyboard_ = new ImmutablePair<Map<String, Object>, Transformer<Object,String>>(map,me);
 		TableBuilder tb = new TableBuilder();
 		int i = 0;
@@ -160,6 +156,9 @@ public class InteractiveShell extends BasicUserData implements ResourceProvider,
 		}
 		sendMessage(tb.toString());
 		return 0;
+	}
+	public String msgreply(JSONObject arg) {
+		return processReply(arg.getInt("msgid"), arg.getString("msgcontent"));
 	}
 	public String keyboard(JSONObject arg) {
 		int num = arg.getInt("num");

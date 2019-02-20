@@ -174,7 +174,7 @@ public class MyAssistantBot extends MyBasicBot {
 	}
 	@Override
 	protected String interpretReply(int replyID, String message, UserData userData2) {
-		MyAssistantUserData ud = (MyAssistantUserData) userData2;
+		BasicUserData ud = (BasicUserData) userData2;
 		return ud.processReply(replyID, message);
 	}
 	@Override
