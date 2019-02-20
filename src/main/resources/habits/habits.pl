@@ -35,7 +35,7 @@ makeHabit "0 7 * * *", "apple", 300 ;
 makeHabit "0 7 * * *", "do 3*9_LegParBar/45_abs", 1080, category=> "gym" ;
 makeHabit "0 7 * * *", "do pushups", 1080, category=> "gym" ;
 makeHabit "0 10 * * tue", "water tree", 60 ;
-makeHabit "0 23 * * *", "sleep", 75, onFailed=> "remove" ,category=>'logistics';
+makeHabit "30 23 * * *", "sleep", 75, onFailed=> "remove" ,category=>'logistics';
 makeHabit "0 7 * * *", "wake (should be out)", 75, onFailed=> "remove" ,category=>'logistics';
 makeHabit "0 11 * * mon", "sync latex, texmacs and mac's mongodb", 1380 ;
 makeHabit "0 8 * * *", "read math 2 hours", 960, enabled=> 0 ;
