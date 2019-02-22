@@ -14,11 +14,14 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Map;
 import java.util.Timer;
 import java.util.logging.Logger;
 
 import javax.script.ScriptException;
 
+import org.apache.commons.collections4.Predicate;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.bson.Document;
 import org.json.JSONArray;
@@ -67,13 +70,14 @@ public class TaskManagerBase extends AbstractManager {
 	protected static String SNOOZED = "SNOOZED";
 	protected static String SHORTURL = "shortUrl";
 	protected HashMap<String,ImmutableTriple<Comparator<JSONObject>,String,Integer>> comparators_ = new HashMap<String,ImmutableTriple<Comparator<JSONObject>,String,Integer>>();
-	private ScriptHelperVarkeeper varkeeper_ = null;
+	private static ScriptHelperVarkeeper varkeeper_ = null;
 	/**
 	 * @deprecated
 	 */
 	protected ArrayList<String> recognizedCatNames_ = new ArrayList<String>();
 	protected JSONArray cats_ = new JSONArray();
 	protected FlagParser fp_;
+	protected static final Map<String,Predicate<JSONObject>> TASKSVIEWSPECIALTAGS_ = CreateTaskViewSpecialTags();
 
 	protected TaskManagerBase(JSONArray commands, ResourceProvider rp) throws Exception {
 		super(commands);
@@ -90,10 +94,27 @@ public class TaskManagerBase extends AbstractManager {
 		FillRecognizedCats(recognizedCatNames_,rp,varkeeper_,cats_);
 		
 		fp_ = new FlagParser()
-//			.addFlag('l', "leave (do not archive)")
 			.addFlag('a', "archive task")
 			.addFlag('d', "done task")
 			;
+	}
+	private static Map<String, Predicate<JSONObject>> CreateTaskViewSpecialTags() {
+		Hashtable<String, Predicate<JSONObject>> res = new Hashtable<String, Predicate<JSONObject>>();
+		res.put("overdue", new Predicate<JSONObject>() {
+			@Override
+			public boolean evaluate(JSONObject card) {
+				try {
+					return HasDue(card)
+							&& ( DaysTill(card) < 0 )
+							;
+				} catch (JSONException | ParseException e) {
+					e.printStackTrace();
+					return false;
+				}
+			}
+		});
+		
+		return res;
 	}
 	private static void FillRecognizedCats(final ArrayList<String> recognizedCats,ResourceProvider rp, ScriptHelperVarkeeper varkeeper, final JSONArray cats){
 		rp.getCollection(UserCollection.TIMECATS).find().forEach(new Block<Document>() {
@@ -140,7 +161,7 @@ public class TaskManagerBase extends AbstractManager {
 		
 	}
 
-	protected static String PrintTasks(ArrayList<JSONObject> arr, JSONObject paramObj, ArrayList<String> recognizedCats) throws JSONException, ParseException, AssistantBotException {
+	protected static String PrintTasks(ArrayList<JSONObject> arr, JSONObject paramObj, ArrayList<String> recognizedCats, ArrayList<Predicate<JSONObject>> filters) throws JSONException, ParseException, AssistantBotException {
 		TableBuilder tb = new TableBuilder()
 			.addTokens("#_","name_","labels_","due_");
 		
@@ -156,11 +177,29 @@ public class TaskManagerBase extends AbstractManager {
 		
 		for(int i = 0;i < arr.size(); i++) {
 			JSONObject card = arr.get(i);
+			
+			boolean toContinue = false;
+			for(Predicate<JSONObject> filter:filters) {
+				if( !filter.evaluate(card) ) {
+					toContinue = true;
+					break;
+				}
+			}
+			if( toContinue ) {
+				continue;
+			}
+			
 			tb.newRow()
 			.addToken(i + 1)
 			.addToken(card.getString("name"),paramObj.getJSONObject("sep").getInt("name"));
 			
 			HashSet<String> labelset = GetLabels(card.getJSONArray("labels")) ;
+			for(String spectag:TASKSVIEWSPECIALTAGS_.keySet()) {
+				if( labelset.contains(spectag) ) {
+					throw new AssistantBotException(AssistantBotException.Type.TASKMANAGERBASE
+							,String.format("card %s contains spec tag \"%s\"", card.toString(2),spectag));
+				}
+			}
 			String mainLabel = null;
 			try {
 				mainLabel = GetMainLabel(labelset,recognizedCats);
@@ -196,7 +235,6 @@ public class TaskManagerBase extends AbstractManager {
 		if( isBad != null ) {
 			sb.append(String.format("e: %s\n", isBad.getMessage()));
 		}
-		
 		
 		return sb.toString();
 	}
