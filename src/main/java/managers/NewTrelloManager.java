@@ -66,14 +66,16 @@ public class NewTrelloManager extends WithSettingsManager{
 				,new Transformer<Object,String>(){
 					@Override
 					public String transform(Object arg0) {
-						JSONObject obj = (JSONObject) arg0;
+						ImmutablePair<JSONObject,Integer> pair = (ImmutablePair<JSONObject, Integer>) arg0;
+						JSONObject obj = pair.left;
 						try {
 							ta.archiveCard(obj.getString("id"));
 						} catch (Exception e) {
 							e.printStackTrace();
 							Util.ExceptionToString(e);
 						}
-						return String.format("archived task \"%s\"", obj.getString("name"));
+						return String.format("archived task \"%s\"%s", obj.getString("name")
+								,(pair.right>1)?String.format("\n%d remains", pair.right-1):"");
 					}
 				}));
 		
@@ -94,7 +96,8 @@ public class NewTrelloManager extends WithSettingsManager{
 				new Transformer<Object,String>(){
 					@Override
 					public String transform(Object arg0) {
-						JSONObject card = (JSONObject) arg0;
+						ImmutablePair<JSONObject,Integer> obj = (ImmutablePair<JSONObject,Integer>)arg0;
+						JSONObject card = obj.left;
 						String oldlistid, newlistid;
 						try {
 							oldlistid = ta.findListByName(Constants.BOARDIDS.HABITS.toString()
@@ -178,7 +181,7 @@ public class NewTrelloManager extends WithSettingsManager{
 			for(String key:count.keySet()) {
 				int keycount = count.get(key).right.intValue();
 				map.put(String.format((keycount>1)?"%s:%d":"%s", key,keycount)
-						,count.get(key).left);
+						,new ImmutablePair<JSONObject,Integer>(count.get(key).left,keycount));
 			}
 			rp_.sendMessageWithKeyBoard("which card?", map, dispatch_.get(tag).right);
 			return "";
