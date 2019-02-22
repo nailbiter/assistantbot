@@ -3,6 +3,8 @@
  */
 package managers;
 
+import static managers.habits.Constants.SEPARATOR;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -30,11 +32,9 @@ import util.JsonUtil;
 import util.ParseCommentLine;
 import util.UserCollection;
 import util.db.MongoUtil;
-import util.parsers.FlagParser;
 import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
-import static managers.habits.Constants.SEPARATOR;
 
 /**
  * @author nailbiter
