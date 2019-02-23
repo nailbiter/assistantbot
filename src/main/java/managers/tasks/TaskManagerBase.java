@@ -4,8 +4,8 @@ import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.gte;
 import static managers.habits.Constants.SEPARATOR;
+import static util.Util.PrintDaysTill;
 
-import java.io.FileNotFoundException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -19,8 +19,6 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.logging.Logger;
 
-import javax.script.ScriptException;
-
 import org.apache.commons.collections4.Predicate;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.bson.Document;
@@ -31,18 +29,13 @@ import org.json.JSONObject;
 import com.github.nailbiter.util.TableBuilder;
 import com.github.nailbiter.util.TrelloAssistant;
 import com.mongodb.Block;
-import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 
 import assistantbot.ResourceProvider;
 import managers.AbstractManager;
-import managers.TaskManager;
 import util.AssistantBotException;
-import util.AssistantBotException.Type;
 import util.JsonUtil;
 import util.KeyRing;
-import util.ParseCommentLine;
 import util.UserCollection;
 import util.db.MongoUtil;
 import util.parsers.FlagParser;
@@ -52,7 +45,6 @@ import util.scripthelpers.ScriptHelperArray;
 import util.scripthelpers.ScriptHelperLogger;
 import util.scripthelpers.ScriptHelperMisc;
 import util.scripthelpers.ScriptHelperVarkeeper;
-import static util.Util.PrintDaysTill;
 
 public class TaskManagerBase extends AbstractManager {
 

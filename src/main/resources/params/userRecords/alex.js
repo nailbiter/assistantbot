@@ -15,6 +15,7 @@ var alex = {
 			"OcrManager",
 			"NewTrelloManager",
 			"NutritionManager",
+			"MongoManager",
 		]
 		,"loginmessage":[
 			"Tesime"

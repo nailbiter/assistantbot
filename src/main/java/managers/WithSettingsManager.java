@@ -13,6 +13,8 @@ import org.json.JSONObject;
 
 import assistantbot.ResourceProvider;
 import util.Util;
+import util.parsers.ParseOrdered;
+import util.parsers.ParseOrdered.ArgTypes;
 
 public class WithSettingsManager extends AbstractManager {
 	private static final String CHOOSETHESETTING = "choose the setting:";
@@ -29,13 +31,14 @@ public class WithSettingsManager extends AbstractManager {
 		rp_ = rp;
 	}
 	@Override
-	public void set() {
+	public void set() throws Exception {
 		Map<String, Object> map = new Hashtable<String,Object>();
 		for(final String key:settings_.keySet()) {
 			JSONObject setting = settings_.get(key);
-			if(setting.get(TYPE)==SettingsType.ENUM) {
+			switch((SettingsType)setting.get(TYPE)) {
+			case ENUM:
 				ImmutableTriple<String[], Object[], Integer> val = 
-						(ImmutableTriple<String[],Object[],Integer>) setting.get(VAL);
+					(ImmutableTriple<String[],Object[],Integer>) setting.get(VAL);
 				int index;
 				try {
 					index = ArrayUtils.indexOf(val.middle, getSetting(key));
@@ -62,7 +65,25 @@ public class WithSettingsManager extends AbstractManager {
 									}
 								}
 						)));
-			} else {
+				break;
+			case SCALAR:
+				ImmutablePair<ParseOrdered.ArgTypes,Object> sval = (ImmutablePair<ArgTypes, Object>) setting.get(VAL);
+				rp_.sendMessage(String.format("reply to this message to set %s of type %s", key, sval.left)
+						, new Transformer<String,String>() {
+							@Override
+							public String transform(String input) {
+								try {
+									Object parsedVal = ParseOrdered.ParseType(sval.left.toString(), input);
+									setSetting(key,parsedVal);
+									return String.format("set %s being equal to \"%s\"", key, parsedVal);
+								} catch (Exception e) {
+									e.printStackTrace();
+									return Util.ExceptionToString(e);
+								}
+							}
+				});
+				break;
+			default:
 				rp_.sendMessage(String.format("e: unknown type for setting \"%s\"", setting.toString(2)));
 				return;
 			}
@@ -73,12 +94,15 @@ public class WithSettingsManager extends AbstractManager {
 			public String transform(Object arg0) {
 				JSONObject obj = (JSONObject) arg0;
 				MessageType type = (MessageType) obj.get(TYPE);
-				if( type == MessageType.BUTTONS ) {
+				switch(type) {
+				case BUTTONS:
 					ImmutableTriple<String,Map<String,Object>,Transformer<Object,String>> val = 
-							(ImmutableTriple<String, Map<String, Object>, Transformer<Object, String>>) obj.get(VAL);
+						(ImmutableTriple<String, Map<String, Object>, Transformer<Object, String>>) obj.get(VAL);
 					rp_.sendMessageWithKeyBoard(val.left, val.middle, val.right);
 					return val.left;
-				} else {
+//					break;
+				default:
+//					break
 					return String.format("unknown type");
 				}
 			}
@@ -97,7 +121,7 @@ public class WithSettingsManager extends AbstractManager {
 		return res;
 	}
 	protected static enum SettingsType{
-		ENUM, STRING;
+		ENUM, SCALAR;
 	}
 	public void addSettingEnum(String name, String[] names,Object[] values, int defaultIndex) {
 		settings_.put(name, new JSONObject()
@@ -105,15 +129,10 @@ public class WithSettingsManager extends AbstractManager {
 				.put(VAL, new ImmutableTriple<String[],Object[],Integer>(names,values,defaultIndex))
 				);
 	}
-	/**
-	 * TODO
-	 * @param name
-	 * @param defValue
-	 */
-	public void addSettingString(String name, String defValue) {
+	public void addSettingScalar(String name, ParseOrdered.ArgTypes type, Object defaultValue) {
 		settings_.put(name, new JSONObject()
-				.put(TYPE, SettingsType.STRING)
-				.put(VAL, defValue)
+				.put(TYPE, SettingsType.SCALAR)
+				.put(VAL, new ImmutablePair<ParseOrdered.ArgTypes,Object>(type,defaultValue))
 				);
 	}
 	private Object getDefault(String name) {
@@ -126,10 +145,10 @@ public class WithSettingsManager extends AbstractManager {
 					(ImmutableTriple<String[], Object[], Integer>) setting.get(VAL);
 				return val.middle[val.right];
 		}
-		case STRING:
+		case SCALAR:
 		{
-			String val = (String) setting.get(VAL);
-			return val;
+			ImmutablePair<ParseOrdered.ArgTypes,Object> val = (ImmutablePair<ArgTypes, Object>) setting.get(VAL);
+			return val.right;
 		}
 		default:
 			return null;

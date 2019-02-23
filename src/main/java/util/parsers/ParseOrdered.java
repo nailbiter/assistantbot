@@ -33,7 +33,7 @@ public class ParseOrdered {
 	 * @param args
 	 * @return
 	 */
-	public static JSONObject MakeCommand(String name,String help,List<JSONObject> args)
+	public static JSONObject MakeCommand(String name, String help, List<JSONObject> args)
 	{
 		JSONObject cmd = new JSONObject();
 		cmd.put("name", name);
@@ -93,6 +93,25 @@ public class ParseOrdered {
 		sb.append(": ");
 		return sb.toString();
 	}
+	private static Object ParseType(String type, String split, String line) throws Exception {
+		Object lastArg = null;
+		if(type.equals("string")) {
+			lastArg = split;
+		} else if(type.equals("int") || type.equals("integer")) {
+			//FIXME: previous line was bad
+			lastArg = Integer.parseInt(split);
+		} else if(type.equals("remainder")) {
+			lastArg = line;
+		} else
+			throw new Exception("unknown type: "+type);
+		
+		System.err.format("arg %s of type %s\n", lastArg, type);
+		return lastArg;
+	}
+	public static Object ParseType(String type, String line) throws Exception {
+		String[] split = line.split(ParseOrdered.SPLITPAT,2);
+		return ParseType(type,split[0],line);
+	}
 	private JSONObject parse(JSONObject command,String line) throws Exception {
 		JSONArray args = command.getJSONArray("args");
 		String name = command.getString("name");
@@ -101,24 +120,17 @@ public class ParseOrdered {
 		int j = 0;
 		for( ; j < args.length() && line != null; j++ ) {
 			System.err.format("line: \"%s\"\n", line);
+			
 			String[] split = line.split(ParseOrdered.SPLITPAT,2);
 			System.err.format("split[0]=\"%s\"\nsplit[1]=\"%s\"\n",(split.length>=1)?split[0]:"null",(split.length>=2)?split[1]:"null");
+			
 			/**
 			 *FIXME: use StandardParser.ArgTypes here in place of string literals
 			 */
 			JSONObject arg = args.getJSONObject(j);
 			Object lastArg = null;
-			if(arg.getString("type").equals("string")) {
-				lastArg = split[0];
-			} else if(arg.getString("type").equals("int") || arg.getString("type").equals("integer")) {
-				//FIXME: previous line was bad
-				lastArg = Integer.parseInt(split[0]);
-			} else if(arg.getString("type").equals("remainder")) {
-				lastArg = line;
-			} else
-				throw new Exception("unknown type: "+arg.optString("type"));
+			lastArg = ParseType(arg.getString("type"),split[0],line);
 			
-			System.err.format("arg %s of type %s\n", lastArg.toString(),arg.getString("type"));
 			res.put(arg.getString("name"), lastArg);
 			memorize(obj.getString(CMD),arg.getString("name"),lastArg);
 			line = (split.length==2) ? split[1] : null;
