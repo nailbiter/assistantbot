@@ -33,12 +33,14 @@ import com.mongodb.client.MongoCollection;
 
 import assistantbot.ResourceProvider;
 import managers.AbstractManager;
+import managers.WithSettingsManager;
 import util.AssistantBotException;
 import util.JsonUtil;
 import util.KeyRing;
 import util.UserCollection;
 import util.db.MongoUtil;
 import util.parsers.FlagParser;
+import util.parsers.ParseOrdered;
 import util.scriptapps.JsApp;
 import util.scriptapps.ScriptApp;
 import util.scripthelpers.ScriptHelperArray;
@@ -46,14 +48,14 @@ import util.scripthelpers.ScriptHelperLogger;
 import util.scripthelpers.ScriptHelperMisc;
 import util.scripthelpers.ScriptHelperVarkeeper;
 
-public class TaskManagerBase extends AbstractManager {
+public class TaskManagerBase extends WithSettingsManager {
 
 	private static final String LABELJOINER = ", ";
 	private static final String MINDONE = "mindone";
 	private static final String MAXDONE = "maxdone";
 	private static final String INFTY = "∞";
 	protected Timer timer = new Timer();
-	protected ResourceProvider rp_;
+//	protected ResourceProvider rp_;
 	protected TrelloAssistant ta_;
 	private ScriptApp sa_;
 	protected static int REMINDBEFOREMIN = 10;
@@ -70,12 +72,14 @@ public class TaskManagerBase extends AbstractManager {
 	protected JSONArray cats_ = new JSONArray();
 	protected FlagParser fp_;
 	protected static final Map<String,Predicate<JSONObject>> TASKSVIEWSPECIALTAGS_ = CreateTaskViewSpecialTags();
+	private static final String MAXSIZE = "maxsize";
+	private static final int MAXSIZEINITVALUE = 32;
 
 	protected TaskManagerBase(JSONArray commands, ResourceProvider rp) throws Exception {
-		super(commands);
+		super(commands,rp);
 		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
 				KeyRing.getTrello().getString("token"));
-		rp_ = rp;
+		addSettingScalar(MAXSIZE, ParseOrdered.ArgTypes.integer, MAXSIZEINITVALUE);
 		varkeeper_ = new ScriptHelperVarkeeper();
 		sa_ = new JsApp(getParamObject(rp).getString("scriptFolder"), 
 				new ScriptHelperArray()
@@ -154,17 +158,18 @@ public class TaskManagerBase extends AbstractManager {
 	}
 
 	protected static String PrintTasks(ArrayList<JSONObject> arr, JSONObject paramObj, ArrayList<String> recognizedCats, ArrayList<Predicate<JSONObject>> filters) throws JSONException, ParseException, AssistantBotException {
+		System.err.format("PrintTasks: paramObj=%s\n", paramObj.toString(2));
 		TableBuilder tb = new TableBuilder()
 			.addTokens("#_","name_","labels_","due_");
 		
 		AssistantBotException isBad = null;
 		
 		boolean wasCut = false;
-		final int MAXSIZE = paramObj.getInt("maxsize");
-		int size;
-		if((size=arr.size()) > MAXSIZE) {
+		final int MAXSIZEVAL = filters.isEmpty()? paramObj.getInt(MAXSIZE): -1;
+		int size=arr.size();
+		if( ( size > MAXSIZEVAL ) && ( MAXSIZEVAL >= 0 ) ) {
 			wasCut = true;
-			arr = util.Util.GetArrayHead(arr,MAXSIZE);
+			arr = util.Util.GetArrayHead(arr,MAXSIZEVAL);
 		}
 		
 		for(int i = 0;i < arr.size(); i++) {
