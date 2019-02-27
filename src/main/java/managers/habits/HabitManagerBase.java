@@ -1,13 +1,20 @@
 package managers.habits;
 
+import static managers.habits.Constants.FAILLABELCOLOR;
+
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Timer;
 import java.util.logging.Logger;
 
 import org.apache.commons.collections4.Closure;
+import org.apache.commons.collections4.Predicate;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import com.github.nailbiter.util.TrelloAssistant;
 
 import assistantbot.ResourceProvider;
 import it.sauronsoftware.cron4j.Scheduler;
@@ -15,6 +22,7 @@ import managers.AbstractManager;
 import managers.HabitManager;
 import managers.OptionReplier;
 import util.AssistantBotException;
+import util.KeyRing;
 import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
@@ -28,11 +36,50 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 	protected Scheduler scheduler_ = null;
 	protected Timer timer = new Timer();
 	protected Logger logger_ = null;
+	protected final ArrayList<ImmutablePair<Predicate<String>,Closure<JSONObject>>> FAILUREDISPATCH;
+	protected TrelloAssistant ta_;
 	protected HabitManagerBase(ResourceProvider myAssistantUserData) throws Exception{
 		super(GetCommands());
 		logger_ = Logger.getLogger(this.getClass().getName());
 		rp_ = myAssistantUserData;
+		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
+				KeyRing.getTrello().getString("token"));
 		scheduler_ = myAssistantUserData.getScheduler();
+		FAILUREDISPATCH = createFailureDispatch(ta_);
+	}
+	private static ArrayList<ImmutablePair<Predicate<String>, Closure<JSONObject>>> createFailureDispatch(TrelloAssistant ta) {
+		ArrayList<ImmutablePair<Predicate<String>, Closure<JSONObject>>> res = new ArrayList<ImmutablePair<Predicate<String>, Closure<JSONObject>>>();
+		res.add(new ImmutablePair<Predicate<String>, Closure<JSONObject>>(
+				new Predicate<String>() {
+					@Override
+					public boolean evaluate(String object) {
+						return object.equals("putlabel");
+					}
+				},new Closure<JSONObject>() {
+					@Override
+					public void execute(JSONObject card) {
+						String id = card.getString("id");
+						try {
+							ta.setLabel(id, FAILLABELCOLOR);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}));
+		res.add(new ImmutablePair<Predicate<String>,Closure<JSONObject>>(new Predicate<String>() {
+			@Override
+			public boolean evaluate(String object) {
+				return object.startsWith("move:"); 
+			}
+		},new Closure<JSONObject>() {
+			@Override
+			public void execute(JSONObject card) {
+				String id = card.getString("id");
+				
+			}
+		}));
+		
+		return res;
 	}
 	protected void habitRunnableDispatch(String name,HabitRunnableEnum code)
 	{
