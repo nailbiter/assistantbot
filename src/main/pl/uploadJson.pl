@@ -73,8 +73,25 @@ $client = MongoDB->connect(sprintf("mongodb://%s:%s\@ds149672.mlab.com:49672/log
 my $ns = sprintf("%s.%s",$cmdline{dbname},$cmdline{colname});
 my $coll = $client->ns($ns);
 if(ref($json) eq 'ARRAY'){
-	$coll->drop();
-    $coll->insert_many($json);
+	if( defined $cmdline{field} ) {
+		my $field = $cmdline{field};
+		for( @$json ) {
+			my %record = %$_;
+			for( keys %record ) {
+				my $key = $_;
+				if( $key ne $field ) {
+					my_update_one($coll,
+						{$field=>$record{$field}},
+						{'$set'=>{$key=>$record{$key}}},
+						{upsert => 1},
+					);
+				}
+			}
+		}
+	} else {
+		$coll->drop();
+		$coll->insert_many($json);
+	}
 } elsif(exists $cmdline{field}) {
 	for(keys(%$json)){
 		my $key = $_;

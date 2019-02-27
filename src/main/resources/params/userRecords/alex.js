@@ -6,7 +6,6 @@ var alex = {
 			"TestManager",
 			"TimeManager",
 			"MiscUtilManager",
-			"MoneyManager",
 			"ReportManager",
 			"GermanManager",
 			"GymManager",
