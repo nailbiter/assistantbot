@@ -36,7 +36,7 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 	protected Scheduler scheduler_ = null;
 	protected Timer timer = new Timer();
 	protected Logger logger_ = null;
-	protected final ArrayList<ImmutablePair<Predicate<String>,Closure<JSONObject>>> FAILUREDISPATCH;
+	protected final ArrayList<ImmutablePair<Predicate<String>, Closure<ImmutablePair<String, String>>>> FAILUREDISPATCH;
 	protected TrelloAssistant ta_;
 	protected HabitManagerBase(ResourceProvider myAssistantUserData) throws Exception{
 		super(GetCommands());
@@ -47,18 +47,19 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 		scheduler_ = myAssistantUserData.getScheduler();
 		FAILUREDISPATCH = createFailureDispatch(ta_);
 	}
-	private static ArrayList<ImmutablePair<Predicate<String>, Closure<JSONObject>>> createFailureDispatch(TrelloAssistant ta) {
-		ArrayList<ImmutablePair<Predicate<String>, Closure<JSONObject>>> res = new ArrayList<ImmutablePair<Predicate<String>, Closure<JSONObject>>>();
-		res.add(new ImmutablePair<Predicate<String>, Closure<JSONObject>>(
+	private static ArrayList<ImmutablePair<Predicate<String>, Closure<ImmutablePair<String,String>>>> createFailureDispatch(TrelloAssistant ta) {
+		ArrayList<ImmutablePair<Predicate<String>, Closure<ImmutablePair<String,String>>>> res 
+			= new ArrayList<ImmutablePair<Predicate<String>, Closure<ImmutablePair<String,String>>>>();
+		res.add(new ImmutablePair<Predicate<String>, Closure<ImmutablePair<String,String>>>(
 				new Predicate<String>() {
 					@Override
 					public boolean evaluate(String object) {
 						return object.equals("putlabel");
 					}
-				},new Closure<JSONObject>() {
+				},new Closure<ImmutablePair<String,String>>() {
 					@Override
-					public void execute(JSONObject card) {
-						String id = card.getString("id");
+					public void execute(ImmutablePair<String,String> pair) {
+						String id = pair.right;
 						try {
 							ta.setLabel(id, FAILLABELCOLOR);
 						} catch (Exception e) {
@@ -66,16 +67,17 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 						}
 					}
 				}));
-		res.add(new ImmutablePair<Predicate<String>,Closure<JSONObject>>(new Predicate<String>() {
+		final String PREFIX = "move:";
+		res.add(new ImmutablePair<Predicate<String>,Closure<ImmutablePair<String,String>>>(new Predicate<String>() {
 			@Override
 			public boolean evaluate(String object) {
-				return object.startsWith("move:"); 
+				return object.startsWith(PREFIX); 
 			}
-		},new Closure<JSONObject>() {
+		},new Closure<ImmutablePair<String,String>>() {
 			@Override
-			public void execute(JSONObject card) {
-				String id = card.getString("id");
-				
+			public void execute(ImmutablePair<String,String> pair) {
+				String id = pair.right;
+				String listName = pair.left.substring(PREFIX.length());
 			}
 		}));
 		

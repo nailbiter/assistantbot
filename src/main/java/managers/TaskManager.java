@@ -168,8 +168,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 				System.err.format("date: %s\n", date.toString());
 				setUpReminder(card,date);
 				saveSnoozeToDb(card,date);
-				res.add(String.format("snoozing card \"%s\" to %s", 
-						card.getString("name"),date.toString()));
+				res.add(String.format("snoozing card \"%s\" to %s", card.getString("name"),date.toString()));
 			}
 			if( !((Set<String>)parsed.get(ParseCommentLine.TAGS)).isEmpty() ) {
 				Set<String> tags = (Set<String>)parsed.get(ParseCommentLine.TAGS);
@@ -180,11 +179,11 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 					if(JsonUtil.FindInJSONArray(card.getJSONArray("labels"), "name", tagname) == null) {
 						ta_.setLabelByName(card.getString("id"), tagname, card.getString("idList")
 								,TrelloAssistant.SetUnset.SET);
-						res.add(String.format("adding tag \"%s\"", tagname));
+						res.add(String.format("adding tag \"%s\" to \"%s\"", tagname,card.getString("name")));
 					} else {
 						ta_.setLabelByName(card.getString("id"), tagname, card.getString("idList")
 								,TrelloAssistant.SetUnset.UNSET);
-						res.add(String.format("removing tag \"%s\"", tagname));
+						res.add(String.format("removing tag \"%s\" from \"%s\"", tagname, card.getString("name")));
 					}
 				}
 			}
