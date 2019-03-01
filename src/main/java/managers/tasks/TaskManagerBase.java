@@ -7,6 +7,7 @@ import static managers.habits.Constants.SEPARATOR;
 import static util.Util.PrintDaysTill;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -109,8 +110,57 @@ public class TaskManagerBase extends WithSettingsManager {
 				}
 			}
 		});
+		res.put("tomorrow", new Predicate<JSONObject>() {
+			@Override
+			public boolean evaluate(JSONObject card) {
+				try {
+					if( !HasDue(card) )
+						return false;
+					String string = card.getString("due");
+					SimpleDateFormat DF = com.github.nailbiter.util.Util.GetTrelloDateFormat();
+					Calendar due = Calendar.getInstance()
+							, now = Calendar.getInstance();
+					due.setTime(DF.parse(string));
+					now.add(Calendar.DATE,1);
+					return CompareCalendars(due,now,new Integer[] {
+						Calendar.YEAR, Calendar.MONTH, Calendar.DATE	
+					});
+				} catch (JSONException | ParseException e) {
+					e.printStackTrace();
+					return false;
+				}
+			}
+		});
+		res.put("today", new Predicate<JSONObject>() {
+			@Override
+			public boolean evaluate(JSONObject card) {
+				try {
+					if( !HasDue(card) )
+						return false;
+					String string = card.getString("due");
+					SimpleDateFormat DF = com.github.nailbiter.util.Util.GetTrelloDateFormat();
+					Calendar due = Calendar.getInstance()
+							, now = Calendar.getInstance();
+					due.setTime(DF.parse(string));
+					return CompareCalendars(due,now,new Integer[] {
+						Calendar.YEAR, Calendar.MONTH, Calendar.DATE	
+					});
+				} catch (JSONException | ParseException e) {
+					e.printStackTrace();
+					return false;
+				}
+			}
+		});
 		
 		return res;
+	}
+	private static boolean CompareCalendars(Calendar c1, Calendar c2, Integer[] fields) {
+		for(int field:fields) {
+			if( c1.get(field) != c2.get(field) ) {
+				return false;
+			}
+		}
+		return true;
 	}
 	private static void FillRecognizedCats(final ArrayList<String> recognizedCats,ResourceProvider rp, ScriptHelperVarkeeper varkeeper, final JSONArray cats){
 		rp.getCollection(UserCollection.TIMECATS).find().forEach(new Block<Document>() {
