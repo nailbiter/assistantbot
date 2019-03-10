@@ -1,4 +1,5 @@
-.PHONY: all offline  botmanager trello interactive\
+.PHONY: all \
+	offline  botmanager trello interactive dpmanager\
 	 pull jar add \
 	 habits params \
 	 readme
@@ -25,6 +26,10 @@ all: src/main/resources/profiles/telegram.json target/$(JARNAME).jar
 #PHONY
 include Makefile.sources
 include Makefile.dbdata
+dpmanager: src/main/resources/profiles/dpmanager.json target/$(JARNAME).jar $(SECRET) $(USERRECORDS)
+	mkdir -p tmp
+	rm -rf $(REBOOTFILE)
+	$(PERL) ./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>&1 | tee log/log.$@.txt
 botmanager: src/main/resources/profiles/botmanager.json target/$(JARNAME).jar $(SECRET) $(USERRECORDS)
 	mkdir -p tmp
 	rm -rf $(REBOOTFILE)
