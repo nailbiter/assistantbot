@@ -140,16 +140,22 @@ public class Util{
 				Integer.toString((int)((millis/1000.0/60.0)%60)) + "m:"+
 				Integer.toString((int)((millis/1000.0)%60)) + "s";
 	}
+	/**
+	 * @deprecated
+	 * @return
+	 * @throws Exception
+	 */
 	public static TimeZone getTimezone() throws Exception
 	{
 		TimeZone tz = TimeZone.getTimeZone("JST");
 		System.out.println("zone: "+tz.getID());
 		return tz;
 	}
-	public static String DateToString(Date d) throws Exception
+	public static String DateToString(Date d, TimeZone tz) throws Exception
 	{
 		DateFormat df = new SimpleDateFormat();
-		df.setTimeZone(Util.getTimezone());
+//		df.setTimeZone(Util.getTimezone());
+		df.setTimeZone(tz);
 		return df.format(d);
 	}
 	/**

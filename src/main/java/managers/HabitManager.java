@@ -130,12 +130,13 @@ public class HabitManager extends HabitManagerBase
 		for(int i = 0; i < habits_.length(); i++) {
 			JSONObject habit = habits_.getJSONObject(i);
 			Predictor p = new Predictor(habit.getString("cronline"));
-			p.setTimeZone(Util.getTimezone());
+			TimeZone tz = TimeZone.getTimeZone(GetTimeZone(rp_));
+			p.setTimeZone(tz);
 			if(!habit.optBoolean("enabled",true))
 				continue;
 			tb.newRow();
 			tb.addToken(habit.getString("name"));
-			tb.addToken(Util.DateToString(p.nextMatchingDate()));
+			tb.addToken(Util.DateToString(p.nextMatchingDate(),tz));
 			tb.addToken(habit.optBoolean("isWaiting") ? 
 				("PEND("+ (habit.getInt("count")-habit.getInt("doneCount"))+")"):"");
 			tb.addToken(habit.optBoolean("isWaiting") ?

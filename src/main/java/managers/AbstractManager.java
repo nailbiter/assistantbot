@@ -60,6 +60,9 @@ public class AbstractManager implements MyManager {
 	public static JSONObject GetParamObject(ResourceProvider rp_,String classname) throws JSONException, Exception {
 		return rp_.getManagerSettingsObject(classname);
 	}
+	public static String GetTimeZone(ResourceProvider rp) {
+		return rp.getUserObject().getString("timezone");
+	}
 	public JSONObject getCommands() {
 		JSONObject res = po_.getCommands();
 		System.err.format("getCommands for %s got %s\n", this.getClass().getName(),res);

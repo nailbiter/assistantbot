@@ -162,13 +162,12 @@ public class MoneyManager extends MoneyManagerBase{
 					tb.addToken(category);
 					DateFormat formatter = 
 							new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy");
-					String timezonename = 
-							rp_.getUserObject().getString("timezone");
+					String timezonename = GetTimeZone(rp_);
 					formatter
 						.setTimeZone(TimeZone.getTimeZone(timezonename));
 					Date date = doc.getDate("date");
 					tb.addToken(String.format("%s %s", formatter.format(date)
-							,timezonename ));
+							,timezonename));
 					if( fp_.contains('c') )
 						tb.addToken(obj.optString("comment",""));
 					if( fp_.contains('t') ) 

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.logging.Logger;
 
 import org.apache.commons.collections4.Closure;
@@ -22,6 +23,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Updates;
 
 import it.sauronsoftware.cron4j.Scheduler;
+import managers.AbstractManager;
 import managers.MyManager;
 import managers.OptionReplier;
 import util.Util;
@@ -43,7 +45,8 @@ public class MyAssistantUserData extends BasicUserData implements UserData, Reso
 		try {
 			chatID_ = chatID;
 			bot_ = bot;
-			scheduler_.setTimeZone(Util.getTimezone());
+//			scheduler_.setTimeZone(Util.getTimezone());
+			scheduler_.setTimeZone(TimeZone.getTimeZone(AbstractManager.GetTimeZone(this)));
 			userObject_ = (obj != null)? 
 					obj
 					:(( names == null ) ? 

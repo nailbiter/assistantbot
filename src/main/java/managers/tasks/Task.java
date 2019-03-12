@@ -45,20 +45,20 @@ public class Task
 		updateReminder();
 	}
 	public boolean isDone() { return obj_.getBoolean("done");}
-	public String getDuedate() throws Exception{
-		JSONArray history = obj_.getJSONArray("history");
-		if(history.length() > 0)
-		{
-			Long date = history.getLong(history.length() - 2);
-			Date lastDate = new Date(date);
-			int timeInMin = history.getInt(history.length() - 1);
-			return Util.DateToString((new Date(lastDate.getTime() + timeInMin*60*1000)));
-		}
-		else
-		{
-			return "∞";
-		}
-	}
+//	public String getDuedate() throws Exception {
+//		JSONArray history = obj_.getJSONArray("history");
+//		if(history.length() > 0)
+//		{
+//			Long date = history.getLong(history.length() - 2);
+//			Date lastDate = new Date(date);
+//			int timeInMin = history.getInt(history.length() - 1);
+//			return Util.DateToString((new Date(lastDate.getTime() + timeInMin*60*1000)));
+//		}
+//		else
+//		{
+//			return "∞";
+//		}
+//	}
 	public void postpone(int byhowmuch){
 		JSONArray history = obj_.getJSONArray("history");
 		obj_.put("done", false);

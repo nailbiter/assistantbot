@@ -41,7 +41,7 @@ var birthdays = [
 					name:'masha',
 				},
 				{
-					month:02, date:23,
+					month:02, date:24,
 					name:'brother mike',
 				},
 				{
