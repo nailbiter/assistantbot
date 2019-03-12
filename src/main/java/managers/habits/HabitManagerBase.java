@@ -156,7 +156,10 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 			Date nd = predictor.nextMatchingDate();
 			System.err.format("%s: %s %s\n", this.getName(), nd, habit.getString("name"));
 			System.err.format("def timezone: %s\n", TimeZone.getDefault().getID());
-			tb.addToken(nd.toString());
+			tb.addToken(
+//					nd.toString()
+					Util.DateToString(nd, tz)
+					);
 			tb.addToken(habit.optBoolean("isWaiting") ? 
 				("PEND("+ (habit.getInt("count")-habit.getInt("doneCount"))+")"):"");
 			tb.addToken(habit.optBoolean("isWaiting") ?

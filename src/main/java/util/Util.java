@@ -517,4 +517,10 @@ public class Util{
 			
 		return res;
 	}
+	public static String DateToString(Date d, TimeZone tz) throws Exception
+	{
+		DateFormat df = new SimpleDateFormat();
+		df.setTimeZone(tz);
+		return df.format(d);
+	}
 }
