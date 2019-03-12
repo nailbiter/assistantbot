@@ -3,6 +3,8 @@
  */
 package managers;
 
+import static managers.habits.Constants.SEPARATOR;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -12,6 +14,7 @@ import java.util.Set;
 import java.util.TimerTask;
 
 import org.apache.commons.collections4.Closure;
+import org.apache.commons.collections4.Predicate;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.bson.Document;
@@ -30,11 +33,9 @@ import util.JsonUtil;
 import util.ParseCommentLine;
 import util.UserCollection;
 import util.db.MongoUtil;
-import util.parsers.FlagParser;
 import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
-import static managers.habits.Constants.SEPARATOR;
 
 /**
  * @author nailbiter
@@ -66,15 +67,37 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		}
 	}
 	public String tasks(JSONObject res) throws Exception {
-		if( !res.has("tasknum") ) {
-			return PrintTasks(getTasks(INBOX),this.getParamObject(rp_),recognizedCatNames_);
-		} else if(res.getInt("tasknum")>0){
-			rp_.sendMessage(PrintTask(getTasks(INBOX),res.getInt("tasknum"),ta_));
+		String remainder = res.optString("tasknum", "");
+		HashMap<String, Object> pcl = new ParseCommentLine(ParseCommentLine.Mode.FROMLEFT).parse(remainder);
+		
+		ArrayList<Predicate<JSONObject>> filters = new ArrayList<Predicate<JSONObject>>();
+		if(pcl.containsKey(ParseCommentLine.TAGS)) {
+			HashSet<String> tags = (HashSet<String>) pcl.get(ParseCommentLine.TAGS);
+			for(String tag:tags) {
+				if ( TASKSVIEWSPECIALTAGS_.containsKey(tag) ) {
+					filters.add(TASKSVIEWSPECIALTAGS_.get(tag));
+				} else {
+					filters.add(new Predicate<JSONObject>() {
+						@Override
+						public boolean evaluate(JSONObject card) {
+							return GetLabels(card.getJSONArray("labels")).contains(tag);
+						}
+					});
+				}
+			}
+		}
+		
+		if( ((String)pcl.getOrDefault(ParseCommentLine.REM, "")).length()==0 ) {
+			return PrintTasks(getTasks(INBOX),this.getParamObject(rp_),recognizedCatNames_, filters);
+		}
+		int tasknum = Integer.parseInt((String)pcl.getOrDefault(ParseCommentLine.REM, ""));
+		if(tasknum>0){
+			rp_.sendMessage(PrintTask(getTasks(INBOX),tasknum,ta_));
 			return "";
-		} else if(res.getInt("tasknum")==0) {
-			return PrintTasks(getTasks(SNOOZED),this.getParamObject(rp_),recognizedCatNames_);
-		} else if( res.getInt("tasknum") < 0 ) {
-			rp_.sendMessage(PrintTask(getTasks(SNOOZED),-res.getInt("tasknum"), ta_));
+		} else if(tasknum==0) {
+			return PrintTasks(getTasks(SNOOZED),this.getParamObject(rp_),recognizedCatNames_, filters);
+		} else if( tasknum < 0 ) {
+			rp_.sendMessage(PrintTask(getTasks(SNOOZED),-tasknum, ta_));
 			return "";
 		} else {
 			throw new Exception("this should not happen");
@@ -145,8 +168,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 				System.err.format("date: %s\n", date.toString());
 				setUpReminder(card,date);
 				saveSnoozeToDb(card,date);
-				res.add(String.format("snoozing card \"%s\" to %s", 
-						card.getString("name"),date.toString()));
+				res.add(String.format("snoozing card \"%s\" to %s", card.getString("name"),date.toString()));
 			}
 			if( !((Set<String>)parsed.get(ParseCommentLine.TAGS)).isEmpty() ) {
 				Set<String> tags = (Set<String>)parsed.get(ParseCommentLine.TAGS);
@@ -157,11 +179,11 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 					if(JsonUtil.FindInJSONArray(card.getJSONArray("labels"), "name", tagname) == null) {
 						ta_.setLabelByName(card.getString("id"), tagname, card.getString("idList")
 								,TrelloAssistant.SetUnset.SET);
-						res.add(String.format("adding tag \"%s\"", tagname));
+						res.add(String.format("adding tag \"%s\" to \"%s\"", tagname,card.getString("name")));
 					} else {
 						ta_.setLabelByName(card.getString("id"), tagname, card.getString("idList")
 								,TrelloAssistant.SetUnset.UNSET);
-						res.add(String.format("removing tag \"%s\"", tagname));
+						res.add(String.format("removing tag \"%s\" from \"%s\"", tagname, card.getString("name")));
 					}
 				}
 			}
@@ -189,7 +211,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 	public static JSONArray GetCommands() throws Exception {
 		JSONArray res = new JSONArray()
 				.put(new ParseOrderedCmd("tasks","show list of tasks",
-						new ParseOrderedArg("tasknum",ArgTypes.integer)
+						new ParseOrderedArg("tasknum",ArgTypes.remainder)
 								.makeOpt()))
 				.put(new ParseOrderedCmd("taskmodify","change task's due",
 						new ParseOrderedArg("num",ArgTypes.string)

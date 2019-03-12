@@ -6,7 +6,6 @@ var alex = {
 			"TestManager",
 			"TimeManager",
 			"MiscUtilManager",
-			"MoneyManager",
 			"ReportManager",
 			"GermanManager",
 			"GymManager",
@@ -15,6 +14,7 @@ var alex = {
 			"OcrManager",
 			"NewTrelloManager",
 			"NutritionManager",
+			"MongoManager",
 		]
 		,"loginmessage":[
 			"Tesime"

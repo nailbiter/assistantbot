@@ -73,7 +73,7 @@ public class AbstractManager implements MyManager {
 		return this.getClass().getSimpleName();
 	}
 	@Override
-	public void set() {
+	public void set() throws Exception {
 		
 	}
 	@Override

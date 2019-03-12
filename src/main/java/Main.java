@@ -7,9 +7,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import assistantbot.MyAssistantBot;
 import shell.InteractiveShell;
 import testing.MainTest;
-import util.Util;
-import util.AssistantBotException;
 import util.JsonUtil;
+import util.Util;
 public class Main {
     public static void main(String[] args) throws Exception {
     	try {

@@ -1,0 +1,9 @@
+{
+	"name":"DreamPiratesBot",
+	"scriptFolder":"src/main/js/",
+	"tmpfolder":"tmp",
+	"client":"telegram",
+	"parserPrefix":"/",
+	"managers":["MiscUtilManager","BotManager",
+		"PerlScriptManager","PowerManager"]
+}

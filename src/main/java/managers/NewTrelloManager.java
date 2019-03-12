@@ -66,20 +66,35 @@ public class NewTrelloManager extends WithSettingsManager{
 				,new Transformer<Object,String>(){
 					@Override
 					public String transform(Object arg0) {
-						JSONObject obj = (JSONObject) arg0;
+						ImmutablePair<JSONObject,Integer> pair = (ImmutablePair<JSONObject, Integer>) arg0;
+						JSONObject obj = pair.left;
 						try {
 							ta.archiveCard(obj.getString("id"));
 						} catch (Exception e) {
 							e.printStackTrace();
 							Util.ExceptionToString(e);
 						}
-						return String.format("archived task \"%s\"", obj.getString("name"));
+						return String.format("archived task \"%s\"%s", obj.getString("name")
+								,(pair.right>1)?String.format("\n%d remains", pair.right-1):"");
 					}
 				}));
 		
 		String[] cats = getCats(rp);
 		for(String cat:cats)
 			res.put(cat, MoveToTodoAndPutLabel(cat,ta));
+		
+//		res.put("help", new ImmutablePair<String,Transformer<Object,String>>("show this help message"
+//				,new Transformer<Object,String>(){
+//					@Override
+//					public String transform(Object input) {
+//						TableBuilder tb = new TableBuilder();
+//						tb.addTokens("name_","description_");
+//						for(String t:res.keySet())
+//							tb.addTokens(t,res.get(t).left);
+//						return tb.toString();
+//					}
+//				}));
+		
 		return res;
 	}
 	private static String[] getCats(ResourceProvider rp) {
@@ -94,7 +109,8 @@ public class NewTrelloManager extends WithSettingsManager{
 				new Transformer<Object,String>(){
 					@Override
 					public String transform(Object arg0) {
-						JSONObject card = (JSONObject) arg0;
+						ImmutablePair<JSONObject,Integer> obj = (ImmutablePair<JSONObject,Integer>)arg0;
+						JSONObject card = obj.left;
 						String oldlistid, newlistid;
 						try {
 							oldlistid = ta.findListByName(Constants.BOARDIDS.HABITS.toString()
@@ -122,18 +138,10 @@ public class NewTrelloManager extends WithSettingsManager{
 		return new JSONArray()
 				.put(new ParseOrderedCmd("ttask", "make new task", 
 						new ParseOrderedArg("task",ParseOrdered.ArgTypes.remainder)
-						.makeOpt()))
+						.useMemory()))
 				;
 	}
 	public String ttask(JSONObject obj) throws Exception {
-		if( !obj.has("task") ) {
-			TableBuilder tb = new TableBuilder();
-			tb.addTokens("name_","description_");
-			for(String t:dispatch_.keySet())
-				tb.addTokens(t,dispatch_.get(t).left);
-			return tb.toString();
-		}
-		
 		HashMap<String, Object> parsed = new ParseCommentLine(ParseCommentLine.Mode.FROMRIGHT)
 				.parse(obj.getString("task"));
 		Set<String> tags = (Set<String>) parsed.get(ParseCommentLine.TAGS);
@@ -155,7 +163,13 @@ public class NewTrelloManager extends WithSettingsManager{
 		}
 		
 		String tag = tags.iterator().next();
-		if( !dispatch_.containsKey(tag) ) {
+		if(tag.equals("help")) {
+			TableBuilder tb = new TableBuilder();
+			tb.addTokens("name_","description_");
+			for(String t:dispatch_.keySet())
+				tb.addTokens(t,dispatch_.get(t).left);
+			return tb.toString();
+		} else if( !dispatch_.containsKey(tag) ) {
 			return String.format("cannot process tag \"%s\"", tag);
 		}
 		
@@ -178,7 +192,7 @@ public class NewTrelloManager extends WithSettingsManager{
 			for(String key:count.keySet()) {
 				int keycount = count.get(key).right.intValue();
 				map.put(String.format((keycount>1)?"%s:%d":"%s", key,keycount)
-						,count.get(key).left);
+						,new ImmutablePair<JSONObject,Integer>(count.get(key).left,keycount));
 			}
 			rp_.sendMessageWithKeyBoard("which card?", map, dispatch_.get(tag).right);
 			return "";

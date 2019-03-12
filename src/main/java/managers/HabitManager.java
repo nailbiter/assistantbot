@@ -44,7 +44,6 @@ public class HabitManager extends HabitManagerBase
 	Hashtable<String,Date> failTimes = null;
 	MongoCollection<Document> streaks_ = null;
 	String pendingListId_;
-	private TrelloAssistant ta_;
 	private String failedListId_;
 	Donep donep_;
 	private String failedListId2_;
@@ -55,8 +54,6 @@ public class HabitManager extends HabitManagerBase
 		
 		streaks_ = rp
 				.getCollection(UserCollection.HABITSPUNCH);
-		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
-				KeyRing.getTrello().getString("token"));
 		habits_ = FetchHabits(rp);
 		failTimes = new Hashtable<String,Date>(habits_.length());
 		pendingListId_ = ta_.findListByName(HABITBOARDID, PENDINGLISTNAME);

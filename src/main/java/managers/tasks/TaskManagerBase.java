@@ -4,9 +4,10 @@ import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.gte;
 import static managers.habits.Constants.SEPARATOR;
+import static util.Util.PrintDaysTill;
 
-import java.io.FileNotFoundException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -14,11 +15,12 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Map;
 import java.util.Timer;
 import java.util.logging.Logger;
 
-import javax.script.ScriptException;
-
+import org.apache.commons.collections4.Predicate;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.bson.Document;
 import org.json.JSONArray;
@@ -28,37 +30,33 @@ import org.json.JSONObject;
 import com.github.nailbiter.util.TableBuilder;
 import com.github.nailbiter.util.TrelloAssistant;
 import com.mongodb.Block;
-import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 
 import assistantbot.ResourceProvider;
 import managers.AbstractManager;
-import managers.TaskManager;
+import managers.WithSettingsManager;
 import util.AssistantBotException;
-import util.AssistantBotException.Type;
 import util.JsonUtil;
 import util.KeyRing;
-import util.ParseCommentLine;
 import util.UserCollection;
 import util.db.MongoUtil;
 import util.parsers.FlagParser;
+import util.parsers.ParseOrdered;
 import util.scriptapps.JsApp;
 import util.scriptapps.ScriptApp;
 import util.scripthelpers.ScriptHelperArray;
 import util.scripthelpers.ScriptHelperLogger;
 import util.scripthelpers.ScriptHelperMisc;
 import util.scripthelpers.ScriptHelperVarkeeper;
-import static util.Util.PrintDaysTill;
 
-public class TaskManagerBase extends AbstractManager {
+public class TaskManagerBase extends WithSettingsManager {
 
 	private static final String LABELJOINER = ", ";
 	private static final String MINDONE = "mindone";
 	private static final String MAXDONE = "maxdone";
 	private static final String INFTY = "∞";
 	protected Timer timer = new Timer();
-	protected ResourceProvider rp_;
+//	protected ResourceProvider rp_;
 	protected TrelloAssistant ta_;
 	private ScriptApp sa_;
 	protected static int REMINDBEFOREMIN = 10;
@@ -67,19 +65,22 @@ public class TaskManagerBase extends AbstractManager {
 	protected static String SNOOZED = "SNOOZED";
 	protected static String SHORTURL = "shortUrl";
 	protected HashMap<String,ImmutableTriple<Comparator<JSONObject>,String,Integer>> comparators_ = new HashMap<String,ImmutableTriple<Comparator<JSONObject>,String,Integer>>();
-	private ScriptHelperVarkeeper varkeeper_ = null;
+	private static ScriptHelperVarkeeper varkeeper_ = null;
 	/**
 	 * @deprecated
 	 */
 	protected ArrayList<String> recognizedCatNames_ = new ArrayList<String>();
 	protected JSONArray cats_ = new JSONArray();
 	protected FlagParser fp_;
+	protected static final Map<String,Predicate<JSONObject>> TASKSVIEWSPECIALTAGS_ = CreateTaskViewSpecialTags();
+	private static final String MAXSIZE = "maxsize";
+	private static final int MAXSIZEINITVALUE = 32;
 
 	protected TaskManagerBase(JSONArray commands, ResourceProvider rp) throws Exception {
-		super(commands);
+		super(commands,rp);
 		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
 				KeyRing.getTrello().getString("token"));
-		rp_ = rp;
+		addSettingScalar(MAXSIZE, ParseOrdered.ArgTypes.integer, MAXSIZEINITVALUE);
 		varkeeper_ = new ScriptHelperVarkeeper();
 		sa_ = new JsApp(getParamObject(rp).getString("scriptFolder"), 
 				new ScriptHelperArray()
@@ -90,10 +91,76 @@ public class TaskManagerBase extends AbstractManager {
 		FillRecognizedCats(recognizedCatNames_,rp,varkeeper_,cats_);
 		
 		fp_ = new FlagParser()
-//			.addFlag('l', "leave (do not archive)")
 			.addFlag('a', "archive task")
 			.addFlag('d', "done task")
 			;
+	}
+	private static Map<String, Predicate<JSONObject>> CreateTaskViewSpecialTags() {
+		Hashtable<String, Predicate<JSONObject>> res = new Hashtable<String, Predicate<JSONObject>>();
+		res.put("overdue", new Predicate<JSONObject>() {
+			@Override
+			public boolean evaluate(JSONObject card) {
+				try {
+					return HasDue(card)
+							&& ( DaysTill(card) < 0 )
+							;
+				} catch (JSONException | ParseException e) {
+					e.printStackTrace();
+					return false;
+				}
+			}
+		});
+		res.put("tomorrow", new Predicate<JSONObject>() {
+			@Override
+			public boolean evaluate(JSONObject card) {
+				try {
+					if( !HasDue(card) )
+						return false;
+					String string = card.getString("due");
+					SimpleDateFormat DF = com.github.nailbiter.util.Util.GetTrelloDateFormat();
+					Calendar due = Calendar.getInstance()
+							, now = Calendar.getInstance();
+					due.setTime(DF.parse(string));
+					now.add(Calendar.DATE,1);
+					return CompareCalendars(due,now,new Integer[] {
+						Calendar.YEAR, Calendar.MONTH, Calendar.DATE	
+					});
+				} catch (JSONException | ParseException e) {
+					e.printStackTrace();
+					return false;
+				}
+			}
+		});
+		res.put("today", new Predicate<JSONObject>() {
+			@Override
+			public boolean evaluate(JSONObject card) {
+				try {
+					if( !HasDue(card) )
+						return false;
+					String string = card.getString("due");
+					SimpleDateFormat DF = com.github.nailbiter.util.Util.GetTrelloDateFormat();
+					Calendar due = Calendar.getInstance()
+							, now = Calendar.getInstance();
+					due.setTime(DF.parse(string));
+					return CompareCalendars(due,now,new Integer[] {
+						Calendar.YEAR, Calendar.MONTH, Calendar.DATE	
+					});
+				} catch (JSONException | ParseException e) {
+					e.printStackTrace();
+					return false;
+				}
+			}
+		});
+		
+		return res;
+	}
+	private static boolean CompareCalendars(Calendar c1, Calendar c2, Integer[] fields) {
+		for(int field:fields) {
+			if( c1.get(field) != c2.get(field) ) {
+				return false;
+			}
+		}
+		return true;
 	}
 	private static void FillRecognizedCats(final ArrayList<String> recognizedCats,ResourceProvider rp, ScriptHelperVarkeeper varkeeper, final JSONArray cats){
 		rp.getCollection(UserCollection.TIMECATS).find().forEach(new Block<Document>() {
@@ -140,27 +207,46 @@ public class TaskManagerBase extends AbstractManager {
 		
 	}
 
-	protected static String PrintTasks(ArrayList<JSONObject> arr, JSONObject paramObj, ArrayList<String> recognizedCats) throws JSONException, ParseException, AssistantBotException {
+	protected static String PrintTasks(ArrayList<JSONObject> arr, JSONObject paramObj, ArrayList<String> recognizedCats, ArrayList<Predicate<JSONObject>> filters) throws JSONException, ParseException, AssistantBotException {
+		System.err.format("PrintTasks: paramObj=%s\n", paramObj.toString(2));
 		TableBuilder tb = new TableBuilder()
 			.addTokens("#_","name_","labels_","due_");
 		
 		AssistantBotException isBad = null;
 		
 		boolean wasCut = false;
-		final int MAXSIZE = paramObj.getInt("maxsize");
-		int size;
-		if((size=arr.size()) > MAXSIZE) {
+		final int MAXSIZEVAL = filters.isEmpty()? paramObj.getInt(MAXSIZE): -1;
+		int size=arr.size();
+		if( ( size > MAXSIZEVAL ) && ( MAXSIZEVAL >= 0 ) ) {
 			wasCut = true;
-			arr = util.Util.GetArrayHead(arr,MAXSIZE);
+			arr = util.Util.GetArrayHead(arr,MAXSIZEVAL);
 		}
 		
 		for(int i = 0;i < arr.size(); i++) {
 			JSONObject card = arr.get(i);
+			
+			boolean toContinue = false;
+			for(Predicate<JSONObject> filter:filters) {
+				if( !filter.evaluate(card) ) {
+					toContinue = true;
+					break;
+				}
+			}
+			if( toContinue ) {
+				continue;
+			}
+			
 			tb.newRow()
 			.addToken(i + 1)
 			.addToken(card.getString("name"),paramObj.getJSONObject("sep").getInt("name"));
 			
 			HashSet<String> labelset = GetLabels(card.getJSONArray("labels")) ;
+			for(String spectag:TASKSVIEWSPECIALTAGS_.keySet()) {
+				if( labelset.contains(spectag) ) {
+					throw new AssistantBotException(AssistantBotException.Type.TASKMANAGERBASE
+							,String.format("card %s contains spec tag \"%s\"", card.toString(2),spectag));
+				}
+			}
 			String mainLabel = null;
 			try {
 				mainLabel = GetMainLabel(labelset,recognizedCats);
@@ -196,7 +282,6 @@ public class TaskManagerBase extends AbstractManager {
 		if( isBad != null ) {
 			sb.append(String.format("e: %s\n", isBad.getMessage()));
 		}
-		
 		
 		return sb.toString();
 	}
