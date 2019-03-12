@@ -143,24 +143,6 @@ public class Util{
 	/**
 	 * @deprecated
 	 * @return
-	 * @throws Exception
-	 */
-	public static TimeZone getTimezone() throws Exception
-	{
-		TimeZone tz = TimeZone.getTimeZone("JST");
-		System.out.println("zone: "+tz.getID());
-		return tz;
-	}
-	public static String DateToString(Date d, TimeZone tz) throws Exception
-	{
-		DateFormat df = new SimpleDateFormat();
-//		df.setTimeZone(Util.getTimezone());
-		df.setTimeZone(tz);
-		return df.format(d);
-	}
-	/**
-	 * @deprecated
-	 * @return
 	 */
 	public static String GetRebootFileName() {
 		return Gss("TMPFILE");

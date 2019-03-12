@@ -1,10 +1,10 @@
+.project
 .classpath
 .settings/
 *.class
 /target/
 *.swo
 *.swp
-log/
 tmp/
 secret.txt
 .settings/
@@ -12,3 +12,4 @@ secret.txt
 src/main/java/com/github/nailbiter/util
 cp.txt
 README.html
+/bin/

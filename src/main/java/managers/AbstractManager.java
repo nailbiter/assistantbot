@@ -61,6 +61,7 @@ public class AbstractManager implements MyManager {
 		return rp_.getManagerSettingsObject(classname);
 	}
 	public static String GetTimeZone(ResourceProvider rp) {
+		System.err.format("getting time zone: %s\n", rp.getUserObject());
 		return rp.getUserObject().getString("timezone");
 	}
 	public JSONObject getCommands() {

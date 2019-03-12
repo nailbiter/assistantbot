@@ -8,28 +8,25 @@ import java.util.TimeZone;
 
 import org.apache.commons.collections4.Closure;
 import org.apache.commons.collections4.Transformer;
-import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.github.nailbiter.util.TrelloAssistant;
-import com.mongodb.Block;
 import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.model.Filters;
 
 import assistantbot.ResourceProvider;
-import it.sauronsoftware.cron4j.Predictor;
 import managers.habits.Donep;
 import managers.habits.HabitManagerBase;
 import managers.habits.HabitRunnable;
 import util.AssistantBotException;
 import util.JsonUtil;
 import util.KeyRing;
-import util.UserCollection;
 import util.Util;
 import util.parsers.FlagParser;
+import util.parsers.ParseOrderedArg;
+import util.parsers.ParseOrderedCmd;
+import util.parsers.ParseOrdered.ArgTypes;
 
 import static managers.habits.Constants.FAILLABELCOLOR;
 import static managers.habits.Constants.HABITBOARDID;
@@ -37,24 +34,14 @@ import static managers.habits.Constants.PENDINGLISTNAME;
 
 public class HabitManager extends HabitManagerBase
 {
-	enum StreakUpdateEnum{
-		FAILURE,INIT,SUCCESS;
-	}
-	JSONArray habits_ = null;
-	Hashtable<String,Date> failTimes = null;
-	MongoCollection<Document> streaks_ = null;
-	String pendingListId_;
 	private String failedListId_;
 	Donep donep_;
 	private String failedListId2_;
 
 	public HabitManager(ResourceProvider rp) throws Exception
 	{
-		super(rp);
+		super(rp,GetCommands());
 		
-		streaks_ = rp
-				.getCollection(UserCollection.HABITSPUNCH);
-		habits_ = FetchHabits(rp);
 		failTimes = new Hashtable<String,Date>(habits_.length());
 		pendingListId_ = ta_.findListByName(HABITBOARDID, PENDINGLISTNAME);
 		failedListId_ = ta_.findListByName(HABITBOARDID, "FAILED");
@@ -79,71 +66,6 @@ public class HabitManager extends HabitManagerBase
 		}
 		donep_ = new Donep(ta_,rp_,optionMsgs_);
 	}
-	JSONArray FetchHabits(ResourceProvider rp) {
-		final JSONArray habits = new JSONArray();
-		rp.getCollection(UserCollection.HABITS)
-			.find(Filters.eq("enabled",true)).forEach(new Block<Document>() {
-				@Override
-				public void apply(Document doc) {
-					JSONObject obj = new JSONObject(doc.toJson()); 
-					habits.put(obj);
-					System.out.println(String.format("schedule habit %s", obj.toString(2)));
-					HabitManager.this.scheduler_.schedule(doc.getString("cronline"),
-							new HabitRunnable(doc.getString("name"),HabitRunnableEnum.SENDREMINDER,HabitManager.this));
-                    System.err.format("schudeled %s successfully\n",obj.getString("name"));
-					HabitManager.this.updateStreaks(doc.getString("name"), StreakUpdateEnum.INIT);
-				}
-			});
-		return habits;
-	}
-	protected JSONArray getPendingHabitNames() throws Exception {
-		JSONArray res = new JSONArray();
-		JSONArray cards;
-		cards = ta_.getCardsInList(pendingListId_);
-		for(Object o:cards) {
-			JSONObject obj = (JSONObject)o;
-			System.out.format("\tprocessing: %s\n",obj.toString());
-			if(IsHabitPending(obj)) {
-				res.put(obj.getString("name"));
-			}
-		}
-		
-		return res;
-	}
-	public String getHabitsInfo() throws Exception
-	{
-		System.out.println("getHabitsInfo");
-		System.out.println("len="+habits_.length());
-		com.github.nailbiter.util.TableBuilder tb = new com.github.nailbiter.util.TableBuilder();
-		{
-			tb.newRow();
-			tb.addToken("name");
-			tb.addToken("next date");
-			tb.addToken("isPending?");
-			tb.addToken("timeToDo");
-			tb.addToken("streak");
-			tb.addToken("");
-		}
-		for(int i = 0; i < habits_.length(); i++) {
-			JSONObject habit = habits_.getJSONObject(i);
-			Predictor p = new Predictor(habit.getString("cronline"));
-			TimeZone tz = TimeZone.getTimeZone(GetTimeZone(rp_));
-			p.setTimeZone(tz);
-			if(!habit.optBoolean("enabled",true))
-				continue;
-			tb.newRow();
-			tb.addToken(habit.getString("name"));
-			tb.addToken(Util.DateToString(p.nextMatchingDate(),tz));
-			tb.addToken(habit.optBoolean("isWaiting") ? 
-				("PEND("+ (habit.getInt("count")-habit.getInt("doneCount"))+")"):"");
-			tb.addToken(habit.optBoolean("isWaiting") ?
-				Util.milisToTimeFormat(failTimes.get(habit.get("name")).getTime()- (new Date().getTime())):
-				Util.milisToTimeFormat(habit.getInt("delaymin")*60*1000));
-			tb.addToken(this.printStreak(habit.getString("name")));
-			tb.addToken(".");
-		}
-		return tb.toString();
-	}
 	public String done(String name){
 		JSONArray cards = new JSONArray();
 		try {
@@ -166,9 +88,6 @@ public class HabitManager extends HabitManagerBase
 			}
 		}
 		return "unknown task";
-	}
-	static boolean IsHabitPending(JSONObject habit) {
-		return !habit.optBoolean("dueComplete",false);
 	}
 	public String doneg(JSONObject res) throws AssistantBotException {
 		logger_.info("in doneg!");
@@ -217,41 +136,6 @@ public class HabitManager extends HabitManagerBase
 			logger_.info(String.format("exception: %s", e.getMessage()));
 			return null;
 		}
-	}
-	protected String getHabitsInfoShort() throws Exception {
-		System.out.println("getHabitsInfoShort");
-		JSONArray habits = this.getPendingHabitNames();
-		System.out.println("len="+habits.length());
-		com.github.nailbiter.util.TableBuilder tb = new com.github.nailbiter.util.TableBuilder();
-		tb.newRow();
-		tb.addToken("name_");
-		for(Object o:habits) {
-			String name = (String)o;
-			tb.newRow();
-			tb.addToken(name);
-		}
-		return tb.toString();
-	}
-	protected void updateStreaks(String name,StreakUpdateEnum code) {
-		Document doc = new Document();
-		doc.put("date", new Date());
-		doc.put("name", name);
-		if(code==StreakUpdateEnum.INIT){
-			doc = null;
-		}
-		else if(code==StreakUpdateEnum.FAILURE){
-			doc.put("status", "FAILURE");
-		}
-		else if(code==StreakUpdateEnum.SUCCESS){
-			doc.put("status", "SUCCESS");
-		}
-		
-		if(doc!=null)
-			streaks_.insertOne(doc);
-	}
-	protected String printStreak(String name) {
-		Document doc = (Document)streaks_.find(Filters.eq("name",name)).first();
-		return String.format("%d(%d)", doc.getInteger("accum"),doc.getInteger("streak"));
 	}
 	@Override
 	protected String getReminderMessage(String name) {
@@ -341,7 +225,6 @@ public class HabitManager extends HabitManagerBase
 		timer.schedule(new HabitRunnable(name,HabitRunnableEnum.SETFAILURE,this),
 				(long)min*60*1000);
 	}
-	@Override
 	public String donep(JSONObject res) throws Exception {
 		return donep_.donepFlags(res.getString("flags"));
 	}
@@ -366,5 +249,17 @@ public class HabitManager extends HabitManagerBase
 			return getHabitsInfoShort();
 		else
 			return fp.getHelp();
+	}
+	public static JSONArray GetCommands() throws AssistantBotException {
+		JSONArray res = new JSONArray()
+			.put(new ParseOrderedCmd("habits", "list all habits and info",
+				new ParseOrderedArg("key", ArgTypes.string).useDefault("s")))
+			.put(new ParseOrderedCmd("done", "done habit",
+				new ParseOrderedArg("habit", ArgTypes.remainder).useMemory()))
+			.put(new ParseOrderedCmd("doneg", "done habit graphically",
+					new ParseOrderedArg("flags",ArgTypes.string).useDefault("")))
+			.put(new ParseOrderedCmd("donep", "done habit graphically"
+					,new ParseOrderedArg("flags",ArgTypes.string).useDefault("c").useMemory()));
+		return res;
 	}
 }

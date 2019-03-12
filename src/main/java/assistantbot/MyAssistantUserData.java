@@ -45,15 +45,13 @@ public class MyAssistantUserData extends BasicUserData implements UserData, Reso
 		try {
 			chatID_ = chatID;
 			bot_ = bot;
-//			scheduler_.setTimeZone(Util.getTimezone());
-			scheduler_.setTimeZone(TimeZone.getTimeZone(AbstractManager.GetTimeZone(this)));
 			userObject_ = (obj != null)? 
 					obj
 					:(( names == null ) ? 
 							null 
 							: Util.GetDefaultUser()
 							);
-			
+			scheduler_.setTimeZone(TimeZone.getTimeZone(AbstractManager.GetTimeZone(this)));
 			managers_.add(this);
 			parser_ = StandardParserInterpreter.Create(managers_, names, this);
 		} catch(Exception e) {

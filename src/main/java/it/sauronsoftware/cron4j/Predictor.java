@@ -152,6 +152,8 @@ public class Predictor {
 	 * @since 2.2.5
 	 */
 	public void setTimeZone(TimeZone timeZone) {
+		System.err.format("%s->%s, %s\n", this.timeZone.getID(),timeZone.getID()
+				,this.timeZone.equals(timeZone));
 		this.timeZone = timeZone;
 	}
 
