@@ -160,7 +160,7 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 	abstract protected String getFailureMessage(String name);
 	protected String getReminderMessage(String name) {
 		JSONObject obj = JsonUtil.FindInJSONArray(habits_, "name", name);
-		if( obj.has("callbalk") ) {
+		if( obj.has("callback") ) {
 			rp_.sendMessage(obj.getJSONObject("callback").toString(2));
 			return "";
 		} else {
