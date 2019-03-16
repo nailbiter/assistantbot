@@ -76,7 +76,7 @@ sub makeHabit{
     $habit{delaymin} = $delaymin;
 
     $habit{info} //= "";
-    $habit{onFailed} //= "putlabel";
+    $habit{onFailed} //= "move:todo";
     $habit{enabled} //= 1;
 
     push(@habits,\%habit);

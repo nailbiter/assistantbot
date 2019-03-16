@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 
 import org.apache.commons.collections4.Closure;
 import org.apache.commons.collections4.Predicate;
+import org.apache.commons.collections4.PredicateUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.bson.Document;
 import org.json.JSONArray;
@@ -29,6 +30,7 @@ import managers.AbstractManager;
 import managers.HabitManager;
 import managers.OptionReplier;
 import util.AssistantBotException;
+import util.JsonUtil;
 import util.KeyRing;
 import util.UserCollection;
 import util.Util;
@@ -51,6 +53,8 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 	protected MongoCollection<Document> streaks_ = null;
 	protected String pendingListId_;
 	public Hashtable<String,Date> failTimes = null;
+//	protected String failedListId_;
+//	protected String failedListId2_;
 	protected HabitManagerBase(ResourceProvider rp, JSONArray commands) throws Exception{
 		super(commands);
 		logger_ = Logger.getLogger(this.getClass().getName());
@@ -58,25 +62,34 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
 				KeyRing.getTrello().getString("token"));
 		scheduler_ = rp.getScheduler();
-		FAILUREDISPATCH = createFailureDispatch(ta_);
+		FAILUREDISPATCH = CreateFailureDispatch(ta_);
 		streaks_ = rp.getCollection(UserCollection.HABITSPUNCH);
 		habits_ = fetchHabits();
 	}
-	private static ArrayList<ImmutablePair<Predicate<String>, Closure<ImmutablePair<String,String>>>> createFailureDispatch(TrelloAssistant ta) {
+	private static ArrayList<ImmutablePair<Predicate<String>, Closure<ImmutablePair<String,String>>>> CreateFailureDispatch(TrelloAssistant ta) {
 		ArrayList<ImmutablePair<Predicate<String>, Closure<ImmutablePair<String,String>>>> res 
 			= new ArrayList<ImmutablePair<Predicate<String>, Closure<ImmutablePair<String,String>>>>();
 		res.add(new ImmutablePair<Predicate<String>, Closure<ImmutablePair<String,String>>>(
-				new Predicate<String>() {
-					@Override
-					public boolean evaluate(String object) {
-						return object.equals("putlabel");
-					}
-				},new Closure<ImmutablePair<String,String>>() {
+				PredicateUtils.equalPredicate("putlabel")
+				,new Closure<ImmutablePair<String,String>>() {
 					@Override
 					public void execute(ImmutablePair<String,String> pair) {
 						String id = pair.right;
 						try {
 							ta.setLabel(id, FAILLABELCOLOR);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}));
+		res.add(new ImmutablePair<Predicate<String>, Closure<ImmutablePair<String,String>>>(
+				PredicateUtils.equalPredicate("remove")
+				,new Closure<ImmutablePair<String,String>>() {
+					@Override
+					public void execute(ImmutablePair<String,String> pair) {
+						String id = pair.right;
+						try {
+							ta.removeCard(id);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -91,8 +104,14 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 		},new Closure<ImmutablePair<String,String>>() {
 			@Override
 			public void execute(ImmutablePair<String,String> pair) {
-				String id = pair.right;
 				String listName = pair.left.substring(PREFIX.length());
+				String id = pair.right;
+				System.err.format("listName=%s, id=%s\n", listName,id);
+				try {
+					ta.moveCard(id, ta.findListByName(managers.habits.Constants.BOARDIDS.HABITS.toString(), listName));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}));
 		
@@ -129,7 +148,6 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 	abstract public String done(JSONObject res);
 	abstract public String habits(JSONObject res) throws Exception;
 	abstract protected void IfWaitingForHabit(String name,Closure<JSONObject> cb);
-	abstract protected String processFailure(JSONObject obj);
 	abstract protected void processSetReminder(String name);
 	abstract protected String getFailureMessage(String name);
 	abstract protected String getReminderMessage(String name);
@@ -157,7 +175,6 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 			System.err.format("%s: %s %s\n", this.getName(), nd, habit.getString("name"));
 			System.err.format("def timezone: %s\n", TimeZone.getDefault().getID());
 			tb.addToken(
-//					nd.toString()
 					Util.DateToString(nd, tz)
 					);
 			tb.addToken(habit.optBoolean("isWaiting") ? 
@@ -237,5 +254,32 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 		
 		if(doc!=null)
 			streaks_.insertOne(doc);
+	}
+	protected String processFailure(JSONObject obj) {
+		String name = obj.getString("name"), id = obj.getString("id");
+		JSONObject habitObj = JsonUtil.FindInJSONArray(this.habits_,"name",name);
+		String onFailed = habitObj.getString("onFailed");
+		updateStreaks(name, StreakUpdateEnum.FAILURE);
+		try {
+			ta_.setCardDuedone(id, true);
+//			if(onFailed.equals("putlabel")) {
+//				ta_.setLabel(id, FAILLABELCOLOR);
+//			}else if(onFailed.equals("move")) {
+//				ta_.moveCard(id, failedListId_);
+//			}else if(onFailed.equals("move2")) {
+//				ta_.moveCard(id, failedListId2_);
+//			}else if(onFailed.equals("remove")) {
+//				ta_.removeCard(id);
+//			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		for(ImmutablePair<Predicate<String>, Closure<ImmutablePair<String, String>>> d:FAILUREDISPATCH) {
+			if( d.left.evaluate(onFailed) ) {
+				d.right.execute(new ImmutablePair<String,String>(onFailed,id));
+				break;
+			}
+		}
+		return this.getFailureMessage( obj.getString("name") );
 	}
 }

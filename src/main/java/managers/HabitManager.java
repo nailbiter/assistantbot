@@ -1,9 +1,11 @@
 package managers;
+import static managers.habits.Constants.HABITBOARDID;
+import static managers.habits.Constants.PENDINGLISTNAME;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
-import java.util.Set;
 import java.util.TimeZone;
 
 import org.apache.commons.collections4.Closure;
@@ -12,40 +14,29 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.github.nailbiter.util.TrelloAssistant;
-import com.mongodb.MongoClient;
-
 import assistantbot.ResourceProvider;
 import managers.habits.Donep;
 import managers.habits.HabitManagerBase;
 import managers.habits.HabitRunnable;
 import util.AssistantBotException;
 import util.JsonUtil;
-import util.KeyRing;
 import util.Util;
 import util.parsers.FlagParser;
+import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
-import util.parsers.ParseOrdered.ArgTypes;
-
-import static managers.habits.Constants.FAILLABELCOLOR;
-import static managers.habits.Constants.HABITBOARDID;
-import static managers.habits.Constants.PENDINGLISTNAME;
 
 public class HabitManager extends HabitManagerBase
 {
-	private String failedListId_;
 	Donep donep_;
-	private String failedListId2_;
-
 	public HabitManager(ResourceProvider rp) throws Exception
 	{
 		super(rp,GetCommands());
 		
 		failTimes = new Hashtable<String,Date>(habits_.length());
 		pendingListId_ = ta_.findListByName(HABITBOARDID, PENDINGLISTNAME);
-		failedListId_ = ta_.findListByName(HABITBOARDID, "FAILED");
-		failedListId2_ = ta_.findListByName(HABITBOARDID, "FAILED2");
+//		failedListId_ = ta_.findListByName(HABITBOARDID, "FAILED");
+//		failedListId2_ = ta_.findListByName(HABITBOARDID, "FAILED2");
 		
 		JSONArray cards = ta_.getCardsInList(pendingListId_);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -164,28 +155,6 @@ public class HabitManager extends HabitManagerBase
 				}
 			}
 		}
-	}
-	@Override
-	protected String processFailure(JSONObject obj) {
-		String name = obj.getString("name"), id = obj.getString("id");
-		JSONObject habitObj = JsonUtil.FindInJSONArray(this.habits_,"name",name);
-		String onFailed = habitObj.getString("onFailed");
-		updateStreaks(name, StreakUpdateEnum.FAILURE);
-		try {
-			ta_.setCardDuedone(id, true);
-			if(onFailed.equals("putlabel")) {
-				ta_.setLabel(id, FAILLABELCOLOR);
-			}else if(onFailed.equals("move")) {
-				ta_.moveCard(id, failedListId_);
-			}else if(onFailed.equals("move2")) {
-				ta_.moveCard(id, failedListId2_);
-			}else if(onFailed.equals("remove")) {
-				ta_.removeCard(id);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return this.getFailureMessage( obj.getString("name") );
 	}
 	@Override
 	protected void processSetReminder(String name) {

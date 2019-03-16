@@ -5,11 +5,11 @@
 makeHabit "30 23 * * *", "check/plan tasks", 30, category=>"tasks", onFailed=>"remove";
 makeHabit "00 23 * * *", "good day", 30 , category=>"logistics", info=>"https://trello.com/c/ilo6JlQO", onFailed=>"remove";
 
-makeHabit "0 10 * * *", "math reading", 1080, items=>["main1 1 page","main1 1 page","main2 1 page",], onFailed=>'move2';
+makeHabit "0 10 * * *", "math reading", 1080, items=>["main1 1 page","main1 1 page","main2 1 page",], onFailed=>'move:FAILED2';
 makeHabit "0 11 * * *", "talk to someone in person",  1080,  category=>"social", onFailed=>"remove";
 makeHabit "0 10 * * *", "8 random test", 1080, category=> "german",items=>["1","2","3","4","5",'6','7','8'];
 makeHabit "0 10 * * *", "einsoch6 SET", 1080, category=> "german", info=> "http://www.dw.com/de/deutsch-lernen/das-bandtagebuch-1-lass-uns-reden/s-32658",
-	onFailed=>'move2';
+	onFailed=>'move:FAILED2';
 makeHabit "30 15 * * fri", "mom talk", 1080, category=> "social" ;
 makeHabit "0 22 * * fri", "granny talk", 1080, category=> "social" ;
 #makeHabit "30 23 * * sat", "masha report", 1080, category=> "social", onFailed=>"remove";
@@ -18,7 +18,7 @@ makeHabit "0 22 * * fri", "granny talk", 1080, category=> "social" ;
 #makeHabit "0 15 * * *", "pevzner 1h", 1080, onFailed=> "move" ;
 makeHabit "0 15 * * *", "uncle vanya project", 1080, onFailed=> "move",info=>'https://trello.com/c/qGE98nSa';
 makeHabit "0 16 * * mon", "dad english", 1080  ;
-makeHabit "30 23 * * *", "mental exercise", 1080, onFailed=>'move2';
+makeHabit "30 23 * * *", "mental exercise", 1080, onFailed=>'move:FAILED2';
 makeHabit "0 8 * * sat,sun", "sprint 4", 1380, category=> "gym" ;
 makeHabit "0 8 * * wed", "long walk", 1380, category=> "gym" ;
 makeHabit "0 7 * * *", "pullups 10:1", 1080, category=> "gym" ;
@@ -39,10 +39,10 @@ makeHabit "30 23 * * *", "sleep", 45, onFailed=> "remove" ,category=>'logistics'
 makeHabit "0 7 * * *", "wake (should be out)", 75, onFailed=> "remove" ,category=>'logistics';
 makeHabit "0 11 * * mon", "sync latex, texmacs and mac's mongodb", 1380 ;
 makeHabit "0 8 * * *", "read math 2 hours", 960, enabled=> 0 ;
-makeHabit "15 22 * * Fri", "confucius 1h: 1", 960, onFailed=>'move2';
-makeHabit "30 22 * * Fri", "confucius 1h: 2", 960, onFailed=>'move2';
+makeHabit "15 22 * * Fri", "confucius 1h: 1", 960, onFailed=>'move:FAILED2';
+makeHabit "30 22 * * Fri", "confucius 1h: 2", 960, onFailed=>'move:FAILED2';
 makeHabit "00 22 13 * *", "inflate bike", 960 , category=>"atschool";
 makeHabit "00 10 * * mon", "check week stat (money, time)", 960 , category=>"logistics";
 #makeHabit "00 10 */15 * *", "fix test.pl", 960 , category=>"logistics";
 makeHabit "0 8 27 * *", "odaiba payment", 960, info=>"amount = 35119";
-makeHabit "52 7 * * *", "test", 1, enabled=> 0 ;
+makeHabit "52 7 * * *", "test", 1, enabled=> 0, onFailed=>'putlabel' ;
