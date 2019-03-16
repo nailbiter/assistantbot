@@ -22,15 +22,10 @@ public class MashaRemind {
 	private static final String MASHALISTID = "5b610f6d34d70854e769326d";
 	private static final SimpleDateFormat DF = Util.GetTrelloDateFormat();
 	private static final String BASICMESSAGE = "Маша, у тебя есть несделанные задачи:";
-	public static String Remind(TrelloAssistant ta, ResourceProvider rp_) throws Exception {
+	public static String Remind(TrelloAssistant ta, ResourceProvider rp_, JSONObject parameters) throws Exception {
 		JSONArray array = ta.getCardsInList(MASHALISTID);
 		StringBuilder sb = new StringBuilder();
 		ArrayList<JSONObject> tasks = new ArrayList<JSONObject>();
-		JSONObject parameters = 
-				AbstractManager.GetParamObject(rp_, MashaRemind.class.getName());
-//		JSONObject parameters = MongoUtil.GetJsonObjectFromDatabase(rp_, 
-//				"logistics.params",
-//				"name:"+).getJSONObject("parameter");
 		for(Object o:array) {
 			JSONObject obj = (JSONObject)o;
 			if(obj.optBoolean("dueComplete",false)==false && !obj.isNull("due")) {

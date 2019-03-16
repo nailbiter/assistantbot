@@ -37,6 +37,10 @@ var res = [
 	{
 		name:"managers.NewTrelloManager",
 		parameter: {
+			reportParamObj:{
+				margin:18,
+				filler:"=",
+			},
 		},
 	},
 ];

@@ -18,6 +18,7 @@ import com.github.nailbiter.util.TrelloAssistant;
 
 import assistantbot.ResourceProvider;
 import managers.habits.Constants;
+import managers.misc.MashaRemind;
 import util.AssistantBotException;
 import util.JsonUtil;
 import util.KeyRing;
@@ -205,7 +206,7 @@ public class NewTrelloManager extends WithSettingsManager{
 	private String getTasklist_() throws JSONException, Exception {
 		return (String) this.getSetting("tasklist");
 	}
-	public String report(Object arg) {
-		return "`test`";
+	public String report(Object arg) throws JSONException, Exception {
+		return MashaRemind.Remind(ta_, rp_, getParamObject(rp_).getJSONObject("reportParamObj"));
 	}
 }
