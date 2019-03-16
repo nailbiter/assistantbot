@@ -3,6 +3,7 @@
  */
 package managers;
 
+import java.util.TimeZone;
 import java.util.logging.Logger;
 
 import org.bson.Document;
@@ -61,8 +62,15 @@ public class AbstractManager implements MyManager {
 		return rp_.getManagerSettingsObject(classname);
 	}
 	public static String GetTimeZone(ResourceProvider rp) {
-		System.err.format("getting time zone: %s\n", rp.getUserObject());
-		return rp.getUserObject().getString("timezone");
+		String def = TimeZone.getDefault().getID();
+		System.err.format("system time zone: %s\n", def);
+		JSONObject uo = rp.getUserObject();
+		System.err.format("getting time zone: %s\n", uo);
+		if( uo != null ) {
+			return uo.getString("timezone");
+		} else {
+			return def;
+		}
 	}
 	public JSONObject getCommands() {
 		JSONObject res = po_.getCommands();
