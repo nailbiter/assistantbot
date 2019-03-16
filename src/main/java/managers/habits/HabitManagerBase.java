@@ -162,6 +162,7 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 		JSONObject obj = JsonUtil.FindInJSONArray(habits_, "name", name);
 		if( obj.has("callbalk") ) {
 			rp_.sendMessage(obj.getJSONObject("callback").toString(2));
+			return "";
 		} else {
 			return String.format("don't forget to execute: %s !\n%s",name,obj.getString("info"));
 		}
