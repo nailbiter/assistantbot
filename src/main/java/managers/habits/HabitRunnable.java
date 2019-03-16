@@ -17,6 +17,10 @@ public class HabitRunnable extends TimerTask
 	}
 	@Override
 	public void run() { 
-		hm_.habitRunnableDispatch(name_,code_); 
+		try {
+			hm_.habitRunnableDispatch(name_,code_);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
 	}
 }
