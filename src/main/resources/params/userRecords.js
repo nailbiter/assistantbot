@@ -15,7 +15,9 @@ var res = {
 	mishpuha:{
 		managers:[
 			"HabitManager",
+			"NewTrelloManager",
 		],
+		pass:'',
 		loginmessage:[
 			'logged in',
 		],

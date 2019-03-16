@@ -16,12 +16,14 @@
 #===============================================================================
 use strict;
 use warnings;
+use JSON;
 
 #global const's
 my %FIELDTYPES = (
     STRING => [qw(cronline name info onFailed category)],
     NUMBER => [qw(delaymin)],
     BOOLEAN => [qw(enabled)],
+	OBJECT=> [qw(callback)]
 );
  
 #global var's
@@ -53,6 +55,11 @@ sub habitToString{
             push(@values,sprintf("\"%s\":\"%s\"",$_,$habitRef->{$_}));
         }
     }
+    for(@{$FIELDTYPES{OBJECT}}){
+		if( defined $habitRef->{$_}) {
+		  push(@values,sprintf("\"%s\":%s",$_,encode_json($habitRef->{$_})));
+		}
+	}
     for(@{$FIELDTYPES{NUMBER}}){
         push(@values,sprintf("\"%s\":%d",$_,$habitRef->{$_}));
     }

@@ -158,7 +158,15 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 	abstract protected void IfWaitingForHabit(String name,Closure<JSONObject> cb);
 	abstract protected void processSetReminder(String name);
 	abstract protected String getFailureMessage(String name);
-	abstract protected String getReminderMessage(String name);
+	protected String getReminderMessage(String name) {
+		JSONObject obj = JsonUtil.FindInJSONArray(habits_, "name", name);
+		if( obj.has("callbalk") ) {
+			rp_.sendMessage(obj.getJSONObject("callback").toString(2));
+		} else {
+			return String.format("don't forget to execute: %s !\n%s",name,obj.getString("info"));
+		}
+		
+	}
 	@Override
 	public String processReply(int messageID,String msg) {
 		return null;
@@ -273,15 +281,6 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 		updateStreaks(name, StreakUpdateEnum.FAILURE);
 		try {
 			ta_.setCardDuedone(id, true);
-//			if(onFailed.equals("putlabel")) {
-//				ta_.setLabel(id, FAILLABELCOLOR);
-//			}else if(onFailed.equals("move")) {
-//				ta_.moveCard(id, failedListId_);
-//			}else if(onFailed.equals("move2")) {
-//				ta_.moveCard(id, failedListId2_);
-//			}else if(onFailed.equals("remove")) {
-//				ta_.removeCard(id);
-//			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

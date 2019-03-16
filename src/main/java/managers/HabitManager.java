@@ -120,12 +120,6 @@ public class HabitManager extends HabitManagerBase
 		}
 	}
 	@Override
-	protected String getReminderMessage(String name) {
-		return String.format("don't forget to execute: %s !\n%s",
-				name,
-				JsonUtil.FindInJSONArray(habits_, "name", name).getString("info"));
-	}
-	@Override
 	protected String getFailureMessage(String name) {
 		return String.format("you failed the task %s !", name);
 	}
