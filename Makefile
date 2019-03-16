@@ -1,7 +1,7 @@
 .PHONY: all \
 	offline  botmanager trello interactive dpmanager\
 	 pull jar add \
-	 habits params \
+	 params \
 	 readme
 
 #JARSUFF=-jar-with-dependencies

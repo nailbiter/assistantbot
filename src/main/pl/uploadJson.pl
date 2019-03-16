@@ -59,7 +59,7 @@ sub loadJsonFromFile{
 #main
 my %cmdline;
 my %args;
-for(qw( dbname colname field )){
+for(qw( dbname colname field flagfile )){
     $args{$_.'=s'} = \$cmdline{$_};
 }
 
@@ -103,4 +103,7 @@ if(ref($json) eq 'ARRAY'){
 	}
 } else {
 	...
+}
+if( defined $cmdline{flagfile} ) {
+	system(sprintf("touch %s",$cmdline{flagfile}));
 }

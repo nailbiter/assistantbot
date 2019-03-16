@@ -1,12 +1,19 @@
 .PHONY: all gym
 UPLOADJSONPL=../../pl/uploadJson.pl
+FLAGDIR=flags
 
-all: userRecords.json alex.params.json
-	cat userRecords.json | ./$(UPLOADJSONPL) --dbname logistics --colname '_users' --field 'name'
-	cat alex.params.json | ./$(UPLOADJSONPL) --dbname logistics --colname 'alex.params' --field 'name'
+all: $(addprefix $(FLAGDIR)/,$(addsuffix .txt, userRecords alex.params habits mishpuha_habits))
 
 %.json:%.js
 	node $< > $@
+$(FLAGDIR)/mishpuha_habits.txt: mishpuha_habits.json $(UPLOADJSONPL)
+	cat $<|./$(UPLOADJSONPL) --colname mishpuha.habits --dbname logistics --flagfile $@
+$(FLAGDIR)/userRecords.txt: userRecords.json $(UPLOADJSONPL)
+	cat $< | ./$(UPLOADJSONPL) --dbname logistics --colname '_users' --field 'name' --flagfile $@
+$(FLAGDIR)/alex.params.txt: alex.params.json $(UPLOADJSONPL)
+	cat $< | ./$(UPLOADJSONPL) --dbname logistics --colname 'alex.params' --field 'name' --flagfile $@
+$(FLAGDIR)/habits.txt: habits.json $(UPLOADJSONPL)
+	cat $<|./$(UPLOADJSONPL) --colname alex.habits --dbname logistics --flagfile $@
 
 COMMON=\
 	commonBenchSquat\
@@ -19,3 +26,13 @@ alex.params.json: $(addsuffix .js,$(SRC))
 	
 userRecords.json: $(addsuffix .js, userRecords $(addprefix userRecords/, alex))
 	node $< > $@
+habits.json: merged.pl
+	perl $< > $@
+mishpuha_habits.json: merged2.pl
+	perl $< > $@
+merged2.pl: habits2.pl macro.pl
+	cat macro.pl > $@
+	cat $< >> $@
+merged.pl: habits.pl macro.pl
+	cat macro.pl > $@
+	cat $< >> $@

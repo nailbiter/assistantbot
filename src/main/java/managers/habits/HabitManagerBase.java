@@ -29,7 +29,6 @@ import it.sauronsoftware.cron4j.Scheduler;
 import managers.AbstractManager;
 import managers.HabitManager;
 import managers.OptionReplier;
-import util.AssistantBotException;
 import util.JsonUtil;
 import util.KeyRing;
 import util.UserCollection;
@@ -42,6 +41,7 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 	protected static enum StreakUpdateEnum{
 			FAILURE,INIT,SUCCESS;
 		}
+	private static final String PENDINGLISTNAME = "pendingListName";
 	protected Hashtable<Integer,String> optionMsgs_ = new Hashtable<Integer,String>();
 	protected ResourceProvider rp_ = null;
 	protected Scheduler scheduler_ = null;
@@ -53,8 +53,6 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 	protected MongoCollection<Document> streaks_ = null;
 	protected String pendingListId_;
 	public Hashtable<String,Date> failTimes = null;
-//	protected String failedListId_;
-//	protected String failedListId2_;
 	protected HabitManagerBase(ResourceProvider rp, JSONArray commands) throws Exception{
 		super(commands);
 		logger_ = Logger.getLogger(this.getClass().getName());
@@ -65,6 +63,15 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 		FAILUREDISPATCH = CreateFailureDispatch(ta_);
 		streaks_ = rp.getCollection(UserCollection.HABITSPUNCH);
 		habits_ = fetchHabits();
+		
+		JSONObject po = getParamObject(rp);
+		if( po.isNull(PENDINGLISTNAME) ) {
+			pendingListId_ = null;
+		} else {
+			pendingListId_ = ta_.findListByName(Constants.BOARDIDS.HABITS.toString()
+					, getParamObject(rp).getString(PENDINGLISTNAME));
+		}
+		
 	}
 	private static ArrayList<ImmutablePair<Predicate<String>, Closure<ImmutablePair<String,String>>>> CreateFailureDispatch(TrelloAssistant ta) {
 		ArrayList<ImmutablePair<Predicate<String>, Closure<ImmutablePair<String,String>>>> res 
@@ -108,7 +115,8 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 				String id = pair.right;
 				System.err.format("listName=%s, id=%s\n", listName,id);
 				try {
-					ta.moveCard(id, ta.findListByName(managers.habits.Constants.BOARDIDS.HABITS.toString(), listName));
+					ta.moveCard(id
+							, ta.findListByName(Constants.BOARDIDS.HABITS.toString(), listName));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -201,10 +209,13 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 		}
 		return tb.toString();
 	}
+	protected JSONArray getCardsInList() throws Exception {
+		return (pendingListId_!=null) ? ta_.getCardsInList(pendingListId_) : (new JSONArray());
+	}
 	protected JSONArray getPendingHabitNames() throws Exception {
 		JSONArray res = new JSONArray();
 		JSONArray cards;
-		cards = ta_.getCardsInList(pendingListId_);
+		cards = getCardsInList();
 		for(Object o:cards) {
 			JSONObject obj = (JSONObject)o;
 			System.out.format("\tprocessing: %s\n",obj.toString());

@@ -1,9 +1,2 @@
-UPLOADJSONPL=src/main/pl/uploadJson.pl
-
-habits:
-	make -C src/main/resources/habits
-	cat src/main/resources/habits/habits.json|./$(UPLOADJSONPL) --colname alex.habits --dbname logistics
 params:
 	make -C src/main/resources/params all
-src/main/resources/params src/main/resources/params/userRecords.json:
-	make -C src/main/resources/params $(notdir $@)

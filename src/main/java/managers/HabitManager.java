@@ -1,7 +1,4 @@
 package managers;
-import static managers.habits.Constants.HABITBOARDID;
-import static managers.habits.Constants.PENDINGLISTNAME;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,11 +31,8 @@ public class HabitManager extends HabitManagerBase
 		super(rp,GetCommands());
 		
 		failTimes = new Hashtable<String,Date>(habits_.length());
-		pendingListId_ = ta_.findListByName(HABITBOARDID, PENDINGLISTNAME);
-//		failedListId_ = ta_.findListByName(HABITBOARDID, "FAILED");
-//		failedListId2_ = ta_.findListByName(HABITBOARDID, "FAILED2");
 		
-		JSONArray cards = ta_.getCardsInList(pendingListId_);
+		JSONArray cards = getCardsInList();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
 		for(Object o:cards) {
@@ -60,7 +54,7 @@ public class HabitManager extends HabitManagerBase
 	public String done(String name){
 		JSONArray cards = new JSONArray();
 		try {
-			cards = ta_.getCardsInList(pendingListId_);
+			cards = getCardsInList();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -88,8 +82,7 @@ public class HabitManager extends HabitManagerBase
 		
 		try {
 			JSONArray habits = this.getPendingHabitNames();
-			if(habits.length() > 1)
-			{
+			if(habits.length() > 1) {
 				rp_.sendMessageWithKeyBoard(fp.contains('f')?"which habit to fail?":"which habit?"
 						,Util.IdentityMap(habits) 
 						,new Transformer<Object,String>() {
@@ -120,12 +113,10 @@ public class HabitManager extends HabitManagerBase
 			} else {
 				return done(habits.getString(0));
 			}
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace(System.out);
-			logger_.info(String.format("exception: %s", e.getMessage()));
-			return null;
+		} catch(Exception e) {
+			String s = Util.ExceptionToString(e);
+			logger_.info(s);
+			return s;
 		}
 	}
 	@Override
@@ -142,7 +133,7 @@ public class HabitManager extends HabitManagerBase
 	protected void IfWaitingForHabit(String name,Closure<JSONObject> cb) {
 		JSONArray cards = new JSONArray();
 		try {
-			cards = ta_.getCardsInList(pendingListId_);
+			cards = getCardsInList();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -177,11 +168,16 @@ public class HabitManager extends HabitManagerBase
 				System.err.format("checklist=%s\n", checklist.toString());
 				obj.put("checklist", checklist);
 			}
-			ta_.addCard(pendingListId_, obj);
+			addCard(obj);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		setUpReminder(name,delaymin);
+	}
+	void addCard(JSONObject obj) throws Exception {
+		if( pendingListId_ != null ) {
+			ta_.addCard(pendingListId_, obj);
+		}
 	}
 	void setUpReminder(String name,Date date) {
 		failTimes.put(name, date);

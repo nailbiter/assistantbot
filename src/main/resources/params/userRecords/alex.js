@@ -15,13 +15,13 @@ var alex = {
 			"NewTrelloManager",
 			"NutritionManager",
 			"MongoManager",
-		]
-		,"loginmessage":[
+		],
+		loginmessage:[
 			"Tesime"
-		]
-		,"restartmessage":[
+		],
+		restartmessage:[
 			"restart message"
-		]
-		,"timezone":"JST"
+		],
+		timezone:"JST",
 	};
 module.exports = alex;

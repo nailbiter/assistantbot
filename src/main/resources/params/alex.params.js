@@ -23,6 +23,12 @@ var res = [
 		},
 	},
 	{
+		name:"managers.HabitManager",
+		parameter:{
+			pendingListName:"PENDING",
+		},
+	},
+	{
 		name:"managers.BirthdayManager",
 		parameter:{
 			birthdays

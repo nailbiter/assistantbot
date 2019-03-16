@@ -12,6 +12,15 @@ var res = {
 		],
 		timezone:"EET",
 	},
+	mishpuha:{
+		managers:[
+			"HabitManager",
+		],
+		loginmessage:[
+			'logged in',
+		],
+		timezone:"EET",
+	},
 	father:{
 		managers:[
 			"MoneyManager"
