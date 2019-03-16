@@ -12,4 +12,5 @@ public interface MyManager extends Replier{
 	abstract public String getResultAndFormat(JSONObject res) throws Exception;
 	abstract public JSONObject getCommands();
 	public abstract void set() throws Exception;
+	public abstract String getName();
 }

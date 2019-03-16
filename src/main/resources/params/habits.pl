@@ -46,3 +46,4 @@ makeHabit "00 10 * * mon", "check week stat (money, time)", 960 , category=>"log
 #makeHabit "00 10 */15 * *", "fix test.pl", 960 , category=>"logistics";
 makeHabit "0 8 27 * *", "odaiba payment", 960, info=>"amount = 35119";
 makeHabit "52 7 * * *", "test", 1, enabled=> 0, onFailed=>'putlabel' ;
+makeHabit "*/2 * * * *", "test2", -1, callback=>{name=>'managers.NewTrelloManager',method=>'report'},enabled=> 1, onFailed=>'putlabel' ;

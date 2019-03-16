@@ -205,4 +205,15 @@ public class BasicUserData extends AbstractManager implements ResourceProvider {
 	public String processReply(int messageID, String msg) {
 		return messageRepliers_.get(messageID).transform(msg);
 	}
+	@Override
+	public Object rpc(String managerName, String methodName, Object arg) throws Exception {
+		for(MyManager manager:managers_) {
+			if(manager.getName().equals(managerName)) {
+				System.err.format("found manager %s", managerName);
+				return manager.getClass().getMethod(methodName, Object.class).invoke(manager, arg);
+			}
+		}
+		throw new AssistantBotException(AssistantBotException.Type.BASICUSERDATA
+				, String.format("cannot find manager %s", managerName));
+	}
 }

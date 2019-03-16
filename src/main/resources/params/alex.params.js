@@ -34,6 +34,11 @@ var res = [
 			birthdays
 		},
 	},
+	{
+		name:"managers.NewTrelloManager",
+		parameter: {
+		},
+	},
 ];
 
 console.log(JSON.stringify(res));

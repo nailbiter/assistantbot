@@ -165,4 +165,9 @@ public class InteractiveShell extends BasicUserData implements ResourceProvider,
 		String[] keys = lastKeyboard_.left.keySet().toArray(new String[] {});
 		return lastKeyboard_.right.transform(lastKeyboard_.left.get(keys[num]));
 	}
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

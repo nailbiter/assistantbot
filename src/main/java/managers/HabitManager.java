@@ -145,6 +145,8 @@ public class HabitManager extends HabitManagerBase
 	protected void processSetReminder(String name) {
 		JSONObject habitObj = JsonUtil.FindInJSONArray(habits_, "name", name); 
 		int delaymin = habitObj.getInt("delaymin");
+		if(delaymin < 0)
+			return;	
 		try {
 			JSONObject obj = new JSONObject()
 					.put("name", name)

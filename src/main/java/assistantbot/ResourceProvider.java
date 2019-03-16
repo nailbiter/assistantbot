@@ -50,5 +50,14 @@ public interface ResourceProvider {
 	public JSONObject getUserObject();
 	public JSONObject getManagerSettingsObject(String classname);
 	public ResourceProvider setManagerSettingsObject(String classname,String key, Object val);
-	abstract public int sendMessageWithKeyBoard(String msg, Map<String, Object> map, Transformer<Object,String> me);
+	public int sendMessageWithKeyBoard(String msg, Map<String, Object> map, Transformer<Object,String> me);
+	/**
+	 * remote procedure call
+	 * @param managerName
+	 * @param methodName
+	 * @param arg
+	 * @return
+	 * @throws Exception
+	 */
+	public Object rpc(String managerName, String methodName, Object arg) throws Exception;
 }

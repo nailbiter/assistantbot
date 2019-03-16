@@ -1,8 +1,10 @@
 .PHONY: all gym
 UPLOADJSONPL=../../pl/uploadJson.pl
-FLAGDIR=flags
 
-all: $(addprefix $(FLAGDIR)/,$(addsuffix .txt, userRecords alex.params habits mishpuha_habits))
+FLAGDIR=flags
+FLAGS=userRecords alex.params habits mishpuha_habits mishpuha_params
+
+all: $(addprefix $(FLAGDIR)/,$(addsuffix .txt, $(FLAGS)))
 
 %.json:%.js
 	node $< > $@
@@ -10,6 +12,8 @@ $(FLAGDIR)/mishpuha_habits.txt: mishpuha_habits.json $(UPLOADJSONPL)
 	cat $<|./$(UPLOADJSONPL) --colname mishpuha.habits --dbname logistics --flagfile $@
 $(FLAGDIR)/userRecords.txt: userRecords.json $(UPLOADJSONPL)
 	cat $< | ./$(UPLOADJSONPL) --dbname logistics --colname '_users' --field 'name' --flagfile $@
+$(FLAGDIR)/mishpuha_params.txt: mishpuha_params.json $(UPLOADJSONPL)
+	cat $< | ./$(UPLOADJSONPL) --dbname logistics --colname 'mishpuha.params' --flagfile $@
 $(FLAGDIR)/alex.params.txt: alex.params.json $(UPLOADJSONPL)
 	cat $< | ./$(UPLOADJSONPL) --dbname logistics --colname 'alex.params' --field 'name' --flagfile $@
 $(FLAGDIR)/habits.txt: habits.json $(UPLOADJSONPL)

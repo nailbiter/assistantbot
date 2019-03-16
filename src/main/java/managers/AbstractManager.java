@@ -55,7 +55,8 @@ public class AbstractManager implements MyManager {
 	protected JSONObject getParamObject(ResourceProvider rp_) throws JSONException, Exception {
 		return GetParamObject(rp_,getName());
 	}
-	protected String getName() {
+	@Override
+	public String getName() {
 		return this.getClass().getName();
 	}
 	public static JSONObject GetParamObject(ResourceProvider rp_,String classname) throws JSONException, Exception {
