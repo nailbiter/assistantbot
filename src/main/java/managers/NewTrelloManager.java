@@ -205,4 +205,7 @@ public class NewTrelloManager extends WithSettingsManager{
 	private String getTasklist_() throws JSONException, Exception {
 		return (String) this.getSetting("tasklist");
 	}
+	public String report(Object arg) {
+		return "`test`";
+	}
 }

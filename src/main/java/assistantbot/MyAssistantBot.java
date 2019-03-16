@@ -134,14 +134,12 @@ public class MyAssistantBot extends MyBasicBot {
 		return execute(message).getMessageId();
 	}
 	public int sendMessage(String msg, Long chatID_) {
-		try 
-		{
+		try {
 			SendMessage message = new SendMessage()
 					.setChatId(chatID_)
 							.setText(msg);
 			return execute(message).getMessageId();
-		}
-		catch(Exception e){ 
+		} catch(Exception e) { 
 			e.printStackTrace(System.out);
 			return -1;
 		}

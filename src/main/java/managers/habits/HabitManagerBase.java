@@ -16,6 +16,7 @@ import org.apache.commons.collections4.PredicateUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.bson.Document;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.github.nailbiter.util.TrelloAssistant;
@@ -128,7 +129,7 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 	protected static boolean IsHabitPending(JSONObject habit) {
 		return !habit.optBoolean("dueComplete",false);
 	}
-	protected void habitRunnableDispatch(String name,HabitRunnableEnum code)
+	protected void habitRunnableDispatch(String name,HabitRunnableEnum code) throws JSONException, Exception
 	{
 		System.out.println(String.format("HabitRunnableDispatch(%s,%s)", name,code.toString()));
 		if(code == HabitRunnableEnum.SENDREMINDER) {
@@ -158,10 +159,13 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 	abstract protected void IfWaitingForHabit(String name,Closure<JSONObject> cb);
 	abstract protected void processSetReminder(String name);
 	abstract protected String getFailureMessage(String name);
-	protected String getReminderMessage(String name) {
+	protected String getReminderMessage(String name) throws JSONException, Exception {
 		JSONObject obj = JsonUtil.FindInJSONArray(habits_, "name", name);
 		if( obj.has("callback") ) {
-			rp_.sendMessage(obj.getJSONObject("callback").toString(2));
+			JSONObject cbObj = obj.getJSONObject("callback");
+//			rp_.sendMessage(obj.getJSONObject("callback").toString(2));
+			String msg = (String) rp_.rpc(cbObj.getString("name"), cbObj.getString("method"), null);
+			rp_.sendMessage(msg);
 			return "";
 		} else {
 			return String.format("don't forget to execute: %s !\n%s",name,obj.getString("info"));
