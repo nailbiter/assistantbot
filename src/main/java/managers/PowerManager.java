@@ -25,10 +25,10 @@ public class PowerManager extends AbstractManager {
 				;
 	}
 
-	@Override
-	public String processReply(int messageID, String msg) {
-		return null;
-	}
+//	@Override
+//	public String processReply(int messageID, String msg) {
+//		return null;
+//	}
 	public String exit(JSONObject obj) {
 		System.exit(0);
 		return "";

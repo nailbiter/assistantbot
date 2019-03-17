@@ -459,10 +459,10 @@ public class TaskManagerBase extends WithSettingsManager {
 				});
 		return stat;
 	}
-	@Override
-	public String processReply(int messageID, String msg) {
-		return null;
-	}
+//	@Override
+//	public String processReply(int messageID, String msg) {
+//		return null;
+//	}
 
 	protected ArrayList<JSONObject> getTasks(String identifier) throws Exception {
 		if( !comparators_.containsKey(identifier) )

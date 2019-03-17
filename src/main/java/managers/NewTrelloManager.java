@@ -22,6 +22,7 @@ import managers.misc.MashaRemind;
 import util.AssistantBotException;
 import util.JsonUtil;
 import util.KeyRing;
+import util.Message;
 import util.ParseCommentLine;
 import util.UserCollection;
 import util.Util;
@@ -33,7 +34,7 @@ import util.parsers.ParseOrderedCmd;
 public class NewTrelloManager extends WithSettingsManager{
 	private TrelloAssistant ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
 			KeyRing.getTrello().getString("token"));
-	private Hashtable<String, ImmutablePair<String,Transformer<Object,String>>> dispatch_;
+	private Hashtable<String, ImmutablePair<String,Transformer<Object,Message>>> dispatch_;
 	public NewTrelloManager(ResourceProvider rp) throws Exception {
 		super(GetCommands(),rp);
 		ImmutablePair<String[],Object[]> namesAndObjects = GetNamesAndObjects(ta_);
@@ -59,14 +60,14 @@ public class NewTrelloManager extends WithSettingsManager{
 		return new ImmutablePair<String[], Object[]>(names.toArray(new String[] {})
 				,objects.toArray(new Object[] {}));
 	}
-	private static Hashtable<String, ImmutablePair<String, Transformer<Object, String>>> FillDispatch(final TrelloAssistant ta, ResourceProvider rp) {
-		Hashtable<String, ImmutablePair<String, Transformer<Object, String>>> res = 
-				new Hashtable<String, ImmutablePair<String, Transformer<Object, String>>>();
+	private static Hashtable<String, ImmutablePair<String, Transformer<Object, Message>>> FillDispatch(final TrelloAssistant ta, ResourceProvider rp) {
+		Hashtable<String, ImmutablePair<String, Transformer<Object, Message>>> res = 
+				new Hashtable<String, ImmutablePair<String, Transformer<Object, Message>>>();
 		
-		res.put("done", new ImmutablePair<String, Transformer<Object, String>>("archive task"
-				,new Transformer<Object,String>(){
+		res.put("done", new ImmutablePair<String, Transformer<Object, Message>>("archive task"
+				,new Transformer<Object,Message>(){
 					@Override
-					public String transform(Object arg0) {
+					public Message transform(Object arg0) {
 						ImmutablePair<JSONObject,Integer> pair = (ImmutablePair<JSONObject, Integer>) arg0;
 						JSONObject obj = pair.left;
 						try {
@@ -75,8 +76,8 @@ public class NewTrelloManager extends WithSettingsManager{
 							e.printStackTrace();
 							Util.ExceptionToString(e);
 						}
-						return String.format("archived task \"%s\"%s", obj.getString("name")
-								,(pair.right>1)?String.format("\n%d remains", pair.right-1):"");
+						return new Message(String.format("archived task \"%s\"%s", obj.getString("name")
+								,(pair.right>1)?String.format("\n%d remains", pair.right-1):""));
 					}
 				}));
 		
@@ -105,11 +106,11 @@ public class NewTrelloManager extends WithSettingsManager{
 		}
 		return res.toArray(new String[] {});
 	}
-	private static ImmutablePair<String, Transformer<Object, String>> MoveToTodoAndPutLabel(final String cat, final TrelloAssistant ta) {
-		return new ImmutablePair<String, Transformer<Object, String>>(cat,
-				new Transformer<Object,String>(){
+	private static ImmutablePair<String, Transformer<Object, Message>> MoveToTodoAndPutLabel(final String cat, final TrelloAssistant ta) {
+		return new ImmutablePair<String, Transformer<Object, Message>>(cat,
+				new Transformer<Object,Message>(){
 					@Override
-					public String transform(Object arg0) {
+					public Message transform(Object arg0) {
 						ImmutablePair<JSONObject,Integer> obj = (ImmutablePair<JSONObject,Integer>)arg0;
 						JSONObject card = obj.left;
 						String oldlistid, newlistid;
@@ -125,12 +126,12 @@ public class NewTrelloManager extends WithSettingsManager{
 							
 							ta.setLabelByName(cardid, cat,newlistid,TrelloAssistant.SetUnset.SET);
 							
-							return String.format("moved \"%s\"\n", 
+							return new Message(String.format("moved \"%s\"\n", 
 									card.getString("name")
-									);
+									));
 						} catch (Exception e) {
 							e.printStackTrace();
-							return Util.ExceptionToString(e);
+							return new Message(Util.ExceptionToString(e));
 						}
 					}
 		});
@@ -195,7 +196,7 @@ public class NewTrelloManager extends WithSettingsManager{
 				map.put(String.format((keycount>1)?"%s:%d":"%s", key,keycount)
 						,new ImmutablePair<JSONObject,Integer>(count.get(key).left,keycount));
 			}
-			rp_.sendMessageWithKeyBoard("which card?", map, dispatch_.get(tag).right);
+			rp_.sendMessageWithKeyBoard(new Message("which card?"), map, dispatch_.get(tag).right);
 			return "";
 		} else {
 			JSONObject card = ta_.addCard(getTasklist_(), new JSONObject().put("name", parsed.get(ParseCommentLine.REM)));

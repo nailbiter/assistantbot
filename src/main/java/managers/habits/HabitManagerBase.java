@@ -32,6 +32,7 @@ import managers.HabitManager;
 import managers.OptionReplier;
 import util.JsonUtil;
 import util.KeyRing;
+import util.Message;
 import util.UserCollection;
 import util.Util;
 
@@ -133,22 +134,22 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 	{
 		System.out.println(String.format("HabitRunnableDispatch(%s,%s)", name,code.toString()));
 		if(code == HabitRunnableEnum.SENDREMINDER) {
-			rp_.sendMessage(getReminderMessage(name));
+			rp_.sendMessage(new Message(getReminderMessage(name)));
 			processSetReminder(name);
 		}
 		if(code==HabitRunnableEnum.SETFAILURE){
 			IfWaitingForHabit(name,new Closure<JSONObject>() {
 				@Override
 				public void execute(JSONObject obj) {
-					rp_.sendMessage( processFailure(obj) );
+					rp_.sendMessage( new Message(processFailure(obj)) );
 				}
 			});
 		}
 	}
-	public String optionReply(String option, Integer msgID) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+	public Message optionReply(String option, Integer msgID) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		if(optionMsgs_.containsKey(msgID)) {
-			return (String)HabitManager.class.getMethod(optionMsgs_.get(msgID),String.class)
-					.invoke(this,option);
+			return new Message((String)HabitManager.class.getMethod(optionMsgs_.get(msgID),String.class)
+					.invoke(this,option));
 		}
 		else
 			return null;
@@ -165,17 +166,17 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 			JSONObject cbObj = obj.getJSONObject("callback");
 //			rp_.sendMessage(obj.getJSONObject("callback").toString(2));
 			String msg = (String) rp_.rpc(cbObj.getString("name"), cbObj.getString("method"), null);
-			rp_.sendMessage(msg);
+			rp_.sendMessage(new Message(msg));
 			return "";
 		} else {
 			return String.format("don't forget to execute: %s !\n%s",name,obj.getString("info"));
 		}
 		
 	}
-	@Override
-	public String processReply(int messageID,String msg) {
-		return null;
-	}
+//	@Override
+//	public String processReply(int messageID,String msg) {
+//		return null;
+//	}
 	public String getHabitsInfo() throws Exception {
 		System.err.println("getHabitsInfo");
 		System.err.println("len="+habits_.length());

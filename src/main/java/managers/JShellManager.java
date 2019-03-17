@@ -53,8 +53,8 @@ public class JShellManager extends AbstractManager{
 						.makeOpt())
 				.makeDefaultHandler());
 	}
-	@Override
-	public String processReply(int messageID,String msg) {
-		return null;
-	}
+//	@Override
+//	public String processReply(int messageID,String msg) {
+//		return null;
+//	}
 }

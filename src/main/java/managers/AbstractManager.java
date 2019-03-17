@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import com.mongodb.client.MongoCollection;
 
 import assistantbot.ResourceProvider;
+import util.Message;
 import util.SettingCollection;
 import util.db.MongoUtil;
 import util.parsers.ParseOrdered;
@@ -34,23 +35,36 @@ public class AbstractManager implements MyManager {
 	 * @see util.MyManager#getResultAndFormat(org.json.JSONObject)
 	 */
 	@Override
-	public String getResultAndFormat(JSONObject res) throws Exception {
+	public Message getResultAndFormat(JSONObject res) throws Exception {
 		System.err.println(String.format("%s got: %s",this.getClass().getName(), res.toString()));
 			System.err.println("dispatcher got: "+res.toString());
 			Object parsed = po_.parse(res);
 			Class<? extends AbstractManager> classInstance = this.getClass();
 			
+			Object callRes = null;
 			if( parsed instanceof JSONObject ) {
-				return (String) classInstance
+				callRes = classInstance
 						.getMethod(res.getString(CMD),JSONObject.class)
 						.invoke(this,parsed);
 			} else if (parsed instanceof JSONArray ){
-				return (String) classInstance
+				callRes = classInstance
 						.getMethod(res.getString(CMD),JSONArray.class)
 						.invoke(this,parsed);
 			}
-			throw new Exception(String.format("unknown class \"%s\"", 
-					parsed.getClass().getName()));
+			
+			if( callRes == null ) {
+				throw new Exception(String.format("unknown class \"%s\"", 
+						parsed.getClass().getName()));
+			}
+			
+			if( callRes instanceof String ) {
+				return new Message((String) callRes);
+			} else if(callRes instanceof Message) {
+				return (Message) callRes;
+			} else {
+				throw new Exception(String.format("unknown class \"%s\"", 
+						parsed.getClass().getName()));
+			}
 	}
 	protected JSONObject getParamObject(ResourceProvider rp_) throws JSONException, Exception {
 		return GetParamObject(rp_,getName());
@@ -86,8 +100,8 @@ public class AbstractManager implements MyManager {
 	public void set() throws Exception {
 		
 	}
-	@Override
-	public String processReply(int messageID, String msg) {
-		return null;
-	}
+//	@Override
+//	public Message processReply(int messageID, String msg) {
+//		return null;
+//	}
 }

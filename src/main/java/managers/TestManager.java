@@ -27,6 +27,7 @@ import assistantbot.ResourceProvider;
 import managers.tests.JsonTest;
 import managers.tests.ParadigmTest;
 import managers.tests.UrlTest;
+import util.Message;
 import util.UserCollection;
 import util.db.MongoUtil;
 import util.parsers.ParseOrderedArg;
@@ -37,7 +38,7 @@ import static java.util.Arrays.asList;
 /**
  * @author nailbiter
  */
-public class TestManager extends AbstractManager implements OptionReplier {
+public class TestManager extends AbstractManager implements Replier {
 	Long chatID_ = null;
 	private Logger logger_ = null;
 	ResourceProvider rp_ = null;
@@ -52,11 +53,7 @@ public class TestManager extends AbstractManager implements OptionReplier {
 		logger_ = Logger.getLogger(this.getClass().getName());
 		timer_ = new Timer();
 		AddTests(testContainer_,rp_);
-		testScores_ = rp_
-//				.getMongoClient()
-//				.getDatabase(MongoUtil.LOGISTICS)
-//				.getCollection("scoresOfTests");
-				.getCollection(UserCollection.SCORESOFTESTS);
+		testScores_ = rp_.getCollection(UserCollection.SCORESOFTESTS);
 	}
 	private static void AddTests(ArrayList<JsonTest> testContainer, ResourceProvider rp) throws Exception {
 		testContainer.clear();
@@ -133,7 +130,7 @@ public class TestManager extends AbstractManager implements OptionReplier {
 	public String testdo(JSONObject obj) throws Exception
 	{
 		int index = lastUsedTestIndex = obj.getInt("index");
-		rp_.sendMessage(String.format("test #%d", index));
+		rp_.sendMessage(new Message(String.format("test #%d", index)));
 		String[] res = this.testContainer_.get(index).isCalled();
 		logger_.info(String.format("run this index=%d", index));
 		int id = -1;
@@ -141,10 +138,10 @@ public class TestManager extends AbstractManager implements OptionReplier {
 			logger_.info("bad");
 		if(res.length == 1)
 		{
-			id = rp_.sendMessage(res[0], new Transformer<String,String>(){
+			id = rp_.sendMessage(new Message(res[0]), new Transformer<String,Message>(){
 				@Override
-				public String transform(String msg) {
-					return testContainer_.get(lastUsedTestIndex).processReply(msg);
+				public Message transform(String msg) {
+					return new Message(testContainer_.get(lastUsedTestIndex).processReply(msg));
 				}
 			});
 			logger_.info(String.format("index=%d", id));
@@ -158,7 +155,7 @@ public class TestManager extends AbstractManager implements OptionReplier {
 	}
 
 	@Override
-	public String processReply(int messageID,String msg) {
+	public Message processReply(int messageID,String msg) {
 		logger_.info(String.format("messageID=%d", messageID));
 		
 		Integer index = this.waitingForReply.get(messageID);
@@ -166,18 +163,18 @@ public class TestManager extends AbstractManager implements OptionReplier {
 		if(index == null)
 			return null;
 		this.lastUsedTestIndex = index;
-		return testContainer_.get(lastUsedTestIndex).processReply(msg);
+		return new Message(testContainer_.get(lastUsedTestIndex).processReply(msg));
 	}
 	Hashtable<Integer,Integer> waitingForReply = new Hashtable<Integer,Integer>();
-	@Override
-	public String optionReply(String option, Integer msgID) {
-		return null;
-	}
+//	@Override
+//	public String optionReply(String option, Integer msgID) {
+//		return null;
+//	}
 	public int sendMessageWithKeyBoard(String msg, String[] categories)
 	{
 		JSONArray c = new JSONArray();
 		for(int i = 0; i < categories.length; i++)
 			c.put(categories[i]);
-		return rp_.sendMessageWithKeyBoard(msg, c);
+		return rp_.sendMessageWithKeyBoard(new Message(msg), c);
 	}
 }

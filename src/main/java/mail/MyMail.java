@@ -154,16 +154,16 @@ public class MyMail implements Replier, OptionReplier{
 	}
 	private static boolean isSeen(Flags flags) {return flags.toString().contains("\\Seen");}
 	@Override
-	public String processReply(int messageID, String msg) {
-		String res = null;
+	public util.Message processReply(int messageID, String msg) {
+		util.Message res = null;
 		for(int i = 0; i < this.messageRepliers_.size(); i++)
 			if((res = this.messageRepliers_.get(i).processReply(messageID, msg)) != null)
 				return res;
 		return null;
 	}
 	@Override
-	public String optionReply(String option, Integer msgID) throws Exception {
-		String res = null;
+	public util.Message optionReply(String option, Integer msgID) throws Exception {
+		util.Message res = null;
 		for(int i = 0; i < this.messageRepliers_.size(); i++)
 			if((res = this.messageRepliers_.get(i).optionReply(option, msgID)) != null)
 				return res;

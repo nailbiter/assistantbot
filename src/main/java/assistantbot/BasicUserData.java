@@ -12,6 +12,7 @@ import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import com.mongodb.MongoClient;
@@ -23,6 +24,7 @@ import com.mongodb.client.model.Updates;
 import it.sauronsoftware.cron4j.Scheduler;
 import managers.AbstractManager;
 import managers.MyManager;
+import managers.Replier;
 import util.AssistantBotException;
 import util.JsonUtil;
 import util.SettingCollection;
@@ -34,7 +36,7 @@ import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
 import util.parsers.StandardParserInterpreter;
 
-public class BasicUserData extends AbstractManager implements ResourceProvider {
+public class BasicUserData extends AbstractManager implements ResourceProvider,Replier {
 	protected List<MyManager> managers_ = new ArrayList<MyManager>();
 	protected StandardParserInterpreter parser_;
 	protected JSONObject userObject_ = null;
@@ -44,7 +46,7 @@ public class BasicUserData extends AbstractManager implements ResourceProvider {
 	 */
 	protected Scheduler scheduler_ = new Scheduler();
 	protected Logger logger_;
-	private Hashtable<Integer, Transformer<String, String>> messageRepliers_ = new Hashtable<Integer,Transformer<String, String>>();
+	private Hashtable<Integer, Transformer<String, util.Message>> messageRepliers_ = new Hashtable<Integer,Transformer<String, util.Message>>();
 	protected BasicUserData(boolean isSingleUser) throws JSONException, Exception {
 		super(GetCommands(isSingleUser));
 		isSingleUser_ = isSingleUser;
@@ -125,7 +127,7 @@ public class BasicUserData extends AbstractManager implements ResourceProvider {
 		return null;
 	}
 	@Override
-	public int sendMessageWithKeyBoard(String msg, JSONArray categories) {
+	public int sendMessageWithKeyBoard(util.Message msg, JSONArray categories) {
 		return 0;
 	}
 	@Override
@@ -133,7 +135,7 @@ public class BasicUserData extends AbstractManager implements ResourceProvider {
 		return null;
 	}
 	@Override
-	public int sendMessage(String msg) {
+	public int sendMessage(util.Message msg) {
 		return 0;
 	}
 	@Override
@@ -142,10 +144,6 @@ public class BasicUserData extends AbstractManager implements ResourceProvider {
 	}
 	@Override
 	public int sendFile(String fn) throws Exception {
-		return 0;
-	}
-	@Override
-	public int sendMessageWithKeyBoard(String msg, List<List<InlineKeyboardButton>> makePerCatButtons) {
 		return 0;
 	}
 	@Override
@@ -192,17 +190,17 @@ public class BasicUserData extends AbstractManager implements ResourceProvider {
 		return this;
 	}
 	@Override
-	public int sendMessageWithKeyBoard(String msg, Map<String, Object> map, Transformer<Object,String> me) {
+	public int sendMessageWithKeyBoard(util.Message msg, Map<String, Object> map, Transformer<Object,util.Message> me) {
 		return sendMessageWithKeyBoard(msg,new JSONArray(map.keySet()));
 	}
 	@Override
-	public int sendMessage(String msg, Transformer<String, String> t) throws Exception {
+	public int sendMessage(util.Message msg, Transformer<String, util.Message> t) throws Exception {
 		int res = sendMessage(msg);
 		messageRepliers_.put(res, t);
 		return res;
 	}
 	@Override
-	public String processReply(int messageID, String msg) {
+	public util.Message processReply(int messageID, String msg) {
 		return messageRepliers_.get(messageID).transform(msg);
 	}
 	@Override

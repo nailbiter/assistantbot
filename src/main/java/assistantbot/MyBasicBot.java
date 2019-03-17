@@ -10,37 +10,50 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.logging.BotLogger;
 
+import util.TelegramUtil;
 import util.UserData;
 import util.Util;
 
 public abstract class MyBasicBot extends TelegramLongPollingBot {
 	protected Logger logger_; 
-	public MyBasicBot()
-	{
+	public MyBasicBot() {
 		logger_ = Logger.getLogger(this.getClass().getName());
 	}
 	public void onUpdateReceived(Update update) {
-		try 
-		{
+		try {
 			// We check if the update has a message and the message has text
 			if (update.hasMessage()) {
 				SendMessage message = new SendMessage();;
-				String reply = null;
+				util.Message reply = null;
 				if(update.getMessage().isReply()) {
-					reply = this.processReply(update);
+					reply = processReply(update);
 				} else {
 					reply = reply(update.getMessage());
 				}
 				
-				Util.SendHtmlMessage(this,message,update,reply);
+				SendHtmlMessage(this,message,update,reply.getMessage());
 			}
 			else if(update.hasCallbackQuery())
 				this.processUpdateWithCallbackQuery(update);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	protected static void SendHtmlMessage(TelegramLongPollingBot bot,SendMessage message, Update update, String reply) throws TelegramApiException {
+		//		reply = Util.CheckMessageLen(reply);
+				
+				if(reply.isEmpty())
+					return;
+				
+				message.setText(TelegramUtil.ToHTML(reply));
+				message.setChatId(update.getMessage().getChatId());								
+				message.setParseMode("HTML");
+				
+		//		if(reply.length()>0)
+				bot.execute(message);
 	}
 	void processUpdateWithCallbackQuery(Update update) throws Exception
 	{
@@ -51,7 +64,7 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 		
 		System.out.println("got call_data="+call_data);
 		
-		String reply = Util.ToHTML(processUpdateWithCallbackQuery(ud,call_data, message_id));
+		String reply = TelegramUtil.ToHTML(processUpdateWithCallbackQuery(ud,call_data, message_id).getMessage());
 		EditMessageText emt = new EditMessageText()
 				.setChatId(chat_id)
 				.setMessageId(message_id)
@@ -59,24 +72,24 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 				.setParseMode("HTML");
 		execute(emt);
 	}
-	protected abstract String processUpdateWithCallbackQuery(UserData ud,String call_data,int message_id) throws Exception;
-	private String processReply(Update update) throws Exception {
+	protected abstract util.Message processUpdateWithCallbackQuery(UserData ud,String call_data,int message_id) throws Exception;
+	private util.Message processReply(Update update) throws Exception {
 		int replyID = update.getMessage().getReplyToMessage().getMessageId();
 		System.out.println("reply id: "+replyID);
 		return interpretReply(replyID,update.getMessage().getText(),this.userData.get(update.getMessage().getChatId()));
 	}
-	protected abstract String interpretReply(int replyID, String string, UserData userData2);
+	protected abstract util.Message interpretReply(int replyID, String string, UserData userData2);
 	abstract protected JSONObject interpret(Message msg,UserData ud) throws Exception;
 	abstract protected UserData createUserData(Long chatId) throws JSONException, Exception; 
 	protected java.util.Hashtable<Long, UserData> userData = 
 			new Hashtable<Long,UserData>();
-	abstract protected String getResultAndFormat(JSONObject res,UserData ud) throws Exception;	
+	abstract protected util.Message getResultAndFormat(JSONObject res,UserData ud) throws Exception;	
 	public String getLogString() {
 		return getBotUsername();
 	}
 	public abstract String getBotUsername();
 	public abstract String getBotToken();
-	protected String reply(Message msg) {
+	protected util.Message reply(Message msg) {
 		try{
 			if( !this.userData.containsKey(msg.getChatId()) ) {
 				userData.put(msg.getChatId(), this.createUserData(msg.getChatId()));
@@ -88,7 +101,7 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 		} catch (Exception e) {
 	            BotLogger.error(this.getLogString(), e);
 	            e.printStackTrace(System.err);
-	            return String.format("e: %s", ExceptionUtils.getStackTrace(e));
+	            return new util.Message(String.format("e: %s", ExceptionUtils.getStackTrace(e)));
 	    }
 	}
 }

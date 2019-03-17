@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import assistantbot.ResourceProvider;
+import util.Message;
 import util.scriptapps.PerlApp;
 
 public class BotManager extends AbstractManager {
@@ -18,21 +19,21 @@ public class BotManager extends AbstractManager {
 				.getCommandsObj(CMDPREFIX));
 		rp_ = rp;
 	}
-	@Override
-	public String processReply(int messageID, String msg) {
-		return null;
-	}
+//	@Override
+//	public Message processReply(int messageID, String msg) {
+//		return null;
+//	}
 	protected static JSONObject GetParamObj(ResourceProvider rp) throws JSONException, Exception {
 		return AbstractManager.GetParamObject(rp, BotManager.class.getName());
 	}
 	@Override
-	public String getResultAndFormat(JSONObject res) throws Exception {
+	public Message getResultAndFormat(JSONObject res) throws Exception {
 		System.err.println(String.format("%s got: %s",this.getClass().getName(), res.toString()));
 		res = (JSONObject) po_.parse(res);
 		System.err.println("dispatcher got: "+res.toString());
-		return pa_.runCommand(String.format("%s %s"
+		return new Message(pa_.runCommand(String.format("%s %s"
 						,res.getString("name").substring(CMDPREFIX.length())
 						,res.getString("cmdline")
-						));
+						)));
 	}
 }

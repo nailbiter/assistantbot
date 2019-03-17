@@ -17,6 +17,7 @@ import managers.habits.HabitManagerBase;
 import managers.habits.HabitRunnable;
 import util.AssistantBotException;
 import util.JsonUtil;
+import util.Message;
 import util.Util;
 import util.parsers.FlagParser;
 import util.parsers.ParseOrdered.ArgTypes;
@@ -83,11 +84,12 @@ public class HabitManager extends HabitManagerBase
 		try {
 			JSONArray habits = this.getPendingHabitNames();
 			if(habits.length() > 1) {
-				rp_.sendMessageWithKeyBoard(fp.contains('f')?"which habit to fail?":"which habit?"
+				rp_.sendMessageWithKeyBoard(
+						new Message(fp.contains('f')?"which habit to fail?":"which habit?")
 						,Util.IdentityMap(habits) 
-						,new Transformer<Object,String>() {
+						,new Transformer<Object,Message>() {
 							@Override
-							public String transform(Object name) {
+							public Message transform(Object name) {
 								if(fp.contains('f')) {
 									JSONArray cards = new JSONArray();
 									try {
@@ -99,13 +101,13 @@ public class HabitManager extends HabitManagerBase
 										JSONObject obj = (JSONObject)o;
 										if(obj.getString("name").equals(name)) {
 											if(IsHabitPending(obj)) {
-												return processFailure(obj);
+												return new Message(processFailure(obj));
 											}
 										}
 									}
-									return String.format("no habit %s", name);
+									return new Message(String.format("no habit %s", name));
 								} else {
-									return done((String) name);
+									return new Message(done((String) name));
 								}
 							}
 						});

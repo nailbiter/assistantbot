@@ -27,6 +27,7 @@ import com.mongodb.client.model.Sorts;
 
 import assistantbot.ResourceProvider;
 import managers.money.MoneyManagerBase;
+import util.Message;
 import util.ParseCommentLine;
 import util.Util;
 import util.parsers.FlagParser;
@@ -51,7 +52,7 @@ public class MoneyManager extends MoneyManagerBase{
 			
 			for(String res = checkOperation(obj.getString(AMOUNT),obj.optString(COMMENT, ""));;) {
 				if( res != null )
-					rp_.sendMessage(res);
+					rp_.sendMessage(new Message(res));
 				break;
 			}
 			
@@ -83,19 +84,19 @@ public class MoneyManager extends MoneyManagerBase{
 			
 			System.err.format("obj=%s\n", obj.toString(2));
 			if( category != null ) {
-				rp_.sendMessage(putMoney(obj,category));
+				rp_.sendMessage(new Message(putMoney(obj,category)));
 			} else if( cats_.size()==1 ) {
-				rp_.sendMessage(putMoney(obj, cats_.iterator().next()));
+				rp_.sendMessage(new Message(putMoney(obj, cats_.iterator().next())));
 			} else {
-				rp_.sendMessageWithKeyBoard("which category?", Util.AppendObjectMap(new JSONArray(cats_),obj), 
-						new Transformer<Object,String>(){
+				rp_.sendMessageWithKeyBoard(new Message("which category?"), Util.AppendObjectMap(new JSONArray(cats_),obj), 
+						new Transformer<Object,Message>(){
 							@Override
-							public String transform(Object arg0) {
+							public Message transform(Object arg0) {
 								ImmutablePair<String,Object> pair = (ImmutablePair<String, Object>) arg0;
-								return putMoney((JSONObject) pair.right,pair.left);
+								return new Message(putMoney((JSONObject) pair.right,pair.left));
 							}
 				});
-				rp_.sendMessage(String.format("prepare to put %s",obj.toString()));
+				rp_.sendMessage(new Message(String.format("prepare to put %s",obj.toString())));
 			}
 		}
 		return "";
@@ -243,35 +244,35 @@ public class MoneyManager extends MoneyManagerBase{
 		final String REMOVECATEGORY = "remove category";
 		final String CHOOSETOREMOVE = "choose category to remove";
 		
-		rp_.sendMessageWithKeyBoard("choose the setting:", Util.IdentityMap(new JSONArray()
+		rp_.sendMessageWithKeyBoard(new Message("choose the setting:"), Util.IdentityMap(new JSONArray()
 				.put(NEWCATEGORY)
-				.put(REMOVECATEGORY)), new Transformer<Object,String>(){
+				.put(REMOVECATEGORY)), new Transformer<Object,Message>(){
 			@Override
-			public String transform(Object arg0) {
+			public Message transform(Object arg0) {
 				String cmd = (String) arg0;
 				if(cmd.equals(NEWCATEGORY)) {
 					try {
-						rp_.sendMessage("reply to this message with a name of new category", 
-								new Transformer<String,String>(){
+						rp_.sendMessage(new Message("reply to this message with a name of new category"), 
+								new Transformer<String,Message>(){
 							@Override
-							public String transform(String arg0) {
-								return addCategory(arg0);
+							public Message transform(String arg0) {
+								return new Message(addCategory(arg0));
 							}
 						});
 					} catch (Exception e) {
 						e.printStackTrace();
-						return String.format("%s e:%s", NEWCATEGORY,e.getMessage());
+						return new Message(String.format("%s e:%s", NEWCATEGORY,e.getMessage()));
 					}
-					return NEWCATEGORY;
+					return new Message(NEWCATEGORY);
 				} else if(cmd.equalsIgnoreCase(REMOVECATEGORY)) {
-					rp_.sendMessageWithKeyBoard(CHOOSETOREMOVE, Util.IdentityMap(new JSONArray(cats_)),
-							new Transformer<Object,String>(){
+					rp_.sendMessageWithKeyBoard(new Message(CHOOSETOREMOVE), Util.IdentityMap(new JSONArray(cats_)),
+							new Transformer<Object,Message>(){
 								@Override
-								public String transform(Object arg0) {
-									return removeCategory((String) arg0);
+								public Message transform(Object arg0) {
+									return new Message(removeCategory((String) arg0));
 								}
 					});
-					return CHOOSETOREMOVE;
+					return new Message(CHOOSETOREMOVE);
 				} else {
 					return null;
 				}

@@ -10,6 +10,7 @@ import com.github.nailbiter.util.TrelloAssistant;
 
 import assistantbot.ResourceProvider;
 import util.AssistantBotException;
+import util.Message;
 import util.parsers.FlagParser;
 
 import static managers.habits.Constants.HABITBOARDID;
@@ -53,7 +54,7 @@ public class Donep {
 		
 		for(String name:names_.keySet())
 			opts.put(String.format("%s: %d", name,names_.get(name)));
-		int id = rp_.sendMessageWithKeyBoard("which habbit?", opts);
+		int id = rp_.sendMessageWithKeyBoard(new Message("which habbit?"), opts);
 		optionMsgs_.put(id,"donep");
 		return "";
 	}

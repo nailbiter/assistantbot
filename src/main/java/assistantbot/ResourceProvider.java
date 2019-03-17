@@ -14,6 +14,7 @@ import com.mongodb.client.MongoCollection;
 
 import it.sauronsoftware.cron4j.Scheduler;
 import managers.MyManager;
+import util.Message;
 import util.UserCollection;
 
 public interface ResourceProvider {
@@ -24,24 +25,16 @@ public interface ResourceProvider {
 	 * @return message id
 	 * @deprecated
 	 */
-	abstract public int sendMessageWithKeyBoard(String msg, JSONArray categories);
+	abstract public int sendMessageWithKeyBoard(Message msg, JSONArray categories);
 	/**
 	 * @deprecated
 	 * @return
 	 */
 	MongoClient getMongoClient();
-	int sendMessage(String msg);
+	int sendMessage(Message msg);
 	Scheduler getScheduler();
-	public abstract int sendMessage(String msg, Transformer<String,String> t) throws Exception;
+	public abstract int sendMessage(Message msg, Transformer<String,Message> t) throws Exception;
 	public abstract int sendFile(String fn) throws Exception;
-	/**
-	 * 
-	 * @param msg
-	 * @param makePerCatButtons
-	 * @return
-	 * @deprecated use {@link #sendMessageWithKeyBoard(String, JSONArray)} instead
-	 */
-	public abstract int sendMessageWithKeyBoard(String msg, List<List<InlineKeyboardButton>> makePerCatButtons);
 	public MongoCollection<Document> getCollection(UserCollection name);
 	/**
 	 * @deprecated should be replaced with corresponding call to getManagerSettingsObject()
@@ -50,7 +43,7 @@ public interface ResourceProvider {
 	public JSONObject getUserObject();
 	public JSONObject getManagerSettingsObject(String classname);
 	public ResourceProvider setManagerSettingsObject(String classname,String key, Object val);
-	public int sendMessageWithKeyBoard(String msg, Map<String, Object> map, Transformer<Object,String> me);
+	public int sendMessageWithKeyBoard(Message msg, Map<String, Object> map, Transformer<Object,Message> me);
 	/**
 	 * remote procedure call
 	 * @param managerName

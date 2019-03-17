@@ -35,7 +35,7 @@ import javax.mail.Flags;
  * @author nailbiter
  *
  */
-public class MailManager extends AbstractManager implements OptionReplier{
+public class MailManager extends AbstractManager implements OptionReplier, Replier{
 	protected Long chatID_ = null;
 	MyBasicBot bot_ = null;
 	ResourceProvider userData_ = null;
@@ -60,14 +60,14 @@ public class MailManager extends AbstractManager implements OptionReplier{
 		mymail_.setMessageReplier(kmr);
 	}
 	@Override
-	public String getResultAndFormat(JSONObject res) throws Exception {
+	public util.Message getResultAndFormat(JSONObject res) throws Exception {
 		if(res.has("name"))
 		{
 			System.out.println(this.getClass().getName()+" got comd: /"+res.getString("name"));
 			if(res.getString("name").compareTo("mailfreq")==0)
 			{
 				mymail_.reschedule(res.getInt("freq"));
-				return String.format("set freq to %d min", res.getInt("freq"));
+				return new util.Message(String.format("set freq to %d min", res.getInt("freq")));
 			}
 		}
 		return null;
@@ -80,11 +80,11 @@ public class MailManager extends AbstractManager implements OptionReplier{
 		return res;
 	}
 	@Override
-	public String processReply(int messageID,String msg) {
+	public util.Message processReply(int messageID,String msg) {
 		return mymail_.processReply(messageID, msg);
 	}
 	@Override
-	public String optionReply(String option, Integer msgID) throws Exception {
+	public util.Message optionReply(String option, Integer msgID) throws Exception {
 		return mymail_.optionReply(option, msgID);
 	}
 }

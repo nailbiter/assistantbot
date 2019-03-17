@@ -12,6 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import assistantbot.ResourceProvider;
+import util.Message;
 import util.Util;
 import util.parsers.ParseOrdered;
 import util.parsers.ParseOrdered.ArgTypes;
@@ -54,61 +55,61 @@ public class WithSettingsManager extends AbstractManager {
 				map.put(String.format("change \"%s\"", key), new JSONObject()
 						.put(TYPE, MessageType.BUTTONS)
 						.put(VAL
-								, new ImmutableTriple<String,Map<String,Object>,Transformer<Object,String>>(
+								, new ImmutableTriple<String,Map<String,Object>,Transformer<Object,Message>>(
 								String.format("pick your \"%s\"", key)
 								, mmap
-								, new Transformer<Object,String>() {
+								, new Transformer<Object,Message>() {
 									@Override
-									public String transform(Object arg0) {
+									public Message transform(Object arg0) {
 										setSetting(key,arg0);
-										return String.format("set %s being equal to \"%s\"", key,arg0);
+										return new Message(String.format("set %s being equal to \"%s\"", key,arg0));
 									}
 								}
 						)));
 				break;
 			case SCALAR:
 				ImmutablePair<ParseOrdered.ArgTypes,Object> sval = (ImmutablePair<ArgTypes, Object>) setting.get(VAL);
-				rp_.sendMessage(String.format("reply to this message to set %s of type %s", key, sval.left)
-						, new Transformer<String,String>() {
+				rp_.sendMessage(new Message(String.format("reply to this message to set %s of type %s", key, sval.left))
+						, new Transformer<String,Message>() {
 							@Override
-							public String transform(String input) {
+							public Message transform(String input) {
 								try {
 									Object parsedVal = ParseOrdered.ParseType(sval.left.toString(), input);
 									setSetting(key,parsedVal);
-									return String.format("set %s being equal to \"%s\"", key, parsedVal);
+									return new Message(String.format("set %s being equal to \"%s\"", key, parsedVal));
 								} catch (Exception e) {
 									e.printStackTrace();
-									return Util.ExceptionToString(e);
+									return new Message(Util.ExceptionToString(e));
 								}
 							}
 				});
 				break;
 			default:
-				rp_.sendMessage(String.format("e: unknown type for setting \"%s\"", setting.toString(2)));
+				rp_.sendMessage(new Message(String.format("e: unknown type for setting \"%s\"", setting.toString(2))));
 				return;
 			}
 		}
 		
-		Transformer<Object, String> me = new Transformer<Object,String>(){
+		Transformer<Object, Message> me = new Transformer<Object, Message>(){
 			@Override
-			public String transform(Object arg0) {
+			public Message transform(Object arg0) {
 				JSONObject obj = (JSONObject) arg0;
 				MessageType type = (MessageType) obj.get(TYPE);
 				switch(type) {
 				case BUTTONS:
-					ImmutableTriple<String,Map<String,Object>,Transformer<Object,String>> val = 
-						(ImmutableTriple<String, Map<String, Object>, Transformer<Object, String>>) obj.get(VAL);
-					rp_.sendMessageWithKeyBoard(val.left, val.middle, val.right);
-					return val.left;
+					ImmutableTriple<String,Map<String,Object>,Transformer<Object,Message>> val = 
+						(ImmutableTriple<String, Map<String, Object>, Transformer<Object, Message>>) obj.get(VAL);
+					rp_.sendMessageWithKeyBoard(new Message(val.left), val.middle, val.right);
+					return new Message(val.left);
 //					break;
 				default:
 //					break
-					return String.format("unknown type");
+					return new Message(String.format("unknown type"));
 				}
 			}
 		};
 
-		rp_.sendMessageWithKeyBoard(CHOOSETHESETTING,map,me);
+		rp_.sendMessageWithKeyBoard(new Message(CHOOSETHESETTING),map,me);
 	}
 	protected void setSetting(String key, Object val) {
 		rp_.setManagerSettingsObject(getName(), key, val);

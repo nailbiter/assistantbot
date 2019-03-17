@@ -26,23 +26,15 @@ import util.parsers.ParseOrderedCmd;
 import util.scripthelpers.ScriptHelperVarkeeper;
 
 public class GymManager extends AbstractManager {
-//	private static final String FOLDERNAME = "gym/";
-//	private MongoClient mc_;
-//	private Logger logger_;
 	int dayCount_ = -1;
 	private JSONArray program_;
 	private int exercisenum_;
 	private ResourceProvider rp_;
-//	private ScriptApp sa_;
-//	private ScriptHelperVarkeeper vh_;
 
 	public GymManager(ResourceProvider rp) throws Exception {
 		super(GetCommands());
-//		mc_ = rp.getMongoClient();
 		logger_ = Logger.getLogger(this.getClass().getName());
 		rp_ = rp;
-//		vh_ = new ScriptHelperVarkeeper();
-//		sa_ = new JsApp(Util.getScriptFolder()+FOLDERNAME, vh_);
 	}
 	public static JSONArray GetCommands() throws AssistantBotException {
 		return new JSONArray()
@@ -56,10 +48,10 @@ public class GymManager extends AbstractManager {
 				))
 				;
 	}
-	@Override
-	public String processReply(int messageID, String msg) {
-		return null;
-	}
+//	@Override
+//	public Message processReply(int messageID, String msg) {
+//		return null;
+//	}
 	public String gymlist(JSONObject args) throws Exception{
 		if(args.getInt("dayCount")<=0 || args.getInt("dayCount")>4)
 			throw new Exception(String.format("%d<=0 || %d>4", args.getInt("dayCount"),args.getInt("dayCount")));

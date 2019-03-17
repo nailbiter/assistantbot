@@ -52,7 +52,7 @@ public class MashaRemind {
 			tb.addToken(com.github.nailbiter.util.Util.CutString(obj.getString("name"),parameters.getInt("margin")));
 			double daysTill = obj.getDouble("daysTill");
 			tb.addToken(util.Util.PrintDaysTill(daysTill,parameters.getString("filler")));
-		}	
+		}
 		sb.append(tb.toString());
 		
 		return sb.toString();

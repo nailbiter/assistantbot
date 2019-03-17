@@ -35,4 +35,13 @@ public class TelegramUtil{
 			// We now have the file_path
 			return file.getPath();
 	}
+	public static String ToHTML(String arg) {
+		return 
+				"<code>"
+				+arg
+					.replaceAll("&", "&amp")
+					.replaceAll("<", "&lt;")
+					.replaceAll(">", "&gt;")
+				+"</code>";
+	}
 }

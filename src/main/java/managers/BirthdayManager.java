@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import assistantbot.ResourceProvider;
 import it.sauronsoftware.cron4j.Scheduler;
+import util.Message;
 
 public class BirthdayManager extends AbstractManager implements Runnable{
 	private static final String BIRTHDAYS = "birthdays";
@@ -39,9 +40,9 @@ public class BirthdayManager extends AbstractManager implements Runnable{
 		try {
 			realRun();
 		} catch (Exception e) {
-			rp_.sendMessage(String.format("%s e: %s"
+			rp_.sendMessage(new Message(String.format("%s e: %s"
 					,this.getClass().getSimpleName()
-					,ExceptionUtils.getStackTrace(e)));
+					,ExceptionUtils.getStackTrace(e))));
 		}
 	}
 
@@ -54,9 +55,9 @@ public class BirthdayManager extends AbstractManager implements Runnable{
 
 	private void tryToCongratulate(JSONObject obj, Date now) {
 		if( now.getMonth()==(obj.getInt(MONTH)-1) && now.getDate()==obj.getInt(DATE) && obj.optBoolean(ENABLED,true)) {
-			rp_.sendMessage(String.format("don't forget to congratulate %s!%s"
+			rp_.sendMessage(new Message(String.format("don't forget to congratulate %s!%s"
 					, obj.getString("name")
-					, obj.has(INFO)?String.format("\n%s",obj.getString(INFO)):""));
+					, obj.has(INFO)?String.format("\n%s",obj.getString(INFO)):"")));
 		}
 	}
 }

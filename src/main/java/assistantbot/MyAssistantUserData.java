@@ -28,6 +28,7 @@ import managers.MyManager;
 import managers.OptionReplier;
 import util.Util;
 import util.db.MongoUtil;
+import util.Message;
 import util.SettingCollection;
 import util.UserCollection;
 import util.UserData;
@@ -73,10 +74,10 @@ public class MyAssistantUserData extends BasicUserData implements UserData, Reso
 			}
 		}
 	}
-	protected Hashtable<Integer, ImmutablePair<Transformer<Object, String>, Map<String, Object>>> pendingKeyboardMessages_ = new Hashtable<Integer, ImmutablePair< Transformer<Object,String>,Map<String,Object> >>();
-	public String processUpdateWithCallbackQuery(String call_data, int message_id) throws Exception {
+	protected Hashtable<Integer, ImmutablePair<Transformer<Object, Message>, Map<String, Object>>> pendingKeyboardMessages_ = new Hashtable<Integer, ImmutablePair< Transformer<Object,util.Message>,Map<String,Object> >>();
+	public Message processUpdateWithCallbackQuery(String call_data, int message_id) throws Exception {
 		if(pendingKeyboardMessages_.containsKey(message_id)) {
-			ImmutablePair<Transformer<Object, String>, Map<String, Object>> obj = pendingKeyboardMessages_.remove(message_id);
+			ImmutablePair<Transformer<Object, Message>, Map<String, Object>> obj = pendingKeyboardMessages_.remove(message_id);
 			Map<String, Object> map = obj.right;
 			if( !map.containsKey(call_data) )
 				throw new Exception(String.format("no call_data \"%s\"", call_data));
@@ -89,8 +90,8 @@ public class MyAssistantUserData extends BasicUserData implements UserData, Reso
 	/**
 	 * @deprecated
 	 */
-	private String iterateThroughRepliers(String call_data, int message_id) throws Exception {
-		String res = null;
+	private Message iterateThroughRepliers(String call_data, int message_id) throws Exception {
+		Message res = null;
 		List<OptionReplier> repliers = this.getOptionRepliers();
 		System.out.format("got %d repliers\n", repliers.size());
 		for(int i = 0; i < repliers.size(); i++)
@@ -116,7 +117,7 @@ public class MyAssistantUserData extends BasicUserData implements UserData, Reso
 		return res;
 	}
 	@Override
-	public int sendMessageWithKeyBoard(String msg, JSONArray categories)
+	public int sendMessageWithKeyBoard(Message msg, JSONArray categories)
 	{
 		final int ROWNUM = 2;
 		logger_.info(String.format("categories=%s", categories.toString()));
@@ -141,18 +142,14 @@ public class MyAssistantUserData extends BasicUserData implements UserData, Reso
 		return bot_.getMongoClient(); 
 	}
 	@Override
-	public int sendMessage(String msg) {
+	public int sendMessage(Message msg) {
 		return bot_.sendMessage(msg, chatID_);
-	}
-	@Override
-	public int sendMessageWithKeyBoard(String msg, List<List<InlineKeyboardButton>> buttons) {
-		return bot_.sendMessageWithKeyBoard(msg, chatID_, buttons);
 	}
 	@Override
 	public int sendFile(String fn) throws TelegramApiException {
 		return bot_.sendFile(fn, chatID_);
 	}
-	public String interpret(JSONObject res) throws JSONException, Exception {
+	public Message interpret(JSONObject res) throws JSONException, Exception {
 		return parser_.getDispatchTable().get(res.getString(CMD)).getResultAndFormat(res);
 	}
 	@Override
@@ -181,7 +178,7 @@ public class MyAssistantUserData extends BasicUserData implements UserData, Reso
 		StringBuilder sb = new StringBuilder();
 		for(Object o:obj.getJSONArray("loginmessage"))
 			sb.append(((String)o)+"\n");
-		sendMessage(sb.toString());
+		sendMessage(new Message(sb.toString()));
 		return "";
 	}
 	@Override
@@ -213,9 +210,9 @@ public class MyAssistantUserData extends BasicUserData implements UserData, Reso
 								name.toString()));
 	}
 	@Override
-	public int sendMessageWithKeyBoard(String msg, Map<String, Object> map, Transformer<Object,String> me) {
+	public int sendMessageWithKeyBoard(Message msg, Map<String, Object> map, Transformer<Object,Message> me) {
 		int res = sendMessageWithKeyBoard(msg, new JSONArray(map.keySet()));
-		pendingKeyboardMessages_.put(res, new ImmutablePair<Transformer<Object,String>, Map<String,Object>>(me,map));
+		pendingKeyboardMessages_.put(res, new ImmutablePair<Transformer<Object,Message>, Map<String,Object>>(me,map));
 		return res;
 	}
 }

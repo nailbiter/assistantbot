@@ -30,6 +30,7 @@ import managers.tasks.TaskManagerBase;
 import managers.tasks.TrelloMover;
 import util.AssistantBotException;
 import util.JsonUtil;
+import util.Message;
 import util.ParseCommentLine;
 import util.UserCollection;
 import util.db.MongoUtil;
@@ -92,12 +93,12 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		}
 		int tasknum = Integer.parseInt((String)pcl.getOrDefault(ParseCommentLine.REM, ""));
 		if(tasknum>0){
-			rp_.sendMessage(PrintTask(getTasks(INBOX),tasknum,ta_));
+			rp_.sendMessage(new Message(PrintTask(getTasks(INBOX),tasknum,ta_)));
 			return "";
 		} else if(tasknum==0) {
 			return PrintTasks(getTasks(SNOOZED),this.getParamObject(rp_),recognizedCatNames_, filters);
 		} else if( tasknum < 0 ) {
-			rp_.sendMessage(PrintTask(getTasks(SNOOZED),-tasknum, ta_));
+			rp_.sendMessage(new Message(PrintTask(getTasks(SNOOZED),-tasknum, ta_)));
 			return "";
 		} else {
 			throw new Exception("this should not happen");
@@ -120,7 +121,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		
 		new TrelloMover(ta_,triple.middle,SEPARATOR).moveTo(res,triple.middle,triple.right);
 		logToDb("tasknew",res);
-		rp_.sendMessage(String.format("created new card %s",res.getString("shortUrl")));
+		rp_.sendMessage(new Message(String.format("created new card %s",res.getString("shortUrl"))));
 		return "";
 	}
 	public String taskmodify(JSONObject obj) throws JSONException, Exception {
@@ -232,10 +233,10 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 			new TrelloMover(ta_,comparators_.get(SNOOZED).middle,SEPARATOR)
 			.moveTo(card,comparators_.get(INBOX).middle,comparators_.get(INBOX).right);
 			logToDb("snooze",card);
-			rp_.sendMessage(String.format("snooze \"%s\"", card.getString("name")));
+			rp_.sendMessage(new Message(String.format("snooze \"%s\"", card.getString("name"))));
 		} catch (Exception e) {
 			e.printStackTrace();
-			rp_.sendMessage(ExceptionUtils.getStackTrace(e));
+			rp_.sendMessage(new Message(ExceptionUtils.getStackTrace(e)));
 		}
 	}
 	protected void setUpReminder(final JSONObject card, Date date) {

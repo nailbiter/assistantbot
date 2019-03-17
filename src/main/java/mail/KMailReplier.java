@@ -9,6 +9,7 @@ import assistantbot.ResourceProvider;
 import managers.MailManager;
 import managers.OptionReplier;
 import managers.Replier;
+import util.Message;
 
 public class KMailReplier implements MailReplier{
 	String tmail_ = null;
@@ -35,25 +36,25 @@ public class KMailReplier implements MailReplier{
 				 * String.format("new mail from %s: %s\n",tmail_.substring(0,tmail_.indexOf("@")).toUpperCase(),
 				message.getString("subject")), chatID_)*/
 				userData_.sendMessageWithKeyBoard(
-						String.format("new mail from %s: %s\n",tmail_.substring(0,tmail_.indexOf("@")).toUpperCase(),
-								message.getString("subject")),templatemanager_.getTemplateNames())
+						new Message(String.format("new mail from %s: %s\n",tmail_.substring(0,tmail_.indexOf("@")).toUpperCase(),
+								message.getString("subject"))),templatemanager_.getTemplateNames())
 				;
 		messages_.put(id, message);
 	}
 
 	@Override
-	public String processReply(int messageID, String msg) {
+	public Message processReply(int messageID, String msg) {
 		return null;
 	}
 	@Override
-	public String optionReply(String option, Integer msgID) throws Exception {
+	public Message optionReply(String option, Integer msgID) throws Exception {
 		if( !messages_.containsKey(msgID) )
 			return null;
 		JSONObject msg = messages_.get(msgID);
 		MailTemplate template = this.templatemanager_.getMailTemplate(option);  
 		mymail_.replyTo(msg,template.toString());
 		messages_.remove(msgID);
-		return template.toString();
+		return new Message(template.toString());
 	}
 
 }

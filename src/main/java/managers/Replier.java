@@ -1,10 +1,12 @@
 package managers;
 
+import util.Message;
+
 /**
  * @deprecated
  * @author oleksiileontiev
  *
  */
 public interface Replier {
-	public String processReply(int messageID,String msg);
+	public Message processReply(int messageID,String msg);
 }

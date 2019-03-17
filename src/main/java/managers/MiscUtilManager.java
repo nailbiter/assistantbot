@@ -27,6 +27,7 @@ import managers.misc.RandomSetGenerator;
 import util.AssistantBotException;
 import util.JsonUtil;
 import util.KeyRing;
+import util.Message;
 import util.Util;
 import util.parsers.ParseOrdered;
 import util.parsers.ParseOrdered.ArgTypes;
@@ -93,7 +94,7 @@ public class MiscUtilManager extends AbstractManager {
 				;
 	}
 	public void help(String x) {
-		rp_.sendMessage(sp_.getHelpMessage());
+		rp_.sendMessage(new Message(sp_.getHelpMessage()));
 	}
 	public void timer(String keys) {
 		if( keys.isEmpty() ) {
@@ -106,22 +107,22 @@ public class MiscUtilManager extends AbstractManager {
 									,Util.milisToTimeFormat(
 											System.currentTimeMillis()
 											-timers_.get(k).getTime())));
-			rp_.sendMessage(tb.toString());
+			rp_.sendMessage(new Message(tb.toString()));
 		} else if(keys.equals("clear")) {
 			String res = String.format("%s timers cleared",timers_.size());
 			timers_.clear();
-			rp_.sendMessage(res);
+			rp_.sendMessage(new Message(res));
 		} else if(keys.equals("new")) {
 			String timerkey = createTimer();
 			timers_.put(timerkey, new Date());
-			rp_.sendMessage(String.format("created timer \"%s\"", timerkey)) ;
+			rp_.sendMessage(new Message(String.format("created timer \"%s\"", timerkey))) ;
 		} else {
 			for( String k:timers_.keySet() )
 				if(k.startsWith(keys))
-					rp_.sendMessage(String.format("elapsed: %s"
+					rp_.sendMessage(new Message(String.format("elapsed: %s"
 							,Util.milisToTimeFormat(
 									System.currentTimeMillis()
-									-timers_.get(k).getTime())));
+									-timers_.get(k).getTime()))));
 //			rp_.sendMessage(String.format("no timer stating with \"%s\"", keys));
 		}
 	}
@@ -141,10 +142,10 @@ public class MiscUtilManager extends AbstractManager {
 		nm_.makeNote(noteContent);
 		return String.format("made note \"%s\"", noteContent);
 	}
-	@Override
-	public String processReply(int messageID, String msg) {
-		return null;
-	}
+//	@Override
+//	public String processReply(int messageID, String msg) {
+//		return null;
+//	}
 	public String randset(JSONObject obj) throws JSONException, Exception {
 		final ArrayList<JSONObject> data = new ArrayList<JSONObject>();
 		JSONArray distrib = new JSONArray(sa_.runCommand("updatedistrib"));

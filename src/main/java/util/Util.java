@@ -445,29 +445,6 @@ public class Util{
 			
 		return res;
 	}
-	public static String ToHTML(String arg)
-	{
-		return 
-				"<code>"
-				+arg
-					.replaceAll("&", "&amp")
-					.replaceAll("<", "&lt;")
-					.replaceAll(">", "&gt;")
-				+"</code>";
-	}
-	public static void SendHtmlMessage(TelegramLongPollingBot bot,SendMessage message, Update update, String reply) throws TelegramApiException {
-	//		reply = Util.CheckMessageLen(reply);
-			
-			if(reply.isEmpty())
-				return;
-			
-			message.setText(ToHTML(reply));
-			message.setChatId(update.getMessage().getChatId());								
-			message.setParseMode("HTML");
-			
-	//		if(reply.length()>0)
-			bot.execute(message);
-		}
 	public static String CharSetToRegex(Collection<String> s) {
 		StringBuilder sb = new StringBuilder();
 		for(String str:s) {

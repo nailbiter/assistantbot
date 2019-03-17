@@ -3,10 +3,12 @@
  */
 package managers;
 
+import util.Message;
+
 /**
  * @author nailbiter
  *
  */
 public interface OptionReplier {
-	String optionReply(String option, Integer msgID) throws Exception;
+	Message optionReply(String option, Integer msgID) throws Exception;
 }

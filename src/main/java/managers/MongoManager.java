@@ -30,6 +30,7 @@ import assistantbot.MyAssistantUserData;
 import assistantbot.ResourceProvider;
 import managers.mongomanager.MongoManagerHelper;
 import util.AssistantBotException;
+import util.Message;
 import util.db.MongoUtil;
 import util.parsers.ParseOrdered;
 import util.parsers.ParseOrdered.ArgTypes;
@@ -149,7 +150,7 @@ public class MongoManager extends WithSettingsManager {
 				break;
 			}
 			default:
-				rp_.sendMessage(String.format("unknown type \"%s\"", item.middle));
+				rp_.sendMessage(new Message(String.format("unknown type \"%s\"", item.middle)));
 				break;
 			}
 			if( arg != null ) {
@@ -258,9 +259,8 @@ public class MongoManager extends WithSettingsManager {
 		}
 		return String.format("fixed %d", res);
 	}
-	@Override
-	public String processReply(int messageID, String msg) {
-		return null;
-	}
-
+//	@Override
+//	public String processReply(int messageID, String msg) {
+//		return null;
+//	}
 }

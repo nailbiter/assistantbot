@@ -11,6 +11,7 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 
 import assistantbot.ResourceProvider;
+import util.Message;
 import util.UserCollection;
 import util.Util;
 import util.parsers.ParseOrdered;
@@ -42,10 +43,10 @@ public class GermanManager extends AbstractManager {
 	public String germanplural(JSONObject obj) throws Exception {
 		return EmptyWrap(duden(obj.getString("word"),DudenConst.PLURAL));
 	}
-	@Override
-	public String processReply(int messageID, String msg) {
-		return null;
-	}
+//	@Override
+//	public Message processReply(int messageID, String msg) {
+//		return null;
+//	}
 	private String duden(String token, DudenConst command) throws Exception {
     	String key = token.trim();
     	Document doc = null;

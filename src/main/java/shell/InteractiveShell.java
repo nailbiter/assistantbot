@@ -26,6 +26,7 @@ import assistantbot.BasicUserData;
 import assistantbot.ResourceProvider;
 import managers.MyManager;
 import util.KeyRing;
+import util.Message;
 import util.UserCollection;
 import util.Util;
 import util.db.MongoUtil;
@@ -41,7 +42,7 @@ import static util.parsers.StandardParserInterpreter.Create;
 public class InteractiveShell extends BasicUserData implements ResourceProvider, MyManager {
 	private static String PROMPT = "assistantbot> ";
 	private String fileToOutputTo_;
-	private ImmutablePair<Map<String, Object>, Transformer<Object, String>> lastKeyboard_;
+	private ImmutablePair<Map<String, Object>, Transformer<Object, Message>> lastKeyboard_;
 	private int messageId_;
 	static MongoClient mc_;
 	public static void Start(JSONObject profileObj) throws Exception {
@@ -85,13 +86,13 @@ public class InteractiveShell extends BasicUserData implements ResourceProvider,
             	sendMessage(parser_.getDispatchTable().get(res.getString(CMD)).getResultAndFormat(res));
             }
             catch(Exception e) {
-            	sendMessage(String.format("%s: %s",e.getClass().getName() ,e.getMessage()));
+            	sendMessage(new Message(String.format("%s: %s",e.getClass().getName() ,e.getMessage())));
             	e.printStackTrace();
             }
         }
 	}
 	@Override
-	public int sendMessageWithKeyBoard(String msg, JSONArray categories) {
+	public int sendMessageWithKeyBoard(Message msg, JSONArray categories) {
 		TableBuilder tb = new TableBuilder();
 		StringBuilder res = new StringBuilder();
 		
@@ -106,7 +107,7 @@ public class InteractiveShell extends BasicUserData implements ResourceProvider,
 		}
 		res.append(tb.toString());
 		
-		sendMessage(res.toString());
+		sendMessage(new Message(res.toString()));
 		return 0;
 	}
 	@Override
@@ -114,23 +115,23 @@ public class InteractiveShell extends BasicUserData implements ResourceProvider,
 		return mc_;
 	}
 	@Override
-	public int sendMessage(String msg) {
+	public int sendMessage(Message msg) {
 //		msg = Util.CheckMessageLen(msg);
 		
-		System.out.format("%03d: %s\n",messageId_,msg);
+		System.out.format("%03d: %s\n",messageId_,msg.getMessage());
 		return messageId_++;
 	}
-	@Override
-	public int sendMessageWithKeyBoard(String msg, List<List<InlineKeyboardButton>> makePerCatButtons) {
-		return 0;
-	}
+//	@Override
+//	public int sendMessageWithKeyBoard(Message msg, List<List<InlineKeyboardButton>> makePerCatButtons) {
+//		return 0;
+//	}
 	@Override
 	public int sendFile(String fn) throws IOException {
 		File in = new File(fn);
 		File out = new File(fileToOutputTo_);
 		System.err.format("in=%s, out=%s\n", in.toString(),out.toString());
 		Util.copyFileUsingStream(in, out);
-		sendMessage(String.format("sent new file to %s", fileToOutputTo_));
+		sendMessage(new Message(String.format("sent new file to %s", fileToOutputTo_)));
 		return 0;
 	}
 	private static void DisableLogging() {
@@ -147,20 +148,20 @@ public class InteractiveShell extends BasicUserData implements ResourceProvider,
 						name.toString()));
 	}
 	@Override
-	public int sendMessageWithKeyBoard(String msg, Map<String, Object> map, Transformer<Object,String> me) {
-		lastKeyboard_ = new ImmutablePair<Map<String, Object>, Transformer<Object,String>>(map,me);
+	public int sendMessageWithKeyBoard(Message msg, Map<String, Object> map, Transformer<Object,Message> me) {
+		lastKeyboard_ = new ImmutablePair<Map<String, Object>, Transformer<Object,Message>>(map,me);
 		TableBuilder tb = new TableBuilder();
 		int i = 0;
 		for(String s:map.keySet().toArray(new String[] {})) {
 			tb.addTokens(Integer.toString(i++),s);
 		}
-		sendMessage(tb.toString());
+		sendMessage(new Message(tb.toString()));
 		return 0;
 	}
-	public String msgreply(JSONObject arg) {
+	public Message msgreply(JSONObject arg) {
 		return processReply(arg.getInt("msgid"), arg.getString("msgcontent"));
 	}
-	public String keyboard(JSONObject arg) {
+	public Message keyboard(JSONObject arg) {
 		int num = arg.getInt("num");
 		String[] keys = lastKeyboard_.left.keySet().toArray(new String[] {});
 		return lastKeyboard_.right.transform(lastKeyboard_.left.get(keys[num]));

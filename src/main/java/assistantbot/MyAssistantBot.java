@@ -72,7 +72,7 @@ public class MyAssistantBot extends MyBasicBot {
 					StringBuilder sb = new StringBuilder();
 					for(Object s:restartmessage)
 						sb.append(((String)s)+"\n");
-					ud.sendMessage(sb.toString());
+					ud.sendMessage(new util.Message(sb.toString()));
 				}
 			}
 		}
@@ -110,7 +110,7 @@ public class MyAssistantBot extends MyBasicBot {
 	}
 
 	@Override
-	public String getResultAndFormat(JSONObject res,UserData ud) throws Exception {
+	public util.Message getResultAndFormat(JSONObject res,UserData ud) throws Exception {
 		return ((MyAssistantUserData)ud).interpret(res);
 	}
 
@@ -133,11 +133,11 @@ public class MyAssistantBot extends MyBasicBot {
 				.setDocument(new File(fn));
 		return execute(message).getMessageId();
 	}
-	public int sendMessage(String msg, Long chatID_) {
+	public int sendMessage(util.Message msg, Long chatID_) {
 		try {
 			SendMessage message = new SendMessage()
 					.setChatId(chatID_)
-							.setText(msg);
+							.setText(msg.getMessage());
 			return execute(message).getMessageId();
 		} catch(Exception e) { 
 			e.printStackTrace(System.out);
@@ -152,11 +152,11 @@ public class MyAssistantBot extends MyBasicBot {
 	 * @param buttons
 	 * @return message id
 	 */
-	public int sendMessageWithKeyBoard(String msg, Long chatID_, List<List<InlineKeyboardButton>> buttons) {
+	public int sendMessageWithKeyBoard(util.Message msg, Long chatID_, List<List<InlineKeyboardButton>> buttons) {
 		try {
 			SendMessage message = new SendMessage()
 					.setChatId(chatID_)
-							.setText(msg);
+							.setText(msg.getMessage());
 			
 			InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
 			markupInline.setKeyboard(buttons);
@@ -171,12 +171,12 @@ public class MyAssistantBot extends MyBasicBot {
 		}
 	}
 	@Override
-	protected String interpretReply(int replyID, String message, UserData userData2) {
+	protected util.Message interpretReply(int replyID, String message, UserData userData2) {
 		BasicUserData ud = (BasicUserData) userData2;
 		return ud.processReply(replyID, message);
 	}
 	@Override
-	protected String processUpdateWithCallbackQuery(UserData ud, String call_data, int message_id) throws Exception {
+	protected util.Message processUpdateWithCallbackQuery(UserData ud, String call_data, int message_id) throws Exception {
 		return ((MyAssistantUserData)ud).processUpdateWithCallbackQuery(call_data, message_id);
 	}
 	public static String GetFilePath(PhotoSize photo,AbsSender s) {

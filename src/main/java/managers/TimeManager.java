@@ -28,6 +28,7 @@ import assistantbot.ResourceProvider;
 import util.Util;
 import util.db.MongoUtil;
 import util.JsonUtil;
+import util.Message;
 import util.UserCollection;
 import util.parsers.ParseOrdered;
 
@@ -41,7 +42,7 @@ public class TimeManager extends AbstractManager implements Runnable, OptionRepl
 	private static final int DELAYMIN = 30;
 	protected static int ROWNUM = 2;
 	protected static final String NOWORKCATNAME = "useless";
-	protected static final String WHEREAREYOUNOW = "北鼻，你在幹什麼？";
+	protected static final Message WHEREAREYOUNOW = new Message("北鼻，你在幹什麼？");
 	private static final Date MYDEATHDATA_ = new Date(1991 + 80, 12, 24);
 	protected JSONObject sleepingObj_ = null;
 	JSONArray categories_;
@@ -166,16 +167,16 @@ public class TimeManager extends AbstractManager implements Runnable, OptionRepl
 			if(isWaitingForAnswer_) {
 				writeTimeEntry(NOWORKCATNAME);
 				waitingForTimeReportMessageId_ = 
-						rp_.sendMessageWithKeyBoard(WHEREAREYOUNOW, MakeButtons(categories_));
+						rp_.sendMessageWithKeyBoard(WHEREAREYOUNOW, categories_);
 			} else if(isSleeping) {
 				String msg = gotUpdate(sleepingObj_.getString("name"));
 				if(sleepingObj_.getString("canBePersistent").equals("message")) {
 					waitingForTimeReportMessageId_ = 
-							rp_.sendMessage(msg);
+							rp_.sendMessage(new Message(msg));
 				}
 			} else {
 				waitingForTimeReportMessageId_ = 
-						rp_.sendMessageWithKeyBoard(WHEREAREYOUNOW, MakeButtons(categories_));
+						rp_.sendMessageWithKeyBoard(WHEREAREYOUNOW, categories_);
 				isWaitingForAnswer_ = true;
 			}
 		}
@@ -208,18 +209,18 @@ public class TimeManager extends AbstractManager implements Runnable, OptionRepl
 		res.put(ParseOrdered.MakeCommand("sleepend","end sleeping", new ArrayList<JSONObject>()));
 		return res;
 	}
+//	@Override
+//	public String processReply(int messageID,String msg) {
+//		return null;
+//	}
 	@Override
-	public String processReply(int messageID,String msg) {
-		return null;
-	}
-	@Override
-	public String optionReply(String option, Integer msgID) {
+	public Message optionReply(String option, Integer msgID) {
 		try {
 			if(waitingForPersistentCategoryChoiceMessageId_ == msgID) {
 				waitingForPersistentCategoryChoiceMessageId_ = -1;
-				return sleepstartReply(option);
+				return new Message(sleepstartReply(option));
 			}else if(this.isWaitingForAnswer_ && this.waitingForTimeReportMessageId_==msgID && !isSleeping()) {
-				return this.gotUpdate(option);
+				return new Message(this.gotUpdate(option));
 			} else {
 				System.err.format("wfa=%s, id: %d vs %d",this.isWaitingForAnswer_ ? "true":"false", 
 						this.waitingForTimeReportMessageId_,msgID);
@@ -238,7 +239,7 @@ public class TimeManager extends AbstractManager implements Runnable, OptionRepl
 		System.err.format("TimeManager.sleepstart\n");
 		if(!isWaitingForAnswer_) {
 			waitingForPersistentCategoryChoiceMessageId_ = 
-					rp_.sendMessageWithKeyBoard("choose the cat", MakePerCatButtons(categories_));
+					rp_.sendMessageWithKeyBoard(new Message("choose the cat"), categories_);
 			return "";
 		} else {
 			return String.format("cannot /sleepstart because isWaitingForAnswer_=%s", 
