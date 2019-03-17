@@ -25,6 +25,7 @@ import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.Updates;
 
 import assistantbot.ResourceProvider;
+import jshell.command.cat;
 import util.Util;
 import util.db.MongoUtil;
 import util.JsonUtil;
@@ -57,8 +58,7 @@ public class TimeManager extends AbstractManager implements Runnable, OptionRepl
 		rp_ = rp;
 		time_ = rp_.getCollection(UserCollection.TIME);
 		categories_ = 
-				MongoUtil
-				.GetJSONArrayFromDatabase(rp_.getCollection(UserCollection.TIMECATS));
+			MongoUtil.GetJSONArrayFromDatabase(rp_.getCollection(UserCollection.TIMECATS));
 		for( int i = 0; i < categories_.length(); i++ ) {
 			if( !categories_.getJSONObject(i).optBoolean("isTimeCat",true) ) {
 				categories_.remove(i);
@@ -67,7 +67,7 @@ public class TimeManager extends AbstractManager implements Runnable, OptionRepl
 		}
 		System.err.println("timecats");
 		for( int i = 0; i < categories_.length(); i++ ) {
-			System.err.println("\t"+categories_.getJSONObject(i).getString("name"));
+			System.err.format("\t%s\n",categories_.getJSONObject(i).getString("name"));
 		}
 		rp.getScheduler().schedule(String.format("*/%d * * * *",DELAYMIN), this);
 		sleepingTimes_ = rp_.getCollection(UserCollection.SLEEPINGTIMES);
@@ -115,48 +115,6 @@ public class TimeManager extends AbstractManager implements Runnable, OptionRepl
 		else
 			return StringUtils.repeat("*",num);
 	}
-	protected static ArrayList<List<InlineKeyboardButton>> MakeButtons(JSONArray categories)
-	{
-		ArrayList<List<InlineKeyboardButton>> buttons = new ArrayList<List<InlineKeyboardButton>>();
-		ArrayList<String> cats = new ArrayList<String>();
-		for(int i = 0; i < categories.length();)
-		{
-			buttons.add(new ArrayList<InlineKeyboardButton>());
-			for(int j = 0; j < ROWNUM && i < categories.length(); j++)
-			{
-				JSONObject obj = categories.getJSONObject(i);
-				cats.add(obj.getString("name"));
-				buttons.get(buttons.size()-1).add(new InlineKeyboardButton()
-						.setText(obj.getString("name"))
-						.setCallbackData(obj.getString("name")));
-				i++;
-			}
-		}
-		
-		System.err.format("timecats: %s\n", cats.toString());
-		return buttons;
-	}
-	private List<List<InlineKeyboardButton>> MakePerCatButtons(JSONArray categories) {
-		ArrayList<List<InlineKeyboardButton>> buttons = new ArrayList<List<InlineKeyboardButton>>(); 
-		int i = 0;
-		while(i < categories.length())
-		{
-			buttons.add(new ArrayList<InlineKeyboardButton>());
-			int j = 0;
-			while(j < ROWNUM && i < categories.length())
-			{
-				JSONObject obj = categories.getJSONObject(i);
-				if( !obj.getString("canBePersistent").equals("no") ) {
-					buttons.get(buttons.size()-1).add(new InlineKeyboardButton()
-							.setText(obj.getString("name"))
-							.setCallbackData(obj.getString("name")));
-					j++;
-				}
-				i++; 
-			}
-		}
-		return buttons;
-	}
 	@Override
 	public void run(){
 		try{
@@ -167,7 +125,7 @@ public class TimeManager extends AbstractManager implements Runnable, OptionRepl
 			if(isWaitingForAnswer_) {
 				writeTimeEntry(NOWORKCATNAME);
 				waitingForTimeReportMessageId_ = 
-						rp_.sendMessageWithKeyBoard(WHEREAREYOUNOW, categories_);
+						rp_.sendMessageWithKeyBoard(WHEREAREYOUNOW, getCatNames());
 			} else if(isSleeping) {
 				String msg = gotUpdate(sleepingObj_.getString("name"));
 				if(sleepingObj_.getString("canBePersistent").equals("message")) {
@@ -176,13 +134,19 @@ public class TimeManager extends AbstractManager implements Runnable, OptionRepl
 				}
 			} else {
 				waitingForTimeReportMessageId_ = 
-						rp_.sendMessageWithKeyBoard(WHEREAREYOUNOW, categories_);
+						rp_.sendMessageWithKeyBoard(WHEREAREYOUNOW, getCatNames());
 				isWaitingForAnswer_ = true;
 			}
 		}
-		catch(Exception e) { e.printStackTrace(System.out); }
+		catch(Exception e) { e.printStackTrace(System.err); }
 	}
 	
+	private JSONArray getCatNames() {
+		JSONArray res = new JSONArray();
+		for(Object cat:categories_)
+			res.put(((JSONObject)cat).getString("name"));
+		return res;
+	}
 	public String gotUpdate(String categoryName) throws Exception {
 		writeTimeEntry(categoryName);
 		this.isWaitingForAnswer_ = false;
@@ -209,10 +173,6 @@ public class TimeManager extends AbstractManager implements Runnable, OptionRepl
 		res.put(ParseOrdered.MakeCommand("sleepend","end sleeping", new ArrayList<JSONObject>()));
 		return res;
 	}
-//	@Override
-//	public String processReply(int messageID,String msg) {
-//		return null;
-//	}
 	@Override
 	public Message optionReply(String option, Integer msgID) {
 		try {
@@ -239,12 +199,22 @@ public class TimeManager extends AbstractManager implements Runnable, OptionRepl
 		System.err.format("TimeManager.sleepstart\n");
 		if(!isWaitingForAnswer_) {
 			waitingForPersistentCategoryChoiceMessageId_ = 
-					rp_.sendMessageWithKeyBoard(new Message("choose the cat"), categories_);
+					rp_.sendMessageWithKeyBoard(new Message("choose the cat"), getSleepCatNames());
 			return "";
 		} else {
 			return String.format("cannot /sleepstart because isWaitingForAnswer_=%s", 
 					Boolean.toString(isWaitingForAnswer_));
 		}
+	}
+	private JSONArray getSleepCatNames() {
+		JSONArray res = new JSONArray();
+		for(Object cat:categories_) {
+			JSONObject obj = (JSONObject) cat;
+			if( !obj.getString("canBePersistent").equals("no") ) {
+				res.put(obj.getString("name"));
+			}
+		}
+		return res;
 	}
 	protected String sleepstartReply(String categoryName)
 	{
