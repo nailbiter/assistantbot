@@ -356,11 +356,13 @@ public class Util{
 		}
 		return sb.toString().trim();
 	}
-	public static String PrintDaysTill(double daysTill, String filler) {
+	public static String PrintDaysTill(double daysTill, String filler, int lim) {
 		if(daysTill<0) {
 			return (String.format("** %.3f **", daysTill));
 		} else if(daysTill<1) {
 			return (String.format("%.3f", daysTill));
+		} else if( lim>0 && daysTill>=lim ) {
+			return String.format("%dd", (int)daysTill);
 		} else {
 			return (StringUtils.repeat(filler,(int)daysTill));
 		}

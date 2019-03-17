@@ -38,8 +38,9 @@ var res = [
 		name:"managers.NewTrelloManager",
 		parameter: {
 			reportParamObj:{
-				margin:18,
+				margin:25,
 				filler:"=",
+				dayLim:10,
 			},
 		},
 	},

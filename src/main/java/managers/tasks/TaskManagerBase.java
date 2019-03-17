@@ -269,7 +269,8 @@ public class TaskManagerBase extends WithSettingsManager {
 						,paramObj.getJSONObject("sep").getInt("labels"));
 			}
 			if( HasDue(card) ) {
-				tb.addToken(PrintDaysTill(DaysTill(card), "="),paramObj.getJSONObject("sep").getInt("due"));
+				tb.addToken(PrintDaysTill(DaysTill(card), "=",-1)
+						,paramObj.getJSONObject("sep").getInt("due"));
 			} else {
 				tb.addToken(INFTY);
 			}
