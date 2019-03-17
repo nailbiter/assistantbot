@@ -164,19 +164,14 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 		JSONObject obj = JsonUtil.FindInJSONArray(habits_, "name", name);
 		if( obj.has("callback") ) {
 			JSONObject cbObj = obj.getJSONObject("callback");
-//			rp_.sendMessage(obj.getJSONObject("callback").toString(2));
 			String msg = (String) rp_.rpc(cbObj.getString("name"), cbObj.getString("method"), null);
-			rp_.sendMessage(new Message(msg));
+			rp_.sendMessage(new Message(msg).setHtml());
 			return "";
 		} else {
 			return String.format("don't forget to execute: %s !\n%s",name,obj.getString("info"));
 		}
 		
 	}
-//	@Override
-//	public String processReply(int messageID,String msg) {
-//		return null;
-//	}
 	public String getHabitsInfo() throws Exception {
 		System.err.println("getHabitsInfo");
 		System.err.println("len="+habits_.length());

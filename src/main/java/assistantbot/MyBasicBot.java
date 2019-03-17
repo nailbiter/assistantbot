@@ -26,7 +26,7 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 		try {
 			// We check if the update has a message and the message has text
 			if (update.hasMessage()) {
-				SendMessage message = new SendMessage();;
+//				SendMessage message = new SendMessage();;
 				util.Message reply = null;
 				if(update.getMessage().isReply()) {
 					reply = processReply(update);
@@ -34,7 +34,7 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 					reply = reply(update.getMessage());
 				}
 				
-				SendHtmlMessage(this,message,update,reply.getMessage());
+				SendHtmlMessage(this,update.getMessage().getChatId(),reply.getMessage());
 			}
 			else if(update.hasCallbackQuery())
 				this.processUpdateWithCallbackQuery(update);
@@ -42,18 +42,19 @@ public abstract class MyBasicBot extends TelegramLongPollingBot {
 			e.printStackTrace();
 		}
 	}
-	protected static void SendHtmlMessage(TelegramLongPollingBot bot,SendMessage message, Update update, String reply) throws TelegramApiException {
-		//		reply = Util.CheckMessageLen(reply);
-				
-				if(reply.isEmpty())
-					return;
-				
-				message.setText(TelegramUtil.ToHTML(reply));
-				message.setChatId(update.getMessage().getChatId());								
-				message.setParseMode("HTML");
-				
-		//		if(reply.length()>0)
-				bot.execute(message);
+	protected static Integer SendHtmlMessage(TelegramLongPollingBot bot, Long long1, String reply) throws TelegramApiException {
+		SendMessage message = new SendMessage();
+//		reply = Util.CheckMessageLen(reply);
+		
+		if(reply.isEmpty())
+			return 0;
+		
+		message.setText(TelegramUtil.ToHTML(reply));
+		message.setChatId(/*long1.getMessage().getChatId()*/long1);								
+		message.setParseMode("HTML");
+		
+//		if(reply.length()>0)
+		return bot.execute(message).getMessageId();
 	}
 	void processUpdateWithCallbackQuery(Update update) throws Exception
 	{

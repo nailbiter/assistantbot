@@ -135,12 +135,16 @@ public class MyAssistantBot extends MyBasicBot {
 	}
 	public int sendMessage(util.Message msg, Long chatID_) {
 		try {
-			SendMessage message = new SendMessage()
-					.setChatId(chatID_)
-							.setText(msg.getMessage());
-			return execute(message).getMessageId();
+			if( msg.isHtml() ) {
+				return SendHtmlMessage(this,chatID_,msg.getMessage());
+			} else {
+				SendMessage message = new SendMessage()
+						.setChatId(chatID_)
+						.setText(msg.getMessage());
+				return execute(message).getMessageId();
+			}
 		} catch(Exception e) { 
-			e.printStackTrace(System.out);
+			e.printStackTrace(System.err);
 			return -1;
 		}
 	}
