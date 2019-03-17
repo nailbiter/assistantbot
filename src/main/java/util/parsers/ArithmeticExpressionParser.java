@@ -1,9 +1,12 @@
-package util;
+package util.parsers;
 
 import java.util.HashSet;
 import java.util.regex.Pattern;
 
 import org.apache.commons.collections4.Transformer;
+
+import util.AssistantBotException;
+import util.Util;
 
 public class ArithmeticExpressionParser {
 	

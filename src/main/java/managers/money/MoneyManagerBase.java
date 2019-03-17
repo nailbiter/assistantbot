@@ -23,10 +23,10 @@ import com.mongodb.client.model.Sorts;
 
 import assistantbot.ResourceProvider;
 import managers.AbstractManager;
-import util.ArithmeticExpressionParser;
 import util.AssistantBotException;
 import util.UserCollection;
 import util.Util;
+import util.parsers.ArithmeticExpressionParser;
 import util.parsers.FlagParser;
 
 public class MoneyManagerBase extends AbstractManager {

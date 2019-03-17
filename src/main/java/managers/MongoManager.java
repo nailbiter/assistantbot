@@ -1,10 +1,8 @@
 package managers;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.regex.Pattern;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.collections4.Predicate;
 import org.apache.commons.collections4.Transformer;
@@ -21,17 +19,17 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.MongoIterable;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.Updates;
 
-import assistantbot.MyAssistantUserData;
 import assistantbot.ResourceProvider;
 import managers.mongomanager.MongoManagerHelper;
 import util.AssistantBotException;
 import util.Message;
 import util.db.MongoUtil;
+import util.parsers.ParseCommentLine;
+import util.parsers.ParseKeysOrdered;
 import util.parsers.ParseOrdered;
 import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseOrderedArg;
@@ -83,86 +81,40 @@ public class MongoManager extends WithSettingsManager {
 		 * listsize: #size 20
 		 * ... search
 		 */
-		ArrayList<ImmutableTriple<String,ParseOrdered.ArgTypes, Transformer<ImmutablePair<Object,Object>,Object>>> dispatch = 
-				new ArrayList<ImmutableTriple<String,ParseOrdered.ArgTypes,Transformer<ImmutablePair<Object,Object>,Object>>>();
-		dispatch.add(new ImmutableTriple<String,ParseOrdered.ArgTypes,Transformer<ImmutablePair<Object,Object>,Object>>(
+		Object o = new ParseKeysOrdered(ParseCommentLine.Mode.FROMLEFT)
+		.addHandler(
 				"sortrev"
-				,ArgTypes.string
-				,new Transformer<ImmutablePair<Object,Object>,Object>() {
+				,new Transformer<ImmutablePair<Object,ArrayList<Object>>,Object>() {
 					@Override
-					public Object transform(ImmutablePair<Object, Object> input) {
+					public Object transform(ImmutablePair<Object, ArrayList<Object>> input) {
 						Object obj = input.left;
 						if(obj instanceof MongoCollection<?>) {
 							obj = ((MongoCollection) obj).find();
 						}
 						FindIterable<Document> find = (FindIterable<Document>) obj;
-						String key = (String) input.right;
+						String key = (String) input.right.get(0);
 						return find.sort(Sorts.descending(key));
 					}
-				}));
-		dispatch.add(new ImmutableTriple<String,ParseOrdered.ArgTypes,Transformer<ImmutablePair<Object,Object>,Object>>(
+				}
+				,ArgTypes.string)
+		.addHandler(
 				"regex"
-				,ArgTypes.remainder
-				,new Transformer<ImmutablePair<Object,Object>,Object>() {
+				,new Transformer<ImmutablePair<Object,ArrayList<Object>>,Object>() {
 					@Override
-					public Object transform(ImmutablePair<Object, Object> input) {
+					public Object transform(ImmutablePair<Object, ArrayList<Object>> input) {
 						MongoCollection<Document> coll = (MongoCollection<Document>) input.left;
-						String line = (String) input.right;
-						System.err.format("line: %s\n", line);
-						String[] split = line.split(ParseOrdered.SPLITPAT,2);
-						FindIterable<Document> find = coll.find(Filters.regex(split[0], Pattern.compile(split[1])));
+						System.err.format("line: %s\n", input.right);
+						FindIterable<Document> find = coll.find(Filters.regex(
+								(String) input.right.get(0)
+								, Pattern.compile((String) input.right.get(1))
+								));
 						return find;
 					}
-				}));
-		
-		String message = obj.getString("remainder");
-		final String TAGPREFIX = "#";
-		ArrayList<ImmutablePair<Transformer<ImmutablePair<Object, Object>, Object>, Object>> processors = 
-				new ArrayList<ImmutablePair<Transformer<ImmutablePair<Object,Object>,Object>,Object>>();
-		while( message.startsWith(TAGPREFIX) ) {
-			String[] split = message.split(ParseOrdered.SPLITPAT,2);
-			String name = split[0].substring(TAGPREFIX.length());
-			ImmutableTriple<String, ArgTypes, Transformer<ImmutablePair<Object,Object>,Object>> item = 
-					IterableUtils.find(dispatch
-					, new Predicate<ImmutableTriple<String,ParseOrdered.ArgTypes, Transformer<ImmutablePair<Object,Object>,Object>>>(){
-						@Override
-						public boolean evaluate(ImmutableTriple<String, ArgTypes, Transformer<ImmutablePair<Object,Object>,Object>> object) {
-							return name.equals(object.left);
-						}
-			});
-			
-			Object arg = null;
-			switch(item.middle) {
-			case integer:{
-				String[] ssplit = split[1].split(ParseOrdered.SPLITPAT,2);
-				arg = Integer.parseInt(ssplit[0]);
-				message = ssplit[1];
-				break;
-			}
-			case remainder:
-				arg = split[1];
-				message = "";
-				break;
-			case string:{
-				String[] ssplit = split[1].split(ParseOrdered.SPLITPAT,2);
-				arg = ssplit[0];
-				message = (ssplit.length>1)?ssplit[1]:"";
-				break;
-			}
-			default:
-				rp_.sendMessage(new Message(String.format("unknown type \"%s\"", item.middle)));
-				break;
-			}
-			if( arg != null ) {
-				processors.add(0,new ImmutablePair<Transformer<ImmutablePair<Object,Object>,Object>,Object>(item.right,arg));
-			}
-		}
-		
-		MongoCollection<Document> coll = db_.getCollection((String) getSetting(COLLECTION));
-		Object o = coll;
-		for(ImmutablePair<Transformer<ImmutablePair<Object, Object>, Object>, Object> processor:processors) {
-			o = processor.left.transform(new ImmutablePair<Object,Object>(o,processor.right));
-		}
+				}
+				,ArgTypes.string, ArgTypes.string)
+		.createPipeline(obj.getString("remainder"))
+		.transform(db_.getCollection((String) getSetting(COLLECTION)))
+		;
 		
 		FindIterable<Document> res = (FindIterable<Document>) o;
 		res.limit((int) getSetting(DISPLAYNUM));

@@ -4,7 +4,7 @@ MANAGERSOURCES=$(addsuffix Manager,\
 	       Abstract WithSettings \
 	       PerlScript Trello Bot Mongo Power Birthday Ocr NewTrello Nutrition)
 UTILSOURCES=StorageManager Util TelegramUtil JsonUtil AssistantBotException \
-	    ParseCommentLine UserCollection SettingCollection ArithmeticExpressionParser \
+	    UserCollection SettingCollection \
 			Message
 DBSOURCES= MongoUtil
 MONGOMANAGERHELPER=MongoManagerHelper
@@ -14,8 +14,11 @@ HABITMANAGERSOURCES=HabitManagerBase Donep Constants
 SHELLSOURCES=InteractiveShell
 TESTSOURCES=UrlTest JsonTest ParadigmTest
 MISCSOURCES=MashaRemind RandomSetGenerator NoteMaker
-PARSERSOURCES=AbstractParser ParseOrdered StandardParserInterpreter ParseOrderedArg ParseOrderedCmd \
-	      SimpleParser
+PARSERSOURCES=AbstractParser ParseOrdered StandardParserInterpreter \
+							ParseCommentLine ParseKeysOrdered\
+ 							ArithmeticExpressionParser \
+							ParseOrderedArg ParseOrderedCmd \
+	      			SimpleParser
 MANAGERTASKSOURCES=TaskManagerBase
 UNITTESTSOURCES=MainTest ParseCommentLineTest Test
 MONEYMANAGERSOURCES=MoneyManagerBase

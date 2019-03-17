@@ -31,10 +31,10 @@ import managers.tasks.TrelloMover;
 import util.AssistantBotException;
 import util.JsonUtil;
 import util.Message;
-import util.ParseCommentLine;
 import util.UserCollection;
 import util.db.MongoUtil;
 import util.parsers.ParseOrdered.ArgTypes;
+import util.parsers.ParseCommentLine;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
 

@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import util.AssistantBotException;
-import util.ParseCommentLine;
+import util.parsers.ParseCommentLine;
 
 class ParseCommentLineTest extends Test {
 	private HashSet<String> tags_;

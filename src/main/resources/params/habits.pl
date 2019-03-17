@@ -16,7 +16,7 @@ makeHabit "0 22 * * fri", "granny talk", 1080, category=> "social" ;
 #makeHabit "30 23 * * mon", "masha deadline", 1080, category=> "social" ;
 #makeHabit "0 16 * * *", "masha remind", 1080, category=> "social" ;
 #makeHabit "0 15 * * *", "pevzner 1h", 1080, onFailed=> "move" ;
-makeHabit "0 15 * * *", "uncle vanya project", 1080, onFailed=> "move",info=>'https://trello.com/c/qGE98nSa';
+makeHabit "0 15 * * *", "uncle vanya project", 1080, onFailed=> "move:FAILED",info=>'https://trello.com/c/qGE98nSa';
 makeHabit "0 16 * * mon", "dad english", 1080  ;
 makeHabit "30 23 * * *", "mental exercise", 1080, onFailed=>'move:FAILED2';
 makeHabit "0 8 * * sat,sun", "sprint 4", 1380, category=> "gym" ;

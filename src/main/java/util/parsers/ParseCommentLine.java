@@ -1,4 +1,4 @@
-package util;
+package util.parsers;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,7 +14,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.json.JSONObject;
 
-import util.parsers.ParseOrdered;
+import util.AssistantBotException;
+import util.Util;
 
 public class ParseCommentLine {
 	public static enum Mode{
