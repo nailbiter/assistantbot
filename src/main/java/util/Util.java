@@ -362,7 +362,7 @@ public class Util{
 		} else if(daysTill<1) {
 			return (String.format("%.3f", daysTill));
 		} else if( lim>0 && daysTill>=lim ) {
-			return String.format("%dd", (int)daysTill);
+			return String.format("%d", (int)daysTill);
 		} else {
 			return (StringUtils.repeat(filler,(int)daysTill));
 		}

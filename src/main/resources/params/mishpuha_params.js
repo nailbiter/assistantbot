@@ -1,8 +1,12 @@
 var res = [
 	{
 		name:"managers.NewTrelloManager",
-		parameter:{
-			lang:"chi_tra",
+		parameter: {
+			reportParamObj:{
+				margin:25,
+				filler:"=",
+				dayLim:10,
+			},
 		},
 	},
 ];
