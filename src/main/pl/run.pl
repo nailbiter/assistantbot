@@ -24,10 +24,14 @@ use utf8;
 use Getopt::Long;
 use JSON;
 use Data::Dumper;
+use Daemon::Daemonize qw/ daemonize write_pidfile /;
+use FindBin;
 
 
 #global const's
 my $TESTFLAG = 0;
+#global var's
+my %Args;
 #procedures
 sub myExec{
 	(my $cmd) = @_;
@@ -50,39 +54,51 @@ sub loadJsonFromFile{
 	close($fh);
 	return from_json($document);
 }
+sub main {
+    if(defined $Args{pidfile}) {
+        write_pidfile( $Args{pidfile} );
+    }
+    unlink $Args{tmpfile} or warn "Could not unlink $Args{tmpfile} $!";
+    while(1){
+        printf(STDERR "run: %s\n",$Args{cmd});
+        system($Args{cmd});
+        if( -f $Args{tmpfile}){
+            printf(STDERR "true branch\n");
+            my $json = loadJsonFromFile($Args{tmpfile});
+            unlink $Args{tmpfile} or warn "Could not unlink $Args{tmpfile} $!";
+        } else {
+            printf(STDERR "false branch\n");
+            last;
+        }
+    }
+    printf(STDERR "THE END\n");
+}
 
 #main
-my $cmd;
-my $tmpfile;
-#my $cmdfile;
 GetOptions(
-	"cmd=s" => \$cmd,
-	"tmpfile=s" => \$tmpfile,
-#	"cmdfile=s" => \$cmdfile,
+	"cmd=s" => \$Args{cmd},
+	"tmpfile=s" => \$Args{tmpfile},
+    "daemonize" => \$Args{daemonize},
+    "stderr=s" => \$Args{stderr},
+    "pidfile=s" => \$Args{pidfile},
 );
-printf("cmd: \"%s\"\n",$cmd);
-printf("tmpfile: \"%s\"\n",$tmpfile);
-#printf("cmdfile: \"%s\"\n",$cmdfile);
-
-while(1){
-	printf("run: %s\n",$cmd);
-	system($cmd);
-	if( -f $tmpfile){
-		printf("true branch\n");
-		my $json = loadJsonFromFile($tmpfile);
-		printf("got: %s\n",Dumper($json));
-#		if(exists $json->{command}){
-#			my $cmdjson = loadJsonFromFile($cmdfile);
-#			if(exists $cmdjson->{$json->{command}}){
-#				myExec($cmdjson->{$json->{command}});
-#			} else {
-#				printf("cannot execute %s\n",$json->{command});
-#			}
-#		}
-		unlink $tmpfile or warn "Could not unlink $tmpfile: $!";
-	} else {
-		printf("false branch\n");
-		last;
-	}
+for(@ARGV) {
+    if(/\.json$/) {
+        my $json = loadJsonFromFile($_);
+        for my $key (keys %$json) {
+            $Args{$key} = $json->{$key};
+        }
+    }
 }
-printf("THE END\n");
+printf(STDERR "got: %s\n",Dumper(\%Args));
+
+if( $Args{daemonize} ) {
+    printf(STDERR "daemonizing: %s\n",$FindBin::Bin);
+    daemonize(run=>\&main,
+        stderr=>sprintf("%s",$Args{stderr}),
+        close=>'std',
+        chdir=>sprintf("%s/../../..",$FindBin::Bin),
+    );
+} else {
+    main();
+}

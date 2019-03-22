@@ -1,0 +1,10 @@
+{
+	"name":"AlexBotManager",
+	"scriptFolder":"src/main/js/",
+	"tmpfolder":"tmp",
+    "tmpfile":"tmp/mathmanager.restart.txt",
+	"client":"telegram",
+	"parserPrefix":"/",
+	"managers":["MiscUtilManager","BotManager",
+		"PerlScriptManager","PowerManager"]
+}

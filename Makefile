@@ -1,5 +1,5 @@
 .PHONY: all \
-	offline  botmanager trello interactive dpmanager\
+	offline  botmanager trello interactive dpmanager mathmanager\
 	 pull jar add \
 	 params \
 	 readme
@@ -19,21 +19,19 @@ RUN=java -classpath $(subst $(BOGUS),$(shell echo ~),$(shell cat cp.txt)) $(MAIN
 PERL=perl -I ~/perl5/lib/perl5
 
 all: src/main/resources/profiles/telegram.json target/$(JARNAME).jar
-	mkdir -p tmp
-	rm -rf $(REBOOTFILE)
 	$(PERL) ./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>&1 | tee log/log.telegram.txt
 
 #PHONY
 include Makefile.sources
 include Makefile.dbdata
+mathmanager: src/main/resources/profiles/mathmanager.json target/$(JARNAME).jar $(SECRET) $(USERRECORDS)
+	./src/main/pl/run.pl --cmd "$(RUN) $<" --daemonize --stderr log/log.$@.txt --pidfile tmp/pidfile.txt $< 
 dpmanager: src/main/resources/profiles/dpmanager.json target/$(JARNAME).jar $(SECRET) $(USERRECORDS)
-	mkdir -p tmp
 	rm -rf $(REBOOTFILE)
-	$(PERL) ./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>&1 | tee log/log.$@.txt
+	./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>&1 | tee log/log.$@.txt
 botmanager: src/main/resources/profiles/botmanager.json target/$(JARNAME).jar $(SECRET) $(USERRECORDS)
-	mkdir -p tmp
 	rm -rf $(REBOOTFILE)
-	$(PERL) ./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>&1 | tee log/log.$@.txt
+	./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>&1 | tee log/log.$@.txt
 trello: src/main/resources/profiles/trello.json target/$(JARNAME).jar $(SECRET) $(USERRECORDS)
 	./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>log/log.$@.txt
 interactive: src/main/resources/profiles/interactive.json target/$(JARNAME).jar $(SECRET) $(USERRECORDS)
