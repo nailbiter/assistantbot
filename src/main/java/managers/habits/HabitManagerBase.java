@@ -257,7 +257,10 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 	}
 	protected String printStreak(String name) {
 		Document doc = (Document)streaks_.find(Filters.eq("name",name)).first();
-		return String.format("%d(%d)", doc.getInteger("accum"),doc.getInteger("streak"));
+		return String.format("%d(%d)"
+				,doc.getOrDefault("accum", 0), doc.getOrDefault("streak", 0)
+//				, doc.get("accum"),doc.getInteger("streak")
+				);
 	}
 	protected void updateStreaks(String name, StreakUpdateEnum code) {
 		Document doc = new Document();
