@@ -181,6 +181,7 @@ public abstract class HabitManagerBase extends AbstractManager implements Option
 			JSONObject habit = habits_.getJSONObject(i);
 			Predictor predictor = new Predictor(habit.getString("cronline"));
 			String tzname = GetTimeZone(rp_);
+			System.err.format("habit: %s\n", habit.toString(2));
 			System.err.format("HabitManagerBase: tzname=%s\n", tzname);
 			TimeZone tz = TimeZone.getTimeZone(tzname);
 			predictor.setTimeZone(tz);

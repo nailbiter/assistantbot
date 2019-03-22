@@ -19,7 +19,7 @@ public class BotManager extends AbstractManager {
 				.getCommandsObj(CMDPREFIX));
 		rp_ = rp;
 	}
-//	@Override
+//	@Override;
 //	public Message processReply(int messageID, String msg) {
 //		return null;
 //	}
