@@ -22,7 +22,6 @@ var alex = {
 		restartmessage:[
 			"restart message"
 		],
-		//timezone:"JST",
-		timezone:'America/New_York',
+		timezone:"Asia/Tokyo",
 	};
 module.exports = alex;
