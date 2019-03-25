@@ -22,6 +22,7 @@ import java.util.Timer;
 import java.util.logging.Logger;
 import managers.habits.Constants.BOARDIDS;
 
+import org.apache.commons.collections4.Closure;
 import org.apache.commons.collections4.Predicate;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.bson.Document;
@@ -202,6 +203,18 @@ public class TaskManagerBase extends WithSettingsManager {
 								,managers.habits.Constants.INBOXLISTNAME).setSegment(1)
 						, new TrelloList(ta,BOARDIDS.DREAMPIRATES.toString()
 								,"TODO: code")
+						.setFilter(new java.util.function.Predicate<JSONObject>() {
+									@Override
+									public boolean test(JSONObject object) {
+										return HasDue(object);
+									}
+								})
+						.setModifier(new Closure<JSONObject>() {
+							@Override
+							public void execute(JSONObject card) {
+								card.getJSONArray("labels").put(new JSONObject().put("name", "parttime"));
+							}
+						})
 						})));
 		comparators.put(SNOOZED, new ImmutablePair<Comparator<JSONObject>,List<TrelloList>>(
 				new Comparator<JSONObject>() {

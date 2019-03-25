@@ -1,8 +1,12 @@
 package managers.tasks;
 
 import java.util.ArrayList;
+import java.util.function.Predicate;
 
+import org.apache.commons.collections4.Closure;
+import org.json.JSONArray;
 import org.json.JSONObject;
+
 import static managers.habits.Constants.SEPARATOR;
 
 import com.github.nailbiter.util.TrelloAssistant;
@@ -14,6 +18,8 @@ public class TrelloList {
 	private String listName_;
 	private Integer segment_ = null;
 	private TrelloAssistant ta_;
+	private Closure<JSONObject> modifier_ = null;
+	private Predicate<JSONObject> filter_ = null;
 	public TrelloList(TrelloAssistant ta,String boardId, String listName) {
 		ta_ = ta;
 		boardId_ = boardId;
@@ -23,14 +29,36 @@ public class TrelloList {
 		segment_ = segment;
 		return this;
 	}
+	public TrelloList setModifier(Closure<JSONObject> clo) {
+		modifier_  = clo;
+		return this;
+	}
+	public TrelloList setFilter(Predicate<JSONObject> filter) {
+		filter_ = filter;
+		return this;
+	}
 	public ArrayList<JSONObject> getTasks() throws Exception {
+		ArrayList<JSONObject> res = new ArrayList<JSONObject>();
 		if(segment_==null) {
-			ta_.getCardsInList(getListNamePrivate());
-			return null;
+			JSONArray tasks = ta_.getCardsInList(getListNamePrivate());
+			for(Object o:tasks) {
+				res.add((JSONObject) o);
+			}
 		} else {
 			TrelloMover tm = new TrelloMover(ta_,getListNamePrivate(),SEPARATOR); 
-			return tm.getCardsInSegment(segment_);
+			res = tm.getCardsInSegment(segment_);
 		}
+		
+		if( filter_ != null ) {
+			res.removeIf(filter_);
+		}
+		if( modifier_ != null ) {
+			for(JSONObject card:res) {
+				modifier_.execute(card);
+			}
+		}
+		
+		return res;
 	}
 	public JSONObject addTask(JSONObject card) throws Exception {
 		String li = getListNamePrivate();
