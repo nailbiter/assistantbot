@@ -3,12 +3,12 @@ package managers.tasks;
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.gte;
-import static managers.habits.Constants.SEPARATOR;
 import static util.Util.PrintDaysTill;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -16,12 +16,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.logging.Logger;
+import managers.habits.Constants.BOARDIDS;
 
 import org.apache.commons.collections4.Predicate;
-import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,7 +35,6 @@ import com.mongodb.Block;
 import com.mongodb.client.MongoCollection;
 
 import assistantbot.ResourceProvider;
-import managers.AbstractManager;
 import managers.WithSettingsManager;
 import util.AssistantBotException;
 import util.JsonUtil;
@@ -56,7 +57,6 @@ public class TaskManagerBase extends WithSettingsManager {
 	private static final String MAXDONE = "maxdone";
 	private static final String INFTY = "∞";
 	protected Timer timer = new Timer();
-//	protected ResourceProvider rp_;
 	protected TrelloAssistant ta_;
 	private ScriptApp sa_;
 	protected static int REMINDBEFOREMIN = 10;
@@ -64,7 +64,8 @@ public class TaskManagerBase extends WithSettingsManager {
 	protected static String INBOX = "INBOX";
 	protected static String SNOOZED = "SNOOZED";
 	protected static String SHORTURL = "shortUrl";
-	protected HashMap<String,ImmutableTriple<Comparator<JSONObject>,String,Integer>> comparators_ = new HashMap<String,ImmutableTriple<Comparator<JSONObject>,String,Integer>>();
+	protected HashMap<String, ImmutablePair<Comparator<JSONObject>, List<TrelloList>>> comparators_ = 
+			new HashMap<String,ImmutablePair<Comparator<JSONObject>,List<TrelloList>>>();
 	private static ScriptHelperVarkeeper varkeeper_ = null;
 	/**
 	 * @deprecated
@@ -173,10 +174,15 @@ public class TaskManagerBase extends WithSettingsManager {
 		});
 		varkeeper.set("recognizedCats", new JSONArray(recognizedCats).toString());
 	}
-	private static void FillTable(HashMap<String,ImmutableTriple<Comparator<JSONObject>,String,Integer>> c,TrelloAssistant ta,final ScriptApp sa) throws Exception {
-		String listid = ta.findListByName(managers.habits.Constants.INBOXBOARDID, 
-				managers.habits.Constants.INBOXLISTNAME);
-		c.put(INBOX, new ImmutableTriple<Comparator<JSONObject>,String,Integer>(
+	/**
+	 * @deprecated use parameters
+	 * @param comparators
+	 * @param ta
+	 * @param sa
+	 * @throws Exception
+	 */
+	private static void FillTable(HashMap<String, ImmutablePair<Comparator<JSONObject>, List<TrelloList>>> comparators,TrelloAssistant ta,final ScriptApp sa) throws Exception {
+		comparators.put(INBOX, new ImmutablePair<Comparator<JSONObject>, List<TrelloList>>(
 				new Comparator<JSONObject>() {
 					@Override
 					public int compare(JSONObject o1, JSONObject o2) {
@@ -190,8 +196,14 @@ public class TaskManagerBase extends WithSettingsManager {
 							return 0;
 						}
 					}
-				},listid,1));
-		c.put(SNOOZED, new ImmutableTriple<Comparator<JSONObject>,String,Integer>(
+				}
+				,Arrays.asList(new TrelloList[] {
+						new TrelloList(ta,managers.habits.Constants.BOARDIDS.INBOX.toString()
+								,managers.habits.Constants.INBOXLISTNAME).setSegment(1)
+						, new TrelloList(ta,BOARDIDS.DREAMPIRATES.toString()
+								,"TODO: code")
+						})));
+		comparators.put(SNOOZED, new ImmutablePair<Comparator<JSONObject>,List<TrelloList>>(
 				new Comparator<JSONObject>() {
 					@Override
 					public int compare(JSONObject o1, JSONObject o2) {
@@ -203,10 +215,11 @@ public class TaskManagerBase extends WithSettingsManager {
 						}
 					}
 				}
-				,listid, 0));
-		
+				,Arrays.asList(new TrelloList[] {
+						new TrelloList(ta,managers.habits.Constants.BOARDIDS.INBOX.toString()
+								,managers.habits.Constants.INBOXLISTNAME).setSegment(0)
+				})));
 	}
-
 	protected static String PrintTasks(ArrayList<JSONObject> arr, JSONObject paramObj, ArrayList<String> recognizedCats, ArrayList<Predicate<JSONObject>> filters) throws JSONException, ParseException, AssistantBotException {
 		System.err.format("PrintTasks: paramObj=%s\n", paramObj.toString(2));
 		TableBuilder tb = new TableBuilder()
@@ -421,10 +434,10 @@ public class TaskManagerBase extends WithSettingsManager {
 		}
 	}
 	protected static HashMap<String, Integer> GetDoneTasksStat(TrelloAssistant ta, ResourceProvider rp,
-			HashMap<String, ImmutableTriple<Comparator<JSONObject>, String, Integer>> c,
+			HashMap<String, ImmutablePair<Comparator<JSONObject>, List<TrelloList>>> comparators,
 			final ArrayList<String> recognizedCats, 
 			final ArrayList<AssistantBotException> exs) throws Exception {
-		final JSONArray alltasks = ta.getAllCardsInList(c.get(INBOX).middle);
+		final JSONArray alltasks = ta.getAllCardsInList(comparators.get(INBOX).right.get(0).getListName());
 		System.err.format("alltasks has %d cards\n", alltasks.length());
 		
 		Calendar cal = Calendar.getInstance();
@@ -460,20 +473,19 @@ public class TaskManagerBase extends WithSettingsManager {
 				});
 		return stat;
 	}
-//	@Override
-//	public String processReply(int messageID, String msg) {
-//		return null;
-//	}
 
 	protected ArrayList<JSONObject> getTasks(String identifier) throws Exception {
 		if( !comparators_.containsKey(identifier) )
 			throw new Exception(String.format("unknown key %s", identifier));
-		ImmutableTriple<Comparator<JSONObject>, String, Integer> triple = 
+		ImmutablePair<Comparator<JSONObject>, List<TrelloList>> pair = 
 				comparators_.get(identifier);
-		TrelloMover tm = new TrelloMover(ta_,triple.middle,SEPARATOR); 
-		ArrayList<JSONObject> res = tm.getCardsInSegment(triple.right);
+		ArrayList<JSONObject> res = new ArrayList<JSONObject>();
+		for(TrelloList tl:pair.right) {
+			res.addAll(tl.getTasks());
+		}
+		
 		FillVarkeeper(res,varkeeper_);
-		Collections.sort(res, triple.left);
+		Collections.sort(res, pair.left);
 		return res;
 	}
 

@@ -3,20 +3,19 @@
  */
 package managers;
 
-import static managers.habits.Constants.SEPARATOR;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.TimerTask;
 
 import org.apache.commons.collections4.Closure;
 import org.apache.commons.collections4.Predicate;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,14 +26,14 @@ import com.mongodb.client.MongoCollection;
 
 import assistantbot.ResourceProvider;
 import managers.tasks.TaskManagerBase;
-import managers.tasks.TrelloMover;
+import managers.tasks.TrelloList;
 import util.AssistantBotException;
 import util.JsonUtil;
 import util.Message;
 import util.UserCollection;
 import util.db.MongoUtil;
-import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseCommentLine;
+import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
 
@@ -48,7 +47,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		setUpReminders(rp);
 	}
 	private void setUpReminders(ResourceProvider rp) throws Exception {
-		JSONArray cards = ta_.getCardsInList(comparators_.get(SNOOZED).middle);
+		JSONArray cards = ta_.getCardsInList(comparators_.get(SNOOZED).right.get(0).getListName());
 		MongoCollection<Document> coll = 
 				rp_.getCollection(UserCollection.POSTPONEDTASKS);
 		JSONArray reminders = MongoUtil.GetJSONArrayFromDatabase(coll);
@@ -105,7 +104,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		}
 	}
 	public String tasknew(JSONObject obj) throws Exception {
-		ImmutableTriple<Comparator<JSONObject>, String, Integer> triple = comparators_.get(INBOX);
+		ImmutablePair<Comparator<JSONObject>, List<TrelloList>> triple = comparators_.get(INBOX);
 		HashMap<String, Object> parsed = 
 				new ParseCommentLine(ParseCommentLine.Mode.FROMRIGHT)
 				.parse(obj.getString("name"));
@@ -117,9 +116,9 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 			card.put("labelByName", 
 					new JSONArray((HashSet<String>)parsed.get(ParseCommentLine.TAGS)));
 		
-		JSONObject res = ta_.addCard(triple.middle, card);
-		
-		new TrelloMover(ta_,triple.middle,SEPARATOR).moveTo(res,triple.middle,triple.right);
+		JSONObject res = triple.right.get(0).addTask(card);
+//		JSONObject res = ta_.addCard(triple.middle, card);
+//		new TrelloMover(ta_,triple.middle,SEPARATOR).moveTo(res,triple.middle,triple.right);
 		logToDb("tasknew",res);
 		rp_.sendMessage(new Message(String.format("created new card %s",res.getString("shortUrl"))));
 		return "";
@@ -133,7 +132,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		if( !obj.has("num") ) {
 			return PrintSnoozed(ta_
 					,rp_
-					,comparators_.get(SNOOZED).middle
+					,comparators_.get(SNOOZED).right.get(0).getListName()
 					,getParamObject(rp_)
 					,logger_);
 		}
@@ -162,8 +161,8 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 				res.add(String.format("set due %s to \"%s\"", due.toString(),card.getString("name")));
 			}
 			if(parsed.containsKey(SNOOZEDATE)) {
-				new TrelloMover(ta_,comparators_.get(INBOX).middle,SEPARATOR)
-				.moveTo(card,comparators_.get(SNOOZED).middle,comparators_.get(SNOOZED).right);
+				TrelloList.Move(card,comparators_.get(INBOX).right.get(0)
+						, comparators_.get(SNOOZED).right.get(0));
 				Date date = (Date) parsed.get(SNOOZEDATE);
 				logToDb(String.format("%s to %s", "taskpostpone",date.toString()),card);
 				System.err.format("date: %s\n", date.toString());
@@ -230,8 +229,11 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 	public void execute(JSONObject card) {
 		System.err.format("execute %s\n", card.toString(2));
 		try {
-			new TrelloMover(ta_,comparators_.get(SNOOZED).middle,SEPARATOR)
-			.moveTo(card,comparators_.get(INBOX).middle,comparators_.get(INBOX).right);
+			TrelloList.Move(card,comparators_.get(SNOOZED).right.get(0)
+					,comparators_.get(INBOX).right.get(0)
+					);
+//			new TrelloMover(ta_,comparators_.get(SNOOZED).middle,SEPARATOR)
+//			.moveTo(card,comparators_.get(INBOX).middle,comparators_.get(INBOX).right);
 			logToDb("snooze",card);
 			rp_.sendMessage(new Message(String.format("snooze \"%s\"", card.getString("name"))));
 		} catch (Exception e) {

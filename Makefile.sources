@@ -19,7 +19,7 @@ PARSERSOURCES=AbstractParser ParseOrdered StandardParserInterpreter \
  							ArithmeticExpressionParser \
 							ParseOrderedArg ParseOrderedCmd \
 	      			SimpleParser
-MANAGERTASKSOURCES=TaskManagerBase
+MANAGERTASKSOURCES=TaskManagerBase TrelloList
 UNITTESTSOURCES=MainTest ParseCommentLineTest Test
 MONEYMANAGERSOURCES=MoneyManagerBase
 SOURCES=\
@@ -41,5 +41,4 @@ SOURCES=\
  $(addprefix testing/,$(UNITTESTSOURCES))\
  $(MAINCLASS)
 add:
-	git add $(addprefix src/main/java/,$(addsuffix .java,$(SOURCES)))
-	git status
+	git add --ignore-errors $(addprefix src/main/java/,$(addsuffix .java,$(SOURCES)))

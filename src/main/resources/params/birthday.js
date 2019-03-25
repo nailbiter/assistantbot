@@ -104,5 +104,10 @@ var birthdays = [
 					month:01,date:24,
 					info:'https://www.facebook.com/kostiantyn.gritsak/',
 				},
+				{
+					name:'zafar avzalshoev',
+					month:01,date:03,
+					info:'mr.zafarjon@gmail.com',
+				},
 			]
 module.exports = birthdays;

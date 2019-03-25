@@ -10,7 +10,7 @@ public class AssistantBotException extends Exception {
 		,MISCUTILMANAGER
 		,SIMPLEPARSER,
 		PARSEORDEREDCMD, STANDARDPARSER, NEWTRELLOMANAGER, TASKMANAGERBASE
-	, BASICUSERDATA, PARSEKEYSORDERED};
+	, BASICUSERDATA, PARSEKEYSORDERED, TRELLOLIST};
 	private Type t_;
 	public AssistantBotException(Type t,String msg) {
 		super(msg);
