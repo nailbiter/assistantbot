@@ -2,7 +2,9 @@
 UPLOADJSONPL=../../pl/uploadJson.pl
 
 FLAGDIR=flags
-FLAGS=userRecords alex.params habits mishpuha_habits mishpuha_params
+HABITS=habits mishpuha_habits
+PARAMS= alex.params mishpuha_params
+FLAGS=userRecords $(HABITS) $(PARAMS)
 
 all: $(addprefix $(FLAGDIR)/,$(addsuffix .txt, $(FLAGS)))
 
