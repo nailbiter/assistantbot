@@ -26,7 +26,7 @@ import com.mongodb.client.MongoCollection;
 
 import assistantbot.ResourceProvider;
 import managers.tasks.TaskManagerBase;
-import managers.tasks.TrelloList;
+import managers.tasks.TrelloTaskList;
 import util.AssistantBotException;
 import util.JsonUtil;
 import util.Message;
@@ -104,7 +104,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		}
 	}
 	public String tasknew(JSONObject obj) throws Exception {
-		ImmutablePair<Comparator<JSONObject>, List<TrelloList>> triple = comparators_.get(INBOX);
+		ImmutablePair<Comparator<JSONObject>, List<TrelloTaskList>> triple = comparators_.get(INBOX);
 		HashMap<String, Object> parsed = 
 				new ParseCommentLine(ParseCommentLine.Mode.FROMRIGHT)
 				.parse(obj.getString("name"));
@@ -161,7 +161,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 				res.add(String.format("set due %s to \"%s\"", due.toString(),card.getString("name")));
 			}
 			if(parsed.containsKey(SNOOZEDATE)) {
-				TrelloList.Move(card,comparators_.get(INBOX).right.get(0)
+				TrelloTaskList.Move(card,comparators_.get(INBOX).right.get(0)
 						, comparators_.get(SNOOZED).right.get(0));
 				Date date = (Date) parsed.get(SNOOZEDATE);
 				logToDb(String.format("%s to %s", "taskpostpone",date.toString()),card);
@@ -229,7 +229,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 	public void execute(JSONObject card) {
 		System.err.format("execute %s\n", card.toString(2));
 		try {
-			TrelloList.Move(card,comparators_.get(SNOOZED).right.get(0)
+			TrelloTaskList.Move(card,comparators_.get(SNOOZED).right.get(0)
 					,comparators_.get(INBOX).right.get(0)
 					);
 //			new TrelloMover(ta_,comparators_.get(SNOOZED).middle,SEPARATOR)

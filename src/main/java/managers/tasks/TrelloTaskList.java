@@ -13,27 +13,27 @@ import com.github.nailbiter.util.TrelloAssistant;
 
 import util.AssistantBotException;
 
-public class TrelloList {
+public class TrelloTaskList {
 	private String boardId_;
 	private String listName_;
 	private Integer segment_ = null;
 	private TrelloAssistant ta_;
 	private Closure<JSONObject> modifier_ = null;
 	private Predicate<JSONObject> filter_ = null;
-	public TrelloList(TrelloAssistant ta,String boardId, String listName) {
+	public TrelloTaskList(TrelloAssistant ta,String boardId, String listName) {
 		ta_ = ta;
 		boardId_ = boardId;
 		listName_ = listName;
 	}
-	public TrelloList setSegment(int segment) {
+	public TrelloTaskList setSegment(int segment) {
 		segment_ = segment;
 		return this;
 	}
-	public TrelloList setModifier(Closure<JSONObject> clo) {
+	public TrelloTaskList setModifier(Closure<JSONObject> clo) {
 		modifier_  = clo;
 		return this;
 	}
-	public TrelloList setFilter(Predicate<JSONObject> filter) {
+	public TrelloTaskList setFilter(Predicate<JSONObject> filter) {
 		filter_ = filter;
 		return this;
 	}
@@ -79,7 +79,7 @@ public class TrelloList {
 	public String getListName() throws Exception {
 		return getListNamePrivate();
 	}
-	public static void Move(JSONObject card, TrelloList trelloList, TrelloList trelloList2) throws Exception {
+	public static void Move(JSONObject card, TrelloTaskList trelloList, TrelloTaskList trelloList2) throws Exception {
 		// TODO Auto-generated method stub
 		if(trelloList.segment_!=null && trelloList2.segment_!=null) {
 			new TrelloMover(trelloList.ta_,trelloList.getListNamePrivate(),SEPARATOR)

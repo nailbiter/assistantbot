@@ -65,8 +65,8 @@ public class TaskManagerBase extends WithSettingsManager {
 	protected static String INBOX = "INBOX";
 	protected static String SNOOZED = "SNOOZED";
 	protected static String SHORTURL = "shortUrl";
-	protected HashMap<String, ImmutablePair<Comparator<JSONObject>, List<TrelloList>>> comparators_ = 
-			new HashMap<String,ImmutablePair<Comparator<JSONObject>,List<TrelloList>>>();
+	protected HashMap<String, ImmutablePair<Comparator<JSONObject>, List<TrelloTaskList>>> comparators_ = 
+			new HashMap<String,ImmutablePair<Comparator<JSONObject>,List<TrelloTaskList>>>();
 	private static ScriptHelperVarkeeper varkeeper_ = null;
 	/**
 	 * @deprecated
@@ -182,8 +182,8 @@ public class TaskManagerBase extends WithSettingsManager {
 	 * @param sa
 	 * @throws Exception
 	 */
-	private static void FillTable(HashMap<String, ImmutablePair<Comparator<JSONObject>, List<TrelloList>>> comparators,TrelloAssistant ta,final ScriptApp sa) throws Exception {
-		comparators.put(INBOX, new ImmutablePair<Comparator<JSONObject>, List<TrelloList>>(
+	private static void FillTable(HashMap<String, ImmutablePair<Comparator<JSONObject>, List<TrelloTaskList>>> comparators,TrelloAssistant ta,final ScriptApp sa) throws Exception {
+		comparators.put(INBOX, new ImmutablePair<Comparator<JSONObject>, List<TrelloTaskList>>(
 				new Comparator<JSONObject>() {
 					@Override
 					public int compare(JSONObject o1, JSONObject o2) {
@@ -198,10 +198,10 @@ public class TaskManagerBase extends WithSettingsManager {
 						}
 					}
 				}
-				,Arrays.asList(new TrelloList[] {
-						new TrelloList(ta,managers.habits.Constants.BOARDIDS.INBOX.toString()
+				,Arrays.asList(new TrelloTaskList[] {
+						new TrelloTaskList(ta,managers.habits.Constants.BOARDIDS.INBOX.toString()
 								,managers.habits.Constants.INBOXLISTNAME).setSegment(1)
-						, new TrelloList(ta,BOARDIDS.DREAMPIRATES.toString()
+						, new TrelloTaskList(ta,BOARDIDS.DREAMPIRATES.toString()
 								,"TODO: code")
 						.setFilter(new java.util.function.Predicate<JSONObject>() {
 									@Override
@@ -216,7 +216,7 @@ public class TaskManagerBase extends WithSettingsManager {
 							}
 						})
 						})));
-		comparators.put(SNOOZED, new ImmutablePair<Comparator<JSONObject>,List<TrelloList>>(
+		comparators.put(SNOOZED, new ImmutablePair<Comparator<JSONObject>,List<TrelloTaskList>>(
 				new Comparator<JSONObject>() {
 					@Override
 					public int compare(JSONObject o1, JSONObject o2) {
@@ -228,8 +228,8 @@ public class TaskManagerBase extends WithSettingsManager {
 						}
 					}
 				}
-				,Arrays.asList(new TrelloList[] {
-						new TrelloList(ta,managers.habits.Constants.BOARDIDS.INBOX.toString()
+				,Arrays.asList(new TrelloTaskList[] {
+						new TrelloTaskList(ta,managers.habits.Constants.BOARDIDS.INBOX.toString()
 								,managers.habits.Constants.INBOXLISTNAME).setSegment(0)
 				})));
 	}
@@ -447,7 +447,7 @@ public class TaskManagerBase extends WithSettingsManager {
 		}
 	}
 	protected static HashMap<String, Integer> GetDoneTasksStat(TrelloAssistant ta, ResourceProvider rp,
-			HashMap<String, ImmutablePair<Comparator<JSONObject>, List<TrelloList>>> comparators,
+			HashMap<String, ImmutablePair<Comparator<JSONObject>, List<TrelloTaskList>>> comparators,
 			final ArrayList<String> recognizedCats, 
 			final ArrayList<AssistantBotException> exs) throws Exception {
 		final JSONArray alltasks = ta.getAllCardsInList(comparators.get(INBOX).right.get(0).getListName());
@@ -490,10 +490,10 @@ public class TaskManagerBase extends WithSettingsManager {
 	protected ArrayList<JSONObject> getTasks(String identifier) throws Exception {
 		if( !comparators_.containsKey(identifier) )
 			throw new Exception(String.format("unknown key %s", identifier));
-		ImmutablePair<Comparator<JSONObject>, List<TrelloList>> pair = 
+		ImmutablePair<Comparator<JSONObject>, List<TrelloTaskList>> pair = 
 				comparators_.get(identifier);
 		ArrayList<JSONObject> res = new ArrayList<JSONObject>();
-		for(TrelloList tl:pair.right) {
+		for(TrelloTaskList tl:pair.right) {
 			res.addAll(tl.getTasks());
 		}
 		
