@@ -84,19 +84,6 @@ public class NewTrelloManager extends WithSettingsManager{
 		String[] cats = getCats(rp);
 		for(String cat:cats)
 			res.put(cat, MoveToTodoAndPutLabel(cat,ta));
-		
-//		res.put("help", new ImmutablePair<String,Transformer<Object,String>>("show this help message"
-//				,new Transformer<Object,String>(){
-//					@Override
-//					public String transform(Object input) {
-//						TableBuilder tb = new TableBuilder();
-//						tb.addTokens("name_","description_");
-//						for(String t:res.keySet())
-//							tb.addTokens(t,res.get(t).left);
-//						return tb.toString();
-//					}
-//				}));
-		
 		return res;
 	}
 	private static String[] getCats(ResourceProvider rp) {
@@ -149,7 +136,7 @@ public class NewTrelloManager extends WithSettingsManager{
 		Set<String> tags = (Set<String>) parsed.get(ParseCommentLine.TAGS);
 		if( tags.isEmpty() ) {
 			ArrayList<String> res = new ArrayList<String>();
-			JSONObject card = ta_.addCard(getTasklist_()
+			JSONObject card = ta_.addCard(getTasklist()
 					, new JSONObject().put("name", parsed.get(ParseCommentLine.REM)));
 			if( parsed.containsKey(ParseCommentLine.DATE) ) {
 				Date d = (Date) parsed.get(ParseCommentLine.DATE);
@@ -175,7 +162,7 @@ public class NewTrelloManager extends WithSettingsManager{
 			return String.format("cannot process tag \"%s\"", tag);
 		}
 		
-		JSONArray cards = ta_.getCardsInList(getTasklist_());
+		JSONArray cards = ta_.getCardsInList(getTasklist());
 		if( !parsed.containsKey(ParseCommentLine.REM) ) {
 			HashMap<String, ImmutablePair<JSONObject, MutableInt>> count = 
 					new HashMap<String,ImmutablePair<JSONObject,MutableInt>>();
@@ -199,12 +186,12 @@ public class NewTrelloManager extends WithSettingsManager{
 			rp_.sendMessageWithKeyBoard(new Message("which card?"), map, dispatch_.get(tag).right);
 			return "";
 		} else {
-			JSONObject card = ta_.addCard(getTasklist_(), new JSONObject().put("name", parsed.get(ParseCommentLine.REM)));
+			JSONObject card = ta_.addCard(getTasklist(), new JSONObject().put("name", parsed.get(ParseCommentLine.REM)));
 			JsonUtil.FilterJsonKeys(card, new JSONArray().put("name").put("shortUrl"));
 			return String.format("%s\nadded task %s with tag \"%s\"",dispatch_.get(tag).right.transform(card), card.toString(2),tag);
 		}
 	}
-	private String getTasklist_() throws JSONException, Exception {
+	private String getTasklist() throws JSONException, Exception {
 		return (String) this.getSetting("tasklist");
 	}
 	public String report(Object arg) throws JSONException, Exception {

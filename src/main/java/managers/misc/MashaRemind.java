@@ -48,9 +48,13 @@ public class MashaRemind {
 		TableBuilder tb = new TableBuilder();
 		tb.addNewlineAndTokens("название", "осталось дней");
 		for(JSONObject obj:tasks) {
+			double daysTill = obj.getDouble("daysTill");
+			int noDisplayLim = parameters.optInt("noDisplayLim",-1);
+			if( noDisplayLim > 0 && daysTill > noDisplayLim ) {
+				continue;
+			}
 			tb.newRow();
 			tb.addToken(com.github.nailbiter.util.Util.CutString(obj.getString("name"),parameters.getInt("margin")));
-			double daysTill = obj.getDouble("daysTill");
 			tb.addToken(util.Util.PrintDaysTill(daysTill
 					,parameters.getString("filler")
 					,parameters.optInt("dayLim",10)));
