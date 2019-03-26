@@ -50,7 +50,7 @@ public class TrelloTaskList {
 		}
 		
 		if( filter_ != null ) {
-			res.removeIf(filter_);
+			res.removeIf(filter_.negate());
 		}
 		if( modifier_ != null ) {
 			for(JSONObject card:res) {
