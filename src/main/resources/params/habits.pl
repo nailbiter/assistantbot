@@ -45,6 +45,6 @@ makeHabit "30 22 * * Fri", "confucius 1h: 2", 960, onFailed=>'move:FAILED2';
 makeHabit "00 22 13 * *", "inflate bike", 960 , category=>"atschool";
 makeHabit "00 10 * * mon", "check week stat (money, time)", 960 , category=>"logistics";
 #makeHabit "00 10 */15 * *", "fix test.pl", 960 , category=>"logistics";
-makeHabit "0 8 27 * *", "odaiba payment", 960, info=>"amount = 35119";
+#makeHabit "0 8 27 * *", "odaiba payment", 960, info=>"amount = 35119";
 makeHabit "52 7 * * *", "test", 1, enabled=> 0, onFailed=>'putlabel' ;
 makeHabit "* * * * *", "test2", -1, callback=>{name=>'managers.NewTrelloManager',method=>'report'},enabled=> 0, onFailed=>'putlabel' ;
