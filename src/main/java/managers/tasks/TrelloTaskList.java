@@ -66,7 +66,7 @@ public class TrelloTaskList {
 		if(segment_!=null) {
 			new TrelloMover(ta_,li,SEPARATOR).moveTo(res,li,segment_);
 		}
-		return null;
+		return res;
 	}
 	private String getListNamePrivate() throws Exception {
 		return ta_.findListByName(boardId_,listName_);

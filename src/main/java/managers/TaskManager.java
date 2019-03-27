@@ -104,7 +104,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		}
 	}
 	public String tasknew(JSONObject obj) throws Exception {
-		ImmutablePair<Comparator<JSONObject>, List<TrelloTaskList>> triple = comparators_.get(INBOX);
+		ImmutablePair<Comparator<JSONObject>, List<TrelloTaskList>> pair = comparators_.get(INBOX);
 		HashMap<String, Object> parsed = 
 				new ParseCommentLine(ParseCommentLine.Mode.FROMRIGHT)
 				.parse(obj.getString("name"));
@@ -116,9 +116,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 			card.put("labelByName", 
 					new JSONArray((HashSet<String>)parsed.get(ParseCommentLine.TAGS)));
 		
-		JSONObject res = triple.right.get(0).addTask(card);
-//		JSONObject res = ta_.addCard(triple.middle, card);
-//		new TrelloMover(ta_,triple.middle,SEPARATOR).moveTo(res,triple.middle,triple.right);
+		JSONObject res = pair.right.get(0).addTask(card);
 		logToDb("tasknew",res);
 		rp_.sendMessage(new Message(String.format("created new card %s",res.getString("shortUrl"))));
 		return "";
