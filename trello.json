@@ -1,39 +1,39 @@
 {
+   "URLNAMES" : {
+      "add_run" : "https://trello.com/c/HsN2IoqH",
+      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
+      "limit_to_40" : "https://trello.com/c/fkFYN06v",
+      "done_tast_limit" : "https://trello.com/c/fy6l2nbZ",
+      "plbuild_pull_jar" : "https://trello.com/c/QfGjg1UR",
+      "sort order" : "https://trello.com/c/ofzAma1H",
+      "label_in_task" : "https://trello.com/c/tqUrbAOy",
+      "ttask_settings" : "https://trello.com/c/L5RL302h",
+      "task_lists" : "https://trello.com/c/zBpOfTh5",
+      "write_gymdone_num" : "https://trello.com/c/pvXRhy3L",
+      "gf_misc" : "https://trello.com/c/cUcY2WmZ",
+      "auto_check_mult_main_labels" : "https://trello.com/c/cexmj2vA",
+      "print_only_taskdone_stat" : "https://trello.com/c/XrVeN6rK",
+      "replace_gym_with_js" : "https://trello.com/c/TnjMxInQ",
+      "plus_snooze" : "https://trello.com/c/zBFzhL2R",
+      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
+      "dad_task" : "https://trello.com/c/l4X6a80c",
+      "distrib_gen_js" : "https://trello.com/c/3R83mhwS",
+      "donep" : "https://trello.com/c/4rTjnXHm",
+      "json table" : "https://trello.com/c/gfyEEt3o",
+      "parser" : "https://trello.com/c/hkuY0OBL",
+      "indicator" : "https://trello.com/c/FMIlCbXE",
+      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
+      "remove_costs" : "https://trello.com/c/PmEunKmi",
+      "check_exclamation" : "https://trello.com/c/I2UZf4ds"
+   },
+   "PULLEDDATA" : {
+      "trelloTitle" : "money-1",
+      "TRELLOTITLE" : "5 merge habits and todo list"
+   },
    "CARDURL" : "task_lists",
    "DEPENDENCIES" : [
       {
          "DIR" : "src/main/java/com/github/nailbiter/util/"
       }
-   ],
-   "URLNAMES" : {
-      "gf_misc" : "https://trello.com/c/cUcY2WmZ",
-      "parser" : "https://trello.com/c/hkuY0OBL",
-      "sort order" : "https://trello.com/c/ofzAma1H",
-      "plbuild_pull_jar" : "https://trello.com/c/QfGjg1UR",
-      "indicator" : "https://trello.com/c/FMIlCbXE",
-      "label_in_task" : "https://trello.com/c/tqUrbAOy",
-      "dad_task" : "https://trello.com/c/l4X6a80c",
-      "compare deadlines" : "https://trello.com/c/W4CSDHPl",
-      "limit_to_40" : "https://trello.com/c/fkFYN06v",
-      "done_tast_limit" : "https://trello.com/c/fy6l2nbZ",
-      "donep" : "https://trello.com/c/4rTjnXHm",
-      "write_gymdone_num" : "https://trello.com/c/pvXRhy3L",
-      "add_run" : "https://trello.com/c/HsN2IoqH",
-      "auto_check_mult_main_labels" : "https://trello.com/c/cexmj2vA",
-      "ttask_settings" : "https://trello.com/c/L5RL302h",
-      "plus_snooze" : "https://trello.com/c/zBFzhL2R",
-      "distrib_gen_js" : "https://trello.com/c/3R83mhwS",
-      "task_lists" : "https://trello.com/c/zBpOfTh5",
-      "autoCheckLabel" : "https://trello.com/c/cexmj2vA",
-      "check_exclamation" : "https://trello.com/c/I2UZf4ds",
-      "replace_gym_with_js" : "https://trello.com/c/TnjMxInQ",
-      "json table" : "https://trello.com/c/gfyEEt3o",
-      "print_only_taskdone_stat" : "https://trello.com/c/XrVeN6rK",
-      "label, deadline in task title" : "https://trello.com/c/8g5nF20K",
-      "remove_costs" : "https://trello.com/c/PmEunKmi"
-   },
-   "PULLEDDATA" : {
-      "TRELLOTITLE" : "5 merge habits and todo list",
-      "trelloTitle" : "money-1"
-   }
+   ]
 }
