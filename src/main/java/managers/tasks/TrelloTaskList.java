@@ -1,6 +1,7 @@
 package managers.tasks;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Predicate;
 
 import org.apache.commons.collections4.Closure;
@@ -18,12 +19,14 @@ public class TrelloTaskList {
 	private static final String SETSEGMENT = "SETSEGMENT";
 	private static final String HASDUE = "HASDUE";
 	private static final String ADDLABEL = "ADDLABEL";
+	private static final Object HEAD = "HEAD";
 	private String boardId_;
 	private String listName_;
 	private Integer segment_ = null;
 	private TrelloAssistant ta_;
 	private Closure<JSONObject> modifier_ = null;
 	private Predicate<JSONObject> filter_ = null;
+	private Integer head_ = null;;
 	public TrelloTaskList(TrelloAssistant ta,String boardId, String listName) {
 		ta_ = ta;
 		boardId_ = boardId;
@@ -41,8 +44,8 @@ public class TrelloTaskList {
 		filter_ = filter;
 		return this;
 	}
-	public ArrayList<JSONObject> getTasks() throws Exception {
-		ArrayList<JSONObject> res = new ArrayList<JSONObject>();
+	public List<JSONObject> getTasks() throws Exception {
+		List<JSONObject> res = new ArrayList<JSONObject>();
 		if(segment_==null) {
 			JSONArray tasks = ta_.getCardsInList(getListNamePrivate());
 			for(Object o:tasks) {
@@ -53,6 +56,9 @@ public class TrelloTaskList {
 			res = tm.getCardsInSegment(segment_);
 		}
 		
+		if(head_ != null) {
+			res = res.subList(0, head_);
+		}
 		if( filter_ != null ) {
 			res.removeIf(filter_.negate());
 		}
@@ -114,7 +120,12 @@ public class TrelloTaskList {
 				}
 				}
 			);
+		} else if(type.equals(HEAD)) {
+			setHead((Integer)data);
 		}
 		return this;
+	}
+	private void setHead(Integer size) {
+		head_  = size;
 	}
 }
