@@ -24,13 +24,10 @@
       "indicator" : "https://trello.com/c/FMIlCbXE",
       "compare deadlines" : "https://trello.com/c/W4CSDHPl",
       "remove_costs" : "https://trello.com/c/PmEunKmi",
+      "prog_list":"https://trello.com/c/LZRJqGmJ",
       "check_exclamation" : "https://trello.com/c/I2UZf4ds"
    },
-   "PULLEDDATA" : {
-      "trelloTitle" : "money-1",
-      "TRELLOTITLE" : "5 merge habits and todo list"
-   },
-   "CARDURL" : "task_lists",
+   "CARDURL" : "prog_list",
    "DEPENDENCIES" : [
       {
          "DIR" : "src/main/java/com/github/nailbiter/util/"

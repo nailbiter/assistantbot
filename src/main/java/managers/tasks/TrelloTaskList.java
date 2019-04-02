@@ -14,6 +14,7 @@ import com.github.nailbiter.util.TrelloAssistant;
 import util.AssistantBotException;
 
 public class TrelloTaskList {
+	private static final String SETSEGMENT = "SETSEGMENT";
 	private String boardId_;
 	private String listName_;
 	private Integer segment_ = null;
@@ -90,5 +91,11 @@ public class TrelloTaskList {
 							,trelloList.getListNamePrivate()
 							,trelloList2.getListNamePrivate()));
 		}
+	}
+	public TrelloTaskList setCondition(String type, Object data) {
+		if(type.equals(SETSEGMENT)) {
+			this.setSegment((Integer)data);
+		}
+		return this;
 	}
 }

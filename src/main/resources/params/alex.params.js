@@ -34,6 +34,29 @@ var res = [
 			birthdays
 		},
 	},
+	{
+		name:"managers.TaskManager",
+		parameter:{
+			"INBOX":[
+				{
+					board:"foFETfOx",
+					list:"inbox",
+					filters:[
+						{
+							type:"SETSEGMENT",
+							data:1,
+						},
+					],
+				},
+				/*{
+					board:"nqI8xwIu",
+					list:"TODO: code",
+					filters:[
+					],
+				},*/
+			],
+		},
+	},
 ];
 
 console.log(JSON.stringify(res));

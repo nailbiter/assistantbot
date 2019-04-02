@@ -62,8 +62,9 @@ my %args;
 for(qw( dbname colname field flagfile )){
     $args{$_.'=s'} = \$cmdline{$_};
 }
+$args{'object=s@'} = \$cmdline{object};
 
-GetOptions(%args);
+GetOptions(%args,);
 
 my $json = loadJsonFromStdin($cmdline{file});
 
@@ -80,11 +81,22 @@ if(ref($json) eq 'ARRAY'){
 			for( keys %record ) {
 				my $key = $_;
 				if( $key ne $field ) {
-					my_update_one($coll,
-						{$field=>$record{$field}},
-						{'$set'=>{$key=>$record{$key}}},
-						{upsert => 1},
-					);
+					if(defined($cmdline{object}) && grep( /^$key$/, @{$cmdline{object}} )) {
+						my %object = %{$record{$key}};
+						for my $kkey (keys %object) {
+							my_update_one($coll,
+								{$field=>$record{$field}},
+								{'$set'=>{sprintf("%s.%s",$key,$kkey)=>$object{$kkey}}},
+								{upsert => 1},
+							);
+						}
+					} else {
+						my_update_one($coll,
+							{$field=>$record{$field}},
+							{'$set'=>{$key=>$record{$key}}},
+							{upsert => 1},
+						);
+					}
 				}
 			}
 		}

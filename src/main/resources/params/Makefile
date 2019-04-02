@@ -1,5 +1,6 @@
 .PHONY: all gym
-UPLOADJSONPL=../../pl/uploadJson.pl
+UPLOADJSONPL=../../../../scripts/pl/uploadJson.pl
+LOGDIR=../../../../log
 
 FLAGDIR=flags
 HABITS=habits mishpuha_habits
@@ -17,7 +18,7 @@ $(FLAGDIR)/userRecords.txt: userRecords.json $(UPLOADJSONPL)
 $(FLAGDIR)/mishpuha_params.txt: mishpuha_params.json $(UPLOADJSONPL)
 	cat $< | ./$(UPLOADJSONPL) --dbname logistics --colname 'mishpuha.params' --flagfile $@
 $(FLAGDIR)/alex.params.txt: alex.params.json $(UPLOADJSONPL)
-	cat $< | ./$(UPLOADJSONPL) --dbname logistics --colname 'alex.params' --field 'name' --flagfile $@
+	cat $< | ./$(UPLOADJSONPL) --dbname logistics --colname 'alex.params' --field 'name' --flagfile $@ --object parameter 2>$(LOGDIR)/$(notdir $@).log.txt
 $(FLAGDIR)/habits.txt: habits.json $(UPLOADJSONPL)
 	cat $<|./$(UPLOADJSONPL) --colname alex.habits --dbname logistics --flagfile $@
 

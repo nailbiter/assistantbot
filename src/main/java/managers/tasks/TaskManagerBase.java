@@ -89,7 +89,7 @@ public class TaskManagerBase extends WithSettingsManager {
 					.add(new ScriptHelperLogger())
 					.add(new ScriptHelperMisc())
 					.add(varkeeper_));
-		FillTable(comparators_,ta_,sa_);
+		FillTable(comparators_,ta_,sa_,getParamObject(rp));
 		FillRecognizedCats(recognizedCatNames_,rp,varkeeper_,cats_);
 		
 		fp_ = new FlagParser()
@@ -180,9 +180,10 @@ public class TaskManagerBase extends WithSettingsManager {
 	 * @param comparators
 	 * @param ta
 	 * @param sa
+	 * @param params 
 	 * @throws Exception
 	 */
-	private static void FillTable(HashMap<String, ImmutablePair<Comparator<JSONObject>, List<TrelloTaskList>>> comparators,TrelloAssistant ta,final ScriptApp sa) throws Exception {
+	private static void FillTable(HashMap<String, ImmutablePair<Comparator<JSONObject>, List<TrelloTaskList>>> comparators,TrelloAssistant ta,final ScriptApp sa, JSONObject params) throws Exception {
 		comparators.put(INBOX, new ImmutablePair<Comparator<JSONObject>, List<TrelloTaskList>>(
 				new Comparator<JSONObject>() {
 					@Override
@@ -198,24 +199,7 @@ public class TaskManagerBase extends WithSettingsManager {
 						}
 					}
 				}
-				,Arrays.asList(new TrelloTaskList[] {
-						new TrelloTaskList(ta,managers.habits.Constants.BOARDIDS.INBOX.toString()
-								,managers.habits.Constants.INBOXLISTNAME).setSegment(1)
-						, new TrelloTaskList(ta,BOARDIDS.DREAMPIRATES.toString()
-								,"TODO: code")
-						.setFilter(new java.util.function.Predicate<JSONObject>() {
-									@Override
-									public boolean test(JSONObject object) {
-										return HasDue(object);
-									}
-								})
-						.setModifier(new Closure<JSONObject>() {
-							@Override
-							public void execute(JSONObject card) {
-								card.getJSONArray("labels").put(new JSONObject().put("name", "parttime"));
-							}
-						})
-						})));
+				,GetInboxLists(ta,params)));
 		comparators.put(SNOOZED, new ImmutablePair<Comparator<JSONObject>,List<TrelloTaskList>>(
 				new Comparator<JSONObject>() {
 					@Override
@@ -232,6 +216,20 @@ public class TaskManagerBase extends WithSettingsManager {
 						new TrelloTaskList(ta,managers.habits.Constants.BOARDIDS.INBOX.toString()
 								,managers.habits.Constants.INBOXLISTNAME).setSegment(0)
 				})));
+	}
+	private static List<TrelloTaskList> GetInboxLists(TrelloAssistant ta, JSONObject params) {
+		System.err.format("GetInboxLists: %s\n", params.toString(2));
+		ArrayList<TrelloTaskList> res = new ArrayList<TrelloTaskList>();
+		for(Object o:params.getJSONArray(INBOX)) {
+			JSONObject obj = (JSONObject) o;
+			TrelloTaskList ttl = new TrelloTaskList(ta,obj.getString("board"),obj.getString("list"));
+			for(Object oo:obj.getJSONArray("filters")) {
+				JSONObject oobj = (JSONObject) oo;
+				ttl.setCondition(oobj.getString("type"), oobj.get("data"));
+			}
+			res.add(ttl);
+		}
+		return res;
 	}
 	protected static String PrintTasks(ArrayList<JSONObject> arr, JSONObject paramObj, ArrayList<String> recognizedCats, ArrayList<Predicate<JSONObject>> filters) throws JSONException, ParseException, AssistantBotException {
 		System.err.format("PrintTasks: paramObj=%s\n", paramObj.toString(2));
