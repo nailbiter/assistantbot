@@ -40,6 +40,7 @@ import managers.WithSettingsManager;
 import util.AssistantBotException;
 import util.JsonUtil;
 import util.KeyRing;
+import util.TrelloUtil;
 import util.UserCollection;
 import util.db.MongoUtil;
 import util.parsers.FlagParser;
@@ -103,7 +104,7 @@ public class TaskManagerBase extends WithSettingsManager {
 			@Override
 			public boolean evaluate(JSONObject card) {
 				try {
-					return HasDue(card)
+					return TrelloUtil.HasDue(card)
 							&& ( DaysTill(card) < 0 )
 							;
 				} catch (JSONException | ParseException e) {
@@ -116,7 +117,7 @@ public class TaskManagerBase extends WithSettingsManager {
 			@Override
 			public boolean evaluate(JSONObject card) {
 				try {
-					if( !HasDue(card) )
+					if( !TrelloUtil.HasDue(card) )
 						return false;
 					String string = card.getString("due");
 					SimpleDateFormat DF = com.github.nailbiter.util.Util.GetTrelloDateFormat();
@@ -137,7 +138,7 @@ public class TaskManagerBase extends WithSettingsManager {
 			@Override
 			public boolean evaluate(JSONObject card) {
 				try {
-					if( !HasDue(card) )
+					if( !TrelloUtil.HasDue(card) )
 						return false;
 					String string = card.getString("due");
 					SimpleDateFormat DF = com.github.nailbiter.util.Util.GetTrelloDateFormat();
@@ -225,7 +226,7 @@ public class TaskManagerBase extends WithSettingsManager {
 			TrelloTaskList ttl = new TrelloTaskList(ta,obj.getString("board"),obj.getString("list"));
 			for(Object oo:obj.getJSONArray("filters")) {
 				JSONObject oobj = (JSONObject) oo;
-				ttl.setCondition(oobj.getString("type"), oobj.get("data"));
+				ttl.modify(oobj.getString("type"), oobj.get("data"));
 			}
 			res.add(ttl);
 		}
@@ -292,7 +293,7 @@ public class TaskManagerBase extends WithSettingsManager {
 				tb.addToken(String.join(LABELJOINER, labelset)
 						,paramObj.getJSONObject("sep").getInt("labels"));
 			}
-			if( HasDue(card) ) {
+			if( TrelloUtil.HasDue(card) ) {
 				tb.addToken(PrintDaysTill(DaysTill(card), "=",-1)
 						,paramObj.getJSONObject("sep").getInt("due"));
 			} else {
@@ -331,10 +332,6 @@ public class TaskManagerBase extends WithSettingsManager {
 	}
 	private static double DaysTill(JSONObject obj) throws JSONException, ParseException {
 		return util.Util.DaysTill(obj.getString("due"));
-	}
-
-	private static boolean HasDue(JSONObject card) {
-		return card.optBoolean("dueComplete",false)==false && !card.isNull("due");
 	}
 
 	protected static String PrintTask(ArrayList<JSONObject> arr, int index, TrelloAssistant ta) throws JSONException, Exception {

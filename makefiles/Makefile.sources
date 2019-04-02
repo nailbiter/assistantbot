@@ -3,8 +3,8 @@ MANAGERSOURCES=$(addsuffix Manager,\
 	       Time Money Test MiscUtil Habit German Gym Report JShell Task \
 	       Abstract WithSettings \
 	       PerlScript Trello Bot Mongo Power Birthday Ocr NewTrello Nutrition)
-UTILSOURCES=StorageManager Util TelegramUtil JsonUtil AssistantBotException \
-	    UserCollection SettingCollection \
+UTILSOURCES=StorageManager Util AssistantBotException $(addsuffix Util, Telegram Json Trello)\
+	    $(addsuffix Collection, User Setting) \
 			Message
 DBSOURCES= MongoUtil
 MONGOMANAGERHELPER=MongoManagerHelper

@@ -48,12 +48,20 @@ var res = [
 						},
 					],
 				},
-				/*{
+				{
 					board:"nqI8xwIu",
 					list:"TODO: code",
 					filters:[
+						{
+							type:"HASDUE",
+							data:null,
+						},
+						{
+							type:"ADDLABEL",
+							data:"parttime",
+						},
 					],
-				},*/
+				},
 			],
 		},
 	},

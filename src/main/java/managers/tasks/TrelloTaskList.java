@@ -12,9 +12,12 @@ import static managers.habits.Constants.SEPARATOR;
 import com.github.nailbiter.util.TrelloAssistant;
 
 import util.AssistantBotException;
+import util.TrelloUtil;
 
 public class TrelloTaskList {
 	private static final String SETSEGMENT = "SETSEGMENT";
+	private static final String HASDUE = "HASDUE";
+	private static final String ADDLABEL = "ADDLABEL";
 	private String boardId_;
 	private String listName_;
 	private Integer segment_ = null;
@@ -92,9 +95,25 @@ public class TrelloTaskList {
 							,trelloList2.getListNamePrivate()));
 		}
 	}
-	public TrelloTaskList setCondition(String type, Object data) {
+	public TrelloTaskList modify(String type, Object data) {
 		if(type.equals(SETSEGMENT)) {
 			this.setSegment((Integer)data);
+		} else if(type.equals(HASDUE)) {
+			this.setFilter(new java.util.function.Predicate<JSONObject>() {
+				@Override
+				public boolean test(JSONObject object) {
+					return TrelloUtil.HasDue(object);
+				}
+			});
+		} else if(type.equals(ADDLABEL)) {
+			this 				
+			.setModifier(new Closure<JSONObject>() {
+				@Override
+				public void execute(JSONObject card) {
+					card.getJSONArray("labels").put(new JSONObject().put("name", data));
+				}
+				}
+			);
 		}
 		return this;
 	}
