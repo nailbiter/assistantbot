@@ -3,8 +3,11 @@
 	"resfolder":"src/main/resources/assistantBotFiles/",
 	"parserPrefix":"",
 	"offline":false,
+	"client":"terminal",
 	"tmpfolder":"tmp",
 	"filetosendto":"test.html",
     	"scriptFolder":"src/main/js/",
-	"managers":["TrelloManager","MiscUtilManager","PowerManager"]
+	"managers":["TrelloManager"
+		,"PowerManager"
+	]
 }

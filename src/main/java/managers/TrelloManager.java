@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.stringtemplate.v4.compiler.CodeGenerator.args_return;
 
 import com.github.nailbiter.util.TableBuilder;
 import com.github.nailbiter.util.TrelloAssistant;
@@ -38,11 +39,10 @@ public class TrelloManager extends AbstractManager{
 		ArrayList<String> commands = new ArrayList<String>();
 		JSONArray res = new JSONArray();
 		
-		
-		for(String cmd:commands) {
-			res.put(new ParseOrderedCmd(cmd,cmd));
-		}
-		commands.clear();
+//		for(String cmd:commands) {
+//			res.put(new ParseOrderedCmd(cmd,cmd));
+//		}
+//		commands.clear();
 		
 		commands.add("makearchived");
 		commands.add("addcard");
@@ -56,7 +56,15 @@ public class TrelloManager extends AbstractManager{
 		}
 		commands.clear();
 		
+		res.put(new ParseOrderedCmd("trellomv"
+				,"move from card/list to card/list"
+				,new ParseOrderedArg("src",ArgTypes.string)
+				,new ParseOrderedArg("dest",ArgTypes.string)));
+		
 		return res;
+	}
+	public String trellomv(JSONObject arg) {
+		return String.format("trellomv: %s", arg.toString(2));
 	}
 	public String rename(JSONObject arg) throws Exception {
 		String rem = arg.optString("rem","");
