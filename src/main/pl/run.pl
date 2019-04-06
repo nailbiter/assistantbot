@@ -61,7 +61,11 @@ sub main {
     unlink $Args{tmpfile} or warn "Could not unlink $Args{tmpfile} $!";
     while(1){
         printf(STDERR "run: %s\n",$Args{cmd});
-        system($Args{cmd});
+		if(defined $Args{stderr}) {
+        	system(sprintf("%s 2> %s",$Args{cmd},$Args{stderr}));
+		} else {
+        	system(sprintf("%s",$Args{cmd}));
+		}
         if( -f $Args{tmpfile}){
             printf(STDERR "true branch\n");
             my $json = loadJsonFromFile($Args{tmpfile});
@@ -100,5 +104,7 @@ if( $Args{daemonize} ) {
         chdir=>sprintf("%s/../../..",$FindBin::Bin),
     );
 } else {
+	open my $stderr, '>:utf8',$Args{stderr};
+	*STDERR = $stderr;
     main();
 }

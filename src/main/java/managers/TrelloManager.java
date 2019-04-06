@@ -63,7 +63,12 @@ public class TrelloManager extends AbstractManager{
 		
 		return res;
 	}
-	public String trellomv(JSONObject arg) {
+	public String trellomv(JSONObject arg) throws Exception {
+		//trellomv habits/todo/* habits/TODO
+		String src = arg.getString("src");
+		String[] split = src.split("/");
+		
+		ta_.findBoardByName(split[0]);
 		return String.format("trellomv: %s", arg.toString(2));
 	}
 	public String rename(JSONObject arg) throws Exception {
