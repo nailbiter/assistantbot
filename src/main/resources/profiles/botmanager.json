@@ -3,6 +3,8 @@
 	"scriptFolder":"src/main/js/",
 	"tmpfolder":"tmp",
 	"parserPrefix":"/",
+	"client":"telegram",
+    	"tmpfile":"tmp/botmanager.restart.txt",
 	"managers":["MiscUtilManager","BotManager",
 		"PerlScriptManager","PowerManager"]
 }

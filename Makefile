@@ -26,18 +26,9 @@ all: src/main/resources/profiles/telegram.json target/$(JARNAME).jar
 #main
 include $(MAKEFILESDIR)/Makefile.sources
 include $(MAKEFILESDIR)/Makefile.dbdata
-mathmanager: src/main/resources/profiles/mathmanager.json target/$(JARNAME).jar $(SECRET) $(USERRECORDS)
-	./src/main/pl/run.pl --cmd "$(RUN) $<" --daemonize --stderr log/log.$@.txt --pidfile tmp/pidfile.txt $< 
-dpmanager: src/main/resources/profiles/dpmanager.json target/$(JARNAME).jar $(SECRET) $(USERRECORDS)
-	./src/main/pl/run.pl --cmd "$(RUN) $<" --daemonize --stderr log/log.$@.txt --pidfile tmp/pidfile.txt $< 
-botmanager: src/main/resources/profiles/botmanager.json target/$(JARNAME).jar $(SECRET) $(USERRECORDS)
-	./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>&1 | tee log/log.$@.txt
-trello: src/main/resources/profiles/trello.json target/$(JARNAME).jar $(SECRET) $(USERRECORDS)
-	./src/main/pl/run.pl --cmd "$(RUN) $<" --stderr log/log.$@.txt --pidfile tmp/pidfile.txt $< 
-interactive: src/main/resources/profiles/interactive.json target/$(JARNAME).jar $(SECRET) $(USERRECORDS)
-	./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>log/log.interactive.txt
-offline: src/main/resources/profiles/offline.json target/$(JARNAME).jar $(SECRET) $(USERRECORDS)
-	./src/main/pl/run.pl --cmd "$(RUN) $<" $(PERLKEYS) 2>log/log.offline.txt
+include $(MAKEFILESDIR)/botmanagers.makefile
+include $(MAKEFILESDIR)/terminalclients.makefile
+
 target/$(JARNAME).jar : $(addprefix src/main/java/,$(addsuffix .java,$(SOURCES))) pom.xml cp.txt
 	mvn compile
 	touch $@
