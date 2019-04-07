@@ -22,6 +22,8 @@ PARSERSOURCES=AbstractParser ParseOrdered StandardParserInterpreter \
 MANAGERTASKSOURCES=TaskManagerBase TrelloTaskList
 UNITTESTSOURCES=MainTest ParseCommentLineTest Test
 MONEYMANAGERSOURCES=MoneyManagerBase
+TRELLOMANAGERSOURCES=TrelloManagerBase
+
 SOURCES=\
  $(addprefix managers/mongomanager/,$(MONGOMANAGERHELPER))\
  $(addprefix util/db/,$(DBSOURCES))\
@@ -34,6 +36,7 @@ SOURCES=\
  $(addprefix util/scripthelpers/,$(SCRIPTHELPERSOURCES))\
  $(addprefix util/scriptapps/,$(SCRIPTAPPS))\
  $(addprefix com/github/nailbiter/util/,TrelloAssistant Util opts/Option TableBuilder)\
+ $(addprefix managers/trello/,$(TRELLOMANAGERSOURCES))\
  $(addprefix managers/money/,$(MONEYMANAGERSOURCES))\
  $(addprefix managers/tests/,$(TESTSOURCES))\
  $(addprefix managers/tasks/,$(MANAGERTASKSOURCES))\

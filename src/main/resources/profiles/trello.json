@@ -3,6 +3,7 @@
 	"resfolder":"src/main/resources/assistantBotFiles/",
 	"parserPrefix":"",
 	"offline":false,
+	"tmpfile":"tmp/trello.restart.txt",
 	"client":"terminal",
 	"tmpfolder":"tmp",
 	"filetosendto":"test.html",

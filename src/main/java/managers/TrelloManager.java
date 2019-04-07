@@ -12,28 +12,24 @@ import java.util.regex.Pattern;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.stringtemplate.v4.compiler.CodeGenerator.args_return;
 
 import com.github.nailbiter.util.TableBuilder;
 import com.github.nailbiter.util.TrelloAssistant;
 
 import assistantbot.ResourceProvider;
 import managers.habits.Constants;
+import managers.trello.TrelloManagerBase;
 import util.AssistantBotException;
-import util.KeyRing;
-import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ArithmeticExpressionParser;
 import util.parsers.ParseCommentLine;
+import util.parsers.ParseOrdered.ArgTypes;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
 import util.parsers.StandardParserInterpreter;;
 
-public class TrelloManager extends AbstractManager{
-	private TrelloAssistant ta_;
+public class TrelloManager extends TrelloManagerBase{
 	public TrelloManager(ResourceProvider rp) throws AssistantBotException {
-		super(GetCommands());
-		ta_ = new TrelloAssistant(KeyRing.getTrello().getString("key"),
-				KeyRing.getTrello().getString("token"));
+		super(GetCommands(),rp);
 	}
 	private static JSONArray GetCommands() throws AssistantBotException {
 		ArrayList<String> commands = new ArrayList<String>();
@@ -64,12 +60,30 @@ public class TrelloManager extends AbstractManager{
 		return res;
 	}
 	public String trellomv(JSONObject arg) throws Exception {
-		//trellomv habits/todo/* habits/TODO
+		//trellomv habits/TODO/.* habits/todo
+		
+		JSONArray cards;
+		Predicate<JSONObject> predicate;
 		String src = arg.getString("src");
 		String[] split = src.split("/");
+		predicate = MakeFilter(split[2]);
+		cards = ta_.getCardsInList(GetListId(ta_,split[0]+"/"+split[1]));
+		String destid = GetListId(ta_,arg.getString("dest"));
 		
-		ta_.findBoardByName(split[0]);
-		return String.format("trellomv: %s", arg.toString(2));
+		int count = 0;
+		for(Object o:cards) {
+			JSONObject card = (JSONObject) o;
+			System.err.format("card: %s\n", card.toString(2));
+			if(predicate.test(card)) {
+				String cardid = card.getString("id");
+				System.err.format("moving %s to %s\n", cardid,destid);
+				ta_.moveCard(cardid, destid);
+				count++;
+			}
+		}
+		
+//		return String.format("trellomv: %s", arg.toString(2));
+		return String.format("%d cards moved", count);
 	}
 	public String rename(JSONObject arg) throws Exception {
 		String rem = arg.optString("rem","");
