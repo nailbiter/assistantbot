@@ -60,7 +60,7 @@ public class TrelloManager extends TrelloManagerBase{
 		return res;
 	}
 	public String trellomv(JSONObject arg) throws Exception {
-		//trellomv habits/TODO/.* habits/todo
+		//trellomv habits/TODO/test habits/todo
 		
 		JSONArray cards;
 		Predicate<JSONObject> predicate;
