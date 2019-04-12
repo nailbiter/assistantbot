@@ -98,10 +98,11 @@ printf(STDERR "got: %s\n",Dumper(\%Args));
 
 if( $Args{daemonize} ) {
     printf(STDERR "daemonizing: %s\n",$FindBin::Bin);
+	myExec(sprintf("touch %s",$Args{stderr}));
     daemonize(run=>\&main,
         stderr=>sprintf("%s",$Args{stderr}),
         close=>'std',
-        chdir=>sprintf("%s/../../..",$FindBin::Bin),
+        chdir=>sprintf("%s/../..",$FindBin::Bin),
     );
 } else {
 #	open my $stderr, '>:utf8',$Args{stderr};
