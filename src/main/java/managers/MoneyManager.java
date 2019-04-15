@@ -27,6 +27,7 @@ import com.mongodb.client.model.Sorts;
 
 import assistantbot.ResourceProvider;
 import managers.money.MoneyManagerBase;
+import util.AssistantBotException;
 import util.Message;
 import util.Util;
 import util.parsers.FlagParser;
@@ -56,11 +57,19 @@ public class MoneyManager extends MoneyManagerBase{
 				break;
 			}
 			
-			double am = StringToAm(obj.getString("amount"),getParamObject(rp_),money_);
+			Object am = StringToAm(obj.getString("amount"),getParamObject(rp_),money_);
 			
-			if( am < 0 ) {
+			if( (am instanceof Integer) && ((int)am < 0) ) {
+				int num = (int)am;
 				if( array.length()==1 )
-					return showCosts( (int)-am ,obj.optString("comment", ""));
+					return showCosts( -num ,obj.optString("comment", ""));
+				else 
+					continue;
+			} else if(am instanceof ImmutablePair<? ,? >) {
+				ImmutablePair<Integer,Integer> interval = (ImmutablePair<Integer, Integer>) am;
+				if( array.length()==1 ) {
+					return showCosts( interval ,obj.optString("comment", ""));
+				}
 				else 
 					continue;
 			}
@@ -101,22 +110,7 @@ public class MoneyManager extends MoneyManagerBase{
 		}
 		return "";
 	}
-	private String putMoney(JSONObject obj,String categoryName)
-	{
-		Document res = new Document();
-		res.put("amount", obj.getDouble("amount"));
-		res.put("category", categoryName);
-		if(obj.has("date"))
-			res.put("date", (Date)obj.get("date"));
-		else
-			res.put("date", new Date());
-		res.put("comment", obj.getString("comment"));
-		res.put("tags", obj.getJSONArray("tags"));
-		money_.insertOne(res);
-		return String.format("put %s in category %s",
-					obj.toString(),categoryName);
-	}
-	private String showCosts(int howMuch, String comment) throws JSONException, Exception {
+	private String showCosts(ImmutablePair<Integer, Integer> interval, String comment) throws JSONException, Exception {
 		final String PREDICATE = "predicate";
 		final HashMap<String, Object> parsed = new ParseCommentLine(ParseCommentLine.Mode.FROMLEFT)
 				.addHandler(PREDICATE, "j:", ParseCommentLine.TOKENTYPE.STRING)
@@ -145,7 +139,10 @@ public class MoneyManager extends MoneyManagerBase{
 		final MutableInt i = new MutableInt(0);
 		money_
 		.find()
-		.sort(Sorts.descending("date")).limit(howMuch).forEach(new Block<Document>() {
+		.sort(Sorts.descending("date"))
+		.skip(interval.left)
+		.limit(interval.right-interval.left)
+		.forEach(new Block<Document>() {
 		       @Override
 		       public void apply(final Document doc) {
 		    	   	JSONObject obj = new JSONObject(doc.toJson());
@@ -221,6 +218,24 @@ public class MoneyManager extends MoneyManagerBase{
 				+"\n"
 				+tb1
 				;
+	}
+	private String putMoney(JSONObject obj,String categoryName)
+	{
+		Document res = new Document();
+		res.put("amount", obj.getDouble("amount"));
+		res.put("category", categoryName);
+		if(obj.has("date"))
+			res.put("date", (Date)obj.get("date"));
+		else
+			res.put("date", new Date());
+		res.put("comment", obj.getString("comment"));
+		res.put("tags", obj.getJSONArray("tags"));
+		money_.insertOne(res);
+		return String.format("put %s in category %s",
+					obj.toString(),categoryName);
+	}
+	private String showCosts(int howMuch, String comment) throws JSONException, Exception {
+		return showCosts(new ImmutablePair<Integer,Integer>(0,howMuch),comment);
 	}
 	public static JSONArray GetCommands() throws Exception {
 		return new JSONArray()

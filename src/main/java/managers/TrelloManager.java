@@ -82,7 +82,6 @@ public class TrelloManager extends TrelloManagerBase{
 			}
 		}
 		
-//		return String.format("trellomv: %s", arg.toString(2));
 		return String.format("%d cards moved", count);
 	}
 	public String rename(JSONObject arg) throws Exception {

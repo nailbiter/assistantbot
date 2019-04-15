@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.json.JSONArray;
@@ -35,41 +36,50 @@ public class MoneyManagerBase extends AbstractManager {
 	protected static final String DECSIGNS = "decsigns";
 	protected static final String AMOUNT = "amount";
 	protected static final String COMMENT = "comment";
-	protected static double StringToAm(String amountString, JSONObject paramObject, MongoCollection<Document> money) throws JSONException, AssistantBotException {
+	private static int FindRecordNum(JSONObject dispatch,String fieldStr, String limStr, MongoCollection<Document> money) {
+		final int field = dispatch.getInt(fieldStr);
+		final MutableInt now = new MutableInt(Calendar.getInstance().get(field));
+		final MutableInt mi = new MutableInt(0)
+				,lim = new MutableInt(limStr.isEmpty()?1:Integer.parseInt(limStr));
+		money.find().sort(Sorts.descending("date"))
+		.forEach(new Block<Document>() {
+			@Override
+			public void apply(Document arg0) {
+				if(lim.intValue()>0) {
+					Calendar c = Calendar.getInstance();
+					c.setTime(arg0.getDate("date"));
+					System.err.format("(%d vs %d) for %f\n"
+							, now.intValue()
+							, c.get(field)
+							, arg0.getDouble("amount")
+							);
+					if( now.intValue() == c.get(field) ) {
+						mi.increment();
+					} else {
+						lim.decrement();
+						if( lim.intValue()>0 )
+							mi.increment();
+						now.setValue(c.get(field));
+					}
+				}
+			}
+		});
+		return mi.intValue();
+	}
+	protected static Object StringToAm(String amountString, JSONObject paramObject, MongoCollection<Document> money) throws JSONException, AssistantBotException {
 		final JSONObject dispatch = new JSONObject()
 			.put("d", Calendar.DATE)
 			.put("m", Calendar.MONTH);
 		Matcher m;
 		if((m = Pattern.compile(String.format("(\\d*)([%s])", Util.CharSetToRegex(dispatch.keySet())))
 				.matcher(amountString)).matches()) {
-			final int field = dispatch.getInt(m.group(2));
-			final MutableInt now = new MutableInt(Calendar.getInstance().get(field));
-			final MutableInt mi = new MutableInt(0)
-					,lim = new MutableInt(m.group(1).isEmpty()?1:Integer.parseInt(m.group(1)));
-			money.find().sort(Sorts.descending("date"))
-			.forEach(new Block<Document>() {
-				@Override
-				public void apply(Document arg0) {
-					if(lim.intValue()>0) {
-						Calendar c = Calendar.getInstance();
-						c.setTime(arg0.getDate("date"));
-						System.err.format("(%d vs %d) for %f\n"
-								, now.intValue()
-								, c.get(field)
-								, arg0.getDouble("amount")
-								);
-						if( now.intValue() == c.get(field) ) {
-							mi.increment();
-						} else {
-							lim.decrement();
-							if( lim.intValue()>0 )
-								mi.increment();
-							now.setValue(c.get(field));
-						}
-					}
-				}
-			});
-			return -mi.doubleValue();
+			return -FindRecordNum(dispatch,m.group(2),m.group(1),money);
+		} else if((m = Pattern.compile(String.format("(\\d*)-(\\d+)([%s])", Util.CharSetToRegex(dispatch.keySet())))
+				.matcher(amountString)).matches()) {
+			return new ImmutablePair<Integer,Integer>(
+					FindRecordNum(dispatch,m.group(3),m.group(1),money)
+					,FindRecordNum(dispatch,m.group(3),m.group(2),money)
+					);
 		} else {
 			return new ArithmeticExpressionParser(paramObject.getInt(DECSIGNS))
 					.simpleEvalDouble(amountString);

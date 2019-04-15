@@ -25,9 +25,10 @@
       "compare deadlines" : "https://trello.com/c/W4CSDHPl",
       "remove_costs" : "https://trello.com/c/PmEunKmi",
       "prog_list":"https://trello.com/c/LZRJqGmJ",
-      "check_exclamation" : "https://trello.com/c/I2UZf4ds"
+      "check_exclamation" : "https://trello.com/c/I2UZf4ds",
+      "candy":"https://trello.com/c/DZRBoOiF"
    },
-   "CARDURL" : "prog_list",
+   "CARDURL" : "candy",
    "DEPENDENCIES" : [
       {
          "DIR" : "src/main/java/com/github/nailbiter/util/"
