@@ -21,20 +21,23 @@ import util.Util;
 import util.parsers.ParseOrdered.ArgTypes;
 import util.scriptapps.JsApp;
 import util.scriptapps.ScriptApp;
+import util.parsers.ParseOrdered;
 import util.parsers.ParseOrderedArg;
 import util.parsers.ParseOrderedCmd;
 import util.scripthelpers.ScriptHelperVarkeeper;
 
-public class GymManager extends AbstractManager {
+public class GymManager extends WithSettingsManager {
+	private static final String WEEKCOUNT = "weekCount";
 	int dayCount_ = -1;
 	private JSONArray program_;
 	private int exercisenum_;
-	private ResourceProvider rp_;
+//	private ResourceProvider rp_;
 
 	public GymManager(ResourceProvider rp) throws Exception {
-		super(GetCommands());
+		super(GetCommands(), rp);
 		logger_ = Logger.getLogger(this.getClass().getName());
-		rp_ = rp;
+		addSettingScalar(WEEKCOUNT, ParseOrdered.ArgTypes.integer, 1);
+//		rp_ = rp;
 	}
 	public static JSONArray GetCommands() throws AssistantBotException {
 		return new JSONArray()

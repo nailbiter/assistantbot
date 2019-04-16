@@ -6,7 +6,7 @@
 	"tmpfolder":"tmp",
 	"filetosendto":"test.html",
 	"client":"terminal",
-    	"scriptFolder":"src/main/js/",
+	"scriptFolder":"src/main/js/",
 	"managers":["GermanManager","BotManager",
 		"MiscUtilManager","ReportManager",
 		"NewTrelloManager",
