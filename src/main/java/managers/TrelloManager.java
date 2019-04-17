@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
@@ -55,34 +56,36 @@ public class TrelloManager extends TrelloManagerBase{
 		res.put(new ParseOrderedCmd("trellomv"
 				,"move from card/list to card/list"
 				,new ParseOrderedArg("src",ArgTypes.string)
-				,new ParseOrderedArg("dest",ArgTypes.string)));
+				,new ParseOrderedArg("dest",ArgTypes.string).makeOpt()));
 		
 		return res;
 	}
 	public String trellomv(JSONObject arg) throws Exception {
 		//trellomv habits/TODO/test habits/todo
+		//trellomv inbox/inbox/.*
+		//trellomv inbox/inbox/GFmisc/.*
 		
-		JSONArray cards;
-		Predicate<JSONObject> predicate;
-		String src = arg.getString("src");
-		String[] split = src.split("/");
-		predicate = MakeFilter(split[2]);
-		cards = ta_.getCardsInList(GetListId(ta_,split[0]+"/"+split[1]));
-		String destid = GetListId(ta_,arg.getString("dest"));
+		List<JSONObject> cards = GetCardList(arg.getString("src"),ta_);
+		String destid = arg.has("dest") ? GetListId(ta_,arg.getString("dest")) : null;
 		
-		int count = 0;
-		for(Object o:cards) {
-			JSONObject card = (JSONObject) o;
+		StringBuilder sb = new StringBuilder();
+		for(JSONObject card:cards) {
 			System.err.format("card: %s\n", card.toString(2));
-			if(predicate.test(card)) {
+			
+			if( destid == null ) {
+				sb.append(String.format("name: %s\n", card.getString("name")));
+			} else {
 				String cardid = card.getString("id");
 				System.err.format("moving %s to %s\n", cardid,destid);
 				ta_.moveCard(cardid, destid);
-				count++;
 			}
+			
+		}
+		if(destid!=null) {
+			sb.append(String.format("%d cards moved", cards.size()));
 		}
 		
-		return String.format("%d cards moved", count);
+		return sb.toString();
 	}
 	public String rename(JSONObject arg) throws Exception {
 		String rem = arg.optString("rem","");

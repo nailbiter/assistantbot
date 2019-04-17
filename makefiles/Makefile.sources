@@ -22,7 +22,7 @@ PARSERSOURCES=AbstractParser ParseOrdered StandardParserInterpreter \
 MANAGERTASKSOURCES=TaskManagerBase TrelloTaskList
 UNITTESTSOURCES=MainTest ParseCommentLineTest Test
 MONEYMANAGERSOURCES=MoneyManagerBase
-TRELLOMANAGERSOURCES=TrelloManagerBase
+TRELLOMANAGERSOURCES=TrelloManagerBase TrelloAssistantChild
 
 SOURCES=\
  $(addprefix managers/mongomanager/,$(MONGOMANAGERHELPER))\

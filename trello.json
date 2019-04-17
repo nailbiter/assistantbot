@@ -28,7 +28,7 @@
       "check_exclamation" : "https://trello.com/c/I2UZf4ds",
       "candy":"https://trello.com/c/DZRBoOiF"
    },
-   "CARDURL" : "candy",
+   "CARDURL" : "prog_list",
    "DEPENDENCIES" : [
       {
          "DIR" : "src/main/java/com/github/nailbiter/util/"
