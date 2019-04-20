@@ -42,6 +42,17 @@ public class TrelloManagerBase extends AbstractManager {
 		if(split.length==3) {
 			cards = ta.getCardsInList(GetListId(ta,split[0]+"/"+split[1]));
 		} else if(split.length==4) {
+//			JSONArray cardsInList = ta.getCardsInList(GetListId(ta,split[0]+"/"+split[1]));
+//			JSONObject card = null;
+//			for(Object o:cardsInList) {
+//				if(((JSONObject)o).getString("name").equals(split[2])) {
+//					card = (JSONObject) o;
+//					break;
+//				}
+//			}
+//			cards = ta.getChecklistsOfCard(card.getString("id"));
+//			System.err.format("checklists: %s\n", cards.toString(2));
+		} else if(split.length==5) {
 			JSONArray cardsInList = ta.getCardsInList(GetListId(ta,split[0]+"/"+split[1]));
 			JSONObject card = null;
 			for(Object o:cardsInList) {
@@ -52,7 +63,14 @@ public class TrelloManagerBase extends AbstractManager {
 			}
 			cards = ta.getChecklistsOfCard(card.getString("id"));
 			System.err.format("checklists: %s\n", cards.toString(2));
-//			return cards.toString(2);
+			for(Object o:cards) {
+				JSONObject list = (JSONObject) o;
+				if(list.getString("name").equals(split[3])){
+					card=list;
+					cards = list.getJSONArray("checkItems");
+					break;
+				}
+			}
 		}
 		
 		ArrayList<JSONObject> res = new ArrayList<JSONObject>();
@@ -64,5 +82,14 @@ public class TrelloManagerBase extends AbstractManager {
 			}
 		}
 		return res;
+	}
+	protected void moveCard(JSONObject card, String destid) throws Exception {
+		if(card.has("idChecklist")) {
+			
+		} else {
+			String cardid = card.getString("id");
+			System.err.format("moving %s to %s\n", cardid,destid);
+			ta_.moveCard(cardid, destid);
+		}
 	}
 }

@@ -63,7 +63,8 @@ public class TrelloManager extends TrelloManagerBase{
 	public String trellomv(JSONObject arg) throws Exception {
 		//trellomv habits/TODO/test habits/todo
 		//trellomv inbox/inbox/.*
-		//trellomv inbox/inbox/GFmisc/.*
+		//trellomv inbox/inbox/GFmisc/TODO:HabitManager/.*
+		//trellomv inbox/inbox/GFmisc/TODO:HabitManager/.* inbox/todo -- here 
 		
 		List<JSONObject> cards = GetCardList(arg.getString("src"),ta_);
 		String destid = arg.has("dest") ? GetListId(ta_,arg.getString("dest")) : null;
@@ -75,9 +76,7 @@ public class TrelloManager extends TrelloManagerBase{
 			if( destid == null ) {
 				sb.append(String.format("name: %s\n", card.getString("name")));
 			} else {
-				String cardid = card.getString("id");
-				System.err.format("moving %s to %s\n", cardid,destid);
-				ta_.moveCard(cardid, destid);
+				moveCard(card,destid);
 			}
 			
 		}
