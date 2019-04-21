@@ -56,7 +56,8 @@ public class TrelloManager extends TrelloManagerBase{
 		res.put(new ParseOrderedCmd("trellomv"
 				,"move from card/list to card/list"
 				,new ParseOrderedArg("src",ArgTypes.string)
-				,new ParseOrderedArg("dest",ArgTypes.string).makeOpt()));
+				,new ParseOrderedArg("dest",ArgTypes.string).makeOpt()
+				,new ParseOrderedArg("options",ArgTypes.remainder).makeOpt()));
 		
 		return res;
 	}
@@ -64,7 +65,8 @@ public class TrelloManager extends TrelloManagerBase{
 		//trellomv habits/TODO/test habits/todo
 		//trellomv inbox/inbox/.*
 		//trellomv inbox/inbox/GFmisc/TODO:HabitManager/.*
-		//trellomv inbox/inbox/GFmisc/TODO:HabitManager/.* inbox/todo -- here 
+		//trellomv inbox/inbox/GFmisc/TODO:HabitManager/.* inbox/Prog
+		//trellomv inbox/inbox/GFmisc/TODO:HabitManager inbox/Prog -- here
 		
 		List<JSONObject> cards = GetCardList(arg.getString("src"),ta_);
 		String destid = arg.has("dest") ? GetListId(ta_,arg.getString("dest")) : null;
