@@ -36,7 +36,7 @@ makeHabit "0 9 20 */2 *","haircut",60*24,category=>'logistics';
 makeHabit "0 7 * * *", "apple", 300 ;
 makeHabit "0 7 * * *", "do 3*9_LegParBar/45_abs", 1080, category=> "gym" ;
 makeHabit "0 7 * * *", "do pushups", 1080, category=> "gym" ;
-makeHabit "0 21 2,17 * *", "water tree", 60 ;
+makeHabit "0 21 2,17 * *", "water tree", 60, info=>"water it once per two weeks by pouring water into the flowerpot; 3/4 of a cup";
 makeHabit "0 22 * * *", "have sex with Candice", 60*3 ,category=>'social',onFailed=>"remove";
 makeHabit "0 10 21 4,7,10,1 *", "change toothbrush", 60*24 ,category=>'logistics';
 makeHabit "30 23 * * *", "sleep", 45, onFailed=> "remove" ,category=>'logistics';
