@@ -3,8 +3,9 @@
 #makehabits "08:00", "14:00", 3, "do main task", 1080, category=>"tasks", onFailed=>"move";
 #makeHabit "30 23 * * *", "take pills", 30, category=>"logistics", onFailed=>"remove";
 makeHabit "30 23 * * *", "check/plan tasks", 30, category=>"tasks", onFailed=>"remove";
-makeHabit "00 23 * * *", "good day", 30 , category=>"logistics", info=>"https://trello.com/c/ilo6JlQO", onFailed=>"remove";
-makeHabit "00 21 * * *", "drink protein", 3*60 , category=>"logistics", onFailed=>"remove";
+makeHabit "0 23 * * *", "good day", 30 , category=>"logistics", info=>"https://trello.com/c/ilo6JlQO", onFailed=>"remove";
+makeHabit "0 21 * * *", "drink protein", 3*60 , category=>"logistics", onFailed=>"remove";
+makeHabit "0 10 * * *", "german", 23*60 , category=>"logistics", onFailed=>"remove";
 
 makeHabit "0 10 * * *", "math reading", 1080, items=>["main1 1 page","main1 1 page","main2 1 page",], onFailed=>'move:FAILED2';
 makeHabit "0 11 * * *", "talk to someone in person",  1080,  category=>"social", onFailed=>"remove";
@@ -49,5 +50,5 @@ makeHabit "00 22 13 * *", "inflate bike", 960 , category=>"atschool";
 makeHabit "00 10 * * mon", "check week stat (money, time)", 960 , category=>"logistics";
 #makeHabit "00 10 */15 * *", "fix test.pl", 960 , category=>"logistics";
 makeHabit "0 10 28 * *", "check salary, estimate income", 960;
-makeHabit "52 7 * * *", "test", 1, enabled=> 0, onFailed=>'putlabel' ;
+#makeHabit "52 7 * * *", "test", 1, enabled=> 0, onFailed=>'putlabel' ;
 #makeHabit "* * * * *", "test2", -1, callback=>{name=>'managers.NewTrelloManager',method=>'report'},enabled=> 0, onFailed=>'putlabel' ;
