@@ -33,6 +33,13 @@ public interface ResourceProvider {
 	MongoClient getMongoClient();
 	int sendMessage(Message msg);
 	Scheduler getScheduler();
+	/**
+	 * @deprecated use Message class and sendMessage method
+	 * @param msg
+	 * @param t
+	 * @return
+	 * @throws Exception
+	 */
 	public abstract int sendMessage(Message msg, Transformer<String,Message> t) throws Exception;
 	public abstract int sendFile(String fn) throws Exception;
 	public MongoCollection<Document> getCollection(UserCollection name);
@@ -43,6 +50,13 @@ public interface ResourceProvider {
 	public JSONObject getUserObject();
 	public JSONObject getManagerSettingsObject(String classname);
 	public ResourceProvider setManagerSettingsObject(String classname,String key, Object val);
+	/**
+	 * @deprecated use Message class and sendMessage
+	 * @param msg
+	 * @param map
+	 * @param me
+	 * @return
+	 */
 	public int sendMessageWithKeyBoard(Message msg, Map<String, Object> map, Transformer<Object,Message> me);
 	/**
 	 * remote procedure call
