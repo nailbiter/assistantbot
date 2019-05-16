@@ -32,7 +32,7 @@ makeHabit "0 12 1 * *", "back-up K emails", 1380 ;
 #makeHabit "0 10 * * *", "backup baito DB twice, check apaz/dulut time", 1380, onFailed=>'remove';
 makeHabit "0 7 * * *", "morning note habit", 300 ,info=>"https://docs.google.com/document/d/1Q4wvok8I1AAc0Jtv6gU3d-MJK69uvsqCeLPbBvLiCTg/edit#";
 makeHabit "0 7 * * *","face whipe, wash head, faceCream x 2", 300,category=>'logistics';
-makeHabit "0 22 2,17 * *","shave penis, armpits; cut nails",60*24,category=>'logistics';
+makeHabit "0 22 2,17 * *","shave penis, armpits; nose hair; cut nails",60*24,category=>'logistics';
 makeHabit "0 9 20 */2 *","haircut",60*24,category=>'logistics';
 makeHabit "0 7 * * *", "apple", 300 ;
 makeHabit "0 7 * * *", "do 3*9_LegParBar/45_abs", 23*60, category=> "gym" ;
@@ -42,7 +42,7 @@ makeHabit "0 22 * * *", "have sex with Candice", 60*3 ,category=>'social',onFail
 makeHabit "0 10 21 4,7,10,1 *", "change toothbrush", 60*24 ,category=>'logistics';
 makeHabit "30 23 * * *", "sleep", 30, onFailed=> "remove" ,category=>'logistics';
 makeHabit "0 7 * * *", "wake (should be out)", 75, onFailed=> "remove" ,category=>'logistics';
-makeHabit "0 22 * * *", "drink alcohol", 23*60, onFailed=> "remove" ,category=>'logistics';
+#makeHabit "0 22 * * *", "drink alcohol", 23*60, onFailed=> "remove" ,category=>'logistics';
 makeHabit "0 11 * * mon", "sync latex, texmacs and mac's mongodb", 1380 ;
 makeHabit "0 8 * * *", "read math 2 hours", 960, enabled=> 0 ;
 makeHabit "15 22 * * Fri", "confucius 1h: 1", 960, onFailed=>'move:FAILED2';
