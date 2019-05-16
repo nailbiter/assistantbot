@@ -51,5 +51,6 @@ makeHabit "00 22 13 * *", "inflate bike", 960 , category=>"atschool";
 makeHabit "00 10 * * mon", "check week stat (money, time)", 960 , category=>"logistics";
 makeHabit "0 10 28 * *", "check salary, estimate income", 960;
 makeHabit "0 15 26 * *", "pay gym", 24*60, category=>"logistics", info=>"pay on 27th, 8000Y";
+makeHabit "0 10,15 * * mon,tue,wed,thu,fri", "rebuild dev", 4*60, category=>"parttime";
 #makeHabit "52 7 * * *", "test", 1, enabled=> 0, onFailed=>'putlabel' ;
 #makeHabit "* * * * *", "test2", -1, callback=>{name=>'managers.NewTrelloManager',method=>'report'},enabled=> 0, onFailed=>'putlabel' ;
