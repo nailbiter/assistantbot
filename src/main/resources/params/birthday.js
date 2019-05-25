@@ -113,5 +113,10 @@ var birthdays = [
 					month:01,date:03,
 					info:'mr.zafarjon@gmail.com',
 				},
+				{
+					name:'aunt Lylya',
+					month:05,date:20,
+					info:'https://www.facebook.com/ezhovalila/about?lst=100000573172334%3A100009173133010%3A1558314808',
+				},
 			]
 module.exports = birthdays;
