@@ -41,6 +41,7 @@ makeHabit "0 21 2,17 * *", "water tree", 60, info=>"water it once per two weeks 
 makeHabit "0 22 * * *", "have sex with Candice", 60*3 ,category=>'social',onFailed=>"remove";
 makeHabit "0 10 21 4,7,10,1 *", "change toothbrush", 60*24 ,category=>'logistics';
 makeHabit "30 23 * * *", "sleep", 30, onFailed=> "remove" ,category=>'logistics';
+makeHabit "30 23 * * *", "clean teeth", 30, onFailed=> "remove" ,category=>'logistics';
 makeHabit "0 7 * * *", "wake (should be out)", 75, onFailed=> "remove" ,category=>'logistics';
 #makeHabit "0 22 * * *", "drink alcohol", 23*60, onFailed=> "remove" ,category=>'logistics';
 makeHabit "0 11 * * mon", "sync latex, texmacs and mac's mongodb", 1380 ;
