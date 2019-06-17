@@ -4,15 +4,15 @@
 #makeHabit "30 23 * * *", "take pills", 30, category=>"logistics", onFailed=>"remove";
 makeHabit "30 23 * * *", "check/plan tasks", 30, category=>"tasks", onFailed=>"remove";
 makeHabit "0 23 * * *", "good day", 30 , category=>"logistics", info=>"https://trello.com/c/ilo6JlQO", onFailed=>"remove";
-makeHabit "0 21 * * *", "drink protein", 3*60 , category=>"logistics", onFailed=>"remove";
-makeHabit "0 10 * * *", "duolingo", 23*60 , category=>"german", onFailed=>"remove";
+makeHabit "0 21 * * *", "drink protein", 3*60 , category=>"logistics";
+makeHabit "0 10 * * *", "duolingo", (24-10)*60 , category=>"german", onFailed=>"remove";
 
 makeHabit "0 10 * * *", "math reading", 1080, items=>["main1 1 page","main1 1 page","main2 1 page",], onFailed=>'move:FAILED2';
 makeHabit "0 11 * * *", "talk to someone in person",  1080,  category=>"social", onFailed=>"remove";
 makeHabit "0 10 * * *", "8 random test", 1080, category=> "german",items=>["1","2","3","4","5",'6','7','8'];
 makeHabit "0 10 * * *", "einsoch6 SET", 1080, category=> "german", info=> "http://www.dw.com/de/deutsch-lernen/das-bandtagebuch-1-lass-uns-reden/s-32658", onFailed=>'move:FAILED2';
 makeHabit "30 14 * * fri", "mom talk", 1080, category=> "social" ;
-makeHabit "0 22 * * fri", "granny talk", 1080, category=> "social" ;
+makeHabit "0 15 * * sat", "granny talk", 1080, category=> "social" ;
 #makeHabit "30 23 * * sat", "masha report", 1080, category=> "social", onFailed=>"remove";
 #makeHabit "30 23 * * mon", "masha deadline", 1080, category=> "social" ;
 #makeHabit "0 16 * * *", "masha remind", 1080, category=> "social" ;
@@ -21,6 +21,7 @@ makeHabit "0 15 * * *", "uncle vanya project", 1080, onFailed=> "move:FAILED",in
 makeHabit "0 16 * * mon", "dad english", 1080, onFailed=>'move:TODO' ;
 makeHabit "30 23 * * *", "mental exercise", 1080, onFailed=>'move:FAILED2';
 makeHabit "0 8 * * sat,sun", "sprint 4", 1380, category=> "gym" ;
+makeHabit "0 12 * * mon,tue,thu,fri", "run", 23*60, category=> "gym" ;
 makeHabit "0 8 * * wed", "long walk", 1380, category=> "gym" ;
 makeHabit "0 7 * * *", "pullups 10:1", 23*60, category=> "gym" ;
 makeHabit "2 7 * * *", "pullups 10:2", 23*60, category=> "gym" ;
