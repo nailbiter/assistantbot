@@ -27,6 +27,7 @@ use Data::Dumper;
 use MongoDB;
 use Template;
 use DateTime;
+use FindBin;
 
 
 #global const's
