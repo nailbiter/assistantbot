@@ -28,6 +28,7 @@ use MongoDB;
 use Template;
 use DateTime;
 use FindBin;
+use Path::Tiny;
 
 
 #global const's
@@ -80,8 +81,11 @@ my $HTMLREPORTTEMPLATE = <<'END_BLURB';
 END_BLURB
 #procedures
 sub getPassword{
-	my $mongoClient = MongoDB->connect();
-	return $mongoClient->ns("admin.passwords")->find_one({key=>'ALUMNIPASS'})->{value};
+	my $mongoPassword = path("$FindBin::Bin/../../secret.txt")->slurp_utf8;
+	chomp $mongoPassword;
+#	printf("pass: %s\n",$mongoPassword);
+	my $mongoClient = MongoDB->connect(sprintf("mongodb://%s:%s\@ds149672.mlab.com:49672/logistics","nailbiter",$mongoPassword));
+	return $mongoClient->ns("logistics._keyring")->find_one()->{alumnipass};
 }
 sub uploadFile{
 	my $ssh = Net::OpenSSH->new($HOST, user => 'inp9822058', password => getPassword());
