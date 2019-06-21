@@ -50,6 +50,7 @@ body {
 	font: 300 16px/22px "Lato", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 END_BLURB
+my $MONGOMLAB = "mongodb://%s:%s\@ds149672.mlab.com:49672/logistics";
 my $HTMLREPORTTEMPLATE = <<'END_BLURB';
 <html>
 	<head>
@@ -83,8 +84,7 @@ END_BLURB
 sub getPassword{
 	my $mongoPassword = path("$FindBin::Bin/../../secret.txt")->slurp_utf8;
 	chomp $mongoPassword;
-#	printf("pass: %s\n",$mongoPassword);
-	my $mongoClient = MongoDB->connect(sprintf("mongodb://%s:%s\@ds149672.mlab.com:49672/logistics","nailbiter",$mongoPassword));
+	my $mongoClient = MongoDB->connect(sprintf($MONGOMLAB,"nailbiter",$mongoPassword));
 	return $mongoClient->ns("logistics._keyring")->find_one()->{alumnipass};
 }
 sub uploadFile{
@@ -96,8 +96,9 @@ sub createFile{
 	my $filename = $LOCALPATH;
 	open(my $fh, '>', $filename) or die "Could not open file '$filename' $!";
 	my $client = MongoDB->connect();
-	my $mongoPassword = $client->ns("admin.passwords")->find_one({key=>"MONGOMLAB"})->{value};
-	$client = MongoDB->connect(sprintf("mongodb://%s:%s\@ds149672.mlab.com:49672/logistics","nailbiter",$mongoPassword));
+	my $mongoPassword = path("$FindBin::Bin/../../secret.txt")->slurp_utf8;
+	chomp $mongoPassword;
+	$client = MongoDB->connect(sprintf($MONGOMLAB,"nailbiter",$mongoPassword));
 	my $coll = $client->get_database($$TIMEDB{dbname})->get_collection($$TIMEDB{colname})
 		->find()->sort({date=>-1})->limit($DEFNUMOFTIMERECORDS);
 	my @res;
