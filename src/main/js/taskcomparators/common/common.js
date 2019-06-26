@@ -1,5 +1,4 @@
-//global var's
-var recognizedCats = getVar('recognizedCats');
+//global const's
 var EXCLAMATION = "!";
 //global var's
 var recognizedCats = getVar('recognizedCats');
@@ -21,7 +20,7 @@ var catWeights = {
 };
 
 //procedures
-function compare(obj1,obj2){
+function compareObjects(obj1,obj2){
 	var comparisonArray = [compareLabel,compareDate,compareExclamation,compareName];
 	for(var i = 0; i < comparisonArray.length; i++ ){
 		var res = comparisonArray[i](obj1,obj2);

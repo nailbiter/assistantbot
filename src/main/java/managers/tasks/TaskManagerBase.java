@@ -60,7 +60,7 @@ public class TaskManagerBase extends WithSettingsManager {
 	private static final String INFTY = "∞";
 	protected Timer timer = new Timer();
 	protected TrelloAssistant ta_;
-	private ScriptApp sa_;
+	private JsApp sa_;
 	protected static int REMINDBEFOREMIN = 10;
 	protected static String TASKNAMELENLIMIT = "TASKNAMELENLIMIT";
 	protected static String INBOX = "INBOX";
@@ -90,8 +90,9 @@ public class TaskManagerBase extends WithSettingsManager {
 					.add(new ScriptHelperLogger())
 					.add(new ScriptHelperMisc())
 					.add(varkeeper_));
-		FillTable(comparators_,ta_,sa_,getParamObject(rp));
 		FillRecognizedCats(recognizedCatNames_,rp,varkeeper_,cats_);
+		FillTable(comparators_,ta_,sa_,getParamObject(rp));
+		
 		
 		fp_ = new FlagParser()
 			.addFlag('a', "archive task")
@@ -184,39 +185,64 @@ public class TaskManagerBase extends WithSettingsManager {
 	 * @param params 
 	 * @throws Exception
 	 */
-	private static void FillTable(HashMap<String, ImmutablePair<Comparator<JSONObject>, List<TrelloTaskList>>> comparators,TrelloAssistant ta,final ScriptApp sa, JSONObject params) throws Exception {
-		comparators.put(INBOX, new ImmutablePair<Comparator<JSONObject>, List<TrelloTaskList>>(
-				new Comparator<JSONObject>() {
-					@Override
-					public int compare(JSONObject o1, JSONObject o2) {
-						try {
-							int res = 
-									Integer.parseInt(sa.runCommand(String.format("%s %s %s", "inbox",o1.getString("id"),o2.getString("id"))));
-							System.err.format("comparing \"%s\" and \"%s\" gave %d\n", o1.getString("name"),o2.getString("name"),res);
-							return res;
-						} catch (Exception e) {
-							e.printStackTrace();
-							return 0;
-						}
-					}
-				}
+	private static void FillTable(HashMap<String, ImmutablePair<Comparator<JSONObject>, List<TrelloTaskList>>> comparators,TrelloAssistant ta,final JsApp sa, JSONObject params) throws Exception {
+		HashMap<String,ImmutablePair<String,List<TrelloTaskList>>> table = 
+				new HashMap<String,ImmutablePair<String,List<TrelloTaskList>>>();
+		table.put(INBOX, new ImmutablePair<String,List<TrelloTaskList>>("inbox"
 				,GetInboxLists(ta,params)));
-		comparators.put(SNOOZED, new ImmutablePair<Comparator<JSONObject>,List<TrelloTaskList>>(
-				new Comparator<JSONObject>() {
-					@Override
-					public int compare(JSONObject o1, JSONObject o2) {
-						try {
-							return Integer.parseInt(sa.runCommand(String.format("%s %s %s", "snoozed",o1.getString("id"),o2.getString("id"))));
-						} catch (Exception e) {
-							e.printStackTrace();
-							return 0;
-						}
-					}
-				}
+		table.put(SNOOZED, new ImmutablePair<String,List<TrelloTaskList>>("snoozed"
 				,Arrays.asList(new TrelloTaskList[] {
 						new TrelloTaskList(ta,managers.habits.Constants.BOARDIDS.INBOX.toString()
 								,managers.habits.Constants.INBOXLISTNAME).setSegment(0)
 				})));
+		
+		for(String key:table.keySet()) {
+			ImmutablePair<String, List<TrelloTaskList>> pair = table.get(key);
+			TaskComparator comparator = sa.getInterface(TaskComparator.class, pair.left);
+			comparators.put(key, new ImmutablePair<Comparator<JSONObject>, List<TrelloTaskList>>(
+					new Comparator<JSONObject>() {
+						@Override
+						public int compare(JSONObject o1, JSONObject o2) {
+							int res = comparator.compare(PreprocessTaskObject(o1)
+									, PreprocessTaskObject(o2));
+							System.err.format("compare res: %d\n", res);
+							return res;
+						}
+					},pair.right));
+		}
+		
+//		comparators.put(INBOX, new ImmutablePair<Comparator<JSONObject>, List<TrelloTaskList>>(
+//				new Comparator<JSONObject>() {
+//					@Override
+//					public int compare(JSONObject o1, JSONObject o2) {
+//						try {
+//							int res = 
+//									Integer.parseInt(sa.runCommand(String.format("%s %s %s", "inbox",o1.getString("id"),o2.getString("id"))));
+//							System.err.format("comparing \"%s\" and \"%s\" gave %d\n", o1.getString("name"),o2.getString("name"),res);
+//							return res;
+//						} catch (Exception e) {
+//							e.printStackTrace();
+//							return 0;
+//						}
+//					}
+//				}
+//				,GetInboxLists(ta,params)));
+//		comparators.put(SNOOZED, new ImmutablePair<Comparator<JSONObject>,List<TrelloTaskList>>(
+//				new Comparator<JSONObject>() {
+//					@Override
+//					public int compare(JSONObject o1, JSONObject o2) {
+//						try {
+//							return Integer.parseInt(sa.runCommand(String.format("%s %s %s", "snoozed",o1.getString("id"),o2.getString("id"))));
+//						} catch (Exception e) {
+//							e.printStackTrace();
+//							return 0;
+//						}
+//					}
+//				}
+//				,Arrays.asList(new TrelloTaskList[] {
+//						new TrelloTaskList(ta,managers.habits.Constants.BOARDIDS.INBOX.toString()
+//								,managers.habits.Constants.INBOXLISTNAME).setSegment(0)
+//				})));
 	}
 	private static List<TrelloTaskList> GetInboxLists(TrelloAssistant ta, JSONObject params) {
 		System.err.format("GetInboxLists: %s\n", params.toString(2));
@@ -492,21 +518,24 @@ public class TaskManagerBase extends WithSettingsManager {
 			res.addAll(tl.getTasks());
 		}
 		
-		FillVarkeeper(res,varkeeper_);
+//		FillVarkeeper(res,varkeeper_);
 		Collections.sort(res, pair.left);
 		return res;
 	}
 
 	private static void FillVarkeeper(ArrayList<JSONObject> res, ScriptHelperVarkeeper varkeeper) {
 		for(JSONObject o:res) {
-			JSONObject obj = new JSONObject(o.toString());
-			JSONArray labels = o.getJSONArray("labels");
-			obj.put("labels", new JSONArray());
-			for(Object oo:labels)
-				obj.getJSONArray("labels").put(((JSONObject)oo).getString("name"));
-			varkeeper.set(o.getString("id"), obj.toString());
+			varkeeper.set(o.getString("id"), PreprocessTaskObject(o));
 		}
 			
+	}
+	private static String PreprocessTaskObject(JSONObject o) {
+		JSONObject obj = new JSONObject(o.toString());
+		JSONArray labels = o.getJSONArray("labels");
+		obj.put("labels", new JSONArray());
+		for(Object oo:labels)
+			obj.getJSONArray("labels").put(((JSONObject)oo).getString("name"));
+		return obj.toString();
 	}
 	protected void saveSnoozeToDb(JSONObject card, Date date) {
 		rp_.getCollection(UserCollection.POSTPONEDTASKS)

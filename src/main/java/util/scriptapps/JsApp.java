@@ -95,4 +95,14 @@ public class JsApp implements ScriptApp {
 		  }
 		}
 	}
+	public <T> T getInterface(Class<T> clasz,String fn) throws FileNotFoundException, ScriptException{
+		ScriptEngine engine = factory.getEngineByName("JavaScript");
+		Invocable inv = (Invocable) engine;
+		sh_.setInvocable(inv);
+        engine.put(SCRIPTHELPERVARNAME, sh_);
+		preloadEngine(engine,scriptFolder_);
+		String path = scriptFolder_ + fn + SCRIPTEXTENSION;
+		engine.eval(new java.io.FileReader(path));
+		return inv.getInterface(clasz);
+	}
 }
