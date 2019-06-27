@@ -523,12 +523,12 @@ public class TaskManagerBase extends WithSettingsManager {
 		return res;
 	}
 
-	private static void FillVarkeeper(ArrayList<JSONObject> res, ScriptHelperVarkeeper varkeeper) {
-		for(JSONObject o:res) {
-			varkeeper.set(o.getString("id"), PreprocessTaskObject(o));
-		}
-			
-	}
+//	private static void FillVarkeeper(ArrayList<JSONObject> res, ScriptHelperVarkeeper varkeeper) {
+//		for(JSONObject o:res) {
+//			varkeeper.set(o.getString("id"), PreprocessTaskObject(o));
+//		}
+//			
+//	}
 	private static String PreprocessTaskObject(JSONObject o) {
 		JSONObject obj = new JSONObject(o.toString());
 		JSONArray labels = o.getJSONArray("labels");
