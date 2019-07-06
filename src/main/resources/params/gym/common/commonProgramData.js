@@ -604,5 +604,72 @@ var program = [
 			},
 		]
 	},
+	{
+		weekCount:7,
+		dayCount:1,
+		program:[
+			{
+				"name":"bench",
+				"reps":[
+					['8',62.5],
+					['8*4',72.5],
+					['1',82.5],
+				]
+			},
+			{
+				"name":"fly",
+				"reps":"3*10-12"
+			},
+			{
+				"name":"stand press",
+				"reps":"3*6"
+			},
+		]
+	},
+	{
+		weekCount:weekShift(5),
+		dayCount:2,
+		program:[
+			{
+				name:"brus",
+				reps:"2*12, 3*30k*10x"
+			},
+			{
+				name:"razg",
+				reps:"2*15*12k,5x, 3*10*14k"
+			},
+			{
+				name:"bic",
+				reps:"2*15*12.5k, 3*10*15k"
+			},
+			{
+				name:"molot",
+				reps:"2*15*15k, 3*12*22.5k"
+			}
+		]
+	},
+	{
+		weekCount:7,
+		dayCount:4,
+		program:[
+			{
+				"name":"bench",
+				"reps":[
+					['5',62.5],
+					['5',72.5],
+					['5*4',80.0],
+					['1',82.5],
+				]
+			},
+			{
+				"name":"fly",
+				"reps":"3*10-12"
+			},
+			{
+				"name":"stand press",
+				"reps":"3*6"
+			},
+		]
+	},
 ]
 module.exports = program;
