@@ -32,7 +32,7 @@ makeHabit "0 19 * * fri", "clean ears", 1380 ;
 makeHabit "0 12 1 * *", "back-up K emails", 1380 ;
 #makeHabit "0 10 * * *", "backup baito DB twice, check apaz/dulut time", 1380, onFailed=>'remove';
 makeHabit "0 7 * * *", "morning note habit", 300 ,info=>"https://docs.google.com/document/d/1Q4wvok8I1AAc0Jtv6gU3d-MJK69uvsqCeLPbBvLiCTg/edit#";
-makeHabit "0 7 * * *","face whipe, wash head, faceCream x 2", 300,category=>'logistics';
+makeHabit "0 10 * * *","face whipe, wash head, faceCream x 2", 300,category=>'logistics';
 makeHabit "0 22 2,17 * *","shave penis, armpits; nose hair; cut nails",60*24,category=>'logistics';
 makeHabit "0 9 20 */2 *","haircut",60*24,category=>'logistics';
 makeHabit "0 7 * * *", "apple", 300 ;
