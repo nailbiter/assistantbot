@@ -4,7 +4,7 @@
 #makeHabit "30 23 * * *", "take pills", 30, category=>"logistics", onFailed=>"remove";
 makeHabit "30 23 * * *", "check/plan tasks", 30, category=>"tasks", onFailed=>"remove";
 makeHabit "0 23 * * *", "good day", 30 , category=>"logistics", info=>"https://trello.com/c/ilo6JlQO", onFailed=>"remove";
-makeHabit "0 21 * * mon,tue,thu,fri", "drink protein", 3*60 , category=>"logistics";
+makeHabit "0 21 * * mon,tue,wed,thu,fri", "drink protein", 3*60 , category=>"logistics";
 makeHabit "0 10 * * *", "duolingo", (24-10)*60 , category=>"german", onFailed=>"remove";
 
 makeHabit "0 10 * * *", "math reading", 1080, items=>["main1 1 page","main1 1 page","main2 1 page",], onFailed=>'move:FAILED2';
@@ -33,7 +33,7 @@ makeHabit "0 12 1 * *", "back-up K emails", 1380 ;
 #makeHabit "0 10 * * *", "backup baito DB twice, check apaz/dulut time", 1380, onFailed=>'remove';
 makeHabit "0 7 * * *", "morning note habit", 300 ,info=>"https://docs.google.com/document/d/1Q4wvok8I1AAc0Jtv6gU3d-MJK69uvsqCeLPbBvLiCTg/edit#";
 makeHabit "0 9 * * *", "face whipe, wash head, faceCream x 2", 300,category=>'logistics';
-makeHabit "0 10 * * *", "take vitamins", 300,category=>'logistics';
+makeHabit "0 10 * * *", "take vitamins", 300,category=>'logistics', onFailed=>"remove";
 makeHabit "0 22 2,17 * *","shave penis, armpits; nose hair; cut nails",60*24,category=>'logistics';
 makeHabit "0 9 20 */2 *","haircut",60*24,category=>'logistics';
 makeHabit "0 7 * * *", "apple", 300 ;
