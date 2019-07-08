@@ -6,7 +6,7 @@ var recognizedCats = getVar('recognizedCats');
 var catWeights = {
 	//sleeping : 1,
 	parttime: -5,
-	logistics: -4,
+	logistics: -3,
 	gym: 4,
 	reading: 5,
 	work: -6,
