@@ -13,7 +13,7 @@ function getProgram(){
 		{
 			obj: {
 				name:"hyperextension",
-				reps:"0k*15x, 5k*15x, 10k*15x, 15k*15x",
+				reps:"5k*15x, 10k*15x, 15k*15x, 20k*15x",
 			},
 			index : 1,
 			filter:function(dayCount,weekCount){
