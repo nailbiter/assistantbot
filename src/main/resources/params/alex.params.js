@@ -63,6 +63,20 @@ var res = [
 					],
 				},
 				{
+					board:"foFETfOx",
+					list:"sweet tasks",
+					filters:[
+						{
+							type:"HEAD",
+							data:2,
+						},
+						{
+							type:"ADDLABEL",
+							data:"logistics",
+						},
+					],
+				},
+				{
 					board:"mQj3bkPA",
 					list:"Alex TODO",
 					filters:[
