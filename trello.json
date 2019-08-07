@@ -26,12 +26,8 @@
       "remove_costs" : "https://trello.com/c/PmEunKmi",
       "prog_list":"https://trello.com/c/LZRJqGmJ",
       "check_exclamation" : "https://trello.com/c/I2UZf4ds",
-      "candy":"https://trello.com/c/DZRBoOiF"
+      "candy":"https://trello.com/c/DZRBoOiF",
+      "optimize_tasks":"https://trello.com/c/6Icupdt3"
    },
-   "CARDURL" : "https://trello.com/c/i3aVYQuw",
-   "DEPENDENCIES" : [
-      {
-         "DIR" : "src/main/java/com/github/nailbiter/util/"
-      }
-   ]
+   "CARDURL" : "optimize_tasks"
 }

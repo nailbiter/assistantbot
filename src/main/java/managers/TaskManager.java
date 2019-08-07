@@ -11,9 +11,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TimerTask;
+import java.util.regex.Pattern;
 
 import org.apache.commons.collections4.Closure;
 import org.apache.commons.collections4.Predicate;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.bson.Document;
@@ -68,7 +70,8 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 	}
 	public String tasks(JSONObject res) throws Exception {
 		String remainder = res.optString("tasknum", "");
-		HashMap<String, Object> pcl = new ParseCommentLine(ParseCommentLine.Mode.FROMLEFT).parse(remainder);
+		HashMap<String, Object> pcl = new ParseCommentLine(ParseCommentLine.Mode.FROMLEFT)
+				.parse(remainder);
 		
 		ArrayList<Predicate<JSONObject>> filters = new ArrayList<Predicate<JSONObject>>();
 		if(pcl.containsKey(ParseCommentLine.TAGS)) {
@@ -87,20 +90,16 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 			}
 		}
 		
-		if( ((String)pcl.getOrDefault(ParseCommentLine.REM, "")).length()==0 ) {
-			return PrintTasks(getTasks(INBOX),this.getParamObject(rp_),recognizedCatNames_, filters);
-		}
-		int tasknum = Integer.parseInt((String)pcl.getOrDefault(ParseCommentLine.REM, ""));
-		if(tasknum>0){
-			rp_.sendMessage(new Message(PrintTask(getTasks(INBOX),tasknum,ta_)));
-			return "";
-		} else if(tasknum==0) {
-			return PrintTasks(getTasks(SNOOZED),this.getParamObject(rp_),recognizedCatNames_, filters);
-		} else if( tasknum < 0 ) {
-			rp_.sendMessage(new Message(PrintTask(getTasks(SNOOZED),-tasknum, ta_)));
-			return "";
+		String rem = (String) pcl.getOrDefault(ParseCommentLine.REM, "");
+		if( Pattern.matches("-?"+Digest.DIGEST_REGEX, rem) || rem.equals("0") ) {
+			if(rem.equals("0")) {
+				return PrintTasks(getTasks(SNOOZED,""),this.getParamObject(rp_),recognizedCatNames_, filters);
+			} else {
+				rp_.sendMessage(new Message(PrintTask(getTask(rem))));
+				return "";
+			}
 		} else {
-			throw new Exception("this should not happen");
+			return PrintTasks(getTasks(INBOX,rem),this.getParamObject(rp_),recognizedCatNames_, filters);
 		}
 	}
 	public String tasknew(JSONObject obj) throws Exception {
@@ -134,11 +133,10 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 					,getParamObject(rp_)
 					,logger_);
 		}
-		ArrayList<Integer> nums = TaskManagerBase.ParseIntList(obj.getString("num"));
-		if( nums.size()==1 && nums.get(0)==0 ) {
+		String[] nums = obj.getString("num").split(","); 
+		if( nums.length==1 && nums[0].equals("0") ) {
 			return PrintDoneTasks(stat,exs,cats_);
 		}
-			
 		
 		String remainder = obj.getString("remainder");
 		final String SNOOZEDATE = "SNOOZEDATE";
@@ -149,7 +147,7 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		
 		ArrayList<String> res = new ArrayList<String>();
 		ArrayList<JSONObject> cards = new ArrayList<JSONObject>();
-		for(Integer num:nums) cards.add(getTask(num));
+		for(String num:nums) cards.add(getTask(num));
 		for(JSONObject card:cards) {
 			if(fp_.contains('h'))
 				return fp_.getHelp();
@@ -230,8 +228,6 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 			TrelloTaskList.Move(card,comparators_.get(SNOOZED).right.get(0)
 					,comparators_.get(INBOX).right.get(0)
 					);
-//			new TrelloMover(ta_,comparators_.get(SNOOZED).middle,SEPARATOR)
-//			.moveTo(card,comparators_.get(INBOX).middle,comparators_.get(INBOX).right);
 			logToDb("snooze",card);
 			rp_.sendMessage(new Message(String.format("snooze \"%s\"", card.getString("name"))));
 		} catch (Exception e) {

@@ -22,7 +22,9 @@ import java.util.Timer;
 import java.util.logging.Logger;
 import managers.habits.Constants.BOARDIDS;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections4.Closure;
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.collections4.Predicate;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.bson.Document;
@@ -210,39 +212,6 @@ public class TaskManagerBase extends WithSettingsManager {
 						}
 					},pair.right));
 		}
-		
-//		comparators.put(INBOX, new ImmutablePair<Comparator<JSONObject>, List<TrelloTaskList>>(
-//				new Comparator<JSONObject>() {
-//					@Override
-//					public int compare(JSONObject o1, JSONObject o2) {
-//						try {
-//							int res = 
-//									Integer.parseInt(sa.runCommand(String.format("%s %s %s", "inbox",o1.getString("id"),o2.getString("id"))));
-//							System.err.format("comparing \"%s\" and \"%s\" gave %d\n", o1.getString("name"),o2.getString("name"),res);
-//							return res;
-//						} catch (Exception e) {
-//							e.printStackTrace();
-//							return 0;
-//						}
-//					}
-//				}
-//				,GetInboxLists(ta,params)));
-//		comparators.put(SNOOZED, new ImmutablePair<Comparator<JSONObject>,List<TrelloTaskList>>(
-//				new Comparator<JSONObject>() {
-//					@Override
-//					public int compare(JSONObject o1, JSONObject o2) {
-//						try {
-//							return Integer.parseInt(sa.runCommand(String.format("%s %s %s", "snoozed",o1.getString("id"),o2.getString("id"))));
-//						} catch (Exception e) {
-//							e.printStackTrace();
-//							return 0;
-//						}
-//					}
-//				}
-//				,Arrays.asList(new TrelloTaskList[] {
-//						new TrelloTaskList(ta,managers.habits.Constants.BOARDIDS.INBOX.toString()
-//								,managers.habits.Constants.INBOXLISTNAME).setSegment(0)
-//				})));
 	}
 	private static List<TrelloTaskList> GetInboxLists(TrelloAssistant ta, JSONObject params) {
 		System.err.format("GetInboxLists: %s\n", params.toString(2));
@@ -257,6 +226,12 @@ public class TaskManagerBase extends WithSettingsManager {
 			res.add(ttl);
 		}
 		return res;
+	}
+	protected static class Digest {
+		public static String CreateDigest(String message) {
+			return DigestUtils.sha1Hex(message).substring(0,4);
+		}
+		public static final String DIGEST_REGEX = "[0-9a-f]{4}";
 	}
 	protected static String PrintTasks(ArrayList<JSONObject> arr, JSONObject paramObj, ArrayList<String> recognizedCats, ArrayList<Predicate<JSONObject>> filters) throws JSONException, ParseException, AssistantBotException {
 		System.err.format("PrintTasks: paramObj=%s\n", paramObj.toString(2));
@@ -288,7 +263,7 @@ public class TaskManagerBase extends WithSettingsManager {
 			}
 			
 			tb.newRow()
-			.addToken(i + 1)
+			.addToken(Digest.CreateDigest(card.getString("id")))
 			.addToken(card.getString("name"),paramObj.getJSONObject("sep").getInt("name"));
 			
 			HashSet<String> labelset = GetLabels(card.getJSONArray("labels")) ;
@@ -360,8 +335,7 @@ public class TaskManagerBase extends WithSettingsManager {
 		return util.Util.DaysTill(obj.getString("due"));
 	}
 
-	protected static String PrintTask(ArrayList<JSONObject> arr, int index, TrelloAssistant ta) throws JSONException, Exception {
-		JSONObject card = arr.get(index-1);
+	protected static String PrintTask(JSONObject card) {
 		return String.format("%s %s"
 				,card.getString("name")
 				,card.getString("shortUrl")
@@ -508,7 +482,7 @@ public class TaskManagerBase extends WithSettingsManager {
 		return stat;
 	}
 
-	protected ArrayList<JSONObject> getTasks(String identifier) throws Exception {
+	protected ArrayList<JSONObject> getTasks(String identifier, String rem) throws Exception {
 		if( !comparators_.containsKey(identifier) )
 			throw new Exception(String.format("unknown key %s", identifier));
 		ImmutablePair<Comparator<JSONObject>, List<TrelloTaskList>> pair = 
@@ -518,17 +492,11 @@ public class TaskManagerBase extends WithSettingsManager {
 			res.addAll(tl.getTasks());
 		}
 		
-//		FillVarkeeper(res,varkeeper_);
-		Collections.sort(res, pair.left);
+		if(rem.contains("s")) {
+			Collections.sort(res, pair.left);
+		}
 		return res;
 	}
-
-//	private static void FillVarkeeper(ArrayList<JSONObject> res, ScriptHelperVarkeeper varkeeper) {
-//		for(JSONObject o:res) {
-//			varkeeper.set(o.getString("id"), PreprocessTaskObject(o));
-//		}
-//			
-//	}
 	private static String PreprocessTaskObject(JSONObject o) {
 		JSONObject obj = new JSONObject(o.toString());
 		JSONArray labels = o.getJSONArray("labels");
@@ -551,20 +519,30 @@ public class TaskManagerBase extends WithSettingsManager {
 					.append("message",msg)
 					.append("obj",Document.parse(obj.toString())));
 	}
-	protected JSONObject getTask(int num) throws Exception {
+	protected JSONObject getTask(String hash) throws Exception {
 		JSONObject card = null;
-		if( num > 0 )
-			card = getTasks(INBOX).get(num-1);
-		else
-			card = getTasks(SNOOZED).get(-num-1);
-		return card;
+		
+		ArrayList<JSONObject> tasks = null;
+		if( hash.startsWith("$") ) {
+			tasks = getTasks(SNOOZED,"");
+			hash = hash.substring(1);
+		} else {
+			tasks = getTasks(INBOX,"");
+		}
+		
+		for(JSONObject o:tasks) {
+			if(Digest.CreateDigest(o.getString("id")).equals(hash)) {
+				return o;
+			}
+		}
+		return null;
 	}
-	protected static ArrayList<Integer> ParseIntList(String s){
-		ArrayList<Integer> res = new ArrayList<Integer>();
-		for( String split:s.split(",") )
-			res.add( Integer.parseInt(split) );
-		return res;
-	}
+//	protected static ArrayList<Integer> ParseIntList(String s){
+//		ArrayList<Integer> res = new ArrayList<Integer>();
+//		for( String split:s.split(",") )
+//			res.add( Integer.parseInt(split) );
+//		return res;
+//	}
 	protected static boolean CannotDoTask(JSONArray cats_, String mc, HashMap<String, Integer> stat) throws AssistantBotException {
 		JSONObject cat = JsonUtil.FindInJSONArray(cats_, "name", mc);
 		int a = stat.getOrDefault(mc, 0),

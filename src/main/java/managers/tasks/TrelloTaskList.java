@@ -90,7 +90,6 @@ public class TrelloTaskList {
 		return getListNamePrivate();
 	}
 	public static void Move(JSONObject card, TrelloTaskList trelloList, TrelloTaskList trelloList2) throws Exception {
-		// TODO Auto-generated method stub
 		if(trelloList.segment_!=null && trelloList2.segment_!=null) {
 			new TrelloMover(trelloList.ta_,trelloList.getListNamePrivate(),SEPARATOR)
 			.moveTo(card,trelloList2.getListNamePrivate(),trelloList2.segment_);
