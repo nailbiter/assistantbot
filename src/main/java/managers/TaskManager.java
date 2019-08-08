@@ -93,13 +93,13 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		String rem = (String) pcl.getOrDefault(ParseCommentLine.REM, "");
 		if( Pattern.matches("-?"+Digest.DIGEST_REGEX, rem) || rem.equals("0") ) {
 			if(rem.equals("0")) {
-				return PrintTasks(getTasks(SNOOZED,""),this.getParamObject(rp_),recognizedCatNames_, filters);
+				return PrintTasks(getTasks(SNOOZED, filters, rem),this.getParamObject(rp_),recognizedCatNames_);
 			} else {
 				rp_.sendMessage(new Message(PrintTask(getTask(rem))));
 				return "";
 			}
 		} else {
-			return PrintTasks(getTasks(INBOX,rem),this.getParamObject(rp_),recognizedCatNames_, filters);
+			return PrintTasks(getTasks(INBOX, filters, rem),this.getParamObject(rp_),recognizedCatNames_);
 		}
 	}
 	public String tasknew(JSONObject obj) throws Exception {

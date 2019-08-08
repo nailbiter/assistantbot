@@ -24,6 +24,7 @@ import managers.habits.Constants.BOARDIDS;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections4.Closure;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.collections4.Predicate;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -233,7 +234,7 @@ public class TaskManagerBase extends WithSettingsManager {
 		}
 		public static final String DIGEST_REGEX = "[0-9a-f]{4}";
 	}
-	protected static String PrintTasks(ArrayList<JSONObject> arr, JSONObject paramObj, ArrayList<String> recognizedCats, ArrayList<Predicate<JSONObject>> filters) throws JSONException, ParseException, AssistantBotException {
+	protected static String PrintTasks(ArrayList<JSONObject> arr, JSONObject paramObj, ArrayList<String> recognizedCats) throws JSONException, ParseException, AssistantBotException {
 		System.err.format("PrintTasks: paramObj=%s\n", paramObj.toString(2));
 		TableBuilder tb = new TableBuilder()
 			.addTokens("#_","name_","labels_","due_");
@@ -241,9 +242,9 @@ public class TaskManagerBase extends WithSettingsManager {
 		AssistantBotException isBad = null;
 		
 		boolean wasCut = false;
-		final int MAXSIZEVAL = filters.isEmpty()? paramObj.getInt(MAXSIZE): -1;
+		final int MAXSIZEVAL = /*filters.isEmpty()? */paramObj.getInt(MAXSIZE)/*: -1*/;
 		int size=arr.size();
-		if( ( size > MAXSIZEVAL ) && ( MAXSIZEVAL >= 0 ) ) {
+		if( ( size > MAXSIZEVAL ) /*&& ( MAXSIZEVAL >= 0 )*/ ) {
 			wasCut = true;
 			arr = util.Util.GetArrayHead(arr,MAXSIZEVAL);
 		}
@@ -251,16 +252,16 @@ public class TaskManagerBase extends WithSettingsManager {
 		for(int i = 0;i < arr.size(); i++) {
 			JSONObject card = arr.get(i);
 			
-			boolean toContinue = false;
-			for(Predicate<JSONObject> filter:filters) {
-				if( !filter.evaluate(card) ) {
-					toContinue = true;
-					break;
-				}
-			}
-			if( toContinue ) {
-				continue;
-			}
+//			boolean toContinue = false;
+//			for(Predicate<JSONObject> filter:filters) {
+//				if( !filter.evaluate(card) ) {
+//					toContinue = true;
+//					break;
+//				}
+//			}
+//			if( toContinue ) {
+//				continue;
+//			}
 			
 			tb.newRow()
 			.addToken(Digest.CreateDigest(card.getString("id")))
@@ -482,7 +483,7 @@ public class TaskManagerBase extends WithSettingsManager {
 		return stat;
 	}
 
-	protected ArrayList<JSONObject> getTasks(String identifier, String rem) throws Exception {
+	protected ArrayList<JSONObject> getTasks(String identifier, ArrayList<Predicate<JSONObject>> filters, String rem) throws Exception {
 		if( !comparators_.containsKey(identifier) )
 			throw new Exception(String.format("unknown key %s", identifier));
 		ImmutablePair<Comparator<JSONObject>, List<TrelloTaskList>> pair = 
@@ -492,6 +493,9 @@ public class TaskManagerBase extends WithSettingsManager {
 			res.addAll(tl.getTasks());
 		}
 		
+		for(Predicate <JSONObject> filter:filters) {
+			CollectionUtils.filter(res, filter);
+		}
 		if(rem.contains("s")) {
 			Collections.sort(res, pair.left);
 		}
@@ -524,10 +528,10 @@ public class TaskManagerBase extends WithSettingsManager {
 		
 		ArrayList<JSONObject> tasks = null;
 		if( hash.startsWith("$") ) {
-			tasks = getTasks(SNOOZED,"");
+			tasks = getTasks(SNOOZED, new ArrayList<Predicate<JSONObject>>(),"");
 			hash = hash.substring(1);
 		} else {
-			tasks = getTasks(INBOX,"");
+			tasks = getTasks(INBOX, new ArrayList<Predicate<JSONObject>>(),"");
 		}
 		
 		for(JSONObject o:tasks) {
@@ -537,12 +541,6 @@ public class TaskManagerBase extends WithSettingsManager {
 		}
 		return null;
 	}
-//	protected static ArrayList<Integer> ParseIntList(String s){
-//		ArrayList<Integer> res = new ArrayList<Integer>();
-//		for( String split:s.split(",") )
-//			res.add( Integer.parseInt(split) );
-//		return res;
-//	}
 	protected static boolean CannotDoTask(JSONArray cats_, String mc, HashMap<String, Integer> stat) throws AssistantBotException {
 		JSONObject cat = JsonUtil.FindInJSONArray(cats_, "name", mc);
 		int a = stat.getOrDefault(mc, 0),
