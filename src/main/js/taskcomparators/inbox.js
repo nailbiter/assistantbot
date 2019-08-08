@@ -1,8 +1,3 @@
-/*function main(cmdline){
-	var split = cmdline.split(" ");
-	return compare(getVar(split[0]),getVar(split[1]));
-}*/
-
 function compare(s1,s2) {
 	log("s1: "+s1);
 	log("s2: "+s2);

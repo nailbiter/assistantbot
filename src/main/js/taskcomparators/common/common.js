@@ -20,8 +20,33 @@ var catWeights = {
 };
 
 //procedures
-function compareObjects(obj1,obj2){
-	var comparisonArray = [compareLabel,compareDate,compareExclamation,compareName];
+function compareObjects(obj1,obj2) {
+	var comparisonArray = [
+    compareMainLabel,
+    compareDate,
+    compareExclamation,
+    function(o1, o2) {
+      var l1 = o1.labels,
+        l2 = o2.labels,
+        m1 = getMainLabel(o1),
+        m2 = getMainLabel(o2);
+
+      l1 = l1.filter(function(l) {
+        return l !== m1;
+      });
+      l2 = l2.filter(function(l) {
+        return l !== m2;
+      })
+
+      log("SOKM: "+l1.join(","));
+      log("SOKM: "+l2.join(","));
+      var res = strcmp(l1,l2);
+      log("SOKM: "+res);
+
+      return res;
+    },
+    compareName,
+  ];
 	for(var i = 0; i < comparisonArray.length; i++ ){
 		var res = comparisonArray[i](obj1,obj2);
 		if( res != 0 )
@@ -29,7 +54,7 @@ function compareObjects(obj1,obj2){
 	}
 	return JSON.stringify(0);
 }
-function compareExclamation(o1,o2){
+function compareExclamation(o1,o2) {
 	var i1 = 0, i2 = 0;
 	log("compareExclamation "+JSON.stringify(o1.labels));
 	log("compareExclamation "+JSON.stringify(o2.labels));
@@ -74,7 +99,7 @@ function compareDate(o1,o2){
 function talkToHelper(x){
 	return JSON.parse(ScriptHelper.execute(JSON.stringify(x)));
 }
-function compareLabel(o1,o2){
+function compareMainLabel(o1,o2){
 	var l1 = getMainLabel(o1),
 		l2 = getMainLabel(o2);
 	log("getMainLabel: "+l1);
@@ -106,12 +131,12 @@ function getMainLabel(o){
 		if( recognizedCats.indexOf(label) >= 0 )
 			return label;
 	}
+  return undefined;
 }
-function compareName(o1,o2){
+function compareName(o1,o2) {
 	return strcmp(o1.name,o2.name)
 }
-function strcmp(a, b)
-{
+function strcmp(a, b) {
     return (a<b?-1:(a>b?1:0));
 }
 function numcmp(a,b){

@@ -252,17 +252,6 @@ public class TaskManagerBase extends WithSettingsManager {
 		for(int i = 0;i < arr.size(); i++) {
 			JSONObject card = arr.get(i);
 			
-//			boolean toContinue = false;
-//			for(Predicate<JSONObject> filter:filters) {
-//				if( !filter.evaluate(card) ) {
-//					toContinue = true;
-//					break;
-//				}
-//			}
-//			if( toContinue ) {
-//				continue;
-//			}
-			
 			tb.newRow()
 			.addToken(Digest.CreateDigest(card.getString("id")))
 			.addToken(card.getString("name"),paramObj.getJSONObject("sep").getInt("name"));
@@ -503,10 +492,14 @@ public class TaskManagerBase extends WithSettingsManager {
 	}
 	private static String PreprocessTaskObject(JSONObject o) {
 		JSONObject obj = new JSONObject(o.toString());
+		
+		ArrayList<String> ll = new ArrayList<String>(); 
 		JSONArray labels = o.getJSONArray("labels");
-		obj.put("labels", new JSONArray());
 		for(Object oo:labels)
-			obj.getJSONArray("labels").put(((JSONObject)oo).getString("name"));
+			ll.add(((JSONObject)oo).getString("name"));
+		Collections.sort(ll);
+		obj.put("labels", new JSONArray(ll));
+		
 		return obj.toString();
 	}
 	protected void saveSnoozeToDb(JSONObject card, Date date) {
