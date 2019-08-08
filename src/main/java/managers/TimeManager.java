@@ -28,10 +28,12 @@ import assistantbot.ResourceProvider;
 import jshell.command.cat;
 import util.Util;
 import util.db.MongoUtil;
+import util.AssistantBotException;
 import util.JsonUtil;
 import util.Message;
 import util.UserCollection;
 import util.parsers.ParseOrdered;
+import util.parsers.ParseOrderedCmd;
 
 import static java.util.Arrays.asList;
 
@@ -53,7 +55,7 @@ public class TimeManager extends AbstractManager implements Runnable, OptionRepl
 	int waitingForPersistentCategoryChoiceMessageId_ = -1;
 	private ResourceProvider rp_;
 	
-	public TimeManager(ResourceProvider rp) {
+	public TimeManager(ResourceProvider rp) throws AssistantBotException {
 		super(GetCommands());
 		rp_ = rp;
 		time_ = rp_.getCollection(UserCollection.TIME);
@@ -163,13 +165,13 @@ public class TimeManager extends AbstractManager implements Runnable, OptionRepl
 		Date currentData = new Date();
 		return "remaining time to live: " + Util.milisToTimeFormat(MYDEATHDATA_.getTime() - currentData.getTime());
 	}
-	private static JSONArray GetCommands() {
+	private static JSONArray GetCommands() throws AssistantBotException {
 		JSONArray res = new JSONArray();
 		res.put(ParseOrdered.MakeCommand("timestat", "statistics about time used", 
 				asList(
 						ParseOrdered.MakeCommandArg("num", ParseOrdered.ArgTypes.integer, true),
 						ParseOrdered.MakeCommandArg("key", ParseOrdered.ArgTypes.string, true))));
-		res.put(ParseOrdered.MakeCommand("sleepstart","start sleeping", new ArrayList<JSONObject>()));
+		res.put(new ParseOrderedCmd("sleepstart","start sleeping", new ArrayList<JSONObject>()));
 		res.put(ParseOrdered.MakeCommand("sleepend","end sleeping", new ArrayList<JSONObject>()));
 		return res;
 	}
