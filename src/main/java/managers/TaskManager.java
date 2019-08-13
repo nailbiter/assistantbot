@@ -175,10 +175,12 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 					if(JsonUtil.FindInJSONArray(card.getJSONArray("labels"), "name", tagname) == null) {
 						ta_.setLabelByName(card.getString("id"), tagname, card.getString("idList")
 								,TrelloAssistant.SetUnset.SET);
+						logToDb(String.format("add %s", tagname),card);
 						res.add(String.format("adding tag \"%s\" to \"%s\"", tagname,card.getString("name")));
 					} else {
 						ta_.setLabelByName(card.getString("id"), tagname, card.getString("idList")
 								,TrelloAssistant.SetUnset.UNSET);
+						logToDb(String.format("rm %s", tagname),card);
 						res.add(String.format("removing tag \"%s\" from \"%s\"", tagname, card.getString("name")));
 					}
 				}
