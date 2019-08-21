@@ -117,7 +117,10 @@ public class TaskManager extends TaskManagerBase implements Closure<JSONObject> 
 		
 		JSONObject res = pair.right.get(0).addTask(card);
 		logToDb("tasknew",res);
-		rp_.sendMessage(new Message(String.format("created new card %s",res.getString("shortUrl"))));
+		rp_.sendMessage(new Message(String.format("created new card %s %s"
+                        ,res.getString("shortUrl")
+                        ,Digest.CreateDigest(res.getString("id"))
+                        )));
 		return "";
 	}
 	public String taskmodify(JSONObject obj) throws JSONException, Exception {
