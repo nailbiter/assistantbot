@@ -4,7 +4,6 @@
 #makeHabit "30 23 * * *", "take pills", 30, category=>"logistics", onFailed=>"remove";
 makeHabit "30 23 * * *", "check/plan tasks", 30, category=>"tasks", onFailed=>"remove";
 makeHabit "0 23 * * *", "good day", 30 , category=>"logistics", info=>"https://trello.com/c/ilo6JlQO", onFailed=>"remove";
-makeHabit "0 21 * * mon,tue,wed,thu,fri", "drink protein", 3*60 , category=>"logistics";
 makeHabit "0 10 * * *", "duolingo", (24-10)*60 , category=>"german", onFailed=>"remove";
 
 makeHabit "0 10 * * *", "math reading", 1080, items=>["main1 1 page","main1 1 page","main2 1 page",], onFailed=>'move:FAILED2';
