@@ -11,6 +11,7 @@ makeHabit "0 11 * * *", "talk to someone in person",  1080,  category=>"social",
 makeHabit "0 10 * * *", "8 random test", 1080, category=> "german",items=>["1","2","3","4","5",'6','7','8'];
 makeHabit "0 10 * * *", "einsoch6 SET", 1080, category=> "german", info=> "http://www.dw.com/de/deutsch-lernen/das-bandtagebuch-1-lass-uns-reden/s-32658", onFailed=>'move:FAILED2';
 makeHabit "05 19 * * fri", "mom talk", 1080, category=> "social";
+makeHabit "30 22 * * fri", "masha talk", 1080, category=> "social";
 makeHabit "0 15 * * sat", "granny talk", 1080, category=> "social" ;
 makeHabit "30 23 * * mon,tue,thu,fri", "candy wake, check alarm", 30, category=> "social", onFailed=>"remove";
 #makeHabit "30 23 * * sat", "masha report", 1080, category=> "social", onFailed=>"remove";
