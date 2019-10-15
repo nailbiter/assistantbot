@@ -57,8 +57,8 @@ makeHabit "00 10 * * mon", "check week stat (money, time)", 960 , category=>"log
 makeHabit "0 10 28 * *", "check salary, estimate income", 960;
 makeHabit "0 15 26 * *", "pay gym", 24*60, category=>"logistics", info=>"pay on 27th, 8000Y";
 
-makeHabit "0 16 * * mon,tue,wed,thu,fri", "write daily report, mark leave job", 60, category=>"parttime";
+makeHabit "45 18 * * mon,tue,wed,thu,fri", "write daily report, mark leave job", 60, category=>"parttime", info=>"https://trello.com/c/aYEOORcQ";
 makeHabit "0 11 * * fri", "write weekly report", 60, category=>"parttime";
-makeHabit "0 10 * * mon,tue,wed,thu,fri", "mark start job", 60, category=>"parttime";
+makeHabit "0 10 * * mon,tue,wed,thu,fri", "mark start job", 60, category=>"parttime",info=>"https://trello.com/c/wFk0qp36";
 #makeHabit "52 7 * * *", "test", 1, enabled=> 0, onFailed=>'putlabel' ;
 #makeHabit "* * * * *", "test2", -1, callback=>{name=>'managers.NewTrelloManager',method=>'report'},enabled=> 0, onFailed=>'putlabel' ;
