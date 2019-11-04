@@ -229,10 +229,18 @@ public class TaskManagerBase extends WithSettingsManager {
 		return res;
 	}
 	protected static class Digest {
+		private static final String ALPHABET = "01234567890"
+				+"AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz";
 		public static String CreateDigest(String message) {
-			return DigestUtils.sha1Hex(message).substring(0,4);
+			String digest = DigestUtils.sha1Hex(message).substring(0,8);
+			StringBuilder res = new StringBuilder();
+			for(int i = 0; i < digest.length(); i+=2) {
+				int num = 16*digest.charAt(i)+digest.charAt(i+1);
+				res.append(ALPHABET.charAt(num%ALPHABET.length()));
+			}
+			return res.toString();
 		}
-		public static final String DIGEST_REGEX = "[0-9a-f]{4}";
+		public static final String DIGEST_REGEX = "[0-9a-zA-Z]{4}";
 	}
 	protected static String PrintTasks(ArrayList<JSONObject> arr, JSONObject paramObj, ArrayList<String> recognizedCats) throws JSONException, ParseException, AssistantBotException {
 		System.err.format("PrintTasks: paramObj=%s\n", paramObj.toString(2));
@@ -517,8 +525,6 @@ public class TaskManagerBase extends WithSettingsManager {
 					.append("obj",Document.parse(obj.toString())));
 	}
 	protected JSONObject getTask(String hash) throws Exception {
-		JSONObject card = null;
-		
 		ArrayList<JSONObject> tasks = null;
 		if( hash.startsWith("$") ) {
 			tasks = getTasks(SNOOZED, new ArrayList<Predicate<JSONObject>>(),"");
