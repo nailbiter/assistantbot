@@ -908,5 +908,39 @@ var program = [
 			},
 		]
 	},
+	{
+		weekCount: 10,
+		dayCount:3,
+		program:[
+			{
+				name:"tricPull",
+				"reps":"1*10x*35k, 4*8x*40k"
+			},
+			{
+				name:"grud",
+				reps:"2x4x37.5, 2x3x40"
+			},
+			{
+				name:"squat",
+				reps:[
+					['6x*1',79],
+					['5x*1',81],
+					['4x*2',84],
+				],
+			},
+			{
+				name:"stan",
+				reps:"3x5x65"
+			},
+			{
+				name:"matr",
+				"reps":"61*12x*3"
+			},
+			{
+				name:"pullup",
+				reps:"3*Max"
+			}
+		]
+	},
 ]
 module.exports = program;
