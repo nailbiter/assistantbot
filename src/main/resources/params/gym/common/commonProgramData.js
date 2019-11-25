@@ -942,5 +942,28 @@ var program = [
 			}
 		]
 	},
+	{
+		weekCount: 10,
+		dayCount:1,
+		program:[
+			{
+				"name":"bench",
+				"reps":[
+					['5',62.5],
+					['5',72.5],
+					['5x3',85],
+					['1*',90],
+				]
+			},
+			{
+				"name":"fly",
+				"reps":"3*8"
+			},
+			{
+				"name":"stand press",
+				"reps":"1*5,4,3"
+			},
+		]
+	},
 ]
 module.exports = program;
