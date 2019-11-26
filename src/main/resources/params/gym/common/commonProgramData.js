@@ -965,5 +965,27 @@ var program = [
 			},
 		]
 	},
+	{
+		weekCount: 10,
+		dayCount:2,
+		program:[
+			{
+				name:"brus",
+				reps:"2*12, 3*32k*8x"
+			},
+			{
+				name:"razg",
+				reps:"2*15*12k,5x, 3*10*14k"
+			},
+			{
+				name:"bic",
+				reps:"2*15*12.5k, 3*10*15k"
+			},
+			{
+				name:"molot",
+				reps:"2*15*15k, 3*12*22.5k"
+			}
+		]
+	},
 ]
 module.exports = program;
