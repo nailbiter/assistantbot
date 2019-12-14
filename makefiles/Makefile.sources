@@ -5,7 +5,7 @@ MANAGERSOURCES=$(addsuffix Manager,\
 	       PerlScript Trello Bot Mongo Power Birthday Ocr NewTrello Nutrition)
 UTILSOURCES=StorageManager Util AssistantBotException $(addsuffix Util, Telegram Json Trello)\
 	    $(addsuffix Collection, User Setting) \
-			Message
+			Message SequentialMap
 DBSOURCES= MongoUtil
 MONGOMANAGERHELPER=MongoManagerHelper
 SCRIPTAPPS=JsApp ScriptApp

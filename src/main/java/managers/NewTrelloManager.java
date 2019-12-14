@@ -9,6 +9,7 @@ import java.util.Set;
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,6 +24,7 @@ import util.AssistantBotException;
 import util.JsonUtil;
 import util.KeyRing;
 import util.Message;
+import util.SequentialMap;
 import util.UserCollection;
 import util.Util;
 import util.db.MongoUtil;
@@ -164,20 +166,21 @@ public class NewTrelloManager extends WithSettingsManager{
 		
 		JSONArray cards = ta_.getCardsInList(getTasklist());
 		if( !parsed.containsKey(ParseCommentLine.REM) ) {
-			HashMap<String, ImmutablePair<JSONObject, MutableInt>> count = 
-					new HashMap<String,ImmutablePair<JSONObject,MutableInt>>();
+			SequentialMap<String, MutablePair<JSONObject, MutableInt>> count = 
+					new SequentialMap<String,MutablePair<JSONObject,MutableInt>>();
 			for(Object o:cards) {
 				JSONObject json = (JSONObject) o;
 				String name = json.getString("name");
 				if( count.containsKey(name) ) {
 					count.get(name).right.increment();
+					count.get(name).setLeft(json);
 				} else {
 					count.put(name
-							, new ImmutablePair<JSONObject,MutableInt>(json
+							, new MutablePair<JSONObject,MutableInt>(json
 									,new MutableInt(1)));
 				}
 			}
-			HashMap<String, Object> map = new HashMap<String,Object>();
+			SequentialMap<String, Object> map = new SequentialMap<String,Object>();
 			for(String key:count.keySet()) {
 				int keycount = count.get(key).right.intValue();
 				map.put(String.format((keycount>1)?"%s:%d":"%s", key,keycount)
