@@ -104,7 +104,13 @@ public class TaskManagerBase extends WithSettingsManager {
 	}
 	private static Map<String, Predicate<JSONObject>> CreateTaskViewSpecialTags() {
 		Hashtable<String, Predicate<JSONObject>> res = new Hashtable<String, Predicate<JSONObject>>();
-		res.put("overdue", new Predicate<JSONObject>() {
+		res.put("Due", new Predicate<JSONObject>() {
+			@Override
+			public boolean evaluate(JSONObject card) {
+				return TrelloUtil.HasDue(card);
+			}
+		});
+		res.put("Overdue", new Predicate<JSONObject>() {
 			@Override
 			public boolean evaluate(JSONObject card) {
 				try {
@@ -117,7 +123,7 @@ public class TaskManagerBase extends WithSettingsManager {
 				}
 			}
 		});
-		res.put("tomorrow", new Predicate<JSONObject>() {
+		res.put("Tomorrow", new Predicate<JSONObject>() {
 			@Override
 			public boolean evaluate(JSONObject card) {
 				try {
@@ -138,7 +144,7 @@ public class TaskManagerBase extends WithSettingsManager {
 				}
 			}
 		});
-		res.put("today", new Predicate<JSONObject>() {
+		res.put("Today", new Predicate<JSONObject>() {
 			@Override
 			public boolean evaluate(JSONObject card) {
 				try {
