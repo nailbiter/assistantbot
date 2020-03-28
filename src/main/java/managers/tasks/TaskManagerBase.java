@@ -499,9 +499,14 @@ public class TaskManagerBase extends WithSettingsManager {
 		for(Predicate <JSONObject> filter:filters) {
 			CollectionUtils.filter(res, filter);
 		}
+		
 		if(rem.contains("s")) {
 			Collections.sort(res, pair.left);
 		}
+		if(rem.contains("r")) {
+			Collections.shuffle(res);
+		}
+		
 		return res;
 	}
 	private static String PreprocessTaskObject(JSONObject o) {
