@@ -118,5 +118,10 @@ var birthdays = [
 					month:05,date:20,
 					info:'https://www.facebook.com/ezhovalila/about?lst=100000573172334%3A100009173133010%3A1558314808',
 				},
+				{
+					name:'Taras Pavlov',
+					month:03,date:25,
+					info:'',
+				},
 			]
 module.exports = birthdays;
