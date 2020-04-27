@@ -43,7 +43,7 @@ makeHabit "0 7 * * *", "do pushups", 23*60, category=> "gym" ;
 makeHabit "0 21 2,17 * *", "water tree", 60, info=>"water it once per two weeks by pouring water into the flowerpot; 3/4 of a cup";
 makeHabit "0 22 * * *", "have sex with Candice", 60*3 ,category=>'social',onFailed=>"remove";
 makeHabit "0 19 * * *", "candy indeed", 60*5 ,category=>'social';
-makeHabit "30 23 * * *", "wash plates", 30,category=>'logistics',onFailed=>"remove";
+makeHabit "30 7 * * *", "wash plates", 30,category=>'logistics',onFailed=>"remove";
 makeHabit "0 10 21 4,7,10,1 *", "change toothbrush", 60*24 ,category=>'logistics';
 makeHabit "30 23 * * *", "sleep", 30, onFailed=> "remove" ,category=>'logistics';
 makeHabit "30 23 * * *", "clean teeth", 30, onFailed=> "remove" ,category=>'logistics';

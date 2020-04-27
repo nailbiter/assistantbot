@@ -70,7 +70,7 @@ my $json = loadJsonFromStdin($cmdline{file});
 
 my $client = MongoDB->connect();
 my $mongoPassword = $client->ns("admin.passwords")->find_one({key=>"MONGOMLAB"})->{value};
-$client = MongoDB->connect(sprintf("mongodb://%s:%s\@ds149672.mlab.com:49672/logistics","nailbiter",$mongoPassword));
+$client = MongoDB->connect(sprintf("mongodb://%s:%s\@ds149672.mlab.com:49672/logistics?retryWrites=false","nailbiter",$mongoPassword));
 my $ns = sprintf("%s.%s",$cmdline{dbname},$cmdline{colname});
 my $coll = $client->ns($ns);
 if(ref($json) eq 'ARRAY'){
