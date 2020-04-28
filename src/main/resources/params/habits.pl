@@ -47,6 +47,8 @@ makeHabit "30 7 * * *", "wash plates", 5*30,category=>'logistics',onFailed=>"rem
 makeHabit "0 10 21 4,7,10,1 *", "change toothbrush", 60*24 ,category=>'logistics';
 makeHabit "30 23 * * *", "sleep", 30, onFailed=> "remove" ,category=>'logistics';
 makeHabit "30 23 * * *", "clean teeth", 30, onFailed=> "remove" ,category=>'logistics';
+makeHabit "0 7 * * *", "write jap words", 3*60 ,category=>'german';
+makeHabit "0 7 * * *", "eat mike seeds", 3*60, onFailed=> "remove" ,category=>'logistics';
 makeHabit "0 7 * * *", "wake (should be out)", 75, onFailed=> "remove" ,category=>'logistics';
 makeHabit "0 19 * * *", "send one CV", 960, category=> "future",enabled=>0;
 #makeHabit "0 8 * * *", "read math 2 hours", 960, enabled=> 0 ;
