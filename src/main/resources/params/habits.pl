@@ -8,7 +8,7 @@ makeHabit "0 10 * * *", "duolingo", (24-10)*60 , category=>"german", onFailed=>"
 
 makeHabit "0 10 * * *", "math reading", 1080, items=>["main1 1 page","main1 1 page","main2 1 page",], onFailed=>'move:FAILED2', enabled=>0;
 makeHabit "0 11 * * *", "talk to someone in person",  1080,  category=>"social", onFailed=>"remove";
-makeHabit "0 10 * * *", "8 random test", 1080, category=> "german",items=>["1","2","3","4","5",'6','7','8'],enabled=>0;
+makeHabit "0 10 * * *", "8 random test", 1080, category=> "german",items=>["1","2","3","4","5",'6','7','8'];
 makeHabit "0 10 * * *", "einsoch6 SET", 1080, category=> "german", info=> "http://www.dw.com/de/deutsch-lernen/das-bandtagebuch-1-lass-uns-reden/s-32658", onFailed=>'move:FAILED2', enabled=>0;
 makeHabit "05 19 * * fri", "mom talk", 1080, category=> "social";
 makeHabit "30 22 * * fri", "masha talk", 1080, category=> "social";
@@ -47,7 +47,6 @@ makeHabit "30 7 * * *", "wash plates", 5*60,category=>'logistics',onFailed=>"rem
 makeHabit "0 10 21 4,7,10,1 *", "change toothbrush", 60*24 ,category=>'logistics';
 makeHabit "30 23 * * *", "sleep", 30, onFailed=> "remove" ,category=>'logistics';
 makeHabit "30 23 * * *", "clean teeth", 30, onFailed=> "remove" ,category=>'logistics';
-makeHabit "0 7 * * *", "write jap words", 3*60 ,category=>'german';
 makeHabit "0 7 * * *", "eat mike seeds", 5*60, onFailed=> "remove" ,category=>'logistics';
 makeHabit "0 7 * * *", "wake (should be out)", 75, onFailed=> "remove" ,category=>'logistics';
 makeHabit "0 19 * * *", "send one CV", 960, category=> "future",enabled=>0;
