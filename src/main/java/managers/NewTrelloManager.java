@@ -82,6 +82,16 @@ public class NewTrelloManager extends WithSettingsManager{
 								,(pair.right>1)?String.format("\n%d remains", pair.right-1):""));
 					}
 				}));
+        res.put("show",new ImmutablePair<String, Transformer<Object, Message>>("show card info"
+				,new Transformer<Object,Message>(){
+					@Override
+					public Message transform(Object arg0) {
+						ImmutablePair<JSONObject,Integer> pair = (ImmutablePair<JSONObject, Integer>) arg0;
+						JSONObject obj = pair.left;
+                        String id = obj.getString("id");
+						return new Message(id);
+					}
+				}) );
 		
 		String[] cats = getCats(rp);
 		for(String cat:cats)
