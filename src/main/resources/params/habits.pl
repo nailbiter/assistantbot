@@ -63,3 +63,4 @@ makeHabit "0 11 * * fri", "write weekly report", 60, category=>"parttime";
 makeHabit "0 10 * * mon,tue,wed,thu,fri", "mark start job", 60, category=>"parttime",info=>"https://trello.com/c/wFk0qp36";
 #makeHabit "52 7 * * *", "test", 1, enabled=> 0, onFailed=>'putlabel' ;
 #makeHabit "* * * * *", "test2", -1, callback=>{name=>'managers.NewTrelloManager',method=>'report'},enabled=> 0, onFailed=>'putlabel' ;
+makeHabit "0 13 * * *", "read random bible quote", 23*60,info=>"https://allbible.info/", category=>"logistics",onFailed=>"remove";
