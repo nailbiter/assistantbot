@@ -6,7 +6,7 @@ makeHabit "30 23 * * *", "check/plan tasks", 30, category=>"tasks", onFailed=>"r
 makeHabit "0 23 * * *", "good day", 30 , category=>"logistics", info=>"https://trello.com/c/ilo6JlQO", onFailed=>"remove";
 makeHabit "0 10 * * *", "duolingo", (24-10)*60 , category=>"german", onFailed=>"remove";
 
-makeHabit "0 10 * * *", "math reading", 1080, items=>["main1 1 page","main1 1 page","main2 1 page",], onFailed=>'move:FAILED2', enabled=>0;
+makeHabit "0 21 * * *", "math reading 2 hours", 2*60, items=>["main1 1 page","main1 1 page","main2 1 page",], onFailed=>'move:FAILED2';
 makeHabit "0 11 * * *", "talk to someone in person",  1080,  category=>"social", onFailed=>"remove";
 makeHabit "0 10 * * *", "8 random test", 1080, category=> "german",items=>["1","2","3","4","5",'6','7','8'];
 makeHabit "0 10 * * *", "einsoch6 SET", 1080, category=> "german", info=> "http://www.dw.com/de/deutsch-lernen/das-bandtagebuch-1-lass-uns-reden/s-32658", onFailed=>'move:FAILED2', enabled=>0;
@@ -34,6 +34,7 @@ makeHabit "0 12 1 * *", "back-up K emails", 1380 ;
 #makeHabit "0 10 * * *", "backup baito DB twice, check apaz/dulut time", 1380, onFailed=>'remove';
 makeHabit "0 7 * * *", "morning note habit", 300 ,info=>"https://docs.google.com/document/d/1Q4wvok8I1AAc0Jtv6gU3d-MJK69uvsqCeLPbBvLiCTg/edit#";
 makeHabit "0 7 * * *", "face whipe, wash head, faceCream x 2", 300,category=>'logistics';
+makeHabit "0 8,23 * * *", "measure blood pressure", 300,category=>'logistics',onFailed=>"remove";
 makeHabit "0 7 * * *", "take vitamins", 60*23,category=>'logistics', onFailed=>"remove";
 makeHabit "0 22 2,17 * *","shave penis, armpits; nose hair; cut nails",60*24,category=>'logistics';
 makeHabit "0 9 20 */2 *","haircut",60*24,category=>'logistics';
@@ -50,7 +51,6 @@ makeHabit "30 23 * * *", "clean teeth", 30, onFailed=> "remove" ,category=>'logi
 makeHabit "0 7 * * *", "eat mike seeds", 5*60, onFailed=> "remove" ,category=>'logistics';
 makeHabit "0 7 * * *", "wake (should be out)", 75, onFailed=> "remove" ,category=>'logistics';
 makeHabit "0 19 * * *", "send one CV", 960, category=> "future",enabled=>0;
-#makeHabit "0 8 * * *", "read math 2 hours", 960, enabled=> 0 ;
 makeHabit "15 22 * * Fri", "confucius 1h: 1", 960, onFailed=>'move:FAILED2';
 makeHabit "30 22 * * Fri", "confucius 1h: 2", 960, onFailed=>'move:FAILED2';
 makeHabit "00 22 13 * *", "inflate bike", 960 , category=>"atschool";
