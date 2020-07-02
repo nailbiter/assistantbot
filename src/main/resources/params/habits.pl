@@ -46,6 +46,7 @@ makeHabit "0 22 * * *", "have sex with Candice", 60*3 ,category=>'social',onFail
 makeHabit "0 19 * * *", "candy indeed", 60*5 ,category=>'social', enabled=>0;
 makeHabit "30 7 * * *", "wash plates", 5*60,category=>'logistics',onFailed=>"remove";
 makeHabit "0 10 21 4,7,10,1 *", "change toothbrush", 60*24 ,category=>'logistics';
+makeHabit "0 23 * * *", "check candy html", 90, onFailed=> "remove" ,category=>'social';
 makeHabit "30 23 * * *", "sleep", 30, onFailed=> "remove" ,category=>'logistics';
 makeHabit "30 23 * * *", "clean teeth", 30, onFailed=> "remove" ,category=>'logistics';
 makeHabit "0 7 * * *", "eat mike seeds", 5*60, onFailed=> "remove" ,category=>'logistics';
@@ -60,7 +61,7 @@ makeHabit "0 15 26 * *", "pay gym", 24*60, category=>"logistics", info=>"pay on 
 
 makeHabit "45 18 * * mon,tue,wed,thu,fri", "leave job routines", 60, category=>"parttime", info=>"https://trello.com/c/aYEOORcQ";
 makeHabit "0 11 * * fri", "write weekly report", 60, category=>"parttime";
-makeHabit "0 10 * * mon,tue,wed,thu,fri", "mark start job", 60, category=>"parttime",info=>"https://trello.com/c/wFk0qp36";
+makeHabit "0 10 * * mon,tue,wed,thu,fri", "mark start job; pfctl", 60, category=>"parttime",info=>"https://trello.com/c/wFk0qp36";
 #makeHabit "52 7 * * *", "test", 1, enabled=> 0, onFailed=>'putlabel' ;
 #makeHabit "* * * * *", "test2", -1, callback=>{name=>'managers.NewTrelloManager',method=>'report'},enabled=> 0, onFailed=>'putlabel' ;
 makeHabit "0 13 * * *", "read random bible quote", 23*60,info=>"https://allbible.info/", category=>"logistics",onFailed=>"remove";
