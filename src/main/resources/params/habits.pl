@@ -13,6 +13,7 @@ makeHabit "0 10 * * *", "einsoch6 SET", 1080, category=> "german", info=> "http:
 makeHabit "05 19 * * fri", "mom talk", 1080, category=> "social";
 makeHabit "30 22 * * fri", "masha talk", 1080, category=> "social";
 makeHabit "0 15 * * sat", "granny talk", 1080, category=> "social" ;
+makeHabit "0 15 * * sun", "misha exercise", 1080, category=> "social" ;
 makeHabit "30 23 * * mon,tue,thu,fri", "candy wake, check alarm", 30, category=> "social", onFailed=>"remove";
 #makeHabit "30 23 * * sat", "masha report", 1080, category=> "social", onFailed=>"remove";
 #makeHabit "30 23 * * mon", "masha deadline", 1080, category=> "social" ;
