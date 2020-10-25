@@ -1,0 +1,491 @@
+[
+  {
+    "category": "tasks",
+    "cronline": "30 23 * * *",
+    "delaymin": 30,
+    "enabled": true,
+    "info": "",
+    "name": "check/plan tasks",
+    "onFailed": "remove"
+  },
+  {
+    "category": "logistics",
+    "cronline": "0 23 * * *",
+    "delaymin": 30,
+    "enabled": true,
+    "info": "https://trello.com/c/ilo6JlQO",
+    "name": "good day",
+    "onFailed": "remove"
+  },
+  {
+    "category": "german",
+    "cronline": "0 10 * * *",
+    "delaymin": 840,
+    "enabled": true,
+    "info": "",
+    "name": "duolingo",
+    "onFailed": "remove"
+  },
+  {
+    "checklist": [
+      "main1 1 page",
+      "main1 1 page",
+      "main2 1 page"
+    ],
+    "cronline": "0 21 * * *",
+    "delaymin": 120,
+    "enabled": true,
+    "info": "",
+    "name": "math reading 2 hours",
+    "onFailed": "move:FAILED2"
+  },
+  {
+    "category": "social",
+    "cronline": "0 11 * * *",
+    "delaymin": 1080,
+    "enabled": true,
+    "info": "",
+    "name": "talk to someone in person",
+    "onFailed": "remove"
+  },
+  {
+    "category": "german",
+    "checklist": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8"
+    ],
+    "cronline": "0 10 * * *",
+    "delaymin": 1080,
+    "enabled": true,
+    "info": "",
+    "name": "8 random test",
+    "onFailed": "move:todo"
+  },
+  {
+    "category": "german",
+    "cronline": "0 10 * * *",
+    "delaymin": 1080,
+    "enabled": false,
+    "info": "http://www.dw.com/de/deutsch-lernen/das-bandtagebuch-1-lass-uns-reden/s-32658",
+    "name": "einsoch6 SET",
+    "onFailed": "move:FAILED2"
+  },
+  {
+    "category": "social",
+    "cronline": "05 19 * * fri",
+    "delaymin": 1080,
+    "enabled": true,
+    "info": "",
+    "name": "mom talk",
+    "onFailed": "move:todo"
+  },
+  {
+    "category": "social",
+    "cronline": "30 22 * * fri",
+    "delaymin": 1080,
+    "enabled": true,
+    "info": "",
+    "name": "masha talk",
+    "onFailed": "move:todo"
+  },
+  {
+    "category": "social",
+    "cronline": "0 15 * * sat",
+    "delaymin": 1080,
+    "enabled": true,
+    "info": "",
+    "name": "granny talk",
+    "onFailed": "move:todo"
+  },
+  {
+    "category": "social",
+    "cronline": "0 15 * * sun",
+    "delaymin": 1080,
+    "enabled": true,
+    "info": "",
+    "name": "misha exercise",
+    "onFailed": "move:todo"
+  },
+  {
+    "category": "social",
+    "cronline": "30 23 * * mon,tue,thu,fri",
+    "delaymin": 30,
+    "enabled": true,
+    "info": "",
+    "name": "candy wake, check alarm",
+    "onFailed": "remove"
+  },
+  {
+    "cronline": "0 15 * * *",
+    "delaymin": 1080,
+    "enabled": false,
+    "info": "https://trello.com/c/qGE98nSa",
+    "name": "uncle vanya project",
+    "onFailed": "move:FAILED"
+  },
+  {
+    "cronline": "0 16 * * mon",
+    "delaymin": 1080,
+    "enabled": true,
+    "info": "",
+    "name": "dad english",
+    "onFailed": "move:TODO"
+  },
+  {
+    "cronline": "30 23 * * *",
+    "delaymin": 1080,
+    "enabled": false,
+    "info": "",
+    "name": "mental exercise",
+    "onFailed": "move:FAILED2"
+  },
+  {
+    "category": "gym",
+    "cronline": "0 8 * * sat,sun",
+    "delaymin": 1380,
+    "enabled": true,
+    "info": "",
+    "name": "sprint 4",
+    "onFailed": "move:todo"
+  },
+  {
+    "category": "gym",
+    "cronline": "0 7 * * mon,tue,thu,fri",
+    "delaymin": 1380,
+    "enabled": true,
+    "info": "",
+    "name": "run",
+    "onFailed": "move:todo"
+  },
+  {
+    "category": "gym",
+    "cronline": "0 8 * * wed",
+    "delaymin": 1380,
+    "enabled": true,
+    "info": "",
+    "name": "long walk",
+    "onFailed": "move:todo"
+  },
+  {
+    "category": "gym",
+    "cronline": "0 7 * * *",
+    "delaymin": 1380,
+    "enabled": true,
+    "info": "",
+    "name": "pullups 10:1",
+    "onFailed": "move:todo"
+  },
+  {
+    "category": "gym",
+    "cronline": "2 7 * * *",
+    "delaymin": 1380,
+    "enabled": true,
+    "info": "",
+    "name": "pullups 10:2",
+    "onFailed": "move:todo"
+  },
+  {
+    "category": "gym",
+    "cronline": "4 7 * * *",
+    "delaymin": 1380,
+    "enabled": true,
+    "info": "",
+    "name": "pullups 10:3",
+    "onFailed": "move:todo"
+  },
+  {
+    "category": "gym",
+    "cronline": "6 7 * * *",
+    "delaymin": 1380,
+    "enabled": true,
+    "info": "",
+    "name": "pullups 10:4",
+    "onFailed": "move:todo"
+  },
+  {
+    "cronline": "0 19 * * fri",
+    "delaymin": 1380,
+    "enabled": true,
+    "info": "",
+    "name": "clean ears",
+    "onFailed": "move:todo"
+  },
+  {
+    "cronline": "0 12 1 * *",
+    "delaymin": 1380,
+    "enabled": true,
+    "info": "",
+    "name": "back-up K emails",
+    "onFailed": "move:todo"
+  },
+  {
+    "cronline": "0 7 * * *",
+    "delaymin": 300,
+    "enabled": true,
+    "info": "https://docs.google.com/document/d/1Q4wvok8I1AAc0Jtv6gU3d-MJK69uvsqCeLPbBvLiCTg/edit#",
+    "name": "morning note habit",
+    "onFailed": "move:todo"
+  },
+  {
+    "category": "logistics",
+    "cronline": "0 7 * * *",
+    "delaymin": 300,
+    "enabled": true,
+    "info": "",
+    "name": "face whipe, wash head, faceCream x 2",
+    "onFailed": "move:todo"
+  },
+  {
+    "category": "logistics",
+    "cronline": "0 8,23 * * *",
+    "delaymin": 300,
+    "enabled": true,
+    "info": "",
+    "name": "measure blood pressure",
+    "onFailed": "remove"
+  },
+  {
+    "category": "logistics",
+    "cronline": "0 7 * * *",
+    "delaymin": 1380,
+    "enabled": true,
+    "info": "",
+    "name": "take vitamins",
+    "onFailed": "remove"
+  },
+  {
+    "category": "logistics",
+    "cronline": "0 22 2,17 * *",
+    "delaymin": 1440,
+    "enabled": true,
+    "info": "",
+    "name": "shave penis, armpits; nose hair; cut nails",
+    "onFailed": "move:todo"
+  },
+  {
+    "category": "logistics",
+    "cronline": "0 9 20 */2 *",
+    "delaymin": 1440,
+    "enabled": true,
+    "info": "",
+    "name": "haircut",
+    "onFailed": "move:todo"
+  },
+  {
+    "cronline": "0 7 * * *",
+    "delaymin": 300,
+    "enabled": true,
+    "info": "",
+    "name": "apple",
+    "onFailed": "move:todo"
+  },
+  {
+    "category": "gym",
+    "cronline": "0 7 * * *",
+    "delaymin": 1380,
+    "enabled": true,
+    "info": "",
+    "name": "do 3*9_LegParBar/45_abs",
+    "onFailed": "move:todo"
+  },
+  {
+    "category": "gym",
+    "cronline": "0 7 * * *",
+    "delaymin": 1380,
+    "enabled": true,
+    "info": "",
+    "name": "do pushups",
+    "onFailed": "move:todo"
+  },
+  {
+    "cronline": "0 21 2,17 * *",
+    "delaymin": 60,
+    "enabled": true,
+    "info": "water it once per two weeks by pouring water into the flowerpot; 3/4 of a cup",
+    "name": "water tree",
+    "onFailed": "move:todo"
+  },
+  {
+    "category": "social",
+    "cronline": "0 22 * * *",
+    "delaymin": 180,
+    "enabled": true,
+    "info": "",
+    "name": "have sex with Candice",
+    "onFailed": "remove"
+  },
+  {
+    "category": "social",
+    "cronline": "0 19 * * *",
+    "delaymin": 300,
+    "enabled": false,
+    "info": "",
+    "name": "candy indeed",
+    "onFailed": "move:todo"
+  },
+  {
+    "category": "logistics",
+    "cronline": "30 7 * * *",
+    "delaymin": 300,
+    "enabled": true,
+    "info": "",
+    "name": "wash plates",
+    "onFailed": "remove"
+  },
+  {
+    "category": "logistics",
+    "cronline": "0 10 21 4,7,10,1 *",
+    "delaymin": 1440,
+    "enabled": true,
+    "info": "",
+    "name": "change toothbrush",
+    "onFailed": "move:todo"
+  },
+  {
+    "category": "social",
+    "cronline": "0 23 * * *",
+    "delaymin": 90,
+    "enabled": true,
+    "info": "",
+    "name": "check candy html",
+    "onFailed": "remove"
+  },
+  {
+    "category": "logistics",
+    "cronline": "30 23 * * *",
+    "delaymin": 30,
+    "enabled": true,
+    "info": "",
+    "name": "sleep",
+    "onFailed": "remove"
+  },
+  {
+    "category": "logistics",
+    "cronline": "30 23 * * *",
+    "delaymin": 30,
+    "enabled": true,
+    "info": "",
+    "name": "clean teeth",
+    "onFailed": "remove"
+  },
+  {
+    "category": "logistics",
+    "cronline": "0 7 * * *",
+    "delaymin": 300,
+    "enabled": true,
+    "info": "",
+    "name": "eat mike seeds",
+    "onFailed": "remove"
+  },
+  {
+    "category": "logistics",
+    "cronline": "0 7 * * *",
+    "delaymin": 75,
+    "enabled": true,
+    "info": "",
+    "name": "wake (should be out)",
+    "onFailed": "remove"
+  },
+  {
+    "category": "future",
+    "cronline": "0 19 * * *",
+    "delaymin": 960,
+    "enabled": false,
+    "info": "",
+    "name": "send one CV",
+    "onFailed": "move:todo"
+  },
+  {
+    "cronline": "15 22 * * Fri",
+    "delaymin": 960,
+    "enabled": true,
+    "info": "",
+    "name": "confucius 1h: 1",
+    "onFailed": "move:FAILED2"
+  },
+  {
+    "cronline": "30 22 * * Fri",
+    "delaymin": 960,
+    "enabled": true,
+    "info": "",
+    "name": "confucius 1h: 2",
+    "onFailed": "move:FAILED2"
+  },
+  {
+    "category": "atschool",
+    "cronline": "00 22 13 * *",
+    "delaymin": 960,
+    "enabled": true,
+    "info": "",
+    "name": "inflate bike",
+    "onFailed": "move:todo"
+  },
+  {
+    "category": "logistics",
+    "cronline": "00 10 * * mon",
+    "delaymin": 960,
+    "enabled": true,
+    "info": "",
+    "name": "check week stat (money, time)",
+    "onFailed": "move:todo"
+  },
+  {
+    "cronline": "0 10 21 * *",
+    "delaymin": 960,
+    "enabled": true,
+    "info": "",
+    "name": "check salary, estimate income",
+    "onFailed": "move:todo"
+  },
+  {
+    "category": "logistics",
+    "cronline": "0 15 26 * *",
+    "delaymin": 1440,
+    "enabled": true,
+    "info": "pay on 27th, 8000Y",
+    "name": "pay gym",
+    "onFailed": "move:todo"
+  },
+  {
+    "category": "parttime",
+    "cronline": "45 18 * * mon,tue,wed,thu,fri",
+    "delaymin": 60,
+    "enabled": true,
+    "info": "https://trello.com/c/aYEOORcQ",
+    "name": "leave job routines",
+    "onFailed": "move:todo"
+  },
+  {
+    "category": "parttime",
+    "cronline": "0 11 * * fri",
+    "delaymin": 60,
+    "enabled": true,
+    "info": "",
+    "name": "write weekly report",
+    "onFailed": "move:todo"
+  },
+  {
+    "category": "parttime",
+    "cronline": "0 10 * * mon,tue,wed,thu,fri",
+    "delaymin": 60,
+    "enabled": true,
+    "info": "https://trello.com/c/wFk0qp36",
+    "name": "mark start job; pfctl",
+    "onFailed": "move:todo"
+  },
+  {
+    "category": "logistics",
+    "cronline": "0 13 * * *",
+    "delaymin": 1380,
+    "enabled": true,
+    "info": "https://allbible.info/",
+    "name": "read random bible quote",
+    "onFailed": "remove"
+  }
+]
