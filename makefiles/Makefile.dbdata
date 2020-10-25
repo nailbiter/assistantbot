@@ -1,2 +1,0 @@
-params:
-	make -C src/main/resources/params all
