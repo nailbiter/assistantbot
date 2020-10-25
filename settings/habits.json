@@ -532,5 +532,14 @@
     "info": "",
     "name": "cannot come work automaton 1",
     "onfailed": "move:TODO"
+  },
+  {
+    "category": "logistics",
+    "cronline": "30 10 4 4,10 *",
+    "delaymin": 1440,
+    "enabled": true,
+    "info": "",
+    "name": "change running shoes",
+    "onfailed": "move:TODO"
   }
 ]
