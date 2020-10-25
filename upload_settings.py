@@ -23,6 +23,7 @@ import click
 import json
 from os.path import join
 from pymongo import MongoClient
+from croniter import croniter
 
 
 @click.group()
@@ -68,8 +69,10 @@ def _eval(s):
 @click.option("--onFailed", type=click.Choice(["move:FAILED", "move:FAILED2", "move:TODO", "move:todo", "remove"]), default="move:TODO")
 @click.pass_context
 def add_habit(ctx, category, **kwargs):
+    croniter(kwargs["cronline"])
     kwargs["delaymin"] = _eval(kwargs["delaymin"])
     assert kwargs["delaymin"] > 0
+
     obj = {**kwargs, "enabled": True}
     if category is not None:
         obj["category"] = category
@@ -79,6 +82,7 @@ def add_habit(ctx, category, **kwargs):
     with open("settings/habits.json", "w") as f:
         data = [*data, obj]
         json.dump(data, f, sort_keys=True, indent=2)
+    print(f"added {obj}")
 
 
 if __name__ == "__main__":

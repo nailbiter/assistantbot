@@ -487,5 +487,59 @@
     "info": "https://allbible.info/",
     "name": "read random bible quote",
     "onFailed": "remove"
+  },
+  {
+    "category": "logistics",
+    "cronline": "0 10 * * sat",
+    "delaymin": 900,
+    "enabled": true,
+    "info": "",
+    "name": "go to saitama",
+    "onfailed": "move:TODO"
+  },
+  {
+    "category": "logistics",
+    "cronline": "0 22 * * mon",
+    "delaymin": 120,
+    "enabled": true,
+    "info": "",
+    "name": "talk to dad",
+    "onfailed": "move:TODO"
+  },
+  {
+    "category": "logistics",
+    "cronline": "0 10 1 * mon",
+    "delaymin": 120,
+    "enabled": true,
+    "info": "",
+    "name": "regular check credit card",
+    "onfailed": "move:TODO"
+  },
+  {
+    "category": "logistics",
+    "cronline": "0 10 5,20 * mon",
+    "delaymin": 120,
+    "enabled": true,
+    "info": "",
+    "name": "bicycle oil",
+    "onfailed": "move:TODO"
+  },
+  {
+    "category": "logistics",
+    "cronline": "30 9 * * mon,tue,wed,thu,fri",
+    "delaymin": 15,
+    "enabled": true,
+    "info": "",
+    "name": "cannot come work automaton 1",
+    "onfailed": "move:TODO"
+  },
+  {
+    "category": "logistics",
+    "cronline": "30 10 * * mon,tue,wed,thu,fri",
+    "delaymin": 15,
+    "enabled": true,
+    "info": "",
+    "name": "cannot come work automaton 2",
+    "onfailed": "move:TODO"
   }
 ]
