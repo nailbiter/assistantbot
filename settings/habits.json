@@ -508,7 +508,7 @@
   },
   {
     "category": "logistics",
-    "cronline": "0 10 1 * mon",
+    "cronline": "0 10 1 * *",
     "delaymin": 120,
     "enabled": true,
     "info": "",
@@ -517,7 +517,7 @@
   },
   {
     "category": "logistics",
-    "cronline": "0 10 5,20 * mon",
+    "cronline": "0 10 * * sat",
     "delaymin": 120,
     "enabled": true,
     "info": "",
@@ -526,20 +526,11 @@
   },
   {
     "category": "logistics",
-    "cronline": "30 9 * * mon,tue,wed,thu,fri",
+    "cronline": "30 9,10 * * mon,tue,wed,thu,fri",
     "delaymin": 15,
     "enabled": true,
     "info": "",
     "name": "cannot come work automaton 1",
-    "onfailed": "move:TODO"
-  },
-  {
-    "category": "logistics",
-    "cronline": "30 10 * * mon,tue,wed,thu,fri",
-    "delaymin": 15,
-    "enabled": true,
-    "info": "",
-    "name": "cannot come work automaton 2",
     "onfailed": "move:TODO"
   }
 ]
