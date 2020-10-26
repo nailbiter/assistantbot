@@ -508,7 +508,7 @@
   },
   {
     "category": "logistics",
-    "cronline": "0 10 1 * *",
+    "cronline": "0 10 * * mon",
     "delaymin": 120,
     "enabled": true,
     "info": "",
