@@ -530,7 +530,7 @@
     "delaymin": 15,
     "enabled": true,
     "info": "",
-    "name": "cannot come work automaton 1",
+    "name": "cannot come work automaton",
     "onfailed": "move:TODO"
   },
   {
