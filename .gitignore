@@ -13,3 +13,4 @@ README.html
 /bin/
 .pulled_data.json
 .DS_Store
+.envrc

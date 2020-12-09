@@ -36,7 +36,9 @@ public class MongoUtil {
 		return res;
 	}
 	public static MongoClient GetMongoClient(String password) {
-		String url = String.format("mongodb://%s:%s@ds149672.mlab.com:49672/logistics", 
+        
+		String url = String.format("mongodb+srv://%s:%s@cluster0.gaq9o.mongodb.net/logistics?retryWrites=true&w=majority",
+        //String url = String.format("mongodb://%s:%s@ds149672.mlab.com:49672/logistics", 
 	            "nailbiter",password);
 		MongoClientURI uri = null;
 		try {
