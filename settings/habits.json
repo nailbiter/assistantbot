@@ -495,7 +495,7 @@
     "enabled": true,
     "info": "",
     "name": "go to saitama",
-    "onfailed": "move:TODO"
+    "onFailed": "move:TODO"
   },
   {
     "category": "logistics",
@@ -504,16 +504,16 @@
     "enabled": true,
     "info": "",
     "name": "talk to dad",
-    "onfailed": "move:TODO"
+    "onFailed": "move:TODO"
   },
   {
     "category": "logistics",
     "cronline": "0 10 * * mon",
     "delaymin": 120,
     "enabled": true,
-    "info": "",
-    "name": "regular check credit card",
-    "onfailed": "move:TODO"
+    "info": "https://direct.bk.mufg.jp/ , https://console.aws.amazon.com/billing/home?region=us-east-2#/",
+    "name": "regular check credit card and amazon billing",
+    "onFailed": "move:TODO"
   },
   {
     "category": "logistics",
@@ -522,7 +522,7 @@
     "enabled": true,
     "info": "",
     "name": "bicycle oil",
-    "onfailed": "move:TODO"
+    "onFailed": "move:TODO"
   },
   {
     "category": "logistics",
@@ -531,7 +531,25 @@
     "enabled": true,
     "info": "",
     "name": "cannot come work automaton",
-    "onfailed": "move:TODO"
+    "onFailed": "move:TODO"
+  },
+  {
+    "category": "logistics",
+    "cronline": "0 13 * * *",
+    "delaymin": 60,
+    "enabled": true,
+    "info": "",
+    "name": "lunch",
+    "onFailed": "remove"
+  },
+  {
+    "category": "logistics",
+    "cronline": "0 19 * * *",
+    "delaymin": 120,
+    "enabled": true,
+    "info": "",
+    "name": "dinner",
+    "onFailed": "remove"
   },
   {
     "category": "logistics",
@@ -540,6 +558,6 @@
     "enabled": true,
     "info": "",
     "name": "change running shoes",
-    "onfailed": "move:TODO"
+    "onFailed": "move:TODO"
   }
 ]

@@ -35,7 +35,8 @@ def upload_settings(ctx, **kwargs):
 #    for k, v in kwargs.items():
 #        ctx.obj[k] = v
     ctx.obj["mongo_client"] = MongoClient(
-        f"mongodb://nailbiter:{kwargs['mongopass']}@ds149672.mlab.com:49672/logistics?retryWrites=false")
+        f"mongodb+srv://nailbiter:{kwargs['mongopass']}@cluster0.gaq9o.mongodb.net/logistics?authSource=admin&replicaSet=atlas-1372ty-shard-0&w=majority&readPreference=primary&appname=MongoDB%20Compass&retryWrites=true&ssl=true")
+    
 
 
 @upload_settings.command()
