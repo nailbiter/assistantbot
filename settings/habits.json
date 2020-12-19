@@ -1,6 +1,15 @@
 [
   {
     "category": "logistics",
+    "cronline": "30 14 * * sat",
+    "delaymin": 60,
+    "enabled": true,
+    "info": "",
+    "name": "40k: yucho to mufg",
+    "onFailed": "move:todo"
+  },
+  {
+    "category": "logistics",
     "cronline": "0 19 * * mon,tue,wed,thu,fri",
     "delaymin": 60,
     "enabled": true,
