@@ -1,9 +1,54 @@
 [
   {
+    "category": "logistics",
+    "cronline": "0 19 * * mon,tue,wed,thu,fri",
+    "delaymin": 60,
+    "enabled": true,
+    "info": "",
+    "name": "regular eve pull-up habit",
+    "onFailed": "remove"
+  },
+  {
+    "category": "logistics",
+    "cronline": "0 23 * * *",
+    "delaymin": 60,
+    "enabled": true,
+    "info": "",
+    "name": "wash penis when in shower",
+    "onFailed": "remove"
+  },
+  {
+    "category": "logistics",
+    "cronline": "0 23 * * mon,tue,wed,thu,fri",
+    "delaymin": 60,
+    "enabled": true,
+    "info": "",
+    "name": "prepare yogurt",
+    "onFailed": "remove"
+  },
+  {
+    "category": "logistics",
+    "cronline": "0 23 * * *",
+    "delaymin": 60,
+    "enabled": true,
+    "info": "",
+    "name": "check food shomikigen",
+    "onFailed": "remove"
+  },
+  {
+    "category": "logistics",
+    "cronline": "0 23 * * *",
+    "delaymin": 60,
+    "enabled": true,
+    "info": "",
+    "name": "audio slow speed, timer",
+    "onFailed": "remove"
+  },
+  {
     "category": "tasks",
     "cronline": "30 23 * * *",
     "delaymin": 30,
-    "enabled": true,
+    "enabled": false,
     "info": "",
     "name": "check/plan tasks",
     "onFailed": "remove"
@@ -116,7 +161,7 @@
     "category": "social",
     "cronline": "30 23 * * mon,tue,thu,fri",
     "delaymin": 30,
-    "enabled": true,
+    "enabled": false,
     "info": "",
     "name": "candy wake, check alarm",
     "onFailed": "remove"
@@ -351,7 +396,7 @@
     "category": "social",
     "cronline": "0 23 * * *",
     "delaymin": 90,
-    "enabled": true,
+    "enabled": false,
     "info": "",
     "name": "check candy html",
     "onFailed": "remove"
