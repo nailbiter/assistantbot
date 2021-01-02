@@ -273,7 +273,7 @@
   {
     "cronline": "0 12 1 * *",
     "delaymin": 1380,
-    "enabled": true,
+    "enabled": false,
     "info": "",
     "name": "back-up K emails",
     "onFailed": "move:todo"
