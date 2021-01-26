@@ -18,6 +18,33 @@
     "onFailed": "remove"
   },
   {
+    "category": "social",
+    "cronline": "0 23 * * mon,tue,wed,thu,fri",
+    "delaymin": 60,
+    "enabled": true,
+    "info": "",
+    "name": "candy check banana",
+    "onFailed": "remove"
+  },
+  {
+    "category": "social",
+    "cronline": "0 23 * * *",
+    "delaymin": 60,
+    "enabled": true,
+    "info": "especially on weekends",
+    "name": "candy wash head",
+    "onFailed": "remove"
+  },
+  {
+    "category": "social",
+    "cronline": "0 23 * * *",
+    "delaymin": 60,
+    "enabled": true,
+    "info": "",
+    "name": "candy regular abs",
+    "onFailed": "remove"
+  },
+  {
     "category": "logistics",
     "cronline": "0 23 * * *",
     "delaymin": 60,
