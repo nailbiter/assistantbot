@@ -177,7 +177,7 @@
   },
   {
     "category": "social",
-    "cronline": "30 22 * * fri",
+    "cronline": "30 18 * * thu",
     "delaymin": 1080,
     "enabled": true,
     "info": "",
