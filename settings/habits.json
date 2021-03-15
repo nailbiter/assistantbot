@@ -225,7 +225,7 @@
     "enabled": true,
     "info": "",
     "name": "dad english",
-    "onFailed": "move:TODO"
+    "onFailed": "move:todo"
   },
   {
     "cronline": "30 23 * * *",
@@ -421,7 +421,7 @@
   },
   {
     "category": "logistics",
-    "cronline": "30 7 * * *",
+    "cronline": "0 20 * * *",
     "delaymin": 300,
     "enabled": true,
     "info": "",
@@ -585,7 +585,7 @@
     "enabled": true,
     "info": "",
     "name": "go to saitama",
-    "onFailed": "move:TODO"
+    "onFailed": "move:todo"
   },
   {
     "category": "logistics",
@@ -594,7 +594,7 @@
     "enabled": true,
     "info": "",
     "name": "talk to dad",
-    "onFailed": "move:TODO"
+    "onFailed": "move:todo"
   },
   {
     "category": "logistics",
@@ -603,7 +603,7 @@
     "enabled": true,
     "info": "https://direct.bk.mufg.jp/ , https://console.aws.amazon.com/billing/home?region=us-east-2#/",
     "name": "regular check credit card and amazon billing",
-    "onFailed": "move:TODO"
+    "onFailed": "move:todo"
   },
   {
     "category": "logistics",
@@ -612,7 +612,7 @@
     "enabled": true,
     "info": "",
     "name": "bicycle oil",
-    "onFailed": "move:TODO"
+    "onFailed": "move:todo"
   },
   {
     "category": "logistics",
@@ -621,7 +621,7 @@
     "enabled": true,
     "info": "",
     "name": "cannot come work automaton",
-    "onFailed": "move:TODO"
+    "onFailed": "remove"
   },
   {
     "category": "logistics",
@@ -648,6 +648,15 @@
     "enabled": true,
     "info": "",
     "name": "change running shoes",
-    "onFailed": "move:TODO"
+    "onFailed": "move:todo"
+  },
+  {
+    "category": "logistics",
+    "cronline": "0 10 * * 0",
+    "delaymin": 1440,
+    "enabled": true,
+    "info": "",
+    "name": "change drain net, bath net",
+    "onfailed": "move:todo"
   }
 ]
