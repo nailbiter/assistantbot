@@ -50,6 +50,7 @@ def upload(ctx):
         coll = ctx.obj["mongo_client"]["logistics"][r["collection"]]
         coll.delete_many({})
         coll.insert_many(data)
+        click.echo(f"{len(data)} records inserted in {r['collection']}")
 
 
 def _eval(s):

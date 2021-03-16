@@ -194,6 +194,15 @@
     "onFailed": "move:todo"
   },
   {
+    "category": "logistics",
+    "cronline": "0 10 * * sat",
+    "delaymin": 2880,
+    "enabled": true,
+    "info": "",
+    "name": "print test page",
+    "onFailed": "move:todo"
+  },
+  {
     "category": "social",
     "cronline": "0 15 * * sun",
     "delaymin": 1080,
@@ -330,6 +339,15 @@
     "info": "",
     "name": "face whipe, wash head, faceCream x 2",
     "onFailed": "move:todo"
+  },
+  {
+    "category": "logistics",
+    "cronline": "30 22 * * *",
+    "delaymin": 60,
+    "enabled": true,
+    "info": "",
+    "name": "measure weight",
+    "onFailed": "remove"
   },
   {
     "category": "logistics",
@@ -472,6 +490,24 @@
     "info": "",
     "name": "eat mike seeds",
     "onFailed": "remove"
+  },
+  {
+    "category": "logistics",
+    "cronline": "30 7 * * *",
+    "delaymin": 75,
+    "enabled": true,
+    "info": "",
+    "name": "no porn day yesterday",
+    "onFailed": "move:todo"
+  },
+  {
+    "category": "logistics",
+    "cronline": "30 7 * * *",
+    "delaymin": 75,
+    "enabled": true,
+    "info": "",
+    "name": "no jerk day yesterday",
+    "onFailed": "move:todo"
   },
   {
     "category": "logistics",
