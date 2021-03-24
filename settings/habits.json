@@ -55,6 +55,15 @@
   },
   {
     "category": "logistics",
+    "cronline": "0 22 * * wed,sun",
+    "delaymin": 120,
+    "enabled": true,
+    "info": "",
+    "name": "change towel",
+    "onFailed": "move:todo"
+  },
+  {
+    "category": "logistics",
     "cronline": "0 23 * * *",
     "delaymin": 60,
     "enabled": true,
