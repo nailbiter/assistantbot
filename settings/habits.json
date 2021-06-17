@@ -351,8 +351,8 @@
   },
   {
     "category": "logistics",
-    "cronline": "30 22 * * *",
-    "delaymin": 60,
+    "cronline": "0 8 * * *",
+    "delaymin": 120,
     "enabled": true,
     "info": "",
     "name": "measure weight",
@@ -670,7 +670,7 @@
   },
   {
     "category": "logistics",
-    "cronline": "0 13 * * *",
+    "cronline": "0 15 * * *",
     "delaymin": 60,
     "enabled": true,
     "info": "",
