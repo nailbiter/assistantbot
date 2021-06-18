@@ -606,15 +606,6 @@
     "onFailed": "move:todo"
   },
   {
-    "category": "parttime",
-    "cronline": "0 10 * * mon,tue,wed,thu,fri",
-    "delaymin": 60,
-    "enabled": true,
-    "info": "https://trello.com/c/wFk0qp36",
-    "name": "mark start job; pfctl",
-    "onFailed": "move:todo"
-  },
-  {
     "category": "logistics",
     "cronline": "0 13 * * *",
     "delaymin": 1380,
