@@ -195,7 +195,7 @@
   },
   {
     "category": "social",
-    "cronline": "0 21 * * sat",
+    "cronline": "0 19 * * tue",
     "delaymin": 1080,
     "enabled": true,
     "info": "",
