@@ -195,7 +195,7 @@
   },
   {
     "category": "social",
-    "cronline": "0 15 * * sat",
+    "cronline": "0 21 * * sat",
     "delaymin": 1080,
     "enabled": true,
     "info": "",
@@ -460,7 +460,7 @@
     "cronline": "0 10 21 4,7,10,1 *",
     "delaymin": 1440,
     "enabled": true,
-    "info": "",
+    "info": "https://www.aquafresh.com/amp/how-often-should-you-change-your-toothbrush.html",
     "name": "change toothbrush",
     "onFailed": "move:todo"
   },
