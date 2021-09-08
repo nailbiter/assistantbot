@@ -670,7 +670,7 @@
   },
   {
     "category": "logistics",
-    "cronline": "0 19 * * *",
+    "cronline": "0 18 * * *",
     "delaymin": 120,
     "enabled": true,
     "info": "",
