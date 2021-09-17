@@ -430,7 +430,7 @@
   },
   {
     "category": "social",
-    "cronline": "0 22 * * *",
+    "cronline": "0 22 * * wed,sat",
     "delaymin": 180,
     "enabled": true,
     "info": "",
